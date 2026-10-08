@@ -5,3 +5,4 @@ export * from "./commands.js";
 export * from "./capabilities.js";
 export * from "./session.js";
 export * from "./recognition.js";
+export * from "./retro.js";

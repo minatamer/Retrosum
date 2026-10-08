@@ -11,3 +11,4 @@ export {
 export { applyCommand, undoLatest, validateSession } from "./commands.js";
 export * from "./recognition.js";
 export * from "./dashboard.js";
+export * from "./retro.js";

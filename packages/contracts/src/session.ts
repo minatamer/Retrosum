@@ -1,23 +1,18 @@
 import { z } from "zod";
-import { commandIdSchema, contactIdSchema, revisionSchema, workspaceIdSchema } from "./ids.js";
+import { commandIdSchema, revisionSchema, workspaceIdSchema } from "./ids.js";
 import { undoReceiptSchema, workspaceSchema } from "./commands.js";
-import { dateSchema } from "./records.js";
+import { sessionFilterSchema } from "./filters.js";
+import { retroResponseSchema } from "./retro.js";
+export { sessionFilterSchema } from "./filters.js";
 
 export const SESSION_LIFETIME_MS = 2 * 60 * 60 * 1000;
 export const MAX_PROJECTION_BYTES = 2 * 1024 * 1024;
-export const sessionFilterSchema = z.strictObject({
-  from: dateSchema,
-  to: dateSchema,
-  register: z.enum(["invoices", "costs", "payments", "contacts"]).default("invoices"),
-  category: z.string().trim().min(1).max(60).optional(),
-  counterpartyId: contactIdSchema.optional(),
-  asOf: dateSchema.optional(),
-});
 export const finalizedMessageSchema = z.strictObject({
   id: z.string().min(1).max(100),
   role: z.enum(["user", "retro"]),
   text: z.string().max(2000),
   revision: revisionSchema,
+  response: retroResponseSchema.optional(),
 });
 export const sessionSchema = z.strictObject({
   workspace: workspaceSchema,

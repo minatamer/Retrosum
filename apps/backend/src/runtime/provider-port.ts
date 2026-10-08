@@ -1,9 +1,5 @@
-import type {
-  ChangeProposal,
-  DocumentInterpretation,
-  ExtractionRequest,
-  Workspace,
-} from "@retrosum/contracts";
+import type { DocumentInterpretation, ExtractionRequest } from "@retrosum/contracts";
+import type { RecordInvestigator } from "../retro/investigator.js";
 
 // The backend owns provider operations; adapters validate their output before crossing this port.
 export interface AiProviderPort {
@@ -15,8 +11,5 @@ export interface AiProviderPort {
     interpretation: DocumentInterpretation;
     usage: { inputTokens: number; outputTokens: number } | null;
   }>;
-  answer?: (
-    input: Readonly<{ workspace: Workspace; prompt: string }>,
-    signal: AbortSignal,
-  ) => Promise<{ text: string; proposal?: ChangeProposal }>;
+  investigator?: RecordInvestigator;
 }

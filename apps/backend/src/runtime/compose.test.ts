@@ -20,7 +20,7 @@ describe("provider composition stays explicit and side-effect free", () => {
     const runtime = composeRuntime(parseConfig({ PAID_DEMO_ENABLED: "true" }), {
       clock: systemClock,
       createRequestId: () => "request_test",
-      provider: { kind: "openai", answer },
+      provider: { kind: "openai", investigator: { kind: "openai", step: answer } },
     });
     expect(runtime.capabilities.copilot.available).toBe(false);
     expect(answer).not.toHaveBeenCalled();

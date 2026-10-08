@@ -4,6 +4,7 @@ import type { AppConfig } from "../config/config.js";
 import type { Clock } from "./clock.js";
 import type { AiProviderPort } from "./provider-port.js";
 import { ExtractionAdmission } from "../documents/admission.js";
+import { RetroAdmission } from "../retro/admission.js";
 export interface RuntimePorts {
   clock: Clock;
   createRequestId(): string;
@@ -15,6 +16,7 @@ export interface AppRuntime {
   capabilities: RuntimeCapabilities;
   ready: boolean;
   admission: ExtractionAdmission;
+  retroAdmission: RetroAdmission;
 }
 export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRuntime {
   // Live support stays closed until exact-field, token and admission acceptance.
@@ -30,7 +32,8 @@ export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRunti
   const providerMatches = ports.provider?.kind === (config.FAKE_MODE ? "fake" : "openai");
   const documentsAvailable =
     providerMatches && Boolean(ports.provider?.interpretDocument) && config.FAKE_MODE;
-  const copilotAvailable = providerMatches && Boolean(ports.provider?.answer) && config.FAKE_MODE;
+  const copilotAvailable =
+    providerMatches && ports.provider?.investigator?.kind === "fake" && config.FAKE_MODE;
   const capabilities = capabilitiesSchema.parse({
     schemaVersion: 1,
     mode: config.FAKE_MODE
@@ -48,5 +51,6 @@ export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRunti
     capabilities,
     ready: config.FAKE_MODE || documentsAvailable || copilotAvailable,
     admission: new ExtractionAdmission(ports.clock.now),
+    retroAdmission: new RetroAdmission(ports.clock.now),
   });
 }

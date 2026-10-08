@@ -3,6 +3,7 @@ import type { ErrorRequestHandler, Express } from "express";
 import { requestIdSchema } from "@retrosum/contracts";
 import type { AppRuntime } from "../runtime/compose.js";
 import { extractRoute } from "../documents/extract-route.js";
+import { chatRoute } from "../retro/chat-route.js";
 export function createApp(runtime: AppRuntime): Express {
   const app = express();
   app.disable("x-powered-by");
@@ -18,6 +19,27 @@ export function createApp(runtime: AppRuntime): Express {
     }
     next();
   });
+  app.post(
+    "/v1/chat",
+    (request, response, next) => {
+      if (request.headers.origin !== runtime.config.FRONTEND_ORIGIN) {
+        response.status(403).json({ error: "origin_not_allowed" });
+        return;
+      }
+      if (
+        !runtime.capabilities.copilot.available ||
+        (!runtime.config.FAKE_MODE && !runtime.config.PAID_DEMO_ENABLED)
+      ) {
+        response
+          .status(503)
+          .json({ error: runtime.capabilities.copilot.reason ?? "adapter_not_ready" });
+        return;
+      }
+      next();
+    },
+    express.json({ limit: "2mb", strict: true }),
+    (request, response) => chatRoute(runtime, request, response),
+  );
   app.use(express.json({ limit: "4kb", strict: true }));
   app.get("/v1/health", (_request, response) => {
     response.json({

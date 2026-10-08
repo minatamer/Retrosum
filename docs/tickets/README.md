@@ -1,6 +1,6 @@
 # Retrosum implementation ticket queue
 
-Updated **8 October 2026**. The owner authorized the full local fake-mode execute/validate loop and per-ticket commits. **RET-001 is Complete; RET-002 through RET-011 are implemented and verified locally with their deferred acceptance gates pending; RET-012 local preparation is next.** The [source of truth](../RETROSUM_DEMO_SOURCE_OF_TRUTH.md) owns product/architecture behavior; the [HTML brief](../RETROSUM_OVERVIEW.html) summarizes it. Actual live accuracy/spend, owner visual feedback and cloud deployment remain pending. Public live capability stays closed.
+Updated **8 October 2026**. The owner authorized the full local fake-mode execute/validate loop and per-ticket commits. **RET-001 is Complete; RET-002 through RET-011 are implemented and verified locally with their deferred acceptance gates pending; RET-012 local preparation is complete; deployment remains pending.** The [source of truth](../RETROSUM_DEMO_SOURCE_OF_TRUTH.md) owns product/architecture behavior; the [HTML brief](../RETROSUM_OVERVIEW.html) summarizes it. Actual live accuracy/spend, owner visual feedback and cloud deployment remain pending. Public live capability stays closed.
 
 ## Why twelve packets
 
@@ -23,9 +23,9 @@ RET-001 establishes safe boundaries. RET-002/003 make the brand and visible evid
 | [RET-009](RET-009-complete-exports-and-session-lifecycle.md)  | Complete exports and whole-session reset, expiry and recovery            | RET-008          | Local; visual pending     |
 | [RET-010](RET-010-harden-privacy-admission-and-spend.md)      | Harden privacy, private transport, abuse controls and spend readiness    | RET-005, RET-009 | Local; live/cloud pending |
 | [RET-011](RET-011-verify-product-and-audit-release.md)        | Verify responsive product quality and audit the release candidate        | RET-010          | Local; deferred pending   |
-| [RET-012](RET-012-deploy-and-validate-cloud-run.md)           | Deploy manually, validate live behavior and record rollback              | RET-011          | Planned                   |
+| [RET-012](RET-012-deploy-and-validate-cloud-run.md)           | Deploy manually, validate live behavior and record rollback              | RET-011          | Local prep; cloud pending |
 
-The next eligible local packet is **RET-012**, limited to local packaging/preparation. The canonical order above is sufficient; do not infer parallel agent authorization from the dependency graph. Start a packet only when the user requests implementation and its required local dependency evidence exists.
+**No local packet remains eligible:** all twelve authorized local outcomes are implemented and validated. RET-012's Linux packaging/preparation is complete; its original deployed/live acceptance remains pending. See [final local evidence](../validation/RET-012.md) and [manual release/rollback](../operations/MANUAL-DEPLOYMENT.md). The canonical order above is sufficient; do not infer parallel agent authorization from the dependency graph. Start a packet only when the user requests implementation and its required local dependency evidence exists.
 
 ## Non-negotiable product decisions
 
@@ -47,7 +47,7 @@ Each packet has standalone context, concrete ownership, implementation steps, ac
 
 Use statuses **Planned**, **In progress**, **Implemented locally — live acceptance pending** where applicable, and **Complete** only after the packet's actual required evidence is recorded. A local fake/injected pass can unblock local dependent UI work without enabling an unproved live capability. RET-005's exact-number gate and RET-012's deployed acceptance remain distinct.
 
-For this fake-first phase, a dependency recorded as **Implemented locally — deferred acceptance pending** is eligible for local follow-on work when its actual contracts, required local behavior and checks pass. List deferred live accuracy/spend, owner visual review and hosted checks individually; keep their acceptance boxes unchecked. Build the shared production-shaped flow with simulated scanning, typed Retro conversation, shortcuts, guidance, animated form proposals, confirmation and Undo. Never mark an external check passed because a simulation passed. After RET-011 passes locally, proceed to RET-012 local preparation; cloud execution still requires later authorization.
+For this fake-first phase, a dependency recorded as **Implemented locally — deferred acceptance pending** is eligible for local follow-on work when its actual contracts, required local behavior and checks pass. List deferred live accuracy/spend, owner visual review and hosted checks individually; keep their acceptance boxes unchecked. Build the shared production-shaped flow with simulated scanning, typed Retro conversation, shortcuts, guidance, animated form proposals, confirmation and Undo. Never mark an external check passed because a simulation passed. RET-011 and RET-012 have passed locally; cloud execution still requires later authorization.
 
 After implementation record what changed, actual settled quality checks, meaningful manual/device evidence, measured live/cloud facts only when run, and any remaining prerequisite. Do not pre-check acceptance or copy sibling approvals/test counts. Keep large packets manageable with adjacent implementation phases/commits under the same ID; split only a demonstrated independent outcome/risk.
 

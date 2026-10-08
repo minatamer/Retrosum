@@ -4,6 +4,8 @@ Implemented locally in RET-010 on **8 October 2026**. Public live composition is
 
 ## Connected paths
 
+RET-012's actual nonroot Linux topology exposed Next's internal HTTP/port URL behind TLS termination. Mutating frontend bridges now validate the exact configured `FRONTEND_ORIGIN`, ignore forwarded host/protocol claims, reject missing canonical origin in a hosted context and require Secure admission cookies for the public HTTPS origin. Local tests retain strict loopback fallback. Injected topology/Secure regressions and actual fake/paid-off container probes verify the change; hosted IAM remains a separate gate.
+
 The browser retains originals in its bounded temporary Blob cache, alongside the existing fixed two-hour per-tab projection. Before an available live action it opens a native paper review: selected PDF and business context for extraction; current normalized records, question and recent conversation for Retro. Consent is per action and versioned as `retrosum-processing-v1`. Local controls and declared simulation bypass this flow without loading a challenge script.
 
 After explicit Allow, `POST /api/retrosum/v1/session` establishes or validates the existing content-free run. The managed Cloudflare widget receives an opaque input hash; `/api/retrosum/v1/grants` forwards a bounded token for server verification. Backend verification checks success, hostname, operation class, request hash and challenge age. The grant travels in a request header, never a URL, local storage or transcript. Cancellation, expiry, reset and unmount abort owned work and remove the widget. Reset also increments the grant generation, rejecting a verification already in flight.

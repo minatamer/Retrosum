@@ -4,7 +4,7 @@
 **Prepared:** 7 October 2026. **Updated:** 8 October 2026 with the owner’s core-flow, design, accuracy and Retro requirements.<br>
 **Product:** a public, disposable business money workspace demonstrating useful AI.  
 **Companion:** [Retrosum product overview](RETROSUM_OVERVIEW.html).  
-**Implementation status:** RET-001 through RET-011 are verified locally: foundation, brand/landing, visible sample PDFs/viewer, exact money/manual CRUD/Undo/recovery, simulated actual-byte recognition/review, source-backed interactive dashboard and floating Retro conversation/guidance. Typed simulations ground current figures and sources; local shortcuts, registered tour/highlights and inline Undo remain usable without AI. RET-008 animated editable CRUD proposals, clarification, one confirmation and latest Undo are verified locally. RET-009 reviewed revision-bound ZIP exports, local created-invoice PDFs and whole-session cleanup are verified locally. RET-010 local privacy/admission/spend hardening is verified: scoped one-use grants, retained conservative reservations, private identity transport, bounded resources, nonce security policy and explicit processing disclosure. Actual live/IAM/challenge/spend gates stay closed; RET-011 connected product verification is complete locally, including actual ZIP download, ten hero/eight dashboard sizes and 190 settled tests. Physical/assistive performance and live acceptance remain pending; RET-012 local preparation follows. Owner aesthetics/physical-device feedback, live accuracy/spend and cloud deployment remain pending; public live capability stays closed. See each ticket's evidence, [money/session decisions](engineering/MONEY-SESSIONS.md), [recognition decisions](engineering/RECOGNITION.md), [dashboard decisions](engineering/DASHBOARD.md) and [Retro decisions](engineering/RETRO.md).<br>
+**Implementation status:** RET-001 through RET-011 are verified locally: foundation, brand/landing, visible sample PDFs/viewer, exact money/manual CRUD/Undo/recovery, simulated actual-byte recognition/review, source-backed interactive dashboard and floating Retro conversation/guidance. Typed simulations ground current figures and sources; local shortcuts, registered tour/highlights and inline Undo remain usable without AI. RET-008 animated editable CRUD proposals, clarification, one confirmation and latest Undo are verified locally. RET-009 reviewed revision-bound ZIP exports, local created-invoice PDFs and whole-session cleanup are verified locally. RET-010 local privacy/admission/spend hardening is verified: scoped one-use grants, retained conservative reservations, private identity transport, bounded resources, nonce security policy and explicit processing disclosure. Actual live/IAM/challenge/spend gates stay closed; RET-011 connected product verification is complete locally, including actual ZIP download, ten hero/eight dashboard sizes and 190 settled tests. Physical/assistive performance and live acceptance remain pending. RET-012 local preparation is complete: both nonroot Linux images, packaged originals/fonts/workers, canonical proxy origins and free fake/unavailable probes are verified. The settled final gates passed 192 tests and 105 boundary checks. Manual deployment/rollback guides and unresolved Cloud Run templates are ready; no images were pushed and nothing was deployed. Owner aesthetics/physical-device feedback, live accuracy/spend and cloud deployment remain pending; public live capability stays closed. See each ticket's evidence, [money/session decisions](engineering/MONEY-SESSIONS.md), [recognition decisions](engineering/RECOGNITION.md), [dashboard decisions](engineering/DASHBOARD.md) and [Retro decisions](engineering/RETRO.md).<br>
 **Execution status:** the owner authorized the [12-ticket queue](tickets/README.md) in a local fake-mode execute/validate loop, including RET-012 local preparation and per-ticket commits after clean validation. Actual paid tests, owner visual feedback and cloud deployment happen later.
 
 Retrosum turns a small collection of business documents into understandable money records, a traceable overview, and an AI assistant named **Retro** that explains the dashboard, summarizes supplied records, guides the visitor and helps create, edit and remove session records. The visitor can inspect the evidence, correct an interpretation, review a duplicate or payment relationship, and export the result.
@@ -1137,7 +1137,7 @@ Retrosum/
 │  ├─ frontend/
 │  │  ├─ README.md
 │  │  ├─ .env.example
-│  │  ├─ Dockerfile                 # RET-012 only; deferred
+│  │  ├─ Dockerfile                 # RET-012 prepared; cloud pending
 │  │  ├─ next.config.ts
 │  │  ├─ public/samples/               # Original synthetic assets and renditions
 │  │  └─ src/
@@ -1159,7 +1159,7 @@ Retrosum/
 │  └─ backend/
 │     ├─ README.md
 │     ├─ .env.example
-│     ├─ Dockerfile                 # RET-012 only; deferred
+│     ├─ Dockerfile                 # RET-012 prepared; cloud pending
 │     └─ src/
 │        ├─ app.ts                    # Construct Express without listening
 │        ├─ server.ts                 # Explicit configuration/start/shutdown
@@ -1694,7 +1694,7 @@ Requested local startup uses normal configured behavior; automated tests use iso
 
 ## 22. Cloud infrastructure and deployment
 
-**Deferred phase — owner clarification, 8 October 2026.** Dockerfile/image authoring, Docker engine startup, Linux container verification, cloud setup and public deployment all wait until the owner requests RET-012. Local ticket implementation runs directly with pnpm/Node. This section and the future Dockerfile paths in the repository plan describe eventual deployment, not current build prerequisites. The reference repos already contain frontend/backend Dockerfiles; Retrosum is retaining that eventual approach without requiring Docker for local development.
+**Local preparation complete — owner authorization, 8 October 2026.** RET-012 now supplies pinned, frozen-lockfile Dockerfiles, verified nonroot Linux images, bounded free probes, unresolved Cloud Run templates and manual deployment/rollback guidance. Actual original-PDF inspection/viewing and fake/unavailable modes pass in the final images. See [RET-012 evidence](validation/RET-012.md) and [manual release guide](operations/MANUAL-DEPLOYMENT.md). No image push, cloud resource, identity/domain change or deployment occurred. Local development still runs directly with pnpm/Node and does not require Docker. Live accuracy/spend, physical/owner acceptance and actual cloud work remain later gates.
 
 ### 22.1 Same deployment tool family
 
@@ -1740,7 +1740,7 @@ These are proposals, not deployed values. Set the frontend proxy deadline to exc
 
 Build exact dependency versions from the lockfile and the audited source commit. Use multi-stage nonroot runtime images, include only compiled apps, required workspace package artifacts and approved public synthetic assets. Verify Next.js standalone tracing and public/static assets in a Linux container.
 
-Exclude local environment files, private originals, temporary previews, diagnostics, logs, caches, ad hoc screenshots, developer harnesses and unnecessary documentation/test artifacts from runtime images. Inspect the actual image contents, not only `.dockerignore`.
+Exclude local environment files, private originals, temporary previews, diagnostics, logs, caches, ad hoc screenshots, developer harnesses and unnecessary documentation/test artifacts from runtime images. Inspect the actual image contents, not only `.dockerignore`. RET-012 uses a positive build-context list and verifies contained runtime dependency links. pnpm 11 injected workspace dependencies synchronize after builds; a dedicated frozen production deployment packages the backend. Next standalone tracing includes the workspace root; staging preserves contained Linux links and remaps Windows junctions into its fixed local output. Build Linux deployment artifacts in Linux; Windows junction paths are not portable. Public-origin checks use the configured canonical origin across TLS/port termination, ignore forwarded-host claims and enforce Secure cookies for the public HTTPS origin.
 
 No runtime npm install, browser/tool download or arbitrary document-conversion executable fetch is permitted. Parser/native dependency requirements must be baked into and verified with the image. Avoid building into the same output directory a running local dev server currently uses.
 

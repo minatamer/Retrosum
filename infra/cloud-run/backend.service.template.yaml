@@ -1,0 +1,68 @@
+# Replace every ${TOKEN} in an ignored local copy. No cloud action is automatic.
+# Deliberately unavailable live mode, paid-off, no secrets required for free probes.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: "${BACKEND_SERVICE}"
+  namespace: "${PROJECT_NUMBER}"
+  labels:
+    cloud.googleapis.com/location: "${REGION}"
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/invoker-iam-disabled: "false"
+    run.googleapis.com/minScale: "0"
+    run.googleapis.com/maxScale: "1"
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "1"
+        run.googleapis.com/cpu-throttling: "true"
+        run.googleapis.com/execution-environment: gen2
+    spec:
+      serviceAccountName: "${BACKEND_SERVICE_ACCOUNT}"
+      containerConcurrency: 4
+      timeoutSeconds: 120
+      containers:
+        - image: "${BACKEND_IMAGE}"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: HOST
+              value: 0.0.0.0
+            - name: FRONTEND_ORIGIN
+              value: "${FRONTEND_ORIGIN}"
+            - name: FAKE_MODE
+              value: "false"
+            - name: AI_PROVIDER
+              value: openai
+            - name: PAID_DEMO_ENABLED
+              value: "false"
+            - name: LIVE_DOCUMENTS_ENABLED
+              value: "false"
+            - name: LIVE_COPILOT_ENABLED
+              value: "false"
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          startupProbe:
+            httpGet:
+              path: /v1/health
+              port: 8080
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 24
+          livenessProbe:
+            httpGet:
+              path: /v1/health
+              port: 8080
+            periodSeconds: 30
+            timeoutSeconds: 2
+            failureThreshold: 3
+  traffic:
+    - latestRevision: true
+      percent: 100

@@ -1,0 +1,54 @@
+# Public IAM is an explicit separate operator action after deployment approval.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: "${FRONTEND_SERVICE}"
+  namespace: "${PROJECT_NUMBER}"
+  labels:
+    cloud.googleapis.com/location: "${REGION}"
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/minScale: "0"
+    run.googleapis.com/maxScale: "1"
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "1"
+        run.googleapis.com/cpu-throttling: "true"
+        run.googleapis.com/execution-environment: gen2
+    spec:
+      serviceAccountName: "${FRONTEND_SERVICE_ACCOUNT}"
+      containerConcurrency: 8
+      timeoutSeconds: 150
+      containers:
+        - image: "${FRONTEND_IMAGE}"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: HOSTNAME
+              value: 0.0.0.0
+            - name: NEXT_TELEMETRY_DISABLED
+              value: "1"
+            - name: FRONTEND_ORIGIN
+              value: "${FRONTEND_ORIGIN}"
+            - name: BACKEND_ORIGIN
+              value: "${BACKEND_ORIGIN}"
+            - name: BACKEND_AUDIENCE
+              value: "${BACKEND_ORIGIN}"
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          startupProbe:
+            tcpSocket:
+              port: 8080
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 24
+  traffic:
+    - latestRevision: true
+      percent: 100

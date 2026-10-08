@@ -1,6 +1,6 @@
 # Release readiness and operator-owned gates
 
-Updated **8 October 2026**, RET-011 local product acceptance. No live provider test, cloud resource, challenge registration, container build, push or deployment has occurred. [Product acceptance](PRODUCT-ACCEPTANCE.md) records the exact candidate, connected simulated flow, device matrix, 190-test settled gates and measured resource/asset limits. RET-012 prepares local deployment files before future separately authorized cloud work.
+Updated **8 October 2026**, RET-012 local packaging acceptance. No live provider test, cloud resource, challenge registration, push or deployment has occurred. [Product acceptance](PRODUCT-ACCEPTANCE.md) retains the dated RET-011 candidate, connected simulated flow, device matrix and resource/asset limitations. [RET-012 validation](../validation/RET-012.md) records the final nonroot Linux image pair, exact package inventories, fourteen-page worker and fake/unavailable browser/probe evidence, with **192 tests and 105 boundary checks**. The [manual release guide](../operations/MANUAL-DEPLOYMENT.md) and unfilled service/operator templates are prepared; actual hosted acceptance remains pending.
 
 ## Local controls already available
 
@@ -10,6 +10,8 @@ Updated **8 October 2026**, RET-011 local product acceptance. No live provider t
 - Bounded parser/stream/context/response/export resources and owned cancellation/reset/expiry.
 - Nonce CSP, local fonts/assets, untrusted-output grounding, explicit financial confirmation and content-free diagnostics.
 - No hosted database, uploaded-file bucket, persisted conversation or provider file library.
+- Locked standalone/backend packaging, narrowly included Docker build inputs, contained dependency links and private-configuration rejection. Both final Linux images run as UID 1000 and support injected ports; original PDFs, local fonts and the pinned viewer/inspection workers are verified.
+- Canonical public-origin checks across proxy TLS/port termination, including Secure admission cookies; untrusted forwarded headers never establish origin authority.
 
 ## Before paid evaluation
 
@@ -27,7 +29,7 @@ Updated **8 October 2026**, RET-011 local product acceptance. No live provider t
 - Register managed challenge site/secret keys for the actual domain. Verify action/hash/hostname/time binding, script/frame CSP, expiry/replay/cancel and accessible challenge recovery with a human. No challenge solving is simulated as real acceptance.
 - Verify a trusted ingress/source scheme. Immediate socket hashing currently supplies a conservative aggregate limit and is not a per-person IP control.
 - Measure cold starts, memory, parser deadlines and one expensive operation, minimum zero/maximum one instance, overlap/boot rejection and conservative unknown-outcome handling. Model platform overlap as a limitation.
-- RET-012 local packaging must prepare locked dependencies, standalone assets, parser worker, health/readiness, runtime env/identity settings and rollback commands. Actual Linux image/nonroot behavior requires a container environment later.
+- Local Linux packaging/nonroot/assets/worker/health/readiness and paid-off checks are complete. Rebuild and recheck the later accepted source commit, record actual registry digests/revisions, then verify runtime identity, proxy topology and rollback on the hosted services. Local image IDs, loopback timings and sampled memory do not prove hosted cold starts, IAM or capacity.
 - Configure seven-day approved operational log retention/access and verify both application and platform logs. Ensure no source/chats/contacts/filenames/raw errors/secret/grant contents enter diagnostics.
 - Confirm legal/asset rights, privacy wording and external retention policy against actual enabled services. Obtain owner aesthetic and physical touch/mobile-keyboard feedback.
 

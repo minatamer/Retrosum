@@ -1,10 +1,10 @@
 # RET-012 — Deploy manually, validate live behavior and record rollback
 
-Status: **Planned — not implemented**  
+Status: **Local preparation complete — deployment pending**<br>
 Last synchronized: **8 October 2026**  
 Depends on: [RET-011](RET-011-verify-product-and-audit-release.md)  
 Blocks: Final packet  
-Suggested commit: `RET-012: deploy manually, validate live behavior and record rollback`  
+Suggested commits: see [file-level commit plan](../commit-plans/RET-012.md)<br>
 Parent authority: [Retrosum blueprint](../RETROSUM_DEMO_SOURCE_OF_TRUTH.md)  
 Queue: [Ticket index](README.md)
 
@@ -72,4 +72,6 @@ Keep this packet one coherent outcome: necessary UI, contracts, backend/local ef
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
 
-**Execution record:** Not started. No tests, assets, application feature, provider call or deployment is completed by creating this packet.
+**Execution record, 8 October 2026:** authorized local preparation is complete. Both pinned, frozen-lockfile, nonroot Linux images were built and verified on the available Docker engine. Standalone dependencies/static assets/fonts/eight originals/PDF worker and the backend's compiled worker/shared packages are present. The final image pair passed actual fourteen-page inspection, a fresh eight-PDF simulated browser flow, original-page rendering, refresh recovery and all four fake/unavailable free probe sets. Canonical public-origin validation across TLS/port termination was fixed with meaningful regressions; forwarded headers cannot supply origin authority. Final settled root checks passed: **192 tests in 25 files, 105 boundary checks, formatting/lint/types and both production builds**. No paid provider request, image push, cloud mutation, domain change or deployment was performed.
+
+See [RET-012 validation](../validation/RET-012.md) for exact local image IDs/package inventories and the clean review; [manual release/rollback](../operations/MANUAL-DEPLOYMENT.md), [operator record template](../operations/RELEASE-RECORD.template.md) and [release readiness](../engineering/RELEASE-READINESS.md) carry future gates. The eight original deployed/live acceptance boxes remain unchecked deliberately. Project/region/identity/domain inputs, actual IAM/challenge/platform logging/cold-start/rollback evidence, live numeric/spend acceptance and physical/owner feedback remain deferred. Local completion does not imply deployment or verified arbitrary-upload OCR.

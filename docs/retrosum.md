@@ -1,3 +1,5 @@
+> **Historical input — superseded for implementation (8 October 2026).** Read the [active blueprint](RETROSUM_DEMO_SOURCE_OF_TRUTH.md), [current HTML brief](RETROSUM_OVERVIEW.html) and [ticket queue](tickets/README.md). The current demo is English/USD, uses visible PDF-backed sample facts processed live with OpenAI, and preserves its temporary browser workspace across refresh. Retro uses a floating glass pill, summaries/tours/highlights, contextual shortcuts, animated editable CRUD forms and latest-action Undo. Prepared sample/chat results are development fakes only. Earlier incompatible behavior below is retained as source history, not an active requirement.
+
 # Retrosum · complete product specification
 
 Consolidated **7 October 2026**. The product and brand decisions were recorded on **3 October 2026**. Selected name: **Retrosum**. Intended domain: **retrosum.com**, registration unconfirmed.

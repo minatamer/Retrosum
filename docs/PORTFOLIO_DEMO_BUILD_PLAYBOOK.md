@@ -1,3 +1,5 @@
+> **Retrosum adoption — 8 October 2026:** This imported methodology is supporting context, not Retrosum's product contract. The [active blueprint](RETROSUM_DEMO_SOURCE_OF_TRUTH.md) and [12-ticket queue](tickets/README.md) adopt cohesive vertical packets, clear ownership, canonical state, fake/live parity and bounded manual Cloud Run release. Retrosum's public sample is live OpenAI over visible PDFs; fake mode is for development. Browser-only refresh storage, latest Undo and floating interactive Retro are current owner decisions. Video/interview providers, project approvals and hidden/precomputed public flows do not transfer.
+
 # Portfolio Demo Build Playbook
 
 > **ClipBuilder scope note:** This is a reusable methodology document, not the

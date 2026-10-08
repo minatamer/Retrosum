@@ -1,15 +1,15 @@
 # Retrosum — Product, Architecture and Delivery Blueprint
 
 **Status:** proposed implementation source of truth, ready for owner review.  
-**Prepared:** 7 October 2026.  
+**Prepared:** 7 October 2026. **Updated:** 8 October 2026 with the owner’s core-flow, design, accuracy and Retro requirements.<br>
 **Product:** a public, disposable business money workspace demonstrating useful AI.  
 **Companion:** [Retrosum product overview](RETROSUM_OVERVIEW.html).  
 **Implementation status:** documentation only. No application, live integration, deployment or accuracy claim is established by this file.  
-**Planning boundary:** no tickets have been created. The future repository tree and delivery sequence below describe responsibilities; they are not a scaffold or implementation queue.
+**Planning status:** the owner has authorized detailed ticket planning. The [12-ticket queue](tickets/README.md) is now the implementation plan. Every ticket is **Planned**; no application implementation, paid test, credential setup or deployment is completed by this documentation pass.
 
-Retrosum turns a small collection of business documents into understandable money records, a traceable overview, and an AI copilot that explains what the supplied records show. The visitor can inspect the evidence, correct an interpretation, review a duplicate or payment relationship, and export the result.
+Retrosum turns a small collection of business documents into understandable money records, a traceable overview, and an AI assistant named **Retro** that explains the dashboard, summarizes supplied records, guides the visitor and helps create, edit and remove session records. The visitor can inspect the evidence, correct an interpretation, review a duplicate or payment relationship, and export the result.
 
-The first build should feel like a complete product in a short visit. A visitor previews believable documents, starts without labelling their types, sees them become connected records, understands the difference between invoiced work and cash received, and checks one explanation against its sources.
+The first build should feel like a complete product in a short visit. A visitor previews believable documents, starts without labelling their types, sees them become connected records, understands the difference between invoiced work and cash received, and checks one explanation against its sources, then asks Retro to prepare a new invoice or expense and sees the confirmed change update the workspace.
 
 ## Contents
 
@@ -22,8 +22,8 @@ The first build should feel like a complete product in a short visit. A visitor 
 7. [Synthetic sample business](#7-synthetic-sample-business)
 8. [Inputs, previews and recognition](#8-inputs-previews-and-recognition)
 9. [Financial meaning and calculations](#9-financial-meaning-and-calculations)
-10. [Review, corrections and manual records](#10-review-corrections-and-manual-records)
-11. [Insights and data copilot](#11-insights-and-data-copilot)
+10. [Review, corrections and session CRUD](#10-review-corrections-and-session-crud)
+11. [Insights and Retro](#11-insights-and-retro)
 12. [State, revisions and persistence](#12-state-revisions-and-persistence)
 13. [Exports and session reset](#13-exports-and-session-reset)
 14. [Framework and architecture](#14-framework-and-architecture)
@@ -39,11 +39,12 @@ The first build should feel like a complete product in a short visit. A visitor 
 24. [Verification and evaluation](#24-verification-and-evaluation)
 25. [Observability, reliability and recovery](#25-observability-reliability-and-recovery)
 26. [Documentation and engineering guidelines](#26-documentation-and-engineering-guidelines)
-27. [Delivery sequence without tickets](#27-delivery-sequence-without-tickets)
+27. [Delivery sequence and ticket ownership](#27-delivery-sequence-and-ticket-ownership)
 28. [Open decisions and release acceptance](#28-open-decisions-and-release-acceptance)
 29. [Appendix A — extraction field inventory](#appendix-a--extraction-field-inventory)
 30. [Appendix B — examples and invariants](#appendix-b--examples-and-invariants)
 31. [Appendix C — source map and references](#appendix-c--source-map-and-references)
+32. [Appendix D — research and asset decisions](#appendix-d--research-and-asset-decisions)
 
 ## 1. Authority, evidence and decisions
 
@@ -55,13 +56,13 @@ The HTML companion is a short product-management reading view. It summarizes thi
 
 The existing `retrosum.md` and `retrosum.html` remain received product research and a richer conceptual prototype. Preserve them as input history. Use this new blueprint for implementation planning once the owner accepts it. Conflicts are resolved by the latest explicit owner instruction; a historical prototype must not silently restore an older behavior.
 
-No future `AGENTS.md`, operations guide, design reference, ticket folder or application directory is created by this documentation task. Those artifacts should arrive when implementation needs them.
+This pass creates the ticket folder and queue after the latest owner answers. Application directories, executable configuration and operational evidence remain future implementation artifacts. Read the ticket index before choosing work.
 
 ### 1.2 Evidence actually inspected
 
 | Source | What was inspected | What Retrosum adopts |
 | --- | --- | --- |
-| Retrosum drafts | `docs/retrosum.md`, `docs/retrosum.html`, `README.md` | Guest money workspace; source previews; automatic recognition; reviewed records; money overview; read-only copilot; exports; vintage identity. |
+| Retrosum drafts | `docs/retrosum.md`, `docs/retrosum.html`, `README.md` | Guest money workspace; source previews; automatic recognition; reviewed records; money overview; original read-only copilot concept now expanded by the owner into Retro; exports; vintage identity. |
 | Received ClipBuilder lessons | `docs/LESSONS_LEARNED_FROM_CLIPBUILDER.md` | Explicit ownership, strict boundaries, private transport, cleanup, measured resource limits, restrained dependencies, release evidence. |
 | Received ScreenPilot playbook | `docs/PORTFOLIO_DEMO_BUILD_PLAYBOOK.md` | Signature journey, authority system, canonical state, fake-first evaluation, selective persistence, two-service Cloud Run deployment. |
 | Actual ClipBuilder repository | Root instructions, public README, package manifests, source-of-truth structure, frontend/backend feature directories, and current Cloud Run deployment guide | pnpm monorepo; Next.js/React; Express; Zod contracts; use cases and adapters; public frontend/private API; manual audited deployment. |
@@ -88,29 +89,31 @@ ClipBuilder's Remotion composition, FFmpeg pipeline, renderer and media storage 
 
 ### 1.4 Decision language
 
-- **Carried forward:** already expressed in the Retrosum drafts and retained here.
-- **Proposed baseline:** a concrete recommendation made by this blueprint; implementation should use it unless the owner changes it.
-- **Release prerequisite:** must be resolved or measured before enabling the relevant public capability.
-- **Deferred:** recorded for context; outside the first build.
+- **Owner requirement:** explicitly decided in the current conversation; do not reopen it as an implementation prerequisite.
+- **Proposed baseline:** a concrete bounded implementation choice; use it unless changed by the owner or disproved by measured constraints.
+- **Release prerequisite:** evidence or operator configuration still needed before enabling a public capability.
+- **Deferred:** outside the first release.
 
-| Decision | Position | Status |
+| Decision | Position | Authority |
 | --- | --- | --- |
-| Brand | Retrosum; warm vintage wordmark and colors, modern readable workspace | Carried forward |
-| Intended domain | `retrosum.com`; registration and ownership unconfirmed | Carried forward |
-| Audience | Freelancers, agencies and small service businesses exploring scattered records | Carried forward |
-| Product form | Public guest portfolio demo; no accounts or bank connections | Carried forward |
-| Core story | Documents → linked records → money overview → cited explanation → review → export | Carried forward |
-| Financial scope | Explain supplied records; document-view preview and recorded cash kept separate | Carried forward |
-| AI action scope | Interpret, investigate and explain; guest confirms record changes outside chat | Carried forward |
-| Web/API stack | Next.js, React, Express, TypeScript, Zod, pnpm | Proposed baseline inherited from both demos |
-| Application hosting | Public frontend and private backend on Google Cloud Run | Proposed baseline inherited from both demos |
-| State | Browser memory, self-contained backend requests, no durable application database | Proposed baseline aligned with existing drafts |
-| Initial live provider | OpenAI Responses adapter; one compatible evaluated model for each operation class | Proposed baseline preserving the original GPT direction |
-| Gemini | Alternative adapter after an explicit provider decision and equivalent evaluation | Deferred alternative, no automatic fallback |
-| Production region | One owner-approved region; `europe-west1` is the comparison baseline | Release prerequisite |
-| Version pins | Compatible supported releases verified at bootstrap, exact lockfile committed | Release prerequisite |
-| Live spend | Paid-off defaults, measured bounds, owner-selected monetary budget | Release prerequisite |
-| Tickets | None during this task | Explicit owner instruction |
+| Language and money | English interface and documents; USD; one fictional service business | Owner confirmed |
+| Core pillars | Exact document recognition → beautiful interactive dashboard → Retro helping explain and act | Owner requirement |
+| Sample evidence | Eight viewable PDFs, several multipage; one core handwritten PDF; no hidden financial dataset | Owner requirement; eight is the bounded planning choice |
+| Public sample processing | Process the actual displayed sample PDFs live through OpenAI | Owner confirmed |
+| Development behavior | Explicit fake mode supports fixture recognition, generic supported prompts and every major UI state without an API | Owner confirmed; never disguise it as live processing |
+| Provider | OpenAI; initial evaluated candidate `gpt-6.1-sol`, Responses API | Owner selected OpenAI; model researched 8 October 2026 |
+| Retro appearance | Floating pill composer and floating messages; glass/shadow, user bubbles, unboxed Retro replies, contextual answer shortcuts | Owner confirmed; ClipBuilder/ScreenPilot implementation references |
+| Retro interaction | Summaries, explanations, tour, auto-scroll, highlights/outlines and animated form filling, in addition to questions | Owner requirement |
+| Record actions | Invoices, expenses/bills, payment records and customers/vendors; one shared local command engine | Owner confirmed session CRUD; bounded object set retained |
+| Mutation control | Editable proposal and compact inline confirmation; small Undo for the latest reversible action | Prior recommended confirmation retained; latest owner requires Undo |
+| Refresh and lifetime | Restore records and selected original PDFs across refresh; per-tab workspace; proposed fixed two-hour expiry and explicit Reset | Owner confirmed refresh recovery; two hours follows ScreenPilot's bounded lifetime |
+| Upload ownership | Originals retained only in temporary browser storage; request-scoped forwarding to OpenAI when processing is requested | Owner requirement interpreted as no retained server upload library |
+| Database | No server/application database, account store or upload bucket; browser-only IndexedDB holds temporary PDF Blobs | Browser storage is required for refresh-safe PDFs; explicitly a local storage mechanism |
+| Brand and motion | Logo green/orange, ivory, professional vintage typography, calm photo hero, smooth charts; no animation-off product setting | Owner requirement |
+| Initial AI funding | Approximately USD 5 of OpenAI credits for initial testing; meter actual consumption | Owner preference; no assertion that it covers all tests or public traffic |
+| Delivery plan | Twelve cohesive packets with outcome, ownership, dependencies and focused verification | Owner now authorized tickets; adopt ClipBuilder consolidation |
+
+Published performance remains unproved until implemented and measured. `gpt-6.1-sol` currently supports image input, structured outputs and function calling; its official standard short-context rates are USD 2 input / USD 10 output per million tokens. Recheck availability and rates at setup. [OpenAI model reference](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
 
 ## 2. Product contract and audience
 
@@ -128,7 +131,7 @@ Descriptor: **Business money workspace.** The word *fintech* is useful positioni
 
 A small business can have invoices in a folder, rent receipts as PDFs, a software purchase in a spreadsheet, and a payment export from another tool. Reading each item is possible; connecting them is harder. An invoice can be mistaken for money already received. A photographed copy can become an extra expense. A payment row can be counted again as income. An unexplained dashboard leaves the owner unable to check the answer.
 
-Retrosum demonstrates a useful transition from scattered files to connected digital records. The original remains available. The structured interpretation is editable. The totals expose their contributors. The copilot can investigate a question without turning a guessed explanation into an accounting fact.
+Retrosum demonstrates a useful transition from scattered files to connected digital records. The original remains available. The structured interpretation is editable. The totals expose their contributors. Retro can investigate, summarize, explain and prepare changes without turning a guessed explanation into an accounting fact.
 
 ### 2.3 Primary user and useful visit
 
@@ -136,7 +139,7 @@ The primary visitor is a freelancer, studio owner or service-business operator w
 
 The visitor should not need an account, a provider API key, an administrator, a bank login or knowledge of document classification. A single business-identity clarification is acceptable because direction depends on whether the business issued or received the invoice.
 
-A useful visit ends with an understandable overview, organized records, visible unresolved issues and an export. Chat is an enhancement to this result; the workspace must be useful without sending a question.
+A useful visit ends with an understandable overview, organized records, visible unresolved issues and an export. Retro is a core product interaction; summaries, tours, chart explanations and confirmed CRUD demonstrate its value. The workspace also remains useful through manual forms and source inspection when live language processing is unavailable.
 
 ### 2.4 Ten-second comprehension
 
@@ -144,7 +147,7 @@ The landing must make the following apparent:
 
 1. What goes in: ordinary business money documents.
 2. What comes out: organized records and an explainable money picture.
-3. Why AI helps: recognizes different documents and answers questions using the records.
+3. Why AI helps: recognizes different documents, summarizes and explains the money, guides the visitor and prepares record changes.
 4. How to try it: explore a realistic sample business immediately.
 5. What can be checked: figures and answers link to their sources.
 
@@ -161,11 +164,11 @@ Avoid leading with technology names, a blank chat box, a sign-up wall or a long 
 | Recognition | Propose type, parties, business direction, amounts, category and evidence; retain uncertainty. |
 | Document collection | View originals and field interpretations; show progress, failures, exclusions and review issues. |
 | Connected money records | Separate economic events, payment evidence and source documents; support reviewable relationships. |
-| Money overview | Document income/cost/profit or loss, recorded operating cash, known open amounts, coverage and contributors. |
+| Money overview | Premium animated KPI cards and interactive charts for document income/cost/profit or loss, recorded cash, open amounts, composition, comparisons and coverage; every data mark has useful detail. |
 | Source-grounded observations | At most four concise findings from supplied records, each with evidence and scope. |
-| Data copilot | Bounded read-only investigation, cited answer and navigation to records. |
+| Retro | Grounded questions and summaries; guided tours; dashboard explanations; bounded confirmed session CRUD. |
 | Review tools | Correct key fields/categories; confirm or reject duplicate/payment candidates; see resulting changes. |
-| Manual entry | Add a missing sale or cost with explicit user-supplied amount, date, currency and basis. |
+| Session record management | Create/read/update/delete draft invoices, expenses/bills, payment records and customers/vendors through simple forms or Retro; shared commands and provenance. |
 | Export and reset | Download a coherent revision, optionally include originals, and clear the session. |
 | Failure recovery | Preserve completed work; isolate failed files; offer deliberate bounded retries and manual fallback. |
 
@@ -173,13 +176,12 @@ Avoid leading with technology names, a blank chat box, a sign-up wall or a long 
 
 The demo does not include accounts, organizations, shared books, subscription billing, durable history, bank sync, payment execution, automatic emailing, tax filing, regulatory certification, bookkeeping certification, a general ledger, payroll, inventory accounting, balance sheets, forecasting, arbitrary web import, inbox watchers, or multi-user approvals.
 
-No vector database, general background queue, MCP server, autonomous write agent, independent document-rendering service or cross-provider fallback is required. Add a service only after a documented workload or isolation need demonstrates why the two-service baseline cannot meet the agreed bounds.
+No vector database, general background queue, MCP server, unconfirmed autonomous ledger writes, independent document-rendering service or cross-provider fallback is required. Add a service only after a documented workload or isolation need demonstrates why the two-service baseline cannot meet the agreed bounds.
 
 ### 3.3 Later additions
 
 | Addition | Value | Gate before adding |
 | --- | --- | --- |
-| Simple outgoing invoice builder | Create and download a draft using the same money primitives | Core document-to-overview journey works; draft remains excluded until explicitly included as issued. |
 | More document profiles | Broader tested import coverage | Profile-specific parsing, preview, fixtures, limits and live acceptance. |
 | Read-only MCP adapter | Let another client inspect the same validated records | In-app tools stable; separate access/lifetime contract. |
 | Temporary storage or parser worker | Handle larger/native workloads safely | Measurements justify storage, lifecycle, IAM, costs and extra services. |
@@ -191,60 +193,75 @@ An evaluator can complete a guided sample visit in roughly five minutes, a targe
 
 Success also requires correct calculations and honest limits. Unsupported uploads cannot receive unrelated fixture output. Mixed currencies cannot become a single unlabeled total. A document stating *paid* cannot create an extra bank movement when the same payment already appears elsewhere.
 
-No accuracy percentage, adoption claim, speed guarantee, cost guarantee or regulatory claim is established here.
+The document establishes acceptance targets and dated, sourced adoption context. It does not establish achieved extraction accuracy, live speed/cost guarantees or regulatory compliance. The primary release target is zero numeric transcription errors across the published demo corpus; evidence must be recorded before claiming it has passed.
 
 ## 4. Landing page
 
-### 4.1 Page hierarchy
+### 4.1 Experience and hierarchy
 
-| Section | Content | Purpose |
+The landing is calm, professional and photographic. Its eye catcher is one beautifully composed high-resolution office image with floating, shadowed editorial text. It does not reuse ScreenPilot’s hovering hero cards or ClipBuilder’s motion-graphics hero. Retrosum’s own visual story is the contrast between a quiet financial workplace and the rich, responsive money dashboard below it.
+
+| Section | Content | Visitor purpose |
 | --- | --- | --- |
-| Navigation | Retrosum wordmark; How it works; Sample business; short privacy link; Try the sample | Immediate orientation and one clear action. |
-| Hero | Headline, two-sentence explanation, primary sample CTA, secondary own-file CTA | State the problem and invite action without setup. |
-| Product illustration | A few distinct document covers leading into a compact money summary and cited answer | Show the connected outcome in one composition. |
-| Three-step explanation | Bring documents; understand the money; check the explanation | Describe the experience in PM language. |
-| Sample business preview | Harbor Studio, September 2026, synthetic files, readable covers and Preview actions | Make the first interaction tangible. |
-| Traceability example | One figure and its supporting invoice/payment record | Explain why sources matter. |
-| Trust and limits | Guest session, source-linked figures, tested formats, provider disclosure before live processing | Set accurate expectations at the appropriate point. |
-| Final invitation | Explore sample business; use your own supported documents | Repeat the useful next step. |
-| Footer | Product descriptor; privacy/handling; documentation or portfolio link if provided | Keep secondary information accessible. |
+| Navigation | Retrosum logo; How it works; The dashboard; Meet Retro; sample CTA | Understand the offer and begin easily. |
+| Photographic hero | Wide office photo, dark forest-green overlay, off-white heading, orange detail, two clear CTAs | Feel the professional brand and understand the promise. |
+| Outcome preview | A clearly labelled synthetic dashboard excerpt with real sample figures | See what digitized paperwork becomes. |
+| Three core pillars | Exact document reading; interactive money picture; Retro helping explain and act | Establish steps 3, 4 and 5 as the product’s center. |
+| Sample document gallery | Eight viewable PDF originals: varied invoice/bill/receipt layouts, multipage payment/history records and one genuinely handwritten receipt | See variety before choosing a file. |
+| Finances are becoming digital | Two or three dated statistics with scope and source links; named AI examples | Place the product in a credible wider transition. |
+| Meet Retro | Summary, tour, dashboard explanation and invoice/expense creation examples | Show an assistant that helps complete tasks. |
+| Traceability moment | Click a KPI → its contributing records → source amount | Establish that attractive charts remain checkable. |
+| Short trust and limits | Temporary guest session; tested formats; disclosure before live processing | Support the choice to use documents without a wall of technical copy. |
+| Final invitation and footer | Explore sample / Use my documents; handling and photo credit | Provide a clear next action. |
 
-### 4.2 Proposed copy
+### 4.2 Copy direction
 
-**Hero heading:** Make sense of your business money.
+**Hero:** Paperwork in. Clarity out.
 
-**Hero explanation:** Bring your invoices, receipts and payment records into one clear workspace. Retrosum organizes the documents and helps you understand the numbers, with sources you can inspect.
+**Explanation:** Turn invoices, receipts and payment records into a clear picture of your business. Explore your numbers, check their sources, and let Retro help with the next task.
 
-**Primary CTA:** Explore the sample business.
+**Primary CTA:** Explore the sample business. **Secondary CTA:** Use my documents.
 
-**Secondary CTA:** Use my documents.
+**Supporting line:** No account needed. A temporary demo with realistic fictional documents.
 
-**Supporting line:** No account needed. Start with realistic fictional documents.
+**Pillars:** Read the details. See the bigger picture. Work with Retro.
 
-**Three steps:**
+Do not publish “perfect on any document,” “send anything,” or a universal accuracy percentage. Show multiple evaluated layouts and describe the supported format set plainly. A future achieved zero-error fixture result can be described as a measured sample result with its test conditions, not as a guarantee about every upload.
 
-1. **Bring the paperwork.** Preview a sample or add supported files. No document labels to fill in.
-2. **See the money picture.** Understand documented income, costs, profit or loss, recorded cash and open amounts.
-3. **Ask and check.** Ask what explains a number, inspect the source, and review any uncertain relationship.
+### 4.3 Photograph and motion
 
-**Traceability line:** Every figure has a way back to the records behind it.
+The HTML companion embeds a licensed **3840 × 2563** office photograph, downloaded from a **7167 × 4783** source by Max Vakhtbovych. It is a generic office, not a claimed real bank or Retrosum customer. [Photo origin](https://www.pexels.com/photo/modern-interior-design-of-a-business-office-7534224/), [Pexels license](https://www.pexels.com/license/).
 
-Provider names, SDKs, state revisions and service boundaries belong in the blueprint or an optional technical information view. Put them into the visitor flow only when they help the visitor decide whether to submit their documents.
+For application implementation, keep the high-resolution master and generate responsive modern formats. Target an appropriately sized mobile image, avoid sending the 4K master to every device, reserve hero dimensions and prioritize the first image. Use a controlled gradient, subtle text shadow and a contrast-tested scrim; text remains HTML, never baked into the photo. Crop intentionally on phone. The photo is decorative when the neighboring copy conveys the complete meaning.
 
-### 4.3 Honest illustration
+Hero entrance is a gentle one-time opacity/position transition, roughly 500–700 ms. The photo can remain still. Rich chart transitions carry the product motion. No endless background panning, flashing, hover-card swarm or theatrical processing simulation is required.
 
-A static hero can show the Harbor Studio example with a label such as **Illustrative sample**. It cannot animate as if a real upload or inference is happening. A short animation may connect file covers to records, provided it is clearly an explanation and has a still reduced-motion alternative.
+**Explicit owner constraint:** do not add Render animations off, Disable animations, a static-dashboard setting or an equivalent control. Motion is a designed part of the demo. Keep movement restrained, short and readable; provide keyboard, touch and textual chart access without an animation-disable preference in the product.
 
-Do not fake a processing percentage, a live message stream, user testimonials, user counts, a bank connection or a guarantee about profit. A screenshot-like preview should show the document basis and sample designation where the numbers appear.
+### 4.4 Dated adoption evidence and company examples
 
-### 4.4 Entry behavior
+Use these precise claims, with adjacent source links and readable date/scope captions:
 
-- Opening the landing makes zero paid provider calls.
-- Opening a sample preview makes zero paid provider calls.
-- Exploring the prepared sample starts local deterministic state and calculations.
-- Live sample reprocessing, if offered, is a distinct deliberate action with provider disclosure and spend admission.
-- Own-file selection remains local until the visitor deliberately starts the disclosed processing operation.
-- If live processing is unavailable, show that state before the visitor expects an upload result; retain preview, sample and manual-entry routes.
+| Landing fact | Exact scope/date | Presentation and limit |
+| --- | --- | --- |
+| **75% already use AI** | 118 respondents to the Bank of England/FCA 2024 financial-services survey; report published 21 November 2024 | Caption: “Of responding UK financial-services firms, 2024.” This is survey adoption, not 75% of all companies worldwide. [Bank of England/FCA report](https://www.bankofengland.co.uk/report/2024/artificial-intelligence-in-uk-financial-services-2024). |
+| **42% made digital merchant payments** | Adults in low- and middle-income economies, 2024; Global Findex 2025 context | Demonstrates digital financial activity, not paperless-document adoption or company AI use. [World Bank analysis](https://blogs.worldbank.org/en/allaboutfinance/digital-technology-is-unlocking-financial-inclusion), [Findex report and methodology context](https://www.worldbank.org/en/publication/globalfindex/report). |
+| **98% of adviser teams adopted its Assistant** | Morgan Stanley Wealth Management’s announcement, 26 June 2024 | Name the company and tool; describe this as its reported internal adoption. [Morgan Stanley announcement](https://www.morganstanley.com/press-releases/ai-at-morgan-stanley-debrief-launch). |
+
+The examples row can describe Morgan Stanley’s AI meeting summaries and Intuit’s accounting/payment/finance agents, announced 1 July 2025. Use short attributed descriptions rather than broad claims about complete automation. [Intuit announcement](https://investors.intuit.com/news-events/press-releases/detail/1258/intuit-introduces-ground-breaking-virtual-team-of-ai-agents-to-fuel-growth-for-businesses).
+
+Section heading: **Finance is moving into a digital, AI-assisted era.** Supporting copy connects the evidence to easier record organization and explanation. Label names as **Examples across the industry**. Do not use a “Trusted by” logo bar, testimonials or partner wording. The digital-payment figure is not evidence that 42% digitized their documents. E-invoice template ecosystems provide concrete document examples, but no fabricated paperless-adoption percentage belongs here.
+
+Keep a source registry containing claim text, denominator, geography, observation year, publication date, URL and last checked date. Research checked 8 October 2026. Review landing facts before public release; the wording must retain the original observation year.
+
+### 4.5 Entry behavior
+
+- Landing, photo, statistics and sample preview make zero model calls.
+- Public sample entry processes the actual viewable PDFs live, with disclosure and admission.
+- Only explicitly labelled development fake mode uses fixture interpretations and generic fake Retro responses.
+- Own-file selection stays local until Process documents.
+- A disabled live route is disclosed before upload processing is expected; sample exploration and manual CRUD remain available.
+- The documentation companion is a product brief. Any interactive charts inside it illustrate the intended behavior; they do not implement the application or prove live OCR.
 
 ## 5. Signature visitor journey
 
@@ -254,20 +271,22 @@ Do not fake a processing percentage, a live message stream, user testimonials, u
 | --- | --- | --- | --- |
 | 1. Explore | Select the sample business; preview a document | Show actual original bytes or a clearly labelled safe rendition | Visitor sees what will be interpreted. |
 | 2. Start | Use the sample bundle or select supported files | Establish one business; request identity confirmation only when needed | Direction has an explicit business context. |
-| 3. Recognize | Start processing | Validate, read, interpret and link; show real stages per file | Files become records with provenance. |
-| 4. Understand | Open Overview | Render deterministic metrics, charts, coverage and pending issues | Visitor can inspect where each number came from. |
-| 5. Investigate | Ask why income exceeds recorded cash | Copilot uses allowed tools and returns a cited explanation | The basis distinction is understandable. |
+| 3. Recognize — core | Start processing | Preserve exact number strings; validate fields, source evidence and arithmetic; hold ambiguity | Varied documents become accurate, traceable records. |
+| 4. Understand — core | Open Overview; hover or click a figure | Animate validated KPIs/charts; expose values, comparisons and contributors | A beautiful money picture that can be explored and checked. |
+| 5. Work with Retro — core | Ask for a summary, tour, explanation or new invoice | Return grounded explanations or a structured change preview; apply confirmed session commands | Retro helps understand the site and manage the session. |
 | 6. Review | Confirm the HS-101 match or A-77 duplicate | Validate command; update one workspace revision; recompute dependent views | Relationships change without double counting. |
 | 7. Take away | Export the current workspace | Download the same revision with scope, basis, evidence and unresolved issues | Result remains useful outside the site. |
 | 8. Reset | Clear and start again | Cancel owned work, release previews, discard session data | A new workspace starts cleanly. |
 
-### 5.2 Prepared sample entry
+### 5.2 Live sample entry and development fakes
 
-Default sample entry uses verified stored interpretations paired with the exact synthetic inputs. This gives an immediate first result without paid inference. Display **Prepared sample interpretation** where recognition and narrative outputs are shown.
+The visitor selects **Explore sample documents**, sees all originals, opens any PDF, then chooses **Process these documents**. Public live mode reads those actual bytes through the same inspection, admission, OpenAI interpretation, review and calculation path as visitor PDFs. Show genuine per-document stages and explain ambiguous numbers rather than substituting stored answers.
 
-Ordinary interactions remain real: filtering, computing metrics, reviewing relationships, changing a category, entering a manual cost and exporting all execute actual validated code. Stored sample language must be scoped to the matching fixture and revision. Once the visitor changes facts, use deterministic compatible templates or mark the prepared explanation stale; do not present an old sample answer as fresh AI.
+There is no hidden starting ledger, no invisible comparison-month dataset and no public “instant prepared sample” shortcut. Every sample event, payment, category and comparison value must resolve to a visible PDF/page/field. The fixture manifest lists assets and evaluation expectations, but live recognition must not read the expected-result JSON or seed the live graph with it.
 
-Offer a fully reviewed sample overview for quick exploration and a guided review variant with two pending relationships. Identify which variant is active. The fully reviewed overview is the default concise product demonstration; the guided variant is the memorable review lesson.
+In explicit **development fake mode**, the same original gallery and progress UI use production-shaped fixture outputs with deterministic delays, failures and generic supported Retro responses. A visible **Development fake mode — no AI request** label stays throughout the workspace and export. This is the place for instantly prepared/resettable data during local iteration; it is not a second public product path.
+
+On a live outage or exhausted allowance, retain PDF viewing, existing records, manual forms, local tour, calculations and export. Explain that AI is unavailable and offer a deliberate retry when allowed. Never silently turn failed live processing into fake success. Refresh restores completed records without automatically reprocessing or rebilling the files.
 
 ### 5.3 Own-document entry
 
@@ -289,11 +308,17 @@ Confirming the HS-101 payment match resolves its settlement uncertainty. Income 
 
 The duplicate lesson then shows A-77 twice, as a scan and an image. The candidate copy is held outside eligible totals. Confirming the duplicate preserves both sources and associates one cost with both. Rejecting the candidate requires a separate decision about whether a distinct cost can be established; it must not silently make the copy eligible.
 
+### 5.5 A second signature interaction: ask Retro to create
+
+After exploring the numbers, the visitor says: **“Create an invoice for Cedar Labs for USD 2,000, due 30 November 2026, for website design.”** Retro resolves the customer or offers to create it, fills one service line, shows the proposed issue date and tax treatment explicitly, and prepares a draft. Missing required information is asked together in one concise follow-up rather than guessed.
+
+The visitor reviews a compact invoice preview and clicks **Create draft**. The invoice appears in Records with **Created with Retro** provenance, can be edited and downloaded, and does not inflate September income or recorded cash. An explicit **Mark issued** command includes it in its own document period; recording a payment is a separate session action. Retro then links to the result. This proves useful AI-assisted CRUD without a database, email delivery or payment execution.
+
 ## 6. Workspace and screen specifications
 
 ### 6.1 Information architecture
 
-The initial app has a landing and one connected workspace. The workspace has four primary areas: **Overview**, **Documents**, **Records**, and **Copilot**. **Review** is a focused view of issues within Documents/Records. **Export** is a workspace action and review sheet rather than an unrelated product area.
+The initial app has a landing and one connected workspace. The workspace has four primary areas: **Overview**, **Documents**, **Records**, and **Retro**. Contacts, invoices, expenses/bills and payments are tabs within Records. **Review** is a focused view of issues within Documents/Records. **Export** is a workspace action and review sheet rather than an unrelated product area.
 
 Proposed routes are `/`, `/workspace`, `/workspace/documents`, `/workspace/records`, `/workspace/copilot`, and `/workspace/review`. They compose the same client session. Route navigation must not create separate ledgers, reset filters unexpectedly, or dispatch inference. Direct navigation with no session leads to a friendly sample/start state.
 
@@ -301,7 +326,7 @@ Proposed routes are `/`, `/workspace`, `/workspace/documents`, `/workspace/recor
 
 The shell displays the Retrosum brand, current business, sample/live mode, selected period and currency, a review-count indicator, Export and Clear session. Keep the document basis visible near financial content. Put detailed coverage and exclusions in an expandable explanation.
 
-Desktop uses a compact navigation rail or sidebar, the active content area and an optional copilot panel. Tablet uses a reduced rail and drawers. Phone uses natural vertical page flow with a compact navigation control; sources and chat open as full-width panels with clear Back behavior.
+Desktop uses a compact navigation rail/sidebar, the active workspace and the persistent floating Retro pill with messages above it. Tablet uses a reduced rail. Phone uses natural vertical flow, centered responsive source dialogs and an expandable conversation sheet; reserve composer and keyboard safe-area space.
 
 Do not keep two independently mounted workspaces for desktop and phone. Adapt one semantic component tree so state, focus, errors and source references remain consistent.
 
@@ -311,7 +336,7 @@ Do not keep two independently mounted workspaces for desktop and phone. Adapt on
 | --- | --- |
 | Collection heading | Name the business and distinguish sample from visitor originals. |
 | Add-files area | Picker and drag-and-drop; show supported formats and limits from configuration. |
-| Document row/card | Safe display name, original format, page/sheet count when known, recognized type, review/processing state. |
+| Document row/card | Safe display name, PDF page count, layout/handwriting hint, recognized type and review/processing state. |
 | Preview action | Open original or labelled rendition; no extraction side effect. |
 | Processing action | Explicit start; show provider disclosure and unavailable states before dispatch. |
 | Progress | Real named stages; completed/failed counts; no invented smooth percentage. |
@@ -324,28 +349,81 @@ Every selected file needs an individual state. A generic batch spinner cannot ob
 
 ### 6.4 Source viewer
 
-Desktop uses a source pane next to extracted fields. A source click selects the document and page/row/block. Mobile opens the source first with an accessible control to inspect the interpretation.
+A gallery or source click opens the same centered floating-paper dialog at the selected original PDF/page/block. The restrained paper entry motion settles for reading. Review fields/source excerpts remain available beside or below the page at responsive widths; preserve focus and a clear return to the originating metric/record.
 
-PDF sources use a bounded viewer such as locally bundled PDF.js, with page controls, a loading/error state, selectable text when available, and Download original. Images use a bounded image viewer with zoom and readable orientation. Tables use an inert bounded table with sheet/row references. DOCX uses extracted paragraphs/tables or a verified rendition, clearly identified.
+All first-release originals use locally bundled PDF.js with real page controls, fit/zoom, loading/error state, selectable native text where available and Download/Open original fallback. Scanned/handwritten pages remain inside their PDFs. Multipage tables keep page/block evidence; non-PDF viewers are deferred.
 
 Never draw an arbitrary highlight box to imply precise provenance. When coordinates cannot be verified, show the real page or row and a short excerpt. A source reference must remain useful even if highlighting fails.
 
-### 6.5 Overview
+### 6.5 Overview: the dashboard contract
 
-The overview answers **What do these supplied records show?**
+The dashboard is a primary product showcase. It should feel polished at first glance and become more useful as the visitor explores it. A clean hierarchy matters more than placing every available widget on one screen. The initial viewport has a context header, four headline cards, one wide trend/comparison panel, a spending breakdown and Retro’s concise summary. Cash and open amounts remain visible nearby, with deeper panels below.
 
-Primary cards are **Invoiced income**, **Documented costs**, **Profit preview** and, where appropriate, **Preview margin**. A negative result becomes **Loss preview** with a clear negative amount, not a green success card. For wider document sets, avoid calling every sale an invoice; the UI can use **Documented income** with its basis explanation.
+Research basis: Intuit documents profitability, cash-flow, receivable/payable and revenue dashboards; Mercury demonstrates interactive filters, money-in/out breakdowns and AI explanations; Ramp documents consolidated spend reports and filtered chart/table views. These are observed product patterns, not proof that every customer wants the same dashboard. Retrosum adapts the patterns to its small supplied-record corpus. [Intuit dashboards](https://quickbooks.intuit.com/learn-support/en-us/help-article/business-reports/create-dashboards-view-key-business-insights/L7C4Ftrzx_US_en_US), [Mercury Insights](https://mercury.com/blog/introducing-insights), [Ramp reporting](https://support.ramp.com/real-time-reporting).
 
-Below the cards show:
+#### 6.5.1 Context and headline figures
 
-- Category breakdown with contributing records.
-- Covered-period income/cost comparison when compatible historical records exist.
-- Recorded operating cash in/out and net recorded movement.
-- Known customer and supplier open amounts, with unknown settlement states kept separate.
-- Review issues that affect the displayed coverage.
-- Up to four source-linked observations.
+Show business, currency, reporting period, basis, fixed sample as-of date, supplied-record coverage, pending-review count and most recent local edit. Separate **Document view** from **Recorded cash** through clear labels. A selected currency applies to every visible metric. Never sum USD and EUR.
 
-Each card or chart affordance opens the contributing record set with the same period, currency and basis. Do not link a KPI to all records and force the visitor to discover the relevant ones.
+| KPI | Question it answers | Formula/meaning | Harbor reviewed sample | Click target |
+| --- | --- | --- | --- | --- |
+| Invoiced income | What work did the supplied issued invoices record? | Eligible sale amounts on the documented basis, excluding drafts/reference/duplicate sources | USD 4,800 | Included invoices and their source amount fields |
+| Documented costs | What costs are in the supplied documents? | Eligible costs, net when separately stated tax exists; basis disclosed | USD 1,280 | Cost records with category and source |
+| Profit / loss preview | What remains after those costs? | Document income − documented costs | USD 3,520 | Income/cost bridge, contributors and exclusions |
+| Margin preview | What share of income remains? | Profit preview ÷ income × 100; unavailable at zero income | 73.3% | Formula, basis and contributing totals |
+| Recorded operating cash in | What incoming payment movements were supplied? | Included operating inbound movement evidence | USD 3,000 | D07 payment row; distinguish matches from unmatched |
+| Recorded operating cash out | What outgoing operating movements were supplied? | Included operating outbound movements; internal transfer excluded | USD 920 | Rent/software payment rows |
+| Recorded net cash movement | How did supplied operating movements change cash? | Operating cash in − operating cash out | USD 2,080 | Cash movement breakdown; not account balance |
+| Known customer open | What explicitly remains due from customers? | Source/user-confirmed open invoice gross amount less validated allocations | USD 1,800 | HS-102 and due date |
+| Known supplier open | What explicitly remains due to vendors? | Source/user-confirmed bill gross amount less validated allocations | USD 396 | A-77 with net/tax/gross detail |
+| Overdue known open | What known open items passed their due date? | Positive known open, due date earlier than as-of; unknown due dates separated | USD 0 on 3 October 2026 | Empty overdue list plus next due items |
+| Due soon | What is due in the next 7 days? | Known open due from as-of through as-of + 7 days inclusive | Customer 1,800 due 8 October; supplier 396 due 10 October | Receivable/payable groups, never one combined balance |
+| Review coverage | How much of the collection is usable? | Eligible/review/failed/excluded source counts and reasons; no invented AI confidence | Exact active variant counts | Review queue and excluded source list |
+| Prior-period change | What changed in the supplied comparison? | (Current − prior) ÷ positive prior; same period span/currency/basis | Income +20%; costs +16.4%; profit +21.4% vs August | Both period sets and absolute differences |
+
+Headline row uses the first four. Secondary bands carry cash and open amounts. Support zero, negative, missing and incompatible states intentionally: missing is **Unavailable from supplied records**, never a fabricated zero. The dashboard describes the provided slice, not complete business accounts.
+
+#### 6.5.2 Charts and exact interaction behavior
+
+| View | Chart | Values and data rules | Hover/focus | Click/tap |
+| --- | --- | --- | --- | --- |
+| Income vs costs over time | Paired bars for sparse periods; line/area only with sufficiently populated real dated buckets | August 4,000/1,100; September 4,800/1,280 when D08 exists; no interpolated invented months | Period, exact totals, changes and coverage | Open those period contributors |
+| Profit / loss trend | Discrete period bars or actual-point line | August 2,900; September 3,520; losses cross a visible zero axis | Exact value, income/cost basis | Profit bridge for selected period |
+| Cost composition | One labelled donut, with an adjacent ranked list | Rent 800 (62.5%); supplies 360 (28.1%); software 120 (9.4%); sum 1,280 | Category amount, share and count | Filter Costs by category and list source records |
+| Top vendors | Horizontal bars | Same cost amounts/basis; long labels readable; Other bucket reveals all members | Vendor, amount, share and source count | Vendor’s records and source evidence |
+| Top customers | Horizontal bars | Issued sale amounts; missing customer uses Unknown; avoid falsely distinct aliases | Customer, income and invoice count | Customer profile and invoices |
+| Cash movement | Paired inflow/outflow bars by actual movement date/bucket | In 3,000; out 920; net 2,080; transfer 200 separately disclosed | Date, movement direction, amount and linkage | Payment drawer with matched/unmatched records |
+| Open receivables/payables | Two status lists with compact ageing bars | Current; 1–30, 31–60, 61+ days overdue; unknown due date separate; counts plus gross amounts | Bucket, age rule, amount and items | Exact open-invoice/bill list |
+| Profit bridge | Compact waterfall or aligned reconciliation bars | Income 4,800 − rent 800 − supplies 360 − software 120 = 3,520 | Each component, contribution and running result | Cost category or income contributors |
+| Coverage | Compact segmented count bar and review list | Distinguish source documents from economic-event counts | Count plus reason | Relevant documents/review queue |
+
+Use a donut only for non-negative parts of one whole. A negative/refund category switches to ranked bars or an explicit adjustment view. Do not add three redundant pie charts or a 3D/exploded pie. A waterfall can be a deeper detail rather than crowding the default screen.
+
+The small initial fixture has sparse dated events. Do not draw a smooth invented daily revenue line just to fill space. The application can add a second richer synthetic **dashboard showcase** fixture with real authored dated invoices/expenses/payment rows and exact ground truth. That fixture must be independently reconciled; its values cannot be mixed into Harbor’s published example. A visually smooth interpolation is acceptable only as drawing style between genuine points with no invented observation labels; linear/monotone presentation must not imply extra recorded data.
+
+#### 6.5.3 Common interaction contract
+
+- Hover and keyboard focus show the same tooltip: label/date, currency, exact amount, basis, count, optional valid comparison and **View records** affordance.
+- Click/tap/Enter opens a contributor drawer, or filters Records with a visible filter chip and Back to Overview action. Every KPI and meaningful chart data mark has a destination; decorative grid lines do not.
+- Touch uses tap to inspect and a clear action for deeper navigation. Avoid depending on hover alone.
+- Legends can temporarily highlight/isolate a series. The chart caption explains visible scope; financial headline cards do not silently become partial totals because a legend was clicked.
+- Period, currency, category and counterparty filters recompute the same shared facts. Changing filters makes scoped Retro text stale without triggering inference.
+- Tooltips stay in the viewport, have adequate contrast and do not cover the selected value. Dense tick labels simplify at narrow widths; detail remains in the tooltip/table.
+- Each drawer includes the formula, included/excluded records, source chips and coverage. A source chip opens the exact original page/row/cell where feasible.
+- Count-up values settle to exact formatted facts. Model output never supplies plotted amounts.
+- A compact **View data** table accompanies each chart and uses the same computed series; it is an access route, not an animation-off setting.
+
+#### 6.5.4 Motion and implementation choice
+
+Use 450–650 ms chart entrances, 250–400 ms data transitions, 120–180 ms hover/focus feedback and spring easing with restrained overshoot for panels. Stable data keys preserve continuity through filters and CRUD; cancelled/outdated updates cannot keep animating stale values. Animate from old validated data to new validated data, then settle. Do not loop numeric counters or animate profit as if money is still being received.
+
+**Proposed chart implementation:** Recharts for common SVG bar/line/area/donut views, wrapped by feature-owned chart components; Motion for panel/tooltip/layout transitions only where it adds value. Shared tokens and `packages/money` series feed every chart. Evaluate the current versions and keyboard/touch/resize performance before pinning; library animation alone does not satisfy the experience. A custom SVG waterfall is justified only if the chosen library cannot provide the required detail cleanly. Avoid adding several competing chart libraries. [Recharts guide](https://recharts.github.io/en-US/guide/), [Motion animation guidance](https://motion.dev/docs/react-animation).
+
+No animation-disable setting belongs in the application. Tune the normal motion to be calm, non-flashing and non-essential to reading exact values. Financial correctness, source access and usable phone layout remain release requirements alongside visual polish.
+
+#### 6.5.5 Metrics that are intentionally unavailable
+
+Account balance, runway, burn-rate forecast, balance sheet, DSO/DPO, EBITDA, recurring revenue, churn, budgets and predicted future cash can be useful in other fintech products, but require data the initial demo does not establish. Do not infer them from a few documents. Record these as future opportunities with explicit data gates rather than filling the dashboard with guessed KPIs. Supporting every relevant number means defining its evidence requirement, not displaying every metric found in a competitor.
 
 ### 6.6 Records register
 
@@ -361,11 +439,19 @@ Review groups issues by the decision required, not by internal parser errors. Ex
 
 Each issue shows the relevant sources, current proposal, reason, effect on the overview and clear actions. **Keep unresolved** remains available. If a decision affects totals, show a before/after preview computed by code before the guest confirms.
 
-### 6.8 Copilot view
+### 6.8 Retro view
 
-The copilot displays its current scope and relevant question chips. Answers show a direct explanation, computed fact cards, source links and optional View records or Open review actions. **How I checked** lists actual executed tool operations in plain language.
+Retro is a persistent **floating pill composer** near the lower center of the workspace, with a compact expandable floating conversation above it. It is visible from the start; there is no round bottom-right launcher. The workspace reserves enough bottom space so the pill does not cover a chart label, table action, source link or form submit button. On narrow screens the conversation becomes a restrained full-width sheet with the same pill identity; handle the software keyboard and safe-area inset.
 
-The composer supports keyboard submission, stop/cancel, clear error feedback, a bounded input length and a visible remaining question allowance when approaching the limit. Do not display raw JSON, internal prompts, chain of thought or token telemetry in the product conversation.
+User turns sit in right-aligned bubbles. Retro replies use clean unboxed text, an optional small Retro label, source links and action rows. The conversation/composer can use a forest-tinted glass backdrop, soft shadow, fine border and controlled sheen. Adapt ClipBuilder's `--cb-glass-*` tokens (`blur(18px) saturate(175%) contrast(108%)`, translucent surface, inset edge shadow, layered sheen); choose Retrosum colors and maintain legibility. Adapt ScreenPilot's `live-captions.tsx` / `sp-live-captions__message[data-speaker="candidate"]` distinction rather than copying its interview product.
+
+Entry shortcuts: **Summarize this period**, **Explain this dashboard**, **Show me around**, **Create an invoice**, **Add an expense**. Follow-up chips are contextual predicted answers, such as **Yes, create draft**, **No, edit details**, **Use November 30**, **Show sources** and **Undo**. A chip dispatches a typed local action or an explicit user turn; it never grants a model extra authority. Yes/No callbacks are bound to the exact proposal ID and expected revision. Disable obsolete controls when the graph or proposal changes.
+
+Retro can navigate to a stable app-owned section, smoothly scroll it into view, draw a temporary focus rectangle, point to a field and explain the exact current figure. Tours have Next/Back/Finish; no model-supplied CSS selector or arbitrary script is executable. Stop an obsolete tour/highlight when its target disappears, a dialog takes focus, the visitor scrolls away or the workspace resets.
+
+For CRUD, animate filling a real editable form after a structured proposal has been validated. Reveal fields in sequence, briefly outline the active field and show an honest **Preparing your draft** state. This animation represents applying a validated proposal to a form, not keystrokes coming directly from the model and not a committed ledger change. The visitor can edit, cancel or interrupt filling; only the final validated preview can be confirmed. Calculate the resulting dashboard effect locally. Show the result link and a small **Undo** inline with the success reply.
+
+Use typed states: idle, explaining, clarifying, preparing, filling preview, awaiting confirmation, applying, completed, stale, cancelled and failed. Monetary answers become authoritative only after grounding validation; staging text may stream. Fake mode exercises the same states, scroll/highlight choreography, form filling, shortcuts and Undo. Unsupported fake prompts receive an honest bounded generic response, not invented ledger facts.
 
 ### 6.9 Export review
 
@@ -382,7 +468,7 @@ Exports remain available when live processing or chat is disabled. If nothing is
 | Only one period | Show snapshot; omit trend claims and comparison percentages. |
 | Multiple currencies | Ask the visitor to select a currency; show a coverage count for the others. |
 | Unknown payment state | Use Unknown; keep it separate from explicitly open amounts. |
-| Live processing unavailable | Preserve previews and prepared sample; explain the available path. |
+| Live processing unavailable | Preserve previews and existing records; offer manual/local capabilities, never fake public success. |
 | Provider failure | Preserve file and completed records; offer deliberate retry within caps. |
 | Stale explanation | Show original revision/scope; offer explicit refresh if allowance permits. |
 | Session expired/reset | Discard obsolete responses and invite a fresh session. |
@@ -391,30 +477,32 @@ Exports remain available when live processing or chat is disabled. If nothing is
 
 ### 7.1 Fixture story
 
-**Harbor Studio** is a fictional service business. The base collection covers September 2026 in USD. Its fixed teaching snapshot is **as of 3 October 2026**. Optional August records support comparison.
+Use **Harbor Studio**, an English-speaking small service business. All source and created record amounts are USD. September 2026 is the main selected period; the fixture has an explicit fixed as-of date of 3 October 2026. August is a comparison period only because its records are printed in D08. These dates are synthetic demo context; do not mix them with the visitor's real current date.
 
-Keep the sample as-of date fixed and visible; real uploaded workspaces use the visitor-selected reporting/as-of context. On 7 October or a later visit, the sample must not silently turn an October 8 due date into an overdue claim merely because the device clock advanced.
+The initial corpus has **eight PDFs and approximately 12–16 pages**, never more than the 20-page processing envelope. Aim for four distinct printed layout families plus one genuinely handwritten receipt. Multipage PDFs provide meaningful line items and a modest history/payment register without dozens of independent uploads. One handwritten original is mandatory; a second is optional only if it adds a distinct useful case and passes exact-number evaluation.
 
 ### 7.2 Original files
 
-| ID | Proposed original | Meaning and amount | Teaching purpose |
+| ID | Public PDF | Visible source content | Purpose |
 | --- | --- | --- | --- |
-| D01 | `harbor-HS-101.pdf` | Harbor → Cedar Works; issued 4 September, due 18 September; two service lines, USD 3,000, no separately charged tax | Outgoing invoice creates one sale; separate payment can settle it. |
-| D02 | `harbor-HS-102.docx` | Harbor → Maple Retail; issued 24 September, due 8 October; USD 1,800; explicit open-status evidence as of 3 October | Different layout/format; open is not automatically overdue. |
-| D03 | `northstar-A-77-scan.pdf` | Northstar → Harbor; issued 20 September, due 10 October; USD 360 net + 36 stated tax = 396 gross; explicitly open | Scanned incoming invoice, direction and net/gross distinction. |
-| D04 | `rent-R-091.pdf` | Cove Spaces → Harbor; September rent, USD 800; paid receipt; no separately stated tax | Cost and payment claim can share a source without creating another cost. |
-| D05 | `software-SW-09.xlsx` | Paper Cloud → Harbor; one sheet/receipt, USD 120 paid on 12 September; no separately stated tax | Spreadsheet can represent a receipt; native values remain exact. |
-| D06 | `northstar-A-77-copy.jpg` | Second rendering of A-77 with the same parties/number/date/amounts | Different file bytes can describe one economic event. |
-| D07 | `september-payments.csv` | Four dated rows: +3,000 HS-101; −800 rent; −120 software; −200 to another explicitly owned account | Separate settlement evidence and internal-transfer exclusion. |
-| D08 | `august-events.csv` | Optional August sales 2,500 + 1,500; costs 800 rent + 200 services + 100 software | Honest supplied-period comparison without invented history. |
+| D01 | `harbor-HS-101.pdf` | Harbor → Cedar Works; issued 4 September, due 18 September; USD 3,000, no separately charged tax; 2 service lines; optional second page with scope/terms | Clean professional service invoice; source-stated and calculated numbers agree |
+| D02 | `harbor-HS-102.pdf` | Harbor → Maple Retail; issued 24 September, due 8 October; USD 1,800; explicitly open | Different grid/sidebar invoice layout; open receivable |
+| D03 | `northstar-A-77-scan.pdf` | Northstar → Harbor; issued 20 September, due 10 October; net 360, tax 36, gross 396; explicitly open | Scanned supplier bill; tax and direction |
+| D04 | `rent-R-091-handwritten.pdf` | Cove Spaces → Harbor; genuinely handwritten receipt for September rent; USD 800, stated paid, no separate tax | One handwritten page scanned into a PDF; modern controlled ground truth |
+| D05 | `papercloud-September.pdf` | PaperCloud → Harbor; USD 120 software, 12 September, stated paid, no separate tax | Subscription receipt in a compact layout; optional terms page |
+| D06 | `northstar-A-77-second-copy.pdf` | Same economic bill as D03, visibly a second scan/rendition | Duplicate review; one bill counted once |
+| D07 | `harbor-payments-September.pdf` | Readable statement-style payment register: +3,000 Cedar; −800 rent; −120 PaperCloud; −200 transfer between Harbor-owned accounts; explicit dates/references | Multipage readable payment evidence; movement matching; transfer excluded from costs |
+| D08 | `harbor-August-records.pdf` | Viewable historical record pack: sales 2,500 + 1,500; costs 800 + 200 + 100; dates, counterparties, roles, identifiers and line details printed beside each record | Multipage authored records provide the complete August comparison; no invisible JSON history |
 
-Actual source bytes and expected extraction fixtures still need to be authored. A conceptual HTML cover is not an original PDF. D02's preview rendition is not a ninth financial input. D06 is the intentional duplicate demonstration.
+No private-data-looking random noise is needed. Additional dated rows may subdivide the stated totals, but they must have real visible entries and update all ground-truth locators consistently. Do not add extra sales or costs merely to make a chart taller. Two periods and real dated records support honest comparisons and daily/cumulative views; longer histories remain unavailable until authored PDFs actually supply them.
 
-### 7.3 Original visual identities
+### 7.3 Original visual identities and viewing
 
-Give Harbor, Northstar, Cove Spaces and Paper Cloud distinct typography, headers and table arrangements. Use reserved `.example` addresses and nonfunctional payment references. Every source has a discreet **Synthetic sample** designation.
+Draw original synthetic layouts informed by FreshBooks/Vertex42/common service invoice and receipt patterns. Do not copy a provider's branding or customer information. All files carry fictional business/contact information and a discrete synthetic-demo notice. D04 must be written with pen or stylus by a person; a handwriting font is not evidence of OCR. Wrap its readable scan in a PDF and independently transcribe its numeric fields.
 
-Samples should look like ordinary business paperwork, not eight Retrosum-branded cards. Varied layouts demonstrate interpretation while preserving readability. Do not use real bank details, personal data, copied third-party branding or realistic actionable payment links.
+Every original is visible in the collection, including D06 duplicate and D08 comparison pages. Cards show a real first-page thumbnail, source name, PDF/page count, layout hint and optional **Handwritten** badge. Click opens a centered dialog where the paper rises with a restrained perspective/scale animation and settles. Use actual PDF.js-rendered pages, page navigation, fit/zoom and a download/open-original fallback. The floating motion happens on entry, never continuously while reading. Review and metric links open the relevant page of this same viewer.
+
+Do not expose expected-output JSON as financial evidence. Evaluation fixtures are internal test truth; financial provenance points to the PDF. Local manual records instead carry an explicit **Created in this session** badge and their command provenance.
 
 ### 7.4 Canonical reviewed results
 
@@ -440,60 +528,62 @@ These are fixture expectations, not measurements of a real business. They must b
 
 ### 7.5 Guided review variant
 
-Start D01 with a proposed HS-101 payment match and **Settlement unknown pending review**. Start D06 held outside financial totals as a potential duplicate. D02 and D03 retain explicit sample open-state evidence. The overview can already show the eligible income/cost values, but must expose the two pending evidence decisions.
+The normal sample includes D03/D06 duplicate evidence and exact payment matching. An optional development failure variant can make a critical handwritten numeral ambiguous or create a conflicting payment reference; it must be visibly a test variant. Do not degrade the normal public sample or invent an AI mistake to create a theatrical review event.
 
-Confirming either relationship reduces review issues without inventing a new financial event. The fully reviewed and guided variants share the same source manifest and deterministic invariant tests.
+### 7.6 Manifest and ground truth
 
-### 7.6 Manifest requirements
+Store asset ID/version, safe path, MIME type, SHA-256, page count, total bytes, layout family, handwriting flag, authorship/rights, fixed business/period/as-of context and rendition relationships. Expected interpretations live in fake/evaluation modules separate from public live graph initialization. A field-level ground-truth table includes every visible numeric field: identifier, page/locator, exact printed text, normalized value, currency/scale and treatment in the ledger. Cross-check all sums, quantities, unit prices, tax and date digits before publishing.
 
-The manifest records original ID, safe asset path, validated MIME type, hash, page/sheet count, business, fixed sample context, expected recognition, rendition relationships and fixture version. It identifies which outputs are prepared interpretations and which are computed.
+D07/D08 need bounded **multiple records per PDF** output. Preserve per-record page/block references and distinguish tables of payments from tables of income/cost events. A file is not automatically one financial event. Cap each register at 100 rows and the workspace at the existing event/payment limits; never silently truncate.
 
-Validate that all manifest paths remain inside the sample asset root. A renamed or changed file cannot receive a stored interpretation merely because its display name matches. Sample fixtures never stand in for arbitrary visitor input.
+Live sample acceptance reads the real bytes through the same private API as visitor PDFs. Ground truth is used only afterward to compare performance; it must not be supplied to the model or substituted into the provider result.
+
+### 7.7 Template and handwriting acceptance
+
+FreshBooks' PDF invoice guidance and Vertex42's basic/service/consulting/receipt layouts inform the core fields and variety; author original assets rather than downloading a template bundle wholesale. At least four layouts plus the handwritten page must pass exact-field comparison on two independently dispatched live runs with the recorded model/prompt/schema version. No Gemini benchmark is a prerequisite. This evaluation checks the chosen OpenAI route.
+
+The previously researched historical Burr receipt is a historical research link only. It is not a required ninth document, does not feed Harbor's ledger and does not replace the modern handwritten sample. The first demo demonstrates printed and handwritten layouts within PDFs, not universal support for every file or illegible page.
 
 ## 8. Inputs, previews and recognition
 
 ### 8.1 Initial supported-format target
 
-The target is different document layouts within an evaluated format set. Release support can be narrower than the target table, but the base sample story must remain complete. Each enabled format needs real parsing, preview, limits, fixtures and live evaluation where AI interpretation is claimed.
+The first release accepts **PDFs**, including text-native, scanned, mixed and handwritten pages within measured bounds. All sample originals are PDFs. This format decision keeps the promise focused on varied document layouts and the source-viewing experience. Visitor-facing copy says **Invoices, receipts, bills and payment records as PDFs**, not “any file.”
 
-| Input | Proposed interpretation path | Preview | Enablement condition |
+| PDF case | Interpretation | Viewer | Gate |
 | --- | --- | --- | --- |
-| Text PDF | Bounded PDF input to compatible model; deterministic metadata/page inspection | Original PDF viewer | Core fixture and live acceptance |
-| Scanned/mixed PDF | Same bounded PDF route with page imagery | Original PDF viewer | Legibility/multipage fixtures and live acceptance |
-| PNG/JPEG/WEBP | Safely inspected image; compatible vision input | Bounded image viewer | Orientation, pixel and legibility fixtures |
-| DOCX | Native paragraphs/tables; explicitly extracted images when needed | Labelled text/table view or verified rendition | Text/table/image coverage; no false page-coordinate claim |
-| XLSX | Native bounded cell values; known schema directly, unknown labels through one mapping operation if enabled | Safe table by sheet | No formula execution; exact-decimal and resource fixtures |
-| CSV | Native bounded rows; documented payments/events schema or reviewed column mapping | Safe table with original row reference | Known headers, decimal/date/currency checks |
-| TXT/Markdown | Inert bounded text with source blocks; AI interpretation when enabled | Plain text | Length/encoding and grounding fixtures |
-| HTML | Extract inert text/tables without executing or fetching | Plain text/safe table | No scripts, network, remote CSS or active links |
-| JSON | Versioned known invoice/event schema; unknown schema needs bounded reviewed mapping | Safe field view | Explicit adapter, depth and key-count limits |
-| XML | One named/versioned e-invoice profile with hardened parser | Safe field/tree summary | External entities disabled; profile fixtures |
+| Text-native | Inspect metadata/text deterministically, then one live OpenAI document interpretation | Actual original PDF pages | Required numeric/source evaluation |
+| Scanned/mixed | One bounded vision-capable PDF input after page/legibility inspection | Same viewer, readable scans | Rotation, image and multipage evaluation |
+| Handwritten | Same live PDF route; no special hidden result substitution | Handwritten original/page badge | Zero-error gate for selected legible specimens |
+| Multiple financial entries/pages | Bounded per-record array with page/block evidence | Page navigation; cited record opens its page | Register and mixed-entry role tests |
 
-Legacy DOC/XLS, office conversion suites, TIFF/HEIC/BMP, email bundles, archives and additional e-invoice profiles are deferred. Password-protected, damaged or restricted files receive a readable explanation. No remote invoice URL fetching or platform login belongs in the first build.
+DOCX, spreadsheet/CSV, images uploaded outside a PDF, HTML, JSON and XML are deferred adapters. Their optional fields in Appendix A do not make them enabled release capabilities. Reject unsupported/password-protected/damaged PDFs with a clear explanation and zero paid dispatch. No remote URL fetching, office conversion service or platform account is needed.
 
-PDF file inputs can provide both text and page imagery to compatible OpenAI models; non-PDF inputs have different treatment. That API capability does not prove Retrosum format correctness. Our application will parse bounded spreadsheet values directly and handle DOCX imagery explicitly. [Official OpenAI file inputs](https://developers.openai.com/api/docs/guides/file-inputs).
+OpenAI's Responses API supports inline Base64 PDF `input_file` content and supplies extracted text plus page imagery to vision-capable models. Forward an inspected bounded original; the browser does not upload to an external persistent Files library. PDF imagery contributes to token usage, so bytes/pages alone are not a cost estimate. [Official file-input guide](https://developers.openai.com/api/docs/guides/file-inputs).
 
 ### 8.2 Proposed input envelope
 
 | Resource | Limit | Behavior on excess |
 | --- | --- | --- |
-| Original files per workspace | 10 | Ask the visitor to remove files before processing. |
-| Raw file size | 5 MiB each | Reject the individual file locally and again on the server. |
-| Combined original bytes | 20 MiB | Reject admission before any paid operation. |
-| Document pages | 20 combined | Inspect before dispatch; include source/rendition resource work in the page envelope. |
-| Invoice lines | 25 per document | Mark longer tables unsupported; never silently drop lines. |
-| Payment export | One file, 100 data rows | Reject or request a smaller export. |
-| Historical events export | One optional file, 100 data rows | Reject or request a smaller export. |
-| XLSX sheets / cells | 3 sheets / 5,000 occupied cells per file | Reject unsupported workbook before model mapping. |
-| Image source pixels | 12 megapixels per image | Reject or request a smaller readable image. |
-| Generated page/image preview | 4 megapixels each; 80 megapixels combined work | Bound decode/render operations and discard unused previews. |
-| Expanded OOXML data | 32 MiB per file | Stop parsing on expansion limit. |
-| Business context | One business per workspace | Separate another business into another session. |
-| Currency | Separate ledgers by currency | No implicit FX conversion or combined total. |
+| Active financial events including manual records | 250 | Reject extra creation before graph mutation |
+| Recorded payment evidence | 250 movements/claims combined | Reject excess before acceptance |
+| Contacts | 50 | Reuse an existing contact or reject excess |
+| Pending Retro proposal | 1, at most 5 related commands | Explicitly replace previous pending proposal |
+| PDF originals per workspace | 10; curated corpus initially 8 | Reject extra selection before processing |
+| Raw file size | 5 MiB each | Inspect locally and on server |
+| Combined original bytes | 20 MiB | Reject before any paid operation |
+| PDF pages | 20 combined | Inspect all files before paid dispatch |
+| Line items | 25 per invoice/expense | Explain unsupported longer table; never drop lines |
+| Register/statement rows | 100 per PDF | Reject longer register; per-entry source reference required |
+| Embedded scan resource | 12 megapixels per source image; bounded decoded page work | Reject unreasonable image/decompression cost |
+| Generated preview | 4 megapixels per page; 80 megapixels total work; bounded active cache | Release pages not in use |
+| Persisted normalized projection | 2 MiB UTF-8 maximum | Explain storage limitation; never silently lose unsaved changes |
+| Browser original Blob cache | Same 20 MiB raw envelope plus bounded metadata | No preview bitmap/Base64 duplication in persistence |
+| Retro persisted conversation | Latest 16 complete turns and ≤64 KiB text | Keep important result/source/Undo metadata; trim older display turns |
+| Workspace lifetime | Fixed 2 hours from creation | Expire and clear; refresh does not extend it |
+| Business/currency | One business, English, USD | Reject unsupported currency aggregation; no FX |
 
-MiB means 1,048,576 bytes. The UI can show rounded MB wording if it explains the effective limit consistently. These bounds are inherited from the drafts where specified and extended here for parser resources; they need Linux/browser measurement before live release.
-
-Do not transmit the whole batch as one base64 JSON body. Process one original at a time through a streaming multipart route with a bounded context part. Inspect expanded/container resources as well as compressed bytes. Disable automatic archive processing.
+MiB is 1,048,576 bytes. Process sequentially through a bounded streaming multipart route; do not ship the whole corpus as one Base64 request. Inline PDF Base64 exists only inside the request-scoped private OpenAI adapter. Base64 expands bytes, so derive proxy/body/buffer bounds from the maximum single file plus context and measure hosted memory. Browser PDF rendering and server inspection must reject active content and pathological resource usage.
 
 ### 8.3 Recognition output
 
@@ -537,6 +627,23 @@ Business names are comparison labels, not verified legal identities. Never infer
 Original bytes stay unchanged. Normalized fields retain their source strings and resolvable references. Native checks and guest corrections are stored separately from extracted claims.
 
 Never silently replace a printed total with a calculated total. Show **Source says** and **Calculated check** when they differ. A discrepancy is a review issue, not permission to make the source agree with the model.
+
+### 8.7 Zero-error numeric transcription acceptance
+
+The owner’s numeric requirement is a primary release gate. Define the scope precisely: **zero incorrect numeric transcriptions in the published, evaluated demo corpus**, including the genuine handwritten sample, across the recorded live acceptance runs. This is a target until measured. Vision models can misread text, rotation and small details; no provider’s schema mode guarantees field truth. [OpenAI vision limitations](https://developers.openai.com/api/docs/guides/images-vision).
+
+1. Preserve each source number string and its page/row/cell/block reference before normalization. Monetary values use exact decimal strings or minor-unit integers; never binary-floating arithmetic for money.
+2. Prefer native PDF text/cell/structured parsing when it faithfully represents the source. Use vision for scanned/handwritten material and a bounded readable representation. Native text is also checked; OCR text is not independently authoritative.
+3. Return amount, tax, subtotal, total, quantity, rate, currency, date and identifying-number fields with presence/ambiguity state. Missing or uncertain is explicit; do not complete digits from expectations.
+4. Validate decimal/thousands separators, signs, currency symbols, source role, duplicate labels and line coverage. Resolve locale ambiguity through review rather than assuming a USD-style decimal convention.
+5. Recalculate line totals and subtotal/tax/gross relationships where the source supplies the operands. A matching equation is a check, not proof that every digit is right: two wrong fields can still agree. Preserve both source and computed values.
+6. A questionable critical amount blocks that event’s financial eligibility. Keep the original visible, show the exact issue, and ask the visitor to confirm/correct the field. High model confidence cannot override a failed check.
+7. Curated sample evaluation compares every expected numeric field with independently verified ground truth, not only the final dashboard total. Dates, identifiers, quantities and cents count; extra fabricated numbers also fail.
+8. Record at least two independent live extraction runs per enabled authored template/handwriting fixture using the selected model/schema/prompt versions. Every published legible sample must produce complete correct required numbers in these runs. Negative/illegible fixtures must be safely held, not forced to succeed.
+9. A change to fixture bytes, model, prompt, parser, normalization or rendering invalidates the related acceptance evidence and requires reevaluation. Store byte hashes and test conditions in an evaluation report during implementation.
+10. An observed error blocks that layout’s live support claim until corrected and reevaluated. Development fake interpretations may still demonstrate the UI if accurately labelled. Do not call development fake output proof of live accuracy.
+
+No second model pass is assumed to solve correctness. Any deliberate re-read uses the admitted retry allowance and the same evidence checks. The design prevents uncertain figures from silently becoming authoritative; it cannot mathematically prove an arbitrary document was transcribed perfectly when there is no external ground truth. The polished demo should make exactness feel effortless while retaining an inspectable route when something is unclear.
 
 ## 9. Financial meaning and calculations
 
@@ -621,143 +728,186 @@ Prefer: **Based on 5 included September events in USD. Two source relationships 
 
 Avoid: **Your business earned this exact profit**, **You have this cash available**, **Your taxes are calculated**, or **Everything is reconciled**. The UI can be concise without making stronger claims than the data supports.
 
-## 10. Review, corrections and manual records
+## 10. Review, corrections and session CRUD
 
-### 10.1 Command-based changes
+### 10.1 One command engine
 
-Use explicit validated commands for changing a field, confirming business identity, changing category, setting inclusion, linking duplicates, allocating payments, unlinking a relationship, adding a manual event and removing a document. Each command carries a command ID and expected workspace revision.
+The current browser graph plus bounded refresh-safe local projection supports real session CRUD. The workspace reducer and `packages/money` own records; manual forms and confirmed Retro proposals call the same discriminated command union. There is no server database or financial write API pretending to save an account ledger. PDF Blobs use temporary browser-only storage as described in section 12.6.
 
-A command returns either a new valid workspace revision and deterministic derived values or a stable validation error. Apply it atomically. No half-updated chart, partial payment allocation or stale event reference can remain after a rejected command.
+Commands include creating/updating/removing draft invoices, expense/bill events, manual payment evidence and contacts; marking a draft issued; correcting source-derived fields; confirming business; categorizing; inclusion/exclusion; duplicate linking; payment allocation/unlinking; and document removal. Every command has a unique ID, expected revision, actor provenance, bounded payload and explicit target IDs.
 
-### 10.2 Correction provenance
+Apply a command or a small related command batch atomically. Validate first, increment the workspace revision once, derive charts/metrics and mark dependent Retro explanations stale. Repeated confirmation cannot create a second invoice/payment. A conflict yields a useful preview-refresh message, not partial state.
 
-Retain source value, normalized extracted value, current guest value, correction reason if supplied, application timestamp and source mode. Display **Guest correction** or **Manual entry** clearly. The correction does not rewrite the original file or become a source-stated claim.
+### 10.2 Core object set
 
-Changing currency/direction/amount/date may invalidate matches and metrics. Revalidate affected relationships; do not keep a USD payment linked to an event corrected to EUR. Category-only edits change category charts and relevant narratives while leaving overall amount totals unchanged.
+| Object | What visitors can do | Financial effect |
+| --- | --- | --- |
+| Outgoing invoice | Create draft, read preview, edit, mark issued, download, remove/restore within the session | Draft excluded; issued sale included in its date/currency/basis; no cash until a separate payment record |
+| Expense / supplier bill | Create cost record, read, edit category/amount/dates/vendor, remove/restore | One cost event; unpaid bill and paid expense are states of a cost record rather than duplicated expenses |
+| Payment record | Record incoming/outgoing payment or owned-account transfer, read/edit/remove, allocate to invoice/bill | Recorded cash on its movement date; allocation changes open settlement without creating another sale/cost |
+| Customer / vendor contact | Create/read/edit/remove a minimal contact; assign customer/vendor/both role | No direct money effect; linked historical record labels retained and relationships protected |
+| Source document | Preview/read, remove with impact review; correct interpretation separately | Original bytes unchanged; derived relationships revalidated |
 
-### 10.3 Manual-entry form
+Credit notes/refunds remain supported source/review semantics. A full standalone credit-note builder, quotes, recurring invoicing, products, inventory, payroll and bank accounts are later extensions. This keeps the first builder usable without recreating an accounting system.
 
-| Field | Rule |
-| --- | --- |
-| Kind | Sale or cost in the first build; complex deposit/adjustment handling stays source/review driven. |
-| Description | Required bounded plain text. |
-| Event date | Required unambiguous calendar date. |
-| Currency | Required supported currency. |
-| Amount | Required exact decimal with explicit basis. |
-| Tax detail | Optional stated values; no jurisdictional inference. |
-| Category | Supported category or Unknown. |
-| Settlement | Unknown by default; explicit user-supplied state separately labelled. |
-| Source | Manual entry; optional link to an existing source only through a validated relationship. |
+### 10.3 Invoice fields and lifecycle
 
-A manual sale/cost participates in document totals on its declared basis. Merely checking Paid must not create recorded account cash; that would need an explicit distinct payment-evidence entry outside the minimal form. The demo can explain that limitation in the settlement detail.
+Recognizable core fields are informed by invoice guidance and common templates, then deliberately simplified for the demo. GOV.UK describes UK invoice requirements; these are a field reference, not a declaration that our generated invoice is legally compliant in every country. [Invoice field reference](https://www.gov.uk/invoicing-and-taking-payment-from-customers/invoices-what-they-must-include).
 
-### 10.4 Review effects
+| Field | Core rule | Default/interaction |
+| --- | --- | --- |
+| Invoice ID/number | Unique session number; stable after creation | Generate collision-free next draft number; visitor may edit to another unique number |
+| Issuer business | Confirmed workspace name; optional demo address/contact | Reuse business context, never invent a tax ID |
+| Customer | Existing customer ID or explicit new name | Retro resolves exact match; ambiguous names require selection |
+| Issue/event date | Explicit calendar date and reporting period | Current session date may be offered visibly; fixed sample date remains disclosed |
+| Due date | Optional for draft; required to present known due/overdue status | Ask for year when “30 November” is ambiguous; no automatic guessing |
+| Currency | Required supported currency | Offer active currency explicitly; ask when `$` could mean multiple currencies |
+| Line description | At least one bounded service/product description | A single core line is enough for the example |
+| Quantity and unit amount | Exact values, quantity positive; up to 25 lines | Visible quantity 1 for one total service fee; label it rather than invent hours |
+| Subtotal and total | Deterministically derived from lines and explicit adjustments | Visitor-supplied total must reconcile or remain unresolved |
+| Tax | Optional explicit tax amount/rate or explicit no-separately-charged-tax basis | Never infer jurisdiction/rate; unknown tax treatment stays clear |
+| Notes/reference | Optional bounded text | No bank account, legal terms or tax identifiers required in core demo |
+| Status | Draft, issued; settlement handled separately | New invoices start Draft unless user explicitly requested issuing and confirms |
+
+Draft → explicit Mark issued → settlement derived from claims/allocations. Downloading an invoice does not issue it, send it, create cash or mark it paid. Creating a November invoice must not change a September dashboard. A printable/downloadable PDF or HTML rendition is a demo output, with fictional issuer and **Demo document** marking where appropriate.
+
+### 10.4 Expense/bill, payment and contact fields
+
+| Object | Required fields | Optional fields / guardrails |
+| --- | --- | --- |
+| Expense/bill | Description, event date, currency, exact amount/basis, vendor label or Unknown, category or Unknown | Bill number, due date, stated tax, source link, paid/open/unknown claim. Paid is a claim unless an independent manual payment is also explicitly recorded. |
+| Payment | Movement date, currency, positive amount plus explicit in/out/transfer direction, counterparty label, manual-evidence provenance | Reference, invoice/bill allocation, owned account labels. Same-currency allocations cannot exceed available payment/event balance; transfers require explicit owned accounts. |
+| Contact | Name, customer/vendor/both role | Company label and email optional; bounded notes. Phone/address/tax IDs are optional later fields, not a barrier to trying the demo. |
+
+The expense form can offer **Also record the payment** only as an explicit related command with shown date/amount/direction, not a hidden consequence of selecting Paid. Matching existing payment evidence avoids creating another movement. Removing an allocated payment reopens the affected balance when otherwise known, and retains the underlying invoice/cost.
+
+### 10.5 Correction and deletion provenance
+
+Retain source value, extracted value, current visitor value, optional reason, timestamp and actor (**Manual entry**, **Guest correction**, **Created with Retro**). Editing never changes uploaded bytes. A local session history is useful, but is not a durable multi-user audit log.
+
+Remove is an actual session operation: the record disappears from active views and totals, with a lightweight in-memory tombstone/history entry enabling Undo until reset. Deletion previews list affected allocations, records and totals. Contact removal cannot cascade-delete money; block removal while referenced or detach into preserved record labels through an explicit choice. Source removal cannot leave dangling citations. Issued records can be excluded/removed in this disposable demo with clear impact; no claim of professional immutable books is made.
+
+### 10.6 Review effects
 
 | Change | Required effect |
 | --- | --- |
-| Category edit | Recompute category chart; overall totals unchanged. |
-| Add USD 200 cost | September costs 1,480; profit preview 3,320; margin 69.2%; payment status remains unknown unless separately evidenced. |
-| Confirm HS-101 match | Resolve pending settlement; income 4,800 and cash in 3,000 unchanged. |
-| Confirm D06 duplicate | Keep one A-77 cost and both sources; remove duplicate issue. |
-| Exclude D03 | Remove 360 from documented costs; re-evaluate associated payable view and disclose exclusion. |
-| Change business | Re-evaluate direction and relationships; previous narratives stale. |
-| Remove source | Re-evaluate event evidence and allocations; never leave dangling citations. |
+| Change category | Category/vendor drilldowns update; total unchanged |
+| Add September USD 200 cost | Costs 1,480; profit 3,320; margin 69.2%; no added cash without explicit payment |
+| Create USD 2,000 draft invoice | Draft visible; income/cash unchanged |
+| Issue that invoice dated November | November document income increases 2,000; September remains unchanged |
+| Confirm HS-101 allocation | Review/settlement updated; income 4,800 and cash in 3,000 unchanged |
+| Confirm D06 duplicate | One A-77 cost, both sources preserved |
+| Remove A-77 cost | Remove 360 from document costs, remove its 396 open supplier amount and disclose affected evidence |
+| Remove a payment allocation | Cash unchanged; settlement/open amount rederived |
+| Remove a payment record | Cash changes; affected allocations removed/reviewed; invoice event retained |
+| Correct currency/amount/date | Revalidate allocations and scope; incompatible relationships blocked |
 
-### 10.5 User control
+### 10.7 User control
 
-Provide a before/after explanation for changes affecting financial inclusion. A deliberate removal or clear-session action needs a concise local confirmation where content would be lost. Ordinary browsing, filtering and source preview require no approval dialog.
+Retro mutations use one editable preview and compact inline confirmation, not successive approval dialogs. Reads, local navigation, explanations and built-in tour steps act immediately. A complete user request can prepare the form without another question; missing required fields are asked together with helpful answer chips.
 
-An undo control is optional; the first build can retain an edit history with a deliberate restore command. Do not claim full audit logging or multi-user accountability from local guest correction history.
+Every successful reversible local mutation provides a small **Undo** in the Retro result/action row and a corresponding register control. Undo restores the most recent eligible command group (maximum five related commands) atomically, including relationships and derived metrics, against the exact expected revision. Do not use a stored copy of displayed totals as the inverse. Record a typed receipt/inverse in the shared command engine. A newer mutation replaces the one-step Undo; old chat buttons become unavailable. Reset, expiry, provider requests, source submission, exports and external retention are not undoable. Undo itself is deterministic and makes zero model requests.
 
-## 11. Insights and data copilot
+Manual forms and Retro use the same validation, proposal effect calculation and command reducer. Fake mode can fill supported example forms, confirm, update the graph and undo for real; its language interpretation remains visibly simulated. No hidden provider call is needed to apply, undo, filter, calculate, export or reset.
 
-### 11.1 Responsibilities
+## 11. Insights and Retro
 
-AI has two primary jobs after recognition: choose useful supplied evidence to investigate and explain the resulting facts clearly. Ordinary code establishes the ledger, amounts, comparison bases, eligible record sets and percentages.
+### 11.1 Retro’s responsibilities
 
-The copilot can propose that the visitor review a relationship. It cannot commit a match, change a category, exclude a record, send a payment, communicate externally, or act on a document's embedded instructions.
+Retro is the named assistant for understanding and operating the temporary demo. It has five core capabilities: answer supplied-record questions, summarize a period, explain a dashboard/chart, guide visitors through the site, and prepare session CRUD. Code owns money arithmetic and final commands; the model selects evidence, interprets intent and writes grounded language.
 
-### 11.2 Insight cards
-
-Each insight contains an ID, workspace revision, period/currency/basis, observation type, brief headline, explanation, computed fact references, evidence references, coverage caveat and optional allowed navigation action.
-
-Generate at most four cards. Prioritize interpretation/data-quality issues when they affect coverage, followed by open amounts and record composition, then compatible historical comparisons. Do not use urgency merely to make an ordinary observation look important.
-
-| Good sample observation | Required evidence | Unsupported extension to avoid |
+| Intent | Behavior | Example |
 | --- | --- | --- |
-| Rent is USD 800, or 62.5% of included September costs | D04 and category metric | Recommend moving office or cutting rent. |
-| HS-102 has USD 1,800 explicitly open; due 8 October | D02 and fixed sample as-of context | Call it overdue on 3 October. |
-| HS-101 and the USD 3,000 row are a candidate settlement match | D01 and D07 row | Treat the candidate as confirmed payment. |
-| A-77 appears in two source files | D03/D06 comparison facts | Remove the second source automatically. |
-| Recorded income is 20% above the supplied August figure | September sale evidence and D08 | Claim whole-business growth or invent a cause. |
+| Summary | Concise overview, important figures, open items, coverage and links | “Give me September’s summary.” |
+| Dashboard explanation | Explain meaning, basis, contributors and interaction options | “What does this margin mean?” |
+| Guided tour | Short application-owned steps focused on the current view; no made-up UI targets | “Show me around.” |
+| Investigation | Bounded tools with fact/source references | “Why is income higher than cash received?” |
+| Create | Clarify essential fields, show structured draft, apply confirmed command | “Create an invoice for Cedar Labs for USD 2,000.” |
+| Update | Resolve exact record; show before/after and effects | “Move HS-102’s due date to 12 October.” |
+| Delete | Resolve target, show impact and local undo; await explicit confirmation | “Remove the software expense.” |
+| Payment/contact task | Prepare minimal contact or manual payment and allowed allocation | “Record USD 500 received against HS-102.” |
 
-Use deterministic cards for the prepared sample where the fixture permits. Live generation is deliberate; loading Overview, editing a record or changing a filter must not silently consume another insight operation.
+Retro cannot transfer real money, email customers, fetch websites, connect a bank, provide investment/tax advice or treat instructions embedded inside sources as user authorization. Recording a fictional payment is a session record operation, not payment execution.
 
-### 11.3 Allowed read-only tools
+### 11.2 Insight cards and summaries
 
-| Tool | Input | Output | Bound |
-| --- | --- | --- | --- |
-| `get_summary` | Current allowed scope | Deterministic metric IDs, values and coverage | One requested scope, no raw source bytes |
-| `list_events` | Finite filters and pagination cursor | Bounded event summaries and source IDs | At most 20 rows per call |
-| `compare_periods` | Two explicit compatible periods and currency | Current/prior values, differences and eligibility notes | Two supplied periods |
-| `get_metric_evidence` | Current metric ID | Contributor/exclusion references and basis | At most 50 references, paginated if needed |
-| `get_document_excerpt` | Allowed document ID and source locator | Minimal inert text/cell excerpt | 2,000 characters per call |
-| `list_review_issues` | Issue type/status filter | Concrete pending decisions and source IDs | At most 20 issues per call |
+Keep at most four concise insight cards, each carrying ID, revision, scope, fact IDs, source references, coverage caveat and allowed navigation. Prioritize material coverage issues, known open amounts, composition and compatible historical changes. A summary can combine these facts into short prose, but cannot add unsupported causes or comparisons.
 
-Tools operate on the validated snapshot supplied with that request. They have no general filesystem, network, SQL, Python, shell, external MCP, email or payment capability. An unknown tool name, unknown ID, malformed filter or out-of-scope source produces a safe typed tool error.
+Good Harbor observations: rent is 800, 62.5% of document costs; HS-102 has 1,800 explicitly open due 8 October; A-77 occurs in two files; supplied September income is 20% above August. These facts do not imply a recommendation to cut rent, a due item is not overdue on 3 October, and candidate matches remain candidates until confirmed.
 
-### 11.4 Bounded investigation
+Development fake/local fallback summaries use exact current-graph templates and clear mode labels. Live summaries/insights are deliberate admitted operations. Loading a dashboard, filtering or editing does not regenerate paid text silently.
 
-One guest question can use at most four tool calls across at most three model requests. These are whole-question limits, not per-round limits. A first request may select tools, a later request can use their results, and the final allowed request must complete or return a limited answer. If the loop cannot finish inside its cap, return the useful deterministic facts already obtained and explain that the investigation was limited.
+### 11.3 Tool capabilities
 
-Questions and insight generation share the same tool executor and validation rules, but have separate product allowances. Parallel tool calls are permitted only for independent read operations within the total cap; no second model dispatch begins before its required tool results and admission checks are complete.
+| Tool | Input / result | Bound and authority |
+| --- | --- | --- |
+| `get_summary` | Allowed scope → deterministic metrics/coverage | One scope, no raw bytes |
+| `list_events` | Finite filters → summaries/source IDs | 20 rows per call |
+| `compare_periods` | Two compatible periods → computed differences | Two supplied periods only |
+| `get_metric_evidence` | Metric ID → contributor/exclusion references | 50 references, pagination |
+| `get_document_excerpt` | Allowed source locator → inert excerpt | 2,000 characters |
+| `list_review_issues` | Allowed issue filters → pending decisions | 20 issues |
+| `list_contacts` | Name/role query → minimal contact IDs/labels | 20 contacts; no unnecessary private fields |
+| `get_record` | Typed record ID → editable fields and dependencies | One record, bounded payload |
+| `prepare_session_change` | Typed create/update/remove/issue/payment/contact command → validated preview | One change group, at most 5 related commands; **does not mutate** |
+| `start_tour` | Registered tour ID → application-owned tour steps | Allow-listed IDs and targets; no HTML/selectors from the model |
+| `navigate_workspace` | Registered route + typed scope/record ID → navigation suggestion | Local app routes only |
 
-### 11.5 Answer contract
+Tools run against a validated request snapshot. There is no general filesystem, SQL, network, shell, Python, external MCP, email or payment capability. Unknown names/IDs and out-of-scope inputs return typed errors. The backend prepares validated proposals and never stores the browser’s ledger.
 
-The result has:
+The **write capability is the local confirmation bridge**, not a model directly editing state. Browser code revalidates the proposal against current revision and applies `packages/money` commands after the visitor confirms. Tool results label proposed vs applied clearly. No answer says “created” until the browser reports success.
 
-- A direct answer in bounded plain text.
-- The exact revision and scope investigated.
-- Referenced server-computed fact IDs.
-- Resolvable source references.
-- A short coverage/uncertainty statement when necessary.
-- Actual executed tool-step labels.
-- Optional application-owned navigation action.
-- Processing mode and adapter/schema versions.
+### 11.4 Bounded conversations and clarification
 
-Money amounts and percentages displayed as authoritative facts come from computed fact objects. The model selects those fact IDs and writes surrounding language. Reject or remove unsupported numeric assertions in prose through a grounded-output check; schema-valid prose is not sufficient evidence.
+One live Retro turn uses at most four total tool calls across at most three model requests, with a 60-second whole-turn deadline. Read tools may run independently within this budget. A preparation tool counts toward it. Final output completes, returns a useful limited answer, or asks for required information; it cannot recursively keep working.
 
-Never render provider-produced HTML. A narrative can be plain text or a tightly restricted safe formatting format. Citation targets are IDs resolved by application code, never model-provided URLs.
+Eight live Retro turns per workspace is the proposed allowance, shared by questions, summaries and CRUD intent interpretation. A clarification reply is another turn and is disclosed as such; gather missing essentials together. Two optional live insight generations remain separate. The built-in guided tour, local confirmation, manual edits, undo and current-graph local summaries use zero calls. Long transactions are not an excuse for unlimited model requests.
 
-### 11.6 Example answer
+Resolve targets by typed ID and visible label. Multiple “software” expenses trigger selection. A missing year/currency/tax basis is clarified or offered as an explicit editable default. Do not invent company addresses, rates, items or quantities. Never overwrite an existing invoice merely because its customer name matches.
 
-**Question:** Why is income higher than cash received?
+### 11.5 Proposal and answer contracts
 
-**Prepared reviewed-sample answer:** Your September records show USD 4,800 in invoiced income and USD 3,000 in recorded operating cash received. HS-101 is linked to the USD 3,000 payment. HS-102 has USD 1,800 explicitly open in the sample evidence. The invoice view measures documented work; the cash view measures supplied payment movements.
+`RetroResponse` is a discriminated union: `explanation`, `clarification`, `change_proposal`, `tour` or `limited_result`. All variants carry investigated revision/scope, actual tool steps, processing mode and schema/adapter versions. Explanations carry fact/source IDs. Clarifications name missing fields with bounded suggested choices.
 
-**Sources:** D01, D02 and D07's HS-101 row. **Action:** View the invoices and payment match. **Coverage:** supplied September USD records, sample as of 3 October 2026.
+`change_proposal` carries proposal ID, expiry/session generation, expected revision, normalized command group, target IDs, before/after field diff, deterministic financial effect preview, missing-field state, relevant source IDs and confirmation label. A proposal is not applyable until all required fields are satisfied. The browser must not trust provider-authored totals or prose as a command payload.
 
-In the guided pre-review variant, replace the confirmed-match statement with **The USD 3,000 row is a proposed match to HS-101; review it to establish that settlement relationship.** The answer must agree with the active revision.
+Proposed lifecycle:
 
-### 11.7 No-financial-advice behavior
+```text
+intent → inspect current snapshot → clarify if needed → prepare validated preview
+       → awaiting visitor confirmation → local revision check → atomic apply
+       → result link / undo → refreshed derived charts, old explanations marked stale
+```
 
-The product explains documents and calculations. It does not recommend investments, tax deductions/filing, borrowing, business spending allocations, staffing changes or payment actions. This boundary is behavioral and evaluated, not satisfied by a footer alone.
+Changed records or scope invalidate affected proposals. Local validation failure leaves the old graph intact and explains the field conflict. A success receipt uses the actual local command result; completing the change does not require another provider request.
 
-| Visitor request | Useful bounded response |
-| --- | --- |
-| Should I cut rent? | Explain rent's recorded amount/share and offer the underlying source; avoid recommending a spending decision. |
-| Can I deduct this bill? | Offer stated tax/amount fields and source context; decline a tax conclusion. |
-| What stock should I buy with the profit? | Explain that the preview is a supplied-record measure and offer its contributors; decline investment advice. |
-| Pay this supplier | Explain the documented payable/source evidence and open its review view; no execution capability. |
-| What will revenue be next quarter? | Explain available supplied periods and lack of forecast evidence; do not invent predictions. |
+Money and percentages render from computed fact objects. Reject unsupported numeric statements; schema-valid language alone is not grounding. Render safe plain text or tightly restricted formatting. Citations and navigation resolve IDs through application code; no provider HTML or arbitrary links.
 
-Product copy beside the composer: **Explains your records. Does not provide financial, tax or investment advice.** Keep refusals brief and useful. No external research or generic financial guidance is needed to answer the sample record questions.
+### 11.6 Examples
 
-### 11.8 Staleness
+**Explanation:** “Your supplied September records show USD 4,800 invoiced income and USD 3,000 operating cash received. HS-101 is linked to the 3,000 payment; HS-102 states 1,800 open. Document view measures recorded work; cash view measures supplied movements.” Sources D01, D02 and D07. Before allocation confirmation, describe the match as proposed.
 
-An answer remains associated with the revision that produced it. Any relevant record or scope change marks it stale. Disable obsolete navigation that could target invalid records; source inspection may remain available only when the source still exists and the old context is visible.
+**Summary:** “September’s document view shows 4,800 income, 1,280 costs and a 3,520 profit preview, with a 73.3% margin. Rent contributes 800 of costs. Known customer open is 1,800; known supplier open is 396. These figures describe the supplied USD records.” Each amount resolves a fact ID.
 
-An explicit Refresh explanation consumes the applicable question/insight allowance. No automatic narrative regeneration occurs after edits. A response arriving after reset or revision change is discarded from current state.
+**Tour:** welcome → business/period/currency → headline metric meaning → hover a real chart point → click contributors → source preview → Records create/edit → Retro and export. Keep each step one or two sentences, allow Back/Next/Finish, skip unavailable targets, return focus appropriately. A tour is an explanation, never a fake live extraction demonstration.
+
+**Create:** “Create an invoice for Cedar Labs for USD 2,000, due 30 November 2026, for website design.” Draft preview shows customer, one quantity-1 service line, explicit issue date, currency, tax basis, due date and generated number. Confirm creates a draft; invoice/cash totals unchanged.
+
+**Update:** “Change HS-102 due date to 12 October 2026.” Show old 8 October → new 12 October, affected due-soon grouping, no change in income/cash. Confirm applies and invalidates old due-date narratives.
+
+**Delete:** “Remove the software expense.” Select the exact USD 120 record if ambiguous, show affected relationships and amounts, confirm removal, then offer local Undo. If a separate payment is retained, cash and expense views may diverge; disclose the distinction rather than silently removing unrelated evidence.
+
+### 11.7 Advice and external-action boundary
+
+Explain records and core fields; do not recommend investments, tax treatments, borrowing, staffing or spending allocations. Offer source facts and calculations when a request crosses the boundary. “Pay this supplier” can open the known payable detail and explain that the demo can record a supplied/manual payment but cannot send money. “Record a payment I already received” is an allowed explicit CRUD intent.
+
+Tour, summary and CRUD interfaces must feel helpful rather than being dominated by disclaimers. Keep the concise factual boundary near chat/help where appropriate, not in every answer. Source notes and document instructions cannot trigger any operation, confirmation or disclosure.
+
+### 11.8 Staleness and offline recovery
+
+Responses and proposals bind to the revision and scope that generated them. Source removal, CRUD, reset or incompatible filter changes mark affected results stale and invalidate their apply controls. An explicit live refresh consumes a turn/generation; no automatic paid refresh follows edits. A late provider result cannot overwrite current state.
+
+If live Retro is disabled or exhausted, retain the built-in tour, deterministic chart explanations, sample-compatible summaries, forms, source previews and export. Clearly distinguish those local/development-fake capabilities from live language understanding. Arbitrary natural-language CRUD cannot be claimed to work in fake mode merely because a fixed example button does.
 
 ## 12. State, revisions and persistence
 
@@ -765,7 +915,7 @@ An explicit Refresh explanation consumes the applicable question/insight allowan
 
 The browser owns one current guest workspace. A canonical reducer owns stage transitions, documents, the record graph, current review revision and asynchronous operation identities. Route state owns navigation; it does not become a second financial state machine.
 
-Metrics are derived through the shared pure money engine. The backend revalidates/recomputes a submitted snapshot before AI investigation, using that same engine. It has no persistent financial book or cross-request authoritative ledger.
+Metrics are derived through the shared pure money engine. The backend revalidates/recomputes a submitted snapshot before AI investigation and change preparation, using that same engine. It has no persistent financial book or cross-request authoritative ledger.
 
 Guest data is self-supplied. Validation establishes internal consistency, not authenticity or verification of the business documents. The architecture must not imply server-certified accounting truth.
 
@@ -786,7 +936,7 @@ workspace_ready -> exporting -> workspace_ready
 any populated state -> clearing -> empty
 ```
 
-Navigation among Overview, Documents, Records and Copilot is orthogonal to this workflow. A failed chat operation does not move the whole workspace into an unusable failure state.
+Navigation among Overview, Documents, Records and Retro is orthogonal to this workflow. A failed Retro operation does not move the whole workspace into an unusable failure state.
 
 ### 12.3 Per-document states
 
@@ -814,11 +964,19 @@ Start at revision 1 after a valid initialized workspace. Increment once per succ
 
 ### 12.6 Persistence choice
 
-**Proposed first-build default:** originals, extracted records, guest corrections and chat stay in browser memory. A refresh loses the workspace. Show **This is a temporary session. Export before leaving or refreshing.** A navigation warning can protect a populated session, subject to browser support; never promise a warning will fire in every close/crash case.
+**Owner decision:** refresh preserves the workspace. Use a bounded allow-listed browser projection and temporary browser Blob storage; do not serialize the whole reducer. The proposed absolute session lifetime is **two hours from creation**, without refresh or chat renewing it. Reset clears sooner. There is no server database, document bucket or account library.
 
-Only non-sensitive preferences may use session storage: chosen workspace tab, non-content display preference and a versioned last sample-selection identifier. Do not serialize the entire runtime object. No financial document fields, messages, filenames, tokens or originals belong in local storage.
+Use `sessionStorage` for the current per-tab identity, schema version, fixed `createdAt`/`expiresAt`, record graph, source metadata, corrections, revision, filters, bounded finalized conversation and latest Undo receipt. The normalized projection is capped at 2 MiB. Use browser-only **IndexedDB** for PDF Blobs keyed by session/document/hash because up to 20 MiB of originals cannot fit safely in `sessionStorage`. IndexedDB is technically a local browser database; it is the temporary browser storage mechanism, not a hosted product database. Do not claim that persistent browser APIs guarantee physical erasure the instant a tab closes.
 
-Sample state can be reconstructed from its versioned manifest after the guest deliberately starts again. Original uploads cannot be reconstructed from a file path after refresh. A future opt-in session-storage projection for normalized records would change the retention story and needs a documented decision before implementation.
+On startup, validate serialized size before parsing and strict schema/expiry/invariants afterward. Reconcile each source Blob by ID/hash/version; hydrate only a complete coherent revision. A missing original produces **Source no longer available** and preserves accurately labelled existing records where valid; request re-selection for reprocessing. Never claim a reconstructed file path is the original. Synthetic sample PDFs can be restored from their immutable public assets without a provider call.
+
+In-flight calls, AbortControllers, timers, workers, object URLs, SDKs, raw errors and challenge tokens never persist. Restore interrupted processing as **Interrupted — retry deliberately**, and pending CRUD preparation as cancelled/stale. Do not auto-resubmit a lost request or revive old Yes/No callbacks. A confirmed latest Undo receipt may restore after validating its expected graph revision; it never persists an API token.
+
+Per-tab identity is not a login. Browser duplication can copy `sessionStorage`; use an ownership handshake/lease and fork or reject a competing tab identity before mutation so tabs do not share writable state accidentally. Do not promise anonymous tabs enforce a provider budget globally. Admission cookie/counters have separate lifetimes; refresh cannot mint free new allowance and a restored graph does not restore an expired paid grant.
+
+On Reset/expiry, remove only this session's projection and Blob entries, invalidate operations and clear graph/chat/Undo. Attempt tab-close cleanup where reliable, but reload must not trigger destructive cleanup. Closing the tab removes normal `sessionStorage` access; Blob leftovers can remain until next startup/lazy sweep. Mark every Blob with absolute expiry and purge expired entries on startup and while active. A crashed/closed app cannot execute a two-hour timer, so say **expires after two hours; local leftovers are removed when Retrosum runs again**, not guaranteed physical deletion while the browser is closed. Browser restore behavior also means tab close is not a guaranteed secure-erasure boundary.
+
+If browser storage is blocked/full, explain that refresh recovery is unavailable, offer export/retry, retain the current safe in-memory graph, and do not falsely mark changes saved. Complete a source-cache transaction before announcing upload persistence. Preserve existing content until a new save succeeds; document any storage fallback visibly.
 
 ### 12.7 Cleanup ownership
 
@@ -834,6 +992,9 @@ Export captures an immutable revision. Clear waits for local cleanup completion,
 | --- | --- |
 | `overview.md` | Business label, period/currency/basis, computed totals, coverage, revision and limitations. |
 | `financial-events.csv` | Canonical sale/cost/adjustment rows, amount basis, category and inclusion status. |
+| `invoices.csv` | Draft/issued invoice headers, dates, customer references and exact totals; drafts remain separate from eligible sales. |
+| `invoice-lines.csv` | Stable invoice/line IDs, description, quantity, unit amount and deterministic line totals. |
+| `contacts.csv` | Session customer/vendor names and roles; optional contact extensions redacted by default. |
 | `documents.csv` | Source IDs, safe display names, format, interpretation/review states and rendition relationships. |
 | `payments.csv` | Recorded movements and separate source payment claims, clearly typed. |
 | `matches.csv` | Confirmed/candidate allocations and duplicate relationships with evidence IDs. |
@@ -849,6 +1010,8 @@ Package into one bounded ZIP using a reviewed browser-compatible library. ZIP ex
 
 Use one immutable snapshot captured at export start. If the workspace changes while ZIP generation runs, either finish the captured revision with its label or cancel and offer a new export; never combine files from different revisions.
 
+Created invoice PDF output is an optional explicit export for session-created invoices, with exact validated core fields and draft/issued status. It does not send an invoice, certify legal compliance or imply payment. Keep this rendering browser-local and document its font/resource bounds.
+
 CSV quotes and separators must be valid. Defend against spreadsheet formula injection for untrusted text beginning with `=`, `+`, `-`, `@` or relevant control characters. Controlled numeric columns retain real numeric signs. JSON stores inert source values and never becomes executable instructions.
 
 Safe filenames remove traversal/path separators, control characters and reserved device names; resolve collisions deterministically. Preserve the human original name as a safely encoded field. Do not use file content, business names or original filenames in download URLs.
@@ -861,7 +1024,7 @@ An explicit **Include original documents** option warns that originals retain th
 
 ### 13.4 Reset semantics
 
-Clear session discards originals, derived fields, graph, corrections, metrics, questions, explanations and generated downloads still held by the page. Revoke owned object URLs and stop browser workers. Clear content-free admission cookies through the backend route when reachable.
+Clear session discards originals, derived fields, graph, draft invoices, contacts, manual payments, corrections, pending proposals, undo history, metrics, Retro messages and generated downloads still held by the page. Revoke owned object URLs and stop browser workers. Clear content-free admission cookies through the backend route when reachable.
 
 Reset does not delete a file the visitor already downloaded or revoke every copy processed by an external provider. If remote cleanup cannot be confirmed, show accurate handling information; do not turn a local reset button into a universal deletion promise.
 
@@ -878,7 +1041,7 @@ Reset does not delete a file the visitor already downloaded or revoke every copy
 | Runtime contracts | Zod | Shared external-boundary validation. |
 | Pure money domain | Small browser-safe `packages/money` | One calculation/review implementation needed by browser and API. |
 | PDF preview | Locally bundled PDF.js candidate | Existing family experience in ScreenPilot; evaluated document preview. |
-| Charts | Small accessible SVG components; add a chart library only if needed | Few bounded charts; avoid unnecessary general dashboard machinery. |
+| Charts and motion | Recharts + Motion candidate, with small SVG where simpler | Smooth source-linked chart/tour/form interactions; measure actual need and bundle only used modules. |
 | Icons | One consistent icon family, such as the Lucide family already used in ClipBuilder | Recognizable actions with accessible text. |
 | Styling | Shared CSS tokens and component styles | Fits the custom vintage visual direction without multiple UI systems. |
 | Tests | Vitest, Testing Library, Supertest; focused browser E2E | Matches inherited verification style. |
@@ -911,7 +1074,7 @@ The frontend serves pages/assets and authenticates private API calls. The backen
 
 ### 14.3 Why two services are enough
 
-The initial corpus is small and requests are bounded. Originals can remain in browser memory between operations. Backend extraction handles one source per request. Subsequent copilot requests carry validated records and minimal source excerpts, not all original files again.
+The initial corpus is small and requests are bounded. Originals remain in temporary browser Blob storage and runtime memory between operations; refresh recovery uses the bounded per-tab projection. Backend extraction handles one source per request. Subsequent copilot requests carry validated records and minimal source excerpts, not all original files again.
 
 No durable backend job state is promised. Work does not continue reliably after a response has ended or an instance is lost. If measurements show that office conversion or larger input cannot fit request limits, narrow support or propose a specific isolated parser worker; do not quietly introduce background work with no lifecycle.
 
@@ -977,9 +1140,9 @@ Retrosum/
 │  │     │  ├─ entry/                  # Landing and sample entry
 │  │     │  ├─ documents/              # Selection, preview, recognition display
 │  │     │  ├─ overview/               # KPIs, charts and contributor navigation
-│  │     │  ├─ records/                # Register and manual-entry UI
+│  │     │  ├─ records/                # Register, invoice/expense/payment/contact CRUD UI
 │  │     │  ├─ review/                 # Decisions and correction forms
-│  │     │  ├─ copilot/                # Questions, answers and cited navigation
+│  │     │  ├─ copilot/                # Retro explanations, tours and confirmed session CRUD
 │  │     │  ├─ export/                 # Snapshot export and optional originals
 │  │     │  ├─ session/                # Reducer, effect ownership, preferences
 │  │     │  └─ privacy/                # Current handling disclosure
@@ -1004,7 +1167,7 @@ Retrosum/
 │        │  ├─ fake/                 # Deterministic product-facing adapters
 │        │  └─ openai/               # SDK translation and approved live dispatch
 │        ├─ security/                # Grants, CSRF, rate/capacity/usage admission
-│        ├─ demo/                    # Matching sample interpretations/manifest
+│        ├─ demo/                    # Fake/evaluation interpretations; public asset manifest
 │        └─ observability/           # Content-free event mapping
 ├─ packages/
 │  ├─ contracts/
@@ -1040,15 +1203,18 @@ Retrosum/
 | --- | --- |
 | Browser file lifecycle and preview URLs | Documents feature |
 | Current workflow/revision ownership | Session feature |
+| Forms, invoice preview and record/contact management | Records feature |
+| Local confirmation, revision recheck and proposal application | Retro/session bridge using Money commands |
+| Registered tours and view explanation targets | Retro feature; stable target IDs owned by each screen |
 | Calculation and relationship rules | Money package |
 | External data schemas | Contracts package |
 | Paid transport and IAM token | Frontend server module |
 | Source preparation and native parsing | Backend documents module |
 | User-action orchestration | Backend use case |
 | Provider raw request/response shape | Provider adapter |
-| Grounded read-only tool execution | Backend AI module |
+| Grounded investigation and change-proposal preparation | Backend AI module |
 | Admission, single-use grant and usage reservations | Backend security |
-| Source-matched deterministic sample | Backend demo and public synthetic assets |
+| Development fake sample truth | Backend fake/evaluation modules; isolated from live recognition |
 | Content-free diagnostics | Backend observability |
 
 Prefer named modules such as `calculate-open-balances.ts`, `apply-payment-allocation.ts` or `prepare-docx-blocks.ts` over catch-all `utils`, `helpers`, `common`, `services` and root barrels. Extract reusable primitives only for stable shared responsibilities.
@@ -1081,6 +1247,12 @@ Publish contracts and money through explicit package exports. Build in dependenc
 | `ComputedFact` | Immutable fact ID and bounded domain value for grounded narrative. |
 | `Insight` | Cited observation associated with one revision/scope. |
 | `ChatAnswer` | Cited explanation, facts and actual tool steps. |
+| `InvoiceDraft` | Bounded outgoing invoice fields/lines and draft/issued lifecycle; linked sale on issuance. |
+| `Contact` | Minimal session customer/vendor/both identity with protected references. |
+| `SessionCommand` | Revisioned CRUD/review union used by forms and Retro. |
+| `ChangeProposal` | Validated commands, before/after diff and deterministic effects awaiting local confirmation. |
+| `RetroResponse` | Explanation/clarification/proposal/tour/limited-result union. |
+| `TourDefinition` | App-owned ordered steps with stable allow-listed target IDs. |
 | `OperationResult` | Typed success/failure/cancellation/unknown outcome. |
 | `ExportManifest` | Versioned file list, scope, revision and redaction settings. |
 
@@ -1150,19 +1322,19 @@ Local service-to-service transport uses the documented loopback API. Hosted tran
 | --- | --- | --- |
 | `GET /v1/health` | Content-free liveness/readiness category | Never |
 | `GET /v1/config` | Public capabilities, formats, limits and disclosure version | Never |
-| `GET /v1/samples/manifest` | Versioned public synthetic sample manifest/interpretation metadata | Never |
+| `GET /v1/samples/manifest` | Versioned public synthetic PDF asset manifest; no live interpretation truth | Never |
 | `POST /v1/session` | Create short-lived content-free admission identity | Never |
 | `POST /v1/grants` | Validate challenge/scope and issue one action-bound grant | Never invokes AI |
 | `POST /v1/money/extract` | One bounded multipart original plus business/preparation context | Only if a live interpretation/mapping dispatch is required |
 | `POST /v1/money/insights` | Validated current snapshot, computed facts, bounded investigation | Live mode only |
-| `POST /v1/money/chat` | One bounded question and validated snapshot | Live mode only |
+| `POST /v1/money/chat` | One bounded Retro intent/message and validated snapshot; grounded response or change proposal | Live mode only |
 | `DELETE /v1/session` | Revoke current admission state and request cleanup of owned in-flight work | Never |
 
-Local review, filtering, arithmetic and export use `packages/money` and browser-owned state. A separate review API is unnecessary in the first design because there is no server-stored ledger to mutate. The backend independently validates the same snapshot before AI operations. This refines the earlier draft's proposed `/money/review` route into one shared command engine rather than two competing state authorities.
+Local review, filtering, arithmetic and export use `packages/money` and browser-owned state. A separate record CRUD/review API is unnecessary in the first design because there is no server-stored ledger to mutate. The backend independently validates the same snapshot before AI operations and returns validated change proposals through the chat response; the browser confirms and applies them locally. This refines the earlier draft's proposed `/money/review` route into one shared command engine rather than two competing state authorities.
 
 ### 17.3 Configuration response
 
-Return public facts such as supported format IDs, declared limits, sample version, prepared-sample availability, native-parser availability, live document/copilot availability and current provider disclosure label. Do not return secrets, private origins, account IDs, secret resource names or raw internal readiness details.
+Return public facts such as supported format IDs, declared limits, sample version, development-fake mode, PDF inspection availability, live document/copilot availability and current provider disclosure label. Do not return secrets, private origins, account IDs, secret resource names or raw internal readiness details.
 
 A capability flag means composition prerequisites appear satisfied; it is not evidence that a provider will accept the next request or that live extraction quality has passed evaluation. Public claims require separate evaluation/release evidence.
 
@@ -1176,7 +1348,7 @@ Return recognized proposal, evidence references, native checks, eligibility/revi
 
 Include a bounded snapshot with revision, scope, normalized records, confirmed relationships, review issues, approved source excerpts and a short recent conversation projection. The server revalidates graph integrity and recomputes metrics; it ignores client-supplied metric values as authority.
 
-Chat includes one question of at most 1,000 characters. Recent conversation is at most four user/answer pairs and 8,000 characters combined, further restricted by the model input envelope. Exclude unrelated personal/contact/payment identifiers from context preparation.
+Chat includes one Retro intent/message of at most 1,000 characters. Recent conversation is at most four user/answer pairs and 8,000 characters combined, further restricted by the model input envelope. Exclude unrelated personal/contact/payment identifiers from context preparation.
 
 ### 17.6 Status and transport behavior
 
@@ -1196,9 +1368,9 @@ Provider text must not become the authoritative response until grounding validat
 
 1. Admit bounded work without invoking a provider.
 2. Validate MIME/container from bytes and inspect resource limits.
-3. Produce safe source units: PDF metadata/pages, image dimensions, DOCX blocks, native rows/cells or recognized structured fields.
+3. Produce safe source units: PDF metadata/pages, readable text/image resources and page/block locators.
 4. Establish business context.
-5. Select native known-schema interpretation or one live document/mapping operation.
+5. Select one live PDF interpretation operation or the explicitly configured development fake adapter.
 6. Validate returned shape, source references, amount/date normalization and role consistency.
 7. Return a proposal and concrete review issues.
 8. Release request resources and clean temporary parser data.
@@ -1213,38 +1385,40 @@ interface DocumentInterpreter {
 }
 
 interface RecordInvestigator {
-  investigate(input: InvestigationInput, tools: ReadOnlyToolExecutor,
-    signal: AbortSignal): Promise<GroundedNarrative>;
+  investigate(input: InvestigationInput, tools: RetroToolExecutor,
+    signal: AbortSignal): Promise<RetroResponse>;
 }
 ```
 
 These are conceptual interfaces; concrete types come from contracts and private use-case inputs. Provider SDK types stay inside the adapter. Tests inject deterministic implementations and assert dispatch counts.
 
-### 18.3 OpenAI proposal
+### 18.3 Selected OpenAI integration
 
-Use a Responses API adapter with a model evaluated for required document/vision inputs and structured output. Use a versioned JSON schema and validate the received result again with application contracts. Handle refusal, incomplete output, unsupported schema/model combinations and invalid grounding explicitly. Structured output constrains shape; it does not prove field truth. [Official OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
+The owner selected **OpenAI**. Start with the researched `gpt-6.1-sol` Responses API adapter for PDF interpretation and Retro, subject to the exact-number release evaluation. The official model reference lists image input, structured output and function calling. Recheck the API account's actual access and model/rates during setup; no credential or paid call is required to create the workspace. [Model reference](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
 
-Select exact model IDs after fixtures, input/output bounds and an owner-approved cost comparison. Extraction and explanation can use different evaluated models if that provides a measured benefit, but all selection remains centralized and documented. No speculative model name or price is required to make this blueprint implementable.
+Use a versioned JSON schema and validate returned values again with shared contracts, source locators and the pure money engine. Handle refusal, incomplete output, unsupported combinations, deadline, provider failure and invalid grounding explicitly. Structured output constrains shape and does not guarantee correct numbers. [Structured output guide](https://developers.openai.com/api/docs/guides/structured-outputs).
 
-Prefer foreground request-scoped operations with `store: false` where supported and appropriate. Avoid a persistent conversation/vector store for this tiny corpus. Prefer inline bounded source submission over provider file persistence. If the chosen path uses provider file objects, implement explicit deletion/expiry handling. Application-local reset and `store: false` do not establish universal provider deletion or retention guarantees. [Official OpenAI data controls](https://developers.openai.com/api/docs/guides/your-data).
+Submit inspected PDF data inline via Responses `input_file` with a correct MIME filename; actual PDF text and page images are interpreted. Avoid creating provider Files, vector stores, persistent conversation objects or background jobs for this demo. Use foreground `store: false` where supported. Local reset and that flag do not establish universal provider zero retention; the disclosure links current provider data controls. [PDF input guide](https://developers.openai.com/api/docs/guides/file-inputs), [data controls](https://developers.openai.com/api/docs/guides/your-data).
 
-### 18.4 Gemini alternative
+Model selection, reasoning effort, output limits, pricing and prompt/schema version are centralized server policy. For the initial candidate use supported `low` reasoning where it passes accuracy, and include any billed reasoning tokens in output usage. Re-evaluate after changing models/prompts; never choose a cheaper model by assumption while retaining an unmeasured zero-error claim.
 
-The owner allowed OpenAI or Gemini in the latest request. This blueprint proposes OpenAI first because the received Retrosum product explicitly targeted GPT-based unstructured interpretation. Gemini can replace that live adapter if the owner selects it after an equivalent capability/cost/retention evaluation.
+### 18.4 One live provider
 
-Keep the product ports stable, but do not install a second SDK, maintain a second prompt family or silently retry another provider in the initial build. A provider switch updates disclosure, configuration, fixtures, live acceptance and cost evidence. No Gemini-specific capability is assumed without checking its then-current official documentation.
+Gemini is outside the first build. There is no provider bake-off ticket, second SDK, second prompt family or automatic cross-provider fallback. Stable ports separate OpenAI from the product, and deterministic fake adapters serve development. A future provider change is a new decision with updated disclosure, cost policy and evaluation; it is not a prerequisite for this queue.
 
 ### 18.5 Fake mode
 
-Fake mode is a deterministic product-facing adapter with no credentials and no external network. Its document interpretation works only with declared synthetic fixture inputs or explicit failure fixtures. Arbitrary uploaded documents receive **Live interpretation unavailable** while native preview/manual review can remain available.
+Fake mode exists for **local development, CI and explicitly labelled preview builds**, with no external network or keys. The public owner-intended demo runs the sample PDFs live. One backend runtime capability response determines mode; there is no separate browser switch that can claim a different mode. Missing credentials in a requested live configuration close the live route; they do not silently select fake responses.
 
-Fake investigation can return fixture-bound answers or deterministic explanations generated from the current validated money graph. Label the mode clearly. It must not claim to be live AI or give a canned response that disagrees with a changed manual record.
+Fake document recognition accepts only declared asset hashes/fixture cases. Fake arbitrary visitor uploads receive **Live interpretation unavailable**, preserving their preview/manual form path. Fake Retro supports deterministic generic examples (summary, tour, chart explanation, invoice/expense create/edit/delete intent), contextual Yes/No chips and deliberate failure/stale/ambiguity cases. Generate numeric text from the current graph, so a manual edit changes the fake summary. Unsupported free text receives a clear limitation and supported shortcuts.
+
+Use the same command validation, tour target registry, floating conversation UI, form-fill choreography, source citations, local confirmation and Undo in fake and live modes. Fakes simulate language/provider responses, never substitute a second ledger or bypass business rules. Count calls, prove zero paid dispatch, and label fake provenance in exports. Live failure never becomes an unlabelled fixture result.
 
 ### 18.6 Prompt policy
 
 Prompts separate system policy, developer-defined schema/tool restrictions and delimited source/user data. Filenames, invoice notes, CSV cells, documents and questions are untrusted data. Instructions printed in an invoice cannot authorize network access, data disclosure, ledger changes or policy overrides.
 
-Send only the context required for the operation. Contact and banking extension fields are excluded from copilot context unless specifically necessary to answer an allowed record question. Extraction can observe a printed field without echoing all sensitive identifiers into later explanations.
+Send only the context required for the operation. Contact and banking extension fields are excluded from Retro context unless specifically necessary for the current allowed record/contact task. Extraction can observe a printed field without echoing all sensitive identifiers into later explanations.
 
 ### 18.7 Grounding validation
 
@@ -1256,14 +1430,14 @@ Send only the context required for the operation. Contact and banking extension 
 | Model-generated authoritative arithmetic | Replace only through declared deterministic fact rendering, never silently accept it. |
 | Unsupported paid/open conclusion | Require source/payment evidence or mark unknown. |
 | Unsupported causal explanation | Restrict to observable record contributions and coverage. |
-| Write-tool or remote URL proposal | Reject as outside allowed capabilities. |
+| Unregistered mutation, direct model write, arbitrary tour target or remote URL | Reject; only validated session proposals and application-owned targets are allowed. |
 | Advice recommendation | Return useful supplied-record explanation within boundary. |
 
 ### 18.8 Retry policy
 
 Set provider SDK automatic retries to zero for metered operations. No automatic output-repair request, cross-provider fallback or retry on page reload. A visitor may deliberately retry one failed extraction once per workspace after seeing whether the outcome is known. The retry consumes its own admitted operation budget.
 
-Chat/insight failure consumes any already-dispatched usage; a deliberate resubmission consumes the next question/generation allowance. Recoverable native parsing can be retried locally after correcting the input without claiming another AI request was free.
+Retro/insight failure consumes any already-dispatched usage; a deliberate resubmission consumes the next turn/generation allowance. Recoverable native parsing can be retried locally after correcting the input without claiming another AI request was free.
 
 ## 19. Limits, admission and spend
 
@@ -1272,16 +1446,18 @@ Chat/insight failure consumes any already-dispatched usage; a deliberate resubmi
 | Visitor action | Provider allowance |
 | --- | --- |
 | Landing, sample preview, source viewing | 0 |
-| Prepared sample start | 0 |
-| Known native structured import | 0 |
+| Public sample processing | Same live PDF interpretation allowance as visitor originals |
+| Development fake sample start | 0 |
+| PDF inspection/text preparation | 0; paid interpretation is a separate explicit step |
 | Live unstructured interpretation | At most 1 model request per original |
-| Unknown supported sheet/column mapping | At most 1 interpretation request, charged to that document |
+| PDF register interpretation | Included in the original's one interpretation request |
 | Explicit extraction retry | At most 1 additional request across the workspace |
 | Live insight generation | At most 2 generations per workspace; each ≤3 model requests and ≤4 total tool calls |
-| Live guest question | At most 4 questions per workspace; each ≤3 model requests and ≤4 total tool calls |
+| Live Retro turn: question, summary, clarification or CRUD intent | At most 8 turns per workspace; each ≤3 model requests and ≤4 total tool calls |
+| Built-in tour, manual CRUD, confirm/apply/undo | 0 |
 | Filter, review, arithmetic, export, reset | 0 |
 
-With all 10 originals requiring interpretation, one extraction retry and the maximum six investigation actions, the structural ceiling is **29 model requests**: 10 + 1 + (2 + 4) × 3. Most visits should use fewer. This is an operation ceiling, not a currency-denominated cost guarantee.
+With all 10 originals requiring interpretation, one extraction retry and the maximum ten investigation actions, the structural ceiling is **41 model requests**: 10 + 1 + (2 + 8) × 3. Most visits should use fewer. This is an operation ceiling, not a currency-denominated cost guarantee.
 
 ### 19.2 Proposed model envelopes
 
@@ -1293,7 +1469,7 @@ With all 10 originals requiring interpretation, one extraction retry and the max
 
 The provider's tokenization and image/PDF accounting must be measured for the selected model. Do not equate raw text characters with document-image tokens. If an upper bound cannot be established for a format/model combination, that live route remains unavailable until an evaluated representation/cap exists. Never silently truncate required invoice lines to fit a budget.
 
-The structural worst-case envelope is 480,000 input-token units and 93,000 output tokens across the whole run under these per-request maxima. This comes from 11 × 24,000 + 18 × 12,000 and 11 × 6,000 + 18 × 1,500. Actual monetary allowance can be lower and must reject additional work before dispatch when its reservation would exceed the owner-approved budget.
+The structural worst-case envelope is 624,000 input-token units and 111,000 output tokens across the whole run under these per-request maxima. This comes from 11 × 24,000 + 30 × 12,000 and 11 × 6,000 + 30 × 1,500. Actual monetary allowance can be lower and must reject additional work before dispatch when its reservation would exceed the owner-approved budget.
 
 ### 19.3 Admission order
 
@@ -1318,7 +1494,7 @@ Failures before dispatch make zero provider calls. Failures after dispatch remai
 | Document processing within a workspace | Sequential |
 | Content-free admission session lifetime | 30 minutes |
 | Action grant lifetime | 2 minutes; one operation class/input identity |
-| Per admission session | One workspace run with the file/question/generation limits above |
+| Per admission session | One workspace run with the file/Retro-turn/generation limits above |
 | Paid-action attempts per hashed source | 6 per minute and 30 per hour; enforce alongside run limits |
 | Route-wide paid-action starts per instance | 20 per hour during initial controlled preview |
 | Cloud Run minimum / maximum | 0 / 1 for each service, measured before widening |
@@ -1342,20 +1518,23 @@ After restart, grants tied to the prior boot epoch fail closed. Requests routed 
 ### 19.7 Cost model
 
 ```text
-one run cost = admitted model input usage × current input rates
-             + model output usage × current output rates
-             + any separately billed document/image processing
-             + frontend/API compute and request costs
-             + network delivery
-             + build, registry, secret and logging costs
-             + deliberate retry reserve
+one run cost = admitted input units × current model input rates
+             + billed output (including reasoning) × current output rates
+             + any separately billed tools/services enabled
+             + application compute, network, build, registry, secrets and logging
 ```
 
-Use official current prices at the time of provider selection; record pricing date, model ID and actual units. Separate credits/free allowances from underlying unit cost. A cloud budget notification is not automatically a hard cap. Describe the exact enforcement coverage of any enabled provider/cloud budget mechanism.
+The owner normally starts with approximately **USD 5 of OpenAI credits**. Treat this as an initial testing balance, not a monthly subscription, a guaranteed sufficient budget or authorization for unbounded traffic. No paid evaluation ran during this planning pass. Use actual measured usage and let the owner top up or reduce public availability when needed.
+
+As checked on 8 October 2026, `gpt-6.1-sol` standard short-context input/output rates are USD 2 / USD 10 per million tokens. At the current 624,000 input / 111,000 output structural envelope, token-only usage would be about **USD 2.36** for a maximal run if all PDF image/text and reasoning units fit those bounds/rates. Typical measured runs may be smaller; long-context, premium tiers and separate hosting costs are not included. A USD 5 balance therefore cannot be advertised as covering many maximal sessions. [Official model pricing](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
+
+Propose an initial **USD 2.50 token reservation ceiling per admission run**, alongside file/turn/request limits and current price policy. Charge/reserve attempted and unknown-outcome dispatches; never refund uncertain usage merely because the browser lost a response. This ceiling is process-local and cannot enforce the entire owner's account balance after anonymous resets or service restarts. Use provider account controls, monitored balance and emergency paid-off as complementary operator controls. A cloud budget notification is not a hard cap.
+
+Recheck rates/model availability before live setup and record date/model, units, measured sample extraction spend, Retro spend and deliberate retry usage. Pricing assumptions must remain configuration evidence rather than hard-coded promotional copy.
 
 ### 19.8 Paid-off behavior
 
-`PAID_DEMO_ENABLED=false` overrides all live operation flags. Prepared samples, native imports, source preview, arithmetic, review, export, reset, health and configuration remain usable. Paid-off must reject before any provider request. Tests prove that behavior even if credentials or live flags are accidentally inherited from the shell.
+`PAID_DEMO_ENABLED=false` overrides all live operation flags. PDF gallery/viewing, already recognized records, manual forms, local tour, arithmetic, review, export, reset, health and configuration remain usable. Labelled fixture recognition/chat stays available only in configured development fake mode. Paid-off must reject before any provider request. Tests prove that behavior even if credentials or live flags are accidentally inherited from the shell.
 
 ## 20. Privacy, security and cleanup
 
@@ -1363,20 +1542,20 @@ Use official current prices at the time of provider selection; record pricing da
 
 | Data | Browser | Frontend server | Backend | Provider | Retention |
 | --- | --- | --- | --- | --- | --- |
-| Original files | Current-session memory and object URLs | Bounded forwarding stream; no saved application copy | One request's bounded buffer/parser resources | Submitted only for enabled disclosed interpretation | No durable Retrosum copy in baseline |
-| Source text/cells | Current-session graph | Bounded request transport | Request-scoped preparation/context | Minimal necessary extraction/investigation context | Browser lifetime; external handling per enabled provider |
-| Money records/corrections | Current-session graph | Transport only | Revalidate/recompute per request | Minimized normalized context for explanations | No application database |
-| Chat questions/answers | Current-session bounded conversation | Transport only | Request scope | Enabled provider operation | No durable Retrosum chat history |
-| Sample assets/results | Public original synthetic fixtures | Static assets | Versioned matching fixtures | Only in deliberate live sample processing | Source-controlled synthetic data |
+| Original files | Temporary per-tab browser Blob cache and runtime object URLs | Bounded forwarding stream; no saved application copy | One request's bounded buffer/parser resources | Submitted only for enabled disclosed interpretation | No durable Retrosum copy in baseline |
+| Source text/cells | Refresh-safe bounded browser graph | Bounded request transport | Request-scoped preparation/context | Minimal necessary extraction/investigation context | Browser lifetime; external handling per enabled provider |
+| Money records/corrections | Refresh-safe bounded browser graph | Transport only | Revalidate/recompute per request | Minimized normalized context for explanations | No application database |
+| Retro messages, summaries and change proposals | Bounded browser conversation; transient pending proposals | Transport only | Request scope | Enabled provider operation | No server history; fixed browser-session expiry |
+| Sample assets/results | Public original synthetic fixtures | Static assets | Versioned matching fixtures | In the normal public live sample path | Source-controlled synthetic data |
 | Session/grant identifiers | Secure cookie or short-lived memory | Transport only | Content-free admission memory | No document access capability passed as a provider instruction | Short-lived; revoke/expire |
 | Provider/grant secrets | Never | No provider secret | Private runtime composition | Required provider authentication only | Secret Manager or ignored local file |
 | Operational telemetry | Minimal UI status | Content-free fields | Allow-listed metrics/categories | Provider-owned usage | Documented log retention, no content |
 
 ### 20.2 User-facing handling
 
-Proposed concise wording: **Your workspace is temporary. Files stay available in this tab while you use it. When you start live processing, the selected provider receives the content needed to interpret your documents or answer your question. Retrosum does not save a document library or account history. Export before leaving.**
+Proposed concise wording: **Your workspace is temporary. Files and created records stay available while you use this session. When you start live processing, the selected provider receives the content needed to interpret documents or help with your Retro request. Retrosum does not save a document library or account history. Refresh keeps this workspace; export before reset or session expiry.**
 
-Before live processing, disclose the actual provider, submitted data categories, application lifetime, external-policy link and reset limitations. The prepared sample needs a shorter synthetic-data explanation. No blanket **never leaves your device**, **instant deletion everywhere** or **zero retention** claim belongs in the product without exact supporting implementation/provider evidence.
+Before live processing, disclose the actual provider, submitted data categories, application lifetime, external-policy link and reset limitations. The live sample needs a concise synthetic-data/provider-processing explanation. No blanket **never leaves your device**, **instant deletion everywhere** or **zero retention** claim belongs in the product without exact supporting implementation/provider evidence.
 
 ### 20.3 Input and parser controls
 
@@ -1416,7 +1595,7 @@ A hashed source key can exist in expiring admission memory without being a logge
 | Resource | Primary cleanup | Failure fallback |
 | --- | --- | --- |
 | Browser object URLs/previews | Feature teardown, source removal, reset | Tab/process termination |
-| Browser originals/graph | Explicit reset or tab lifetime | Browser memory release; no refresh restoration promised |
+| Browser originals/graph | Reset or fixed two-hour expiry; best-effort close cleanup | Refresh restores; expired Blob leftovers swept when Retrosum next runs |
 | Backend source buffers | Request finally block after completion/cancel/failure | Instance memory release |
 | Temporary parser files | Request finally block with bounded deletion | Contained startup sweep and ephemeral instance removal; disclose inability to guarantee immediate deletion after crash |
 | In-flight provider work | Abort propagation and provider deadline | Provider completion/timeout under its policies |
@@ -1585,61 +1764,73 @@ Record exact image digests, revisions, safe configuration categories, IAM checks
 
 ### 23.1 Design thesis
 
-Retrosum should feel like clear modern software framed by warm business stationery. A serif wordmark and paper-colored surfaces give the brand its retrospective character. Controls, numerals, tables and source links stay crisp and familiar.
+The attached Retrosum wordmark sets the identity: deep green “Retro”, burnt orange “sum.”, a cream ground and a vintage serif. Preserve the wordmark’s character. The application uses dark forest-green surfaces with white/off-white text, cream editorial areas and restrained orange emphasis. The professional tone is calm; the dashboard supplies the impressive interactive detail.
 
-Use restrained rules, generous spacing and calm data hierarchy. Avoid distressed text, tiny ledger typography, decorative financial charts, glowing AI gradients, constant motion or a dashboard so dense that the visitor cannot identify the next action.
+Avoid distressed fonts, tiny ledger text, neon gradients, uncontrolled perpetual motion and generic banking-blue branding. Premium means clear hierarchy, precise alignment, generous space, useful detail and smooth feedback, not a dense grid of decorative charts.
 
-### 23.2 Proposed tokens
+### 23.2 Palette and semantic roles
 
-| Role | Starting token | Use |
+| Role | Proposed token | Use |
 | --- | --- | --- |
-| Canvas | `#F4EBDD` | Warm paper background |
-| Surface | `#FFFCF5` | Clean working panels |
-| Primary text | `#263C34` | Headings, body and values |
-| Secondary text | `#5A685E` | Readable supporting labels |
-| Primary | `#28594C` | Main actions and income/primary series |
-| Agent accent | `#98442F` | Copilot and source-grounded observations |
-| Secondary accent | `#77551F` | Small emphasis and distinct chart series |
-| Border | `#D4C9B8` | Quiet surface separation; do not use as sole control boundary if contrast is insufficient |
-| Focus | Dedicated high-contrast ring derived from primary | Keyboard-visible focus on every interactive element |
+| Logo green / heading ink | `#263C34` | Wordmark and text on cream |
+| Main forest canvas | `#102E27` | Workspace backdrop, photographic overlay |
+| Raised forest surface | `#193D33` | Dashboard cards and Retro panel |
+| Green brand action | `#28594C` | Main green accents on light surfaces |
+| Logo burnt orange | `#98442F` | Preserve the existing sum wordmark on cream |
+| Active orange | `#E39B6D` | Dark-surface accent, focus detail, cost series |
+| Ivory text | `#FFFCF5` | Primary text on dark surfaces |
+| Warm cream | `#F4EBDD` | Landing/document/reading surfaces |
+| Muted light text | `#C6D4C9` | Dark-surface supporting labels; verify contrast |
+| Muted light-surface text | `#53645A` | Secondary copy on cream |
+| Income green | `#A7C98C` | Primary income series |
+| Cash teal | `#7CBEB2` | Cash series |
+| Comparison lilac | `#B7A9CF` | Prior-period / distinct category series |
+| Review amber | `#D9BF72` | Review indicator, always labelled |
+| Negative / error | `#F0A29A` | Loss and error accents on dark surfaces, with explicit labels |
+| Dark border | `#36574B` | Quiet panel dividers |
+| Light border | `#D4C9B8` | Paper panels |
 
-Use color plus text/icons for status. Terracotta denotes the agent accent, not a universal expense/error code. Loss, review and provider failure have distinct semantic labels even when colors overlap.
+Complementary chart colors distinguish series without overpowering green/orange. Stable category-color mapping keeps Rent/Software/etc. consistent across charts and filters. Expense orange is a category role, not automatic failure. Use line dashes, labels/icons and direct legends so no state depends only on color. Verify 4.5:1 normal-text and 3:1 large-text/interface contrast targets in actual components, including focus, orange buttons and tooltips; the palette table itself does not establish conformance.
 
-The HTML companion uses this provisional palette. Final UI contrast and component states need implementation-level verification; a pleasant overview does not establish accessibility conformance.
+### 23.3 Researched typography
 
-### 23.3 Type and layout
+**Proposed pair: Fraunces for the wordmark/editorial headings, IBM Plex Sans for the interface and financial data.** Fraunces supplies a recognizable old-style character; Plex is designed for UI readability. Use moderate Fraunces weight (500–650), optical sizing, low softness and normalized character styling for a professional result. Keep ornate display behavior away from tables and dense labels. This is an aesthetic recommendation; neither family is claimed to be a universal fintech standard. [Google Design on Fraunces](https://design.google/library/a-new-take-on-old-style-typeface), [Fraunces source and OFL](https://github.com/googlefonts/fraunces), [IBM Plex source and OFL](https://github.com/IBM/plex).
 
-Use a warm readable serif for brand/large editorial headings and a clear sans-serif for interface copy. Local system font stacks are sufficient for the overview. If bundled fonts are added to the app, document licenses and use local assets to avoid unnecessary third-party loading.
+| Candidate | Role and assessment | Decision |
+| --- | --- | --- |
+| Fraunces + IBM Plex Sans | Vintage display plus crisp humanist/grotesque UI and clear numbers | Recommended starting direction |
+| Source Serif 4 + IBM Plex Sans | More restrained editorial/financial-report feel | Alternative if Fraunces feels too expressive; review official font source/license before bundling |
+| Georgia + system sans | Robust local reading fallback | HTML companion can use these when no bundled fonts are available |
 
-Use tabular numerals for financial columns. Suggested body 16 px, supporting copy at least 14 px, compact labels no smaller than 12 px where practical. Use a consistent spacing scale around 4/8/12/16/24/32/48/64 px and restrained radii around 8–16 px.
+Set `font-variant-numeric: tabular-nums lining-nums` on money, KPI deltas, table columns and tooltips; confirm actual glyph behavior in the bundled build. Use Plex Mono only if a small code/reference field needs it, not across the financial interface. Bundle licensed font files locally during implementation and retain their OFL notices. Do not depend on third-party font requests to make the demo readable.
 
-Large content regions should have readable max widths. Keep amounts aligned, currency explicit, and explanation close to the figure it qualifies. Long filenames truncate visually with a readable full-name detail, not a page-width overflow.
+Body copy around 16 px, supporting UI at least 14 px, compact chart labels 12–13 px where necessary. KPI values use 30–40 px on desktop with enough width for negative/large values and currency. Spacing scale 4/8/12/16/24/32/48/64; chart panels need quiet padding rather than heavy shadows on every tile.
 
-### 23.4 Components
+### 23.4 Motion contract
 
-Required shared primitives include button, link, form label/input, select, status badge, amount, disclosure, accessible dialog/drawer, table, source chip, issue banner, empty state, progress stage and toast/status announcement. Chart components need textual summaries and data alternatives.
+Use the common durations in section 6.5: readable entrances, smooth data changes, quick hover/focus feedback and restrained panel springs. No Render animations off, disable-motion toggle, static rendering preference or other product setting that removes the showcase motion. The normal experience avoids flashing, endless parallax and large repeated spatial movement.
 
-Feature components include sample card, document row, source viewer, interpretation panel, KPI card, contributor list, category chart, period comparison, open-amount row, duplicate comparison, allocation form, manual record form, insight card, chat answer and export sheet.
+Tour navigation uses a small highlight/position transition; spotlighting does not obscure other controls. Financial changes animate to the new exact validated state once. Do not invent loading percentages or keep a count running after the result is ready. Motion is never the only way to communicate success, selection or an error.
 
-### 23.5 Responsive behavior
+### 23.5 Components and responsive behavior
 
-| Context | Required complete experience |
+Core primitives include buttons, labels/inputs, selectors, status badges, exact amount formatting, dialogs/drawers, source chips, data tables, field errors, progress stages and status announcements. Features include chart cards, contributor drawers, chart tooltip/legend, Retro proposal preview, invoice preview, expense/payment/contact forms, tour highlights and local undo.
+
+| Context | Required experience |
 | --- | --- |
-| 320–430 px phone | Sample entry, file selection, source preview, headline money view, record detail, chat, review and export through natural flow. |
-| 768–1024 px tablet | Compact navigation; source/review drawer; no clipped primary actions. |
-| 1280–1440 px laptop | Clear main workspace with optional copilot/source panel. |
-| 1920–2560 px display | Bounded reading/chart widths; use space for source context rather than stretching copy. |
-| Short viewport/zoom | Natural overflow and visible action/focus; no locked panel height that hides controls. |
+| 320–430 px phone | Deliberate hero crop; stacked readable KPIs; tap chart detail; full-width source/Retro/forms; no page overflow |
+| 768–1024 px tablet | Compact navigation, fewer chart columns, drawers without clipped actions |
+| 1280–1440 px laptop | Strong chart hierarchy; optional source/Retro panel; enough space for tooltips |
+| 1920–2560 px display | Bounded chart/copy width; useful source context rather than stretched lines |
+| Short viewport / 200% zoom | Natural scrolling, visible primary actions, focus and tooltip containment |
 
-Avoid horizontal page scroll. A genuinely wide source table may scroll within a labelled region. Primary touch targets should be at least 44 × 44 px. Respect safe-area insets and virtual keyboards in mobile chat/forms.
+Touch targets at least 44 × 44 px where practical. A genuinely wide source table may scroll within a labelled container; the page itself does not. Keep chart height stable through data changes, with intentional empty/one-point/sparse states.
 
-### 23.6 Accessibility
+### 23.6 Accessible interaction
 
-Use semantic headings/landmarks, labelled controls, keyboard-operable dialogs and explicit focus restoration. Source chips are buttons/links with meaningful accessible names. Live regions announce completed/failed stages without reading every token or creating constant interruptions.
+Use semantic landmarks, labelled controls, keyboard-operable dialogs and explicit focus restoration. Every chart has an equivalent textual summary/data table and keyboard/touch detail. Source chips identify the record and location. Announce completed/failing operations without reading every streaming token. Forced-colors and contrast modes retain readable controls; statuses have text/icons. Avoid flashing and unexpected focus movement.
 
-Critical errors appear near the relevant input and in a navigable summary when appropriate. Charts have table/text alternatives. Never rely solely on color for paid/open/unknown/duplicate states. A PDF download or text alternative remains available if embedded viewing fails.
-
-Honor reduced motion, forced-colors/high-contrast modes and 200% zoom. Reduced motion removes unnecessary spatial movement rather than merely speeding it up. Initial practical checks include keyboard-only, common screen-reader landmarks/status, phone and short laptop layouts.
+Tour dismissal is ordinary navigation, not an animation-disable setting. Exact values remain immediately inspectable while decorative transitions finish. The owner’s no-animation-setting requirement does not justify inaccessible chart content, missing keyboard operation or hiding numbers inside motion.
 
 ## 24. Verification and evaluation
 
@@ -1681,7 +1872,7 @@ Assert exact decimal values and contributor IDs. A visually correct USD 3,520 ca
 
 ### 24.3 Input and source fixtures
 
-Use original synthetic documents with varied layouts: text PDF, scan, rotated image, legibility failure, two-page line continuation, DOCX tables/images, known XLSX receipt, formula-containing sheet, CSV decimal/date/currency ambiguity and enabled structured profile.
+Use the actual synthetic PDFs with varied layouts: native text, scanned/rotated/handwritten pages, legibility failure, two-page line continuation, tax/date/decimal ambiguities and multipage payment/history registers. Deferred non-PDF adapter fixtures are not first-release gates.
 
 Adversarial inputs include oversized/malformed containers, decompression bomb, excessive pages/pixels, XML entity payload, active HTML, dangerous filenames, extreme strings/numbers, forged source IDs, invalid locators and embedded instructions.
 
@@ -1689,24 +1880,37 @@ Adversarial inputs include oversized/malformed containers, decompression bomb, e
 
 Evaluate document kind, party direction, core money/date/currency fields, line coverage, source-reference validity, payment-claim handling, duplicate false positives and fabricated values. Separate schema success from semantic correctness.
 
-Copilot evaluation checks factual support, numeric grounding, compatible comparisons, uncertainty handling, advice boundary, prompt injection, allowed-tool behavior, actual tool-step trace and stale revision rejection.
+Retro evaluation checks factual support, exact numeric grounding, compatible comparisons, summaries, registered tour targets, missing-field clarification, allowed change preparation, confirmation-only local application, duplicate confirmation, deletion/undo dependencies, advice/injection boundaries and stale response/proposal rejection.
 
 Do not grade by exact natural-language wording unless the output is a deliberate deterministic sample. Grade observable invariants and evidence coverage. Publish accuracy or latency measurements only after recording real test inputs, sample size, model/schema versions and failure categories.
 
-### 24.5 Automated isolation
+### 24.5 Numeric, CRUD and visual acceptance
+
+Release acceptance must record zero transcription errors against the complete numeric ground truth of every published legible demo document, including handwriting, in at least two independent live runs per fixture. A final total that happens to be right is not enough. Measure false accepted numeric fields, missing critical fields, invented fields, incorrect dates/IDs/currency, cent precision and coverage. An ambiguous challenge succeeds by holding the affected record, not by guessing.
+
+CRUD checks cover create draft → edit → issue → payment allocation → remove/undo, expense/bill states, contacts with existing references, exact revision conflicts and graph limits. Test Retro’s structured proposal against the same manual command cases; confirm executes once and no direct model write exists. Tour tests cover missing target, phone navigation, focus return and exit. Summaries must update or visibly become stale after changes.
+
+Visual acceptance includes desktop/phone chart interaction, hover/focus/tap equivalence, exact tooltip values, contributor/source drilldown, filter transitions, zero/negative/sparse data, no chart clipping, logo palette, typography and readable photographic overlay. Smoothness is manually assessed on a representative phone/laptop, with reasonable render profiling when a real performance issue appears. No animation-disable setting is added as a workaround for a slow dashboard.
+
+### 24.6 Automated isolation
 
 Before any app modules load, set test/fake mode, paid-off and all live flags false. Remove inherited credential variables, disable env-file loading and intercept unexpected external network. Tests must not attach to an already-running live app or read local secret files.
 
 Assert exact dispatch counts at metered boundaries. Double click, retry, reset, reload-like stale action and malicious grant reuse must not dispatch extra model calls. Contract/money packages compile without ambient Node globals; executable negative import fixtures prove cross-app/platform imports fail.
 
-### 24.6 Manual acceptance matrix
+### 24.7 Manual acceptance matrix
 
 | Scenario | Acceptance |
 | --- | --- |
-| Sample entry | Real source preview; prepared outputs labelled; zero AI dispatch. |
+| Sample entry | All eight PDFs viewable; actual bytes processed live; fake-only fixture path visibly labelled. |
 | Guided match | Sources visible; confirm changes settlement/review state and preserves income/cash. |
 | Duplicate review | Both sources preserved; one cost; clear unresolved behavior. |
 | Manual USD 200 cost | All dependent metrics/charts/export update; old narratives stale. |
+| Retro invoice CRUD | Clarify missing essentials; preview/confirm once; draft excluded; issue affects its own period; payment distinct. |
+| Retro delete/update | Exact target and effect preview; revision-safe application; allocations protected; local Undo. |
+| Retro summary/tour | Current fact sources; registered targets; useful phone/keyboard navigation; no hidden calls. |
+| Numeric extraction gate | All published legible numeric fields exact in recorded live runs; genuine handwriting included. |
+| Dashboard polish | Smooth chart changes, hover/focus/tap details, click-through evidence, readable negative/empty states. |
 | Own supported files | Actual recognition, evidence and partial failure behavior. |
 | Missing prior period | No invented comparison; helpful request for supplied data. |
 | Advice question | Useful factual alternative with no recommendation. |
@@ -1717,7 +1921,7 @@ Assert exact dispatch counts at metered boundaries. Double click, retry, reset, 
 | Export | Current immutable revision, exact fields, safe CSV and accurate original/redaction options. |
 | Hosted composition | Same-origin bridge, private IAM, actual parser image, challenge/origin configuration. |
 
-### 24.7 Verification gates
+### 24.8 Verification gates
 
 Implementation's normal final gate should include formatting, lint, typecheck, focused deterministic suite, package/app build and the meaningful manual matrix for changed behavior. Add broader checks only when a new change, failure or unresolved concern justifies them.
 
@@ -1751,7 +1955,7 @@ Keep ordinary user content out of telemetry. A support report can identify a gen
 
 Load heavy PDF/ZIP/parsing dependencies only when needed. Limit simultaneous decoded pages and revoke unused preview assets. Avoid rendering all high-resolution document pages at once. Memoize deterministic metrics by revision/scope where helpful; do not cache private input in a shared server cache.
 
-Keep the first meaningful sample view quick through static synthetic assets and prepared interpretations. Actual response-time targets should be measured in the deployed region with the selected model, not invented from a local mock.
+Keep the sample gallery quick through static synthetic assets and lightweight real thumbnails; show actual live processing progress before records appear. Actual response-time targets should be measured in the deployed region with the selected model, not invented from a local mock.
 
 ### 25.4 Incident priorities
 
@@ -1782,7 +1986,7 @@ A later packet cannot silently change privacy, financial semantics, public claim
 | App/package README | Focused responsibilities, setup, configuration, commands and checks. |
 | Future ADR | One material architecture tradeoff and accepted consequence. |
 | Future operations guide | Provider setup, data handling, costs, release, rollback and evidence. |
-| Future ticket | One coherent implementation scope and its actual completion evidence. |
+| Ticket packet/index | One coherent implementation scope, dependencies, acceptance and actual completion evidence; all initially Planned. |
 
 Keep detailed commands in the owning service guide, not repeatedly in the public README. Avoid duplicated canonical limits, schemas or financial definitions across unrelated documents.
 
@@ -1804,74 +2008,64 @@ When authorized, group changes coherently and describe the resulting behavior, v
 
 Report what changed, why, meaningful checks, actual manual/live states and remaining limitations. Distinguish planned behavior, implemented behavior and observed behavior. Do not turn an unchecked owner-only step into a pass to close a packet.
 
-This documentation task is complete with the new detailed Markdown and concise HTML artifacts. It does not require creating app folders, implementation tickets, credentials, external resources or commits.
+This planning task updates the Markdown/HTML authorities and creates detailed ticket packets. Application code, credentials, external resources and commits remain outside this pass.
 
-## 27. Delivery sequence without tickets
+## 27. Delivery sequence and ticket ownership
 
-The following stages explain dependency order only. They are not ticket IDs, ticket files, an assigned backlog or an execution queue.
+The [canonical ticket index](tickets/README.md) owns dependencies, status and execution order. Twelve outcome-based packets replace a fragmented screen/API/component backlog. Actual ClipBuilder section 22 records its consolidation from 22 slices into 15 cohesive tickets on 29 September 2026; adopt its principle of keeping frontend, contracts, backend, recovery and verification together for one reviewable behavior. ScreenPilot's detailed packets inform acceptance specificity, not the number of tasks.
 
-| Stage | Deliverable outcome | Evidence before advancing |
+| Ticket | Complete outcome | Dependency |
 | --- | --- | --- |
-| Product agreement | Accepted source of truth and short owner overview | Scope, signature journey and material open choices understood. |
-| Foundation | pnpm workspace, contracts, money engine, app composition and fake isolation | Executable boundaries and exact sample calculation fixtures. |
-| Brand and source assets | Accessible tokens/components and original synthetic documents | Real readable previews; approved composition at phone/laptop sizes. |
-| Connected prepared sample | Landing → source collection → overview → cited explanation → review → export | Whole sample works without credentials or provider calls. |
-| Native own-input path | Bounded parsers, source locators, graph and manual/review fallback | Supported schemas/resources verified; safe partial failure. |
-| Live document interpretation | One admitted provider operation per supported original | Synthetic format evaluations and exact dispatch/usage evidence. |
-| Live insights and copilot | Bounded read-only tools and validated narratives | Grounding, revision, advice/injection and loop-limit checks. |
-| Product quality | Responsive source/review/export flow and meaningful failure states | Focused accessibility/device/lifecycle matrix. |
-| Release audit | Combined code, dependency, privacy, spend and artifact checks | Exact candidate and no material unresolved blocker. |
-| Controlled deployment | Public/private Cloud Run pair, free probes, bounded owner live walkthrough | IAM/transport, actual parser image, model quality, cleanup and usage. |
+| RET-001 | Strict workspace, shared contracts, money package boundaries, safe fake/live composition and quality commands | None |
+| RET-002 | Responsive brand system, calm sourced landing and reusable glass/paper/Retro visual shells | RET-001 |
+| RET-003 | Eight authored PDFs, ground truth, gallery and actual floating PDF viewer | RET-002 |
+| RET-004 | Canonical money graph, manual CRUD, review commands, latest Undo and refresh-safe browser storage | RET-001, RET-003 |
+| RET-005 | Real OpenAI PDF recognition/review vertical slice with exact-field evaluation | RET-004 |
+| RET-006 | Smooth dashboard, all specified KPIs/charts, filters and source drill-down | RET-004, RET-005 |
+| RET-007 | Floating Retro conversation, grounded explanations, summaries, tours and answer shortcuts | RET-006 |
+| RET-008 | Retro's animated editable CRUD forms, inline confirmation and Undo integrated end to end | RET-007 |
+| RET-009 | Revision-consistent exports, reset/expiry/cancel and whole-session recovery | RET-008 |
+| RET-010 | Integrated privacy, private transport, abuse/admission and measured spend readiness | RET-005, RET-009 |
+| RET-011 | Responsive/accessibility/performance pass and exact release-candidate acceptance audit | RET-010 |
+| RET-012 | Manual Cloud Run deployment, actual private/public probes, bounded live walkthrough and rollback record | RET-011 |
 
-The sample slice should become a complete useful experience early. Live inference should replace the declared interpretation boundary, not force a rewrite of the UI/domain model. Hardening protects the working story rather than adding a broad commercial feature set.
+Guardrails start at RET-001/005; RET-010 hardens working boundaries rather than delaying basic validation and cost protection. Deterministic fixture/evaluation truth is available early for development, while the public sample remains live. RET-005 can complete local code with synthetic/injected evidence and a clearly pending owner-run live acceptance record; its public AI capability must remain disabled until that record passes. Later local UI work may proceed against the verified contracts without pretending the live release gate passed.
 
-When the owner later asks for tickets, convert these outcomes into dependency-ready coherent packets with concrete acceptance and verification. Do not generate them now.
+No ticket is completed by this plan, and no paid/cloud/Git action follows from a ticket's existence. Implement only when separately requested. Record actual evidence in the owning packet; split a packet later only for a demonstrated independent risk or outcome, not one ticket per chart, form field, endpoint or CSS treatment.
 
 ## 28. Open decisions and release acceptance
 
-### 28.1 Decisions still needed
+### 28.1 Confirmed decisions and remaining release inputs
 
-| Decision | Proposed starting point | Needed by |
-| --- | --- | --- |
-| Canonical implementation document | This new blueprint, after owner review | Bootstrap |
-| First live provider | OpenAI; Gemini remains a deliberate alternative | Live adapter |
-| Exact model(s) and monetary budget | Select from bounded fixture/cost evaluation | First paid measurement |
-| Initial own-upload claims | PDF/image plus base DOCX/XLSX/CSV story; enable only evaluated routes | Public capability copy |
-| Structured profile | Known payments/events schemas first; one XML profile only when needed | Profile enablement |
-| Version pins | One compatible supported exact set | Bootstrap |
-| Cloud project and region | Owner-selected; compare `europe-west1` | Deployment preparation |
-| Domain ownership/routing | Managed URL first; `retrosum.com` unconfirmed | Domain cutover |
-| Public paid availability | Controlled owner preview, then agreed guest mode | Public live enablement |
-| Monetary/provider/cloud enforcement | Record actual mechanism and limitations | Public live enablement |
-| Log retention | Content-free, short documented operator window | Hosted release |
-| Final typography/logo | Vintage wordmark direction, readable interface | Visual implementation |
-| Refresh persistence | Memory-only baseline with clear temporary-session copy | Any persistence change |
+The planning questions are answered. English/USD; eight visible PDF originals with one handwritten core specimen; live sample processing; OpenAI; development fakes; refresh recovery with bounded browser retention; floating pill Retro with user bubbles/unboxed responses; summaries/tours/highlights/form filling; compact confirmation plus latest-action Undo; initial approximately USD 5 credit top-up; and 12 cohesive tickets are recorded as the current baseline.
 
-These choices do not block documenting or implementing the deterministic sample/domain foundation. Resolve a prerequisite when its dependent action becomes concrete; avoid front-loading a long account/setup interview.
+Do not ask the owner to choose Gemini, accept hidden comparison data, accept refresh loss or disable motion. Those alternatives contradict the current instructions. Keep typography, brand palette and calm photographic hero direction from the existing brief.
+
+Remaining release inputs are operational: actual OpenAI account/model access, measured numeric/handwriting accuracy and usage, cloud project/region, domain ownership/routing, operator log retention, real device behavior, and actual public availability/capacity. They are verified in their dependent tickets rather than blocking documentation or fake-mode foundation work. The two-hour browser expiry, 12-ticket grouping, PDF-only first-release uploads and model candidate are explicit bounded implementation choices, not claims that the owner specified every numeric limit.
 
 ### 28.2 Release acceptance
 
-- A visitor understands the product and starts the sample without an account.
-- Actual original sources are readable in the app, with honest rendition labels.
-- Automatic document recognition needs no per-file type form.
-- Supported own-input claims match implemented and evaluated routes.
-- The canonical sample values and edge-case invariants pass through the shared engine.
-- The invoice/payment/duplicate story cannot double-count one event.
-- Every headline figure and narrative can resolve its current-scope evidence.
-- Known open states, unknown settlement and recorded cash are distinct.
-- Corrections update the whole workspace and make outdated narratives stale.
-- Copilot tools are read-only, bounded and grounded; advice and embedded instructions cannot expand capability.
-- Export binds to one revision and accurately handles original/sensitive data options.
-- Reset/cancellation prevent stale state and release owned resources.
-- Fake tests are isolated from credentials/network and prove dispatch counts.
-- The required phone/keyboard/failure flow is complete.
-- Actual Linux images, private IAM, origins/challenge settings and paid-off controls are verified.
-- Owner-controlled live quality/usage evidence is recorded separately from fake acceptance.
-- Public claims match observed behavior, data handling and actual resource enforcement.
+- Visitor understands the photographic landing and can start without an account.
+- Dated adoption facts retain scope, source links and accurate company-example wording.
+- Originals are readable; at least four distinct synthetic layout families exist, including genuine handwriting.
+- Zero numeric transcription errors are recorded across the published legible live-evaluation suite; uncertain challenges are held safely.
+- Own-input support claims match evaluated formats; public-sample-live and development-fake modes are honest.
+- Exact sample facts and double-counting invariants pass through the shared money engine.
+- The dashboard is polished, smoothly animated, and useful on hover/focus/click/tap; every headline/data mark has appropriate detail/source access.
+- Known open, unknown settlement, invoice income and recorded cash remain distinct.
+- Real session CRUD works through forms and Retro’s confirmed proposals; draft/issued/payment effects are explicit.
+- Retro answers, summarizes, explains, tours and prepares changes with bounded tools; document instructions never authorize actions.
+- CRUD updates dependent metrics/charts/export together, and stale responses/proposals cannot affect the new revision.
+- No animation-off product setting exists. Motion remains calm and values/controls remain accessible.
+- Export binds one revision and preserves draft/contact/payment provenance and sensitive-data options accurately.
+- Reset/cancellation release resources and invalidate all prior operation/proposal ownership.
+- Fake tests prove zero network/credentials and exact dispatch counts; live accuracy evidence is separate.
+- Hosted Linux images, private IAM, origins/challenge and paid-off controls are verified before public release.
+- Public claims match observed behavior, actual data handling and resource enforcement.
 
 ### 28.3 First-build handoff
 
-Build one bounded guest money workspace. Keep the original files inspectable and the economic-event model separate from documents and payments. Reuse the siblings' Next.js/Express/contracts monorepo and public/private Google Cloud Run deployment tools. Use one pure money engine for browser and backend facts, one current workspace revision, explicit read-only AI tools and admitted provider operations. Preserve useful review/export behavior when AI is unavailable. Create implementation tickets only when the owner requests them.
+Build one bounded guest money workspace around exact document recognition, a beautiful interactive dashboard and Retro. Keep source documents, economic events and payments distinct. Use the siblings’ Next.js/Express/contracts monorepo and public/private Cloud Run infrastructure, one pure money/command engine, one current revision and validated proposal confirmation with bounded refresh-safe browser storage. Add only dependencies the agreed document/chart experience requires. No server database or external financial execution is introduced. The authorized ticket plan now documents implementation ownership.
 
 ## Appendix A — extraction field inventory
 
@@ -2071,7 +2265,7 @@ Default review uses parties, number, date/due date, currency, net/tax/gross or s
 | export_disposition | C | Include, exclude confirmed duplicate, or keep unresolved. |
 | user_edits | D | Old/new values, field and review origin. |
 | calculated_checks | D | Computed values separate from source amounts. |
-| extraction_mode | C | Sample result, native structured import or live GPT. |
+| extraction_mode | C | Development fake fixture or live OpenAI; manual creation/correction is separate provenance. |
 | processing_metadata | X | Adapter/model/schema version and processing time. |
 
 ## Appendix B — examples and invariants
@@ -2151,4 +2345,42 @@ Provider/platform guidance was checked on 7 October 2026. Recheck it when select
 
 ### C.4 What is established at handoff
 
-The product, architecture, sample expectations and operating policies above are documented proposals grounded in the received materials and both actual sibling projects. The new HTML is a concise reading companion. Application code, sample bytes, format evaluation, provider budgets, cloud resources, domain ownership and live release acceptance remain future work. No tickets are part of this handoff.
+The product, architecture, sample expectations and operating policies above are documented proposals grounded in the received materials and both actual sibling projects. The new HTML is a concise reading companion. Application code, sample bytes, format evaluation, provider budgets, cloud resources, domain ownership and live release acceptance remain future work. The twelve planned tickets are included in this handoff; no implementation evidence is implied.
+
+
+## Appendix D — research and asset decisions
+
+Research checked **8 October 2026**. References support the listed observations; recommended Retrosum choices are explicitly our design/product inferences. Marketing pages demonstrate product patterns, not independent user-demand statistics. Keep summaries short and link to the primary page instead of copying template content or company prose.
+
+### D.1 Research map
+
+| Topic | Primary reference | Finding and Retrosum decision |
+| --- | --- | --- |
+| AI financial-services adoption | [Bank of England/FCA 2024 survey](https://www.bankofengland.co.uk/report/2024/artificial-intelligence-in-uk-financial-services-2024) | 75% of 118 responding firms use AI; scoped landing statistic |
+| Digital-finance context | [World Bank Findex analysis](https://blogs.worldbank.org/en/allaboutfinance/digital-technology-is-unlocking-financial-inclusion) | 42% digital merchant-payment participation in low/middle-income economies in 2024; not document digitization percentage |
+| Major-company AI example | [Morgan Stanley, 26 June 2024](https://www.morganstanley.com/press-releases/ai-at-morgan-stanley-debrief-launch) | Internal Assistant adoption and meeting summaries; attributed industry example |
+| Business AI assistants | [Intuit, 1 July 2025](https://investors.intuit.com/news-events/press-releases/detail/1258/intuit-introduces-ground-breaking-virtual-team-of-ai-agents-to-fuel-growth-for-businesses) | Accounting/payment/finance task assistance; supports broad Retro task direction |
+| Dashboard information families | [Intuit dashboards](https://quickbooks.intuit.com/learn-support/en-us/help-article/business-reports/create-dashboards-view-key-business-insights/L7C4Ftrzx_US_en_US) | Profitability, cash, receivables/payables and revenue; adapt only evidence-supported views |
+| Dashboard exploration | [Mercury Insights, 11 March 2026](https://mercury.com/blog/introducing-insights) | Filtered interactive charts, inflows/outflows, counterparties and AI contextual explanations |
+| Spend drilldown | [Ramp real-time reporting](https://support.ramp.com/real-time-reporting) | Spend aggregation, filtering, charts and tables; use simple session equivalents |
+| Invoice fields | [GOV.UK invoice guidance](https://www.gov.uk/invoicing-and-taking-payment-from-customers/invoices-what-they-must-include) | Recognizable identifiers, parties, dates, description, amounts/tax; UK reference, no compliance claim |
+| PDF template family | [FreshBooks PDF invoice templates](https://www.freshbooks.com/invoice-templates/pdf) | Reference structure for an original fictional agency invoice |
+| Varied template families | [Vertex42 templates](https://www.vertex42.com/ExcelTemplates/invoice-templates.html) | Basic, consultant/service, blank hand-fill and receipt families; original authored fixtures |
+| Spreadsheet templates | [Microsoft template guidance](https://support.microsoft.com/en-us/excel/free-excel-for-the-web-templates) | Familiar spreadsheet documents; no integration or redistribution assumption |
+| Vintage typography | [Google Design Fraunces](https://design.google/library/a-new-take-on-old-style-typeface) / [font source](https://github.com/googlefonts/fraunces) | Display serif with controlled personality; headings recommendation |
+| UI typography | [IBM Plex](https://github.com/IBM/plex) / [IBM type basics](https://www.ibm.com/design/language/typography/type-basics/) | UI-oriented readable family; financial-interface recommendation |
+| OCR limits | [OpenAI images/vision](https://developers.openai.com/api/docs/guides/images-vision) | Vision can misread; source/check/review gates and fixture evaluation required |
+| Hero photograph | [Max Vakhtbovych / Pexels photo](https://www.pexels.com/photo/modern-interior-design-of-a-business-office-7534224/) / [license](https://www.pexels.com/license/) | Original 7167 × 4783; downloaded 3840 × 2563; generic office, no endorsement |
+| Fetched historical handwriting candidate | [Burr Printing House receipt/invoice](https://commons.wikimedia.org/wiki/File:Burr_printing_house_receipt.jpg) | Public-domain-tagged 1882 specimen; original visually confirms handwritten fields; independently transcribe before OCR evaluation; outside Harbor ledger |
+
+### D.2 HTML companion and asset handling
+
+The HTML embeds the selected compressed 3840-pixel-wide office photo as a data URI so the brief remains a single portable file with no third-party image request. The photo credit and license link are visible. It previews green/orange/ivory surfaces, vintage typography through a local fallback, animated sample charts and sample-only contributor detail. A documentation preview does not establish the final font, chart library or live application behavior.
+
+No original template files, sample PDF binaries, external historic documents or font binaries are redistributed by this documentation update. Fixture authoring, font bundling and live evaluation remain implementation work. The external historical original was fetched to a temporary local file and visually inspected, alongside its source metadata and public-domain notice; it has not passed an AI transcription evaluation. The synthetic handwritten D04 is the planned core specimen. The historical source remains a research-only link outside the first-release sample.
+
+### D.3 Planning boundary
+
+This update incorporates the owner's answered decisions throughout the active blueprint and HTML brief and creates the authorized [12-ticket queue](tickets/README.md). Historical original drafts remain clearly labelled inputs; the two imported methodology files retain their historical content with Retrosum adoption notes. The root/documentation READMEs point at the current authorities.
+
+This is documentation and ticket planning only. No app scaffold, sample PDF bytes, live OCR evidence, dependency installation, paid provider call, cloud mutation, deployment or Git commit was produced. The HTML interaction previews illustrate the intended product; they do not claim implemented PDF processing or live chatbot behavior.

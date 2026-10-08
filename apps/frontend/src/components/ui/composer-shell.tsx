@@ -45,7 +45,7 @@ export function ComposerShell({
           onChange={(event) => onChange?.(event.target.value)}
           disabled={disabled}
           placeholder={placeholder}
-          maxLength={2000}
+          maxLength={1000}
           autoComplete="off"
         />
         <button

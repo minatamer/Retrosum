@@ -131,7 +131,7 @@ export function Dashboard({ onDocuments }: { onDocuments(): void }) {
           Inspect your documents <span aria-hidden="true">↗</span>
         </button>
       </div>
-      <details className={styles.filters}>
+      <details className={styles.filters} id="retro-period">
         <summary>
           Period & scope{" "}
           {scope.category || scope.counterpartyId
@@ -273,6 +273,7 @@ export function Dashboard({ onDocuments }: { onDocuments(): void }) {
           )}
         </ChartPanel>
         <ChartPanel
+          id="retro-composition"
           title="Where costs go"
           subtitle="Compatible documented costs, grouped by category. Tap a segment or a category."
           table={table(catalogue.categories)}
@@ -369,7 +370,7 @@ export function Dashboard({ onDocuments }: { onDocuments(): void }) {
           />
         </ChartPanel>
       </div>
-      <div className={styles.sectionHeading}>
+      <div className={styles.sectionHeading} id="retro-cash">
         <span className="rs-eyebrow rs-muted">The movements behind the documents</span>
         <h2>Cash has its own story.</h2>
         <p>
@@ -428,7 +429,7 @@ export function Dashboard({ onDocuments }: { onDocuments(): void }) {
           </span>
         </section>
       </div>
-      <div className={styles.sectionHeading}>
+      <div className={styles.sectionHeading} id="retro-open">
         <span className="rs-eyebrow rs-muted">Known amounts · gross basis</span>
         <h2>What’s still open.</h2>
         <p>
@@ -492,6 +493,7 @@ export function Dashboard({ onDocuments }: { onDocuments(): void }) {
       </div>
       <ChartPanel
         title="Every source accounted for"
+        id="retro-coverage"
         subtitle={`${workspace.documents.length} originals across the whole collection · ${catalogue.includedEventCount} included events in this date range. Source counts are not event counts or AI confidence.`}
         table={table(catalogue.coverage)}
       >

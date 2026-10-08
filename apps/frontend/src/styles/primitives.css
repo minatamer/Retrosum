@@ -274,7 +274,7 @@
 .rs-chat-shortcuts button {
   border: 1px solid #6d8773;
   border-radius: 30px;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0.45rem 0.85rem;
   color: var(--rs-ivory);
   background: var(--rs-forest);
@@ -348,7 +348,7 @@
 .rs-floating-composer {
   position: fixed;
   z-index: 30;
-  bottom: max(1.1rem, env(safe-area-inset-bottom));
+  bottom: calc(max(1.1rem, env(safe-area-inset-bottom)) + var(--rs-keyboard-offset, 0px));
   left: 50%;
   transform: translateX(-50%);
   width: min(46rem, calc(100% - 2rem));

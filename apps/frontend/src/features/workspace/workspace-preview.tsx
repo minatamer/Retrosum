@@ -1,7 +1,6 @@
 "use client";
 import { useState, useSyncExternalStore } from "react";
 import { WorkspaceShell } from "../../components/ui/workspace-shell";
-import { ComposerShell } from "../../components/ui/composer-shell";
 import { PaperDialog } from "../../components/ui/paper-dialog";
 import { RuntimeStatus } from "../runtime/runtime-status";
 import { DocumentGallery } from "../documents/document-gallery";
@@ -9,9 +8,11 @@ import { SessionProvider, useSession } from "../session/session-provider";
 import { RecordsWorkspace } from "../records/records-workspace";
 import { DocumentIntake } from "../documents/document-intake";
 import { Dashboard } from "../dashboard/dashboard";
+import { Retro } from "../retro/retro";
+import { navigateWorkspace, type WorkspaceView } from "./navigation";
 import styles from "./workspace.module.css";
 
-type View = "overview" | "documents" | "records";
+type View = WorkspaceView;
 const subscribe = (listener: () => void) => {
   window.addEventListener("hashchange", listener);
   return () => window.removeEventListener("hashchange", listener);
@@ -24,10 +25,7 @@ const currentView = (): View =>
       : "overview";
 const serverView = (): View => "overview";
 function navigate(view: View) {
-  if (window.location.hash !== `#${view}`) {
-    window.history.pushState(null, "", `#${view}`);
-    window.dispatchEvent(new HashChangeEvent("hashchange"));
-  }
+  navigateWorkspace(view, true);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 export function WorkspacePreview() {
@@ -39,39 +37,12 @@ export function WorkspacePreview() {
 }
 function WorkspaceContent() {
   const view = useSyncExternalStore(subscribe, currentView, serverView);
-  const { session } = useSession();
+  const { session, generation } = useSession();
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [preview, setPreview] = useState<"welcome" | "tour" | "draft">("welcome");
-  const descriptions = {
-    welcome: "Every number has a paper trail. Tap a chart to explore its original sources.",
-    tour: "Start in Documents, review the sources, then explore Overview. Records lets you create, edit and undo changes in this session.",
-    draft:
-      "I’ll prepare an editable form and fill it step by step. You review the details before confirming; your most recent action can be undone.",
-  };
-  const composer = (
-    <ComposerShell
-      value=""
-      disabled
-      footnote="Interaction preview · Full Retro chat follows."
-      shortcuts={
-        <>
-          <button type="button" onClick={() => setPreview("tour")}>
-            Show me around
-          </button>
-          <button type="button" onClick={() => setPreview("draft")}>
-            How drafts work
-          </button>
-        </>
-      }
-    >
-      <div className="rs-chat-retro" key={preview}>
-        <span className="rs-eyebrow">Retro · Interaction preview</span>
-        {descriptions[preview]}
-      </div>
-    </ComposerShell>
-  );
   return (
-    <WorkspaceShell composer={composer}>
+    <WorkspaceShell
+      composer={<Retro key={`${generation}/${session?.workspace.id ?? "opening"}`} />}
+    >
       <div className={styles.layout}>
         <nav className={styles.nav} aria-label="Workspace areas">
           <span className={styles.business}>
@@ -107,7 +78,7 @@ function WorkspaceContent() {
           <div hidden={view !== "overview"}>
             {view === "overview" && <Dashboard onDocuments={() => navigate("documents")} />}
           </div>
-          <div hidden={view !== "documents"}>
+          <div hidden={view !== "documents"} id="retro-documents">
             <header className={styles.heading}>
               <span className="rs-eyebrow rs-muted">Your original evidence</span>
               <h1>Start with the paper trail.</h1>
@@ -117,7 +88,9 @@ function WorkspaceContent() {
             <DocumentIntake active={view === "documents"} />
             {view === "documents" && <DocumentGallery />}
           </div>
-          <div hidden={view !== "records"}>{view === "records" && <RecordsWorkspace />}</div>
+          <div hidden={view !== "records"} id="retro-records">
+            {view === "records" && <RecordsWorkspace />}
+          </div>
         </div>
       </div>
       <PaperDialog

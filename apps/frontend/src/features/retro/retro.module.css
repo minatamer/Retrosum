@@ -1,0 +1,317 @@
+.retro {
+  min-width: 0;
+  color: var(--rs-ivory);
+}
+.retro :global(.rs-chat-shortcuts) {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+  max-width: 100%;
+}
+.retro :global(.rs-chat-shortcuts button) {
+  flex: 0 0 auto;
+}
+.topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.3rem 0.45rem 0.55rem;
+  font-size: 0.82rem;
+}
+.topline > span {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  white-space: nowrap;
+}
+.topline i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rs-orange);
+  box-shadow: 0 0 14px rgb(235 174 134 / 30%);
+}
+.topline small {
+  color: #c2d2c5;
+  font-size: 0.72rem;
+}
+.topline > div {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+.topline button,
+.clear {
+  border: 0;
+  background: transparent;
+  color: #d1ddcf;
+  font-size: 0.75rem;
+  min-height: 44px;
+  cursor: pointer;
+  padding: 0.25rem 0.55rem;
+  border-radius: 0.7rem;
+}
+.topline button:hover,
+.clear:hover {
+  background: rgb(213 232 205 / 10%);
+  color: white;
+}
+.messages {
+  display: grid;
+  gap: 1rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  max-height: max(0px, min(28dvh, 18rem, calc(var(--rs-visual-height, 100dvh) - 220px)));
+  min-height: 0;
+  border: 1px solid var(--rs-glass-border);
+  border-radius: 1.4rem;
+  padding: 1rem 1.15rem;
+  margin-bottom: 0.7rem;
+  background: linear-gradient(145deg, rgb(28 62 50 / 85%), rgb(11 33 27 / 94%));
+  backdrop-filter: blur(18px) saturate(175%) contrast(108%);
+  box-shadow:
+    0 18px 60px rgb(0 12 7 / 28%),
+    inset 0 1px 0 rgb(245 241 227 / 8%);
+  scrollbar-width: thin;
+}
+.welcome p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  max-width: 36rem;
+}
+.meta {
+  display: block;
+  color: var(--rs-orange);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: 0.025em;
+}
+.user {
+  justify-self: end;
+  max-width: 88%;
+  padding: 0.7rem 1rem;
+  border-radius: 1.15rem 1.15rem 0.35rem 1.15rem;
+  background: #345344;
+  border: 1px solid var(--rs-glass-border);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  box-shadow: 0 8px 25px rgb(8 24 17 / 15%);
+  animation: rs-message-in 260ms var(--rs-ease) both;
+}
+.answer {
+  min-width: 0;
+  padding: 0.25rem 0;
+  line-height: 1.6;
+  animation: rs-message-in 320ms var(--rs-ease) both;
+}
+.answer p {
+  margin: 0.4rem 0 0.8rem;
+  overflow-wrap: anywhere;
+}
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.facts button {
+  display: grid;
+  text-align: left;
+  gap: 0.2rem;
+  color: var(--rs-ivory);
+  background: rgb(221 239 206 / 5%);
+  border: 1px solid rgb(213 232 205 / 15%);
+  border-radius: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  cursor: pointer;
+  min-width: 0;
+  min-height: 44px;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease;
+}
+.facts button:hover {
+  background: rgb(221 239 206 / 12%);
+  border-color: var(--rs-orange);
+}
+.facts span {
+  font-size: 0.78rem;
+}
+.facts strong {
+  font-weight: 500;
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+.facts small {
+  color: #c9d5c8;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.caption {
+  color: #c2d2c5;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.sources button,
+.actions button {
+  border: 1px solid #668775;
+  border-radius: 0.8rem;
+  background: rgb(56 92 70 / 45%);
+  color: var(--rs-ivory);
+  cursor: pointer;
+  min-height: 44px;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.78rem;
+  text-align: left;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  transition: background 180ms ease;
+}
+.sources button:hover,
+.actions button:hover {
+  background: #345c45;
+}
+.stale {
+  color: #f6ceaa;
+  font-size: 0.85rem;
+  border-left: 2px solid var(--rs-orange);
+  padding-left: 0.75rem;
+}
+.stage {
+  font-size: 0.85rem;
+  color: #dce5d4;
+  line-height: 1.6;
+  margin: 0.25rem 0;
+}
+.working::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--rs-orange);
+  margin-right: 0.65rem;
+  animation: working 1200ms ease-in-out infinite alternate;
+}
+.clear {
+  justify-self: start;
+}
+.outline {
+  position: fixed;
+  z-index: 26;
+  pointer-events: none;
+  border: 2px solid var(--rs-orange);
+  border-radius: 1.1rem;
+  box-shadow:
+    0 0 0 6px rgb(235 174 134 / 10%),
+    0 0 30px rgb(235 174 134 / 10%);
+  transition:
+    top 220ms ease,
+    left 220ms ease,
+    width 220ms ease,
+    height 220ms ease;
+  animation: rs-message-in 300ms ease both;
+}
+.outline > span {
+  position: absolute;
+  right: 1rem;
+  top: -1rem;
+  color: #142b21;
+  background: var(--rs-orange);
+  border-radius: 1rem;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+.tour {
+  border: 1px solid #7c977b;
+  border-radius: 1.2rem;
+  padding: 0.9rem 1rem;
+  background: rgb(29 57 44 / 97%);
+  box-shadow: 0 12px 35px rgb(0 12 7 / 22%);
+  margin-bottom: 0.7rem;
+  animation: rs-message-in 300ms ease both;
+  max-height: min(34dvh, 18rem);
+  overflow-y: auto;
+}
+.tour strong {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+.tour p {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0.45rem 0 0.7rem;
+}
+.actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.loading {
+  padding: 1rem;
+  font-size: 0.85rem;
+}
+@keyframes working {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (max-width: 36rem) {
+  .topline {
+    flex-wrap: wrap;
+    padding-inline: 0.2rem;
+    gap: 0.1rem;
+  }
+  .topline > span {
+    flex: 1;
+  }
+  .topline small {
+    font-size: 0.7rem;
+  }
+  .messages {
+    padding: 0.8rem 0.9rem;
+    max-height: max(0px, min(27dvh, 18rem, calc(var(--rs-visual-height, 100dvh) - 220px)));
+  }
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tour {
+    padding: 0.7rem 0.8rem;
+    max-height: min(29dvh, 15rem);
+  }
+}
+@media (max-width: 30rem) {
+  .topline small {
+    display: none;
+  }
+}
+@media (max-height: 560px) {
+  .messages {
+    max-height: min(20dvh, 8rem);
+  }
+  .tour {
+    max-height: 29dvh;
+  }
+  .topline {
+    padding-bottom: 0.1rem;
+  }
+}

@@ -10,14 +10,16 @@ export function ChartPanel({
   subtitle,
   children,
   table,
+  id,
 }: {
   title: string;
   subtitle: string;
   children: ReactNode;
   table: ReactNode;
+  id?: string;
 }) {
   return (
-    <section className={styles.panel}>
+    <section className={styles.panel} id={id}>
       <div className={styles.panelHeading}>
         <h2>{title}</h2>
         <span aria-hidden="true">↗</span>

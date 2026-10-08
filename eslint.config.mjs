@@ -12,6 +12,7 @@ export default ts.config(
       "**/.next/**",
       "**/next-env.d.ts",
       "**/coverage/**",
+      "artifacts/**",
       "apps/frontend/public/pdfjs/**",
     ],
   },

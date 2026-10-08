@@ -8,6 +8,7 @@ import { RuntimeStatus } from "../runtime/runtime-status";
 import { DocumentGallery } from "../documents/document-gallery";
 import { SessionProvider } from "../session/session-provider";
 import { RecordsWorkspace } from "../records/records-workspace";
+import { DocumentIntake } from "../documents/document-intake";
 
 export function WorkspacePreview() {
   return (
@@ -61,6 +62,7 @@ function WorkspaceContent() {
         its details into your financial overview.
       </p>
       <RuntimeStatus />
+      <DocumentIntake />
       <RecordsWorkspace />
       <div className="rs-workspace-panels">
         <section className="rs-card">
@@ -75,8 +77,8 @@ function WorkspaceContent() {
             <li>Payments & a comparison month</li>
           </ul>
           <p>
-            Document viewing and manual records are ready. Processing and your own PDF intake
-            connect next.
+            Process the collection above. Simulated source-linked figures follow the same review
+            path while live accuracy and spend checks remain pending.
           </p>
         </section>
         <section className="rs-card">

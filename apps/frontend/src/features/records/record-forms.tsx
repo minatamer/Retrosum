@@ -394,7 +394,7 @@ export function RecordForm({
             })}
             <Button
               variant="ghost"
-              disabled={lineKeys.length >= 20}
+              disabled={lineKeys.length >= 25}
               onClick={() => {
                 setLineKeys((keys) => [...keys, `line${nextLine}`]);
                 setNextLine((next) => next + 1);

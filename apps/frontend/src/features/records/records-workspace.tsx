@@ -5,8 +5,7 @@ import { calculateMetrics, formatAmount, invoiceAmounts } from "@retrosum/money"
 import { Button } from "../../components/ui/button";
 import { PaperDialog } from "../../components/ui/paper-dialog";
 import { useSession } from "../session/session-provider";
-import { PdfViewer } from "../documents/pdf-viewer";
-import { resolveSourceTarget, sampleAssets } from "../documents/sample-assets";
+import { OriginalViewer } from "../documents/original-viewer";
 import { RecordForm, type RecordSelection } from "./record-forms";
 import styles from "./records.module.css";
 
@@ -27,7 +26,7 @@ export function RecordsWorkspace() {
     impact: string;
     revision: number;
   } | null>(null);
-  const [source, setSource] = useState<ReturnType<typeof resolveSourceTarget> | null>(null);
+  const [source, setSource] = useState<SourceReference | null>(null);
   const [resetOpen, setResetOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   if (!ready || !session)
@@ -59,12 +58,7 @@ export function RecordsWorkspace() {
         type="button"
         onClick={() =>
           act(() => {
-            const target = resolveSourceTarget(sampleAssets, reference);
-            if (!target)
-              throw new RangeError(
-                "This original is unavailable. Re-select the PDF to view it; its record is preserved.",
-              );
-            setSource(target);
+            setSource(reference);
           })
         }
       >
@@ -87,8 +81,8 @@ export function RecordsWorkspace() {
         </span>
       </div>
       <p className={styles.intro}>
-        Create something, change it, and try Undo. This workspace starts empty; document processing
-        will add only figures found in your visible PDFs.
+        Create something, change it, and try Undo. Every imported figure traces to a visible PDF;
+        held sources contribute only after review.
       </p>
       {notice && (
         <p className={styles.warning} role="status">
@@ -567,7 +561,7 @@ export function RecordsWorkspace() {
           Clear & start fresh
         </Button>
       </PaperDialog>
-      {source && <PdfViewer selection={source} onClose={() => setSource(null)} />}
+      {source && <OriginalViewer target={source} onClose={() => setSource(null)} />}
     </section>
   );
 }

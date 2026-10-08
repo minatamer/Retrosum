@@ -1,5 +1,5 @@
 import { MAX_FILE_BYTES } from "@retrosum/contracts";
-import type { SampleAsset } from "@retrosum/contracts";
+import type { SourceDocument } from "@retrosum/contracts";
 
 export const PDF_RUNTIME_PATH = "/pdfjs/6.4.299";
 export const MAX_CANVAS_PIXELS = 4_000_000;
@@ -58,8 +58,14 @@ export function renderDimensions(
   };
 }
 
-export async function loadSampleBytes(asset: SampleAsset, signal: AbortSignal) {
-  if (!/^\/samples\/harbor-v1\/[A-Za-z0-9_-]+\.pdf$/u.test(asset.pdfPath))
+export async function loadSampleBytes(
+  asset: Pick<SourceDocument, "sha256" | "byteLength"> & { pdfPath: string },
+  signal: AbortSignal,
+) {
+  if (
+    !/^\/samples\/harbor-v1\/[A-Za-z0-9_-]+\.pdf$/u.test(asset.pdfPath) &&
+    !asset.pdfPath.startsWith("blob:")
+  )
     throw new Error("This document source is unavailable.");
   const boundedSignal = AbortSignal.any([signal, AbortSignal.timeout(PDF_DEADLINE_MS)]);
   const response = await fetch(asset.pdfPath, {

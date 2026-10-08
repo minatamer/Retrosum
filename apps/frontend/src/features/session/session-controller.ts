@@ -14,9 +14,14 @@ import {
   type FinalizedMessage,
 } from "@retrosum/contracts";
 import { applyCommand, undoLatest, validateSession } from "@retrosum/money";
-import { decodeProjection, PROJECTION_KEY, writeProjection } from "./projection";
+import {
+  decodeProjection,
+  cancelInterruptedWork,
+  PROJECTION_KEY,
+  writeProjection,
+} from "./projection";
 import { acquireSessionOwnership, type SessionLease } from "./ownership";
-import { PdfBlobCache } from "./blob-cache";
+import { PdfBlobCache, validatePdfBlob } from "./blob-cache";
 
 type Cache = Pick<PdfBlobCache, "get" | "put" | "removeWorkspace" | "sweepExpired">;
 export type SessionEnvironment = {
@@ -88,6 +93,7 @@ export class SessionController {
   private releasing: Promise<void> = Promise.resolve();
   private initializing: { generation: number; promise: Promise<void> } | null = null;
   private readonly effects = new Set<AbortController>();
+  private readonly originals = new Map<string, Blob>();
   constructor(private readonly environment: SessionEnvironment = browserEnvironment) {}
   getSnapshot = () => this.snapshot;
   getServerSnapshot = () => EMPTY_SNAPSHOT;
@@ -257,7 +263,9 @@ export class SessionController {
     );
   }
   execute(command: SessionCommand, label: string) {
-    const next = applyCommand(this.current(), command, label);
+    const next = applyCommand(cancelInterruptedWork(this.current()), command, label);
+    for (const effect of this.effects) effect.abort();
+    this.effects.clear();
     this.publish({ ...this.snapshot, session: next, ...this.persist(next) });
     return next;
   }
@@ -317,6 +325,20 @@ export class SessionController {
   async cachePdf(token: OperationToken, doc: SourceDocument, blob: Blob) {
     if (!this.isCurrent(token)) throw new RangeError("This PDF belongs to an old operation.");
     const expiresAt = this.current().workspace.expiresAt;
+    await validatePdfBlob(doc, blob);
+    if (!this.isCurrent(token)) throw new RangeError("This PDF operation was cancelled.");
+    const cacheKey = `${token.workspaceId}/${doc.id}/${doc.sha256}`;
+    const heldBytes = [...this.originals].reduce(
+      (sum, [key, value]) => sum + (key === cacheKey ? 0 : value.size),
+      0,
+    );
+    if (heldBytes + blob.size > 20 * 1024 * 1024)
+      throw new RangeError("Temporary originals exceed the 20 MiB workspace limit.");
+    this.originals.set(cacheKey, blob);
+    this.publish({
+      ...this.snapshot,
+      missingDocumentIds: this.snapshot.missingDocumentIds.filter((id) => id !== doc.id),
+    });
     try {
       await this.environment.cache().put(token.workspaceId, doc, blob, expiresAt);
       if (!this.isCurrent(token)) {
@@ -336,7 +358,9 @@ export class SessionController {
   }
   async original(doc: SourceDocument): Promise<Blob | null> {
     const token = this.token(`view-${doc.id}`);
-    const blob = await this.environment.cache().get(token.workspaceId, doc);
+    const blob =
+      this.originals.get(`${token.workspaceId}/${doc.id}/${doc.sha256}`) ??
+      (await this.environment.cache().get(token.workspaceId, doc));
     return this.isCurrent(token) ? blob : null;
   }
   async reset(message = "A fresh empty session is ready.") {
@@ -346,6 +370,7 @@ export class SessionController {
     const generation = this.snapshot.generation + 1;
     for (const effect of this.effects) effect.abort();
     this.effects.clear();
+    this.originals.clear();
     this.publish({ ...EMPTY_SNAPSHOT, generation, notice: message });
     if (ownedLease?.acquired) {
       try {
@@ -383,6 +408,7 @@ export class SessionController {
   dispose() {
     for (const effect of this.effects) effect.abort();
     this.effects.clear();
+    this.originals.clear();
     this.releasing = Promise.resolve(this.lease?.release());
     this.lease = null;
     this.publish({ ...EMPTY_SNAPSHOT, generation: this.snapshot.generation + 1 });

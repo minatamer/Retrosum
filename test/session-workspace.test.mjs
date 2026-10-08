@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { readFile } from "node:fs/promises";
 import { MAX_PROJECTION_BYTES, SESSION_LIFETIME_MS } from "../packages/contracts/dist/index.js";
 import { harborSession } from "./fixtures/harbor-v1/money-fixture.mjs";
 import {
@@ -73,6 +74,49 @@ function harness(storage = new MemoryStorage(), cache = new MemoryCache(), owned
   };
 }
 describe("bounded browser refresh and lifecycle", () => {
+  it("cancels active recognition on a successful edit and preserves an Undo that cannot restart reading", async () => {
+    const h = harness();
+    await h.controller.initialize();
+    const token = h.controller.token("register");
+    const graph = h.controller.getSnapshot().session.workspace;
+    const doc = { ...harborSession().workspace.documents[0], state: "reading" };
+    h.controller.replaceGraph(token, { ...graph, revision: graph.revision + 1, documents: [doc] });
+    const effect = new AbortController();
+    h.controller.trackEffect(effect);
+    h.controller.apply(
+      [
+        {
+          type: "create_contact",
+          record: { id: "contact_during", name: "During scan", role: "customer" },
+        },
+      ],
+      "Create during scan",
+    );
+    expect(effect.signal.aborted).toBe(true);
+    expect(h.controller.getSnapshot().session.workspace.documents[0].state).toBe("cancelled");
+    const next = h.controller.getSnapshot().session;
+    h.controller.undo(next.undo.commandId, next.workspace.revision);
+    expect(h.controller.getSnapshot().session.workspace.documents[0].state).toBe("cancelled");
+    expect(h.controller.getSnapshot().session.workspace.contacts).toHaveLength(0);
+    h.controller.dispose();
+  });
+  it("keeps a bounded verified original in memory if IndexedDB fails and releases it on reset", async () => {
+    const h = harness();
+    await h.controller.initialize();
+    h.cache.put = async () => {
+      throw new Error("storage denied");
+    };
+    const doc = harborSession().workspace.documents[0];
+    const bytes = await readFile("apps/frontend/public/samples/harbor-v1/harbor-HS-101.pdf");
+    const blob = new Blob([bytes], { type: "application/pdf" });
+    await expect(h.controller.cachePdf(h.controller.token("cache"), doc, blob)).rejects.toThrow(
+      "storage denied",
+    );
+    expect(await h.controller.original(doc)).toBe(blob);
+    await h.controller.reset();
+    expect(await h.controller.original(doc)).toBeNull();
+    h.controller.dispose();
+  });
   it("restores a valid graph, filters and eligible Undo; rejects corruption, expiry and hostile projections", () => {
     const session = harborSession();
     const raw = encodeProjection(session);
@@ -197,8 +241,23 @@ describe("bounded browser refresh and lifecycle", () => {
       finish = resolve;
     });
     const doc = harborSession().workspace.documents[0];
-    const pending = h.controller.cachePdf(latest, doc, new Blob(["original"]));
+    const bytes = await readFile("apps/frontend/public/samples/harbor-v1/harbor-HS-101.pdf");
+    let startedResolve;
+    const started = new Promise((resolve) => {
+      startedResolve = resolve;
+    });
+    const originalPut = h.cache.put.bind(h.cache);
+    h.cache.put = (...args) => {
+      startedResolve();
+      return originalPut(...args);
+    };
+    const pending = h.controller.cachePdf(
+      latest,
+      doc,
+      new Blob([bytes], { type: "application/pdf" }),
+    );
     const failure = expect(pending).rejects.toThrow(/cancelled/);
+    await started;
     await h.controller.reset();
     finish();
     await failure;

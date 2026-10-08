@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import type { SampleAsset, SourceReference } from "@retrosum/contracts";
+import type { SourceDocument, SourceReference } from "@retrosum/contracts";
 import type {
   PDFDocumentLoadingTask,
   PDFDocumentProxy,
@@ -17,7 +17,8 @@ import {
 } from "./pdf-policy";
 import styles from "./documents.module.css";
 
-function PdfPage({ asset, target }: { asset: SampleAsset; target: SourceReference }) {
+export type ViewerAsset = SourceDocument & { title: string; pdfPath: string; label?: string };
+function PdfPage({ asset, target }: { asset: ViewerAsset; target: SourceReference }) {
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [pageNumber, setPageNumber] = useState(target.page);
   const [zoom, setZoom] = useState(1);
@@ -254,7 +255,9 @@ function PdfPage({ asset, target }: { asset: SampleAsset; target: SourceReferenc
         <span>
           {asset.provenance === "synthetic_handwriting"
             ? "Synthetic handwriting-style · Not human-written"
-            : "Original fictional demo document"}
+            : asset.provenance === "visitor_upload"
+              ? "Your original · Temporary browser storage"
+              : "Original fictional demo document"}
         </span>
         <a href={asset.pdfPath} download={asset.name}>
           Download PDF ↗
@@ -278,7 +281,7 @@ export function PdfViewer({
   selection,
   onClose,
 }: {
-  selection: { asset: SampleAsset; target: SourceReference } | null;
+  selection: { asset: ViewerAsset; target: SourceReference } | null;
   onClose(): void;
 }) {
   return (
@@ -288,7 +291,7 @@ export function PdfViewer({
       title={selection?.asset.title ?? "Original document"}
       caption={
         selection
-          ? `${selection.asset.label} · PDF · ${selection.asset.pageCount} ${selection.asset.pageCount === 1 ? "page" : "pages"}`
+          ? `${selection.asset.label ?? "Your original"} · PDF · ${selection.asset.pageCount} ${selection.asset.pageCount === 1 ? "page" : "pages"}`
           : "PDF"
       }
       size="paper"

@@ -1,6 +1,6 @@
 # RET-010 — Harden privacy, private transport, abuse controls and spend readiness
 
-Status: **Planned — not implemented**  
+Status: **Implemented locally — deferred acceptance pending**<br>
 Last synchronized: **8 October 2026**  
 Depends on: [RET-005](RET-005-deliver-live-pdf-recognition-and-review.md), [RET-009](RET-009-complete-exports-and-session-lifecycle.md)  
 Blocks: RET-011  
@@ -41,14 +41,14 @@ Areas owned by this packet:
 
 ## Acceptance criteria
 
-- [ ] Hosted transport design is private and local composition cannot bypass paid controls.
-- [ ] Invalid/disabled/excess/replayed requests make zero unexpected provider calls.
-- [ ] Rate/capacity/token/request counters are bounded and truthful about scope.
-- [ ] Browser-only upload retention and actual request/provider transfer match copy.
-- [ ] Injection/output/tool/DOM boundaries cannot grant unsupported authority.
+- [x] Hosted transport design is private and local composition cannot bypass paid controls; actual IAM/cloud acceptance remains pending.
+- [x] Invalid/disabled/excess/replayed requests make zero unexpected provider calls in local/injected verification.
+- [x] Rate/capacity/token/request counters are bounded and truthful about scope; billed image/token bounds remain a closed live gate.
+- [x] Browser-only upload retention and actual request/provider transfer match copy; real provider behavior remains pending.
+- [x] Injection/output/tool/DOM boundaries cannot grant unsupported authority in verified local paths.
 - [ ] Model/pricing/actual sample spend and owner-run test usage are recorded honestly.
-- [ ] Local resource limits and content-free logging are verified; target image/runtime checks are assigned to deferred RET-012.
-- [ ] No unresolved high-impact boundary/spend/privacy issue is silently carried into release.
+- [x] Local resource limits and content-free logging are verified; target image/runtime checks are assigned to deferred RET-012.
+- [x] No unresolved high-impact boundary/spend/privacy issue is silently carried into release; public live dispatch remains closed.
 
 ## Verification and evidence
 
@@ -72,4 +72,6 @@ Keep this packet one coherent outcome: necessary UI, contracts, backend/local ef
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
 
-**Execution record:** Not started. No tests, assets, application feature, provider call or deployment is completed by creating this packet.
+**Execution record, 8 October 2026:** Added real consent/session/grant endpoints, challenge validation, epoch/run/action/input-bound one-use admission, conservative retained micro-USD reservations, distinct chat/insight limits, early guards, fixed private identity transport, abort-aware bounded readers, nonce CSP, explicit processing review and content-free diagnostics. The required settled `pnpm check` passed formatting, lint, types, 105 source boundaries, 189 tests in 25 files and both builds. Production advisory audit reported zero advisories. Local browser privacy/device/keyboard and production policy evidence are recorded in [RET-010 validation](../validation/RET-010.md); decisions and exact limitations are in [security/admission](../engineering/SECURITY-ADMISSION.md) and [release readiness](../engineering/RELEASE-READINESS.md).
+
+No paid calls, key setup, CAPTCHA solving, Docker build, push or cloud change occurred. Actual model access/numeric accuracy/image-token bounds/spend, challenge/domain/IAM/log retention, physical-device/owner aesthetic and hosted runtime acceptance remain separately pending. This local record unblocks RET-011 without enabling public live processing. File-level allocation is in [the commit plan](../commit-plans/RET-010.md).

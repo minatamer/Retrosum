@@ -1,6 +1,6 @@
 # RET-003 — Author the visible PDF corpus and floating paper viewer
 
-Status: **Planned — not implemented**  
+Status: **Implemented locally — owner visual acceptance pending**<br>
 Last synchronized: **8 October 2026**  
 Depends on: [RET-002](RET-002-build-brand-and-landing.md)  
 Blocks: RET-004  
@@ -39,14 +39,15 @@ Areas owned by this packet:
 
 ## Acceptance criteria
 
-- [ ] Eight real readable PDFs exist; all displayed sample facts map to their visible content.
-- [ ] Four printed layout families and one fetched or recreated handwriting PDF are documented with ground truth and accurate provenance.
-- [ ] All August comparisons are backed by D08, and September payment rows are backed by D07.
-- [ ] Files fit 10 files/20 MiB/20 pages and per-file bounds; manifest hashes/page counts match actual bytes.
-- [ ] D03/D06 are visibly the same bill; fixture truth counts their event once.
-- [ ] Gallery thumbnails and centered paper dialog show actual pages, including multipage navigation.
-- [ ] Source-target contract identifies page/block without invented bounding boxes.
-- [ ] Fake/evaluation truth cannot seed the public live graph.
+- [x] Eight real readable PDFs exist; all displayed sample facts map to their visible content.
+- [x] Six printed layout families and one recreated handwriting PDF are documented with ground truth and accurate provenance.
+- [x] All August comparisons are backed by D08, and September payment rows are backed by D07.
+- [x] Files fit 10 files/20 MiB/20 pages and per-file bounds; manifest hashes/page counts match actual bytes.
+- [x] D03/D06 are visibly the same bill; fixture truth counts their event once.
+- [x] Gallery thumbnails and centered paper dialog show actual pages, including multipage navigation.
+- [x] Source-target contract identifies page/block without invented bounding boxes.
+- [x] Production imports contain source metadata only; fake/evaluation truth stays outside the application graph. RET-005 must preserve this boundary in live composition.
+- [ ] Owner aesthetic feedback and real hardware touch/software-keyboard verification (deferred; browser viewport/keyboard checks passed).
 
 ## Verification and evidence
 
@@ -70,4 +71,10 @@ Keep this packet one coherent outcome: necessary UI, contracts, backend/local ef
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
 
-**Execution record:** Not started. No tests, assets, application feature, provider call or deployment is completed by creating this packet.
+**Execution record — 8 October 2026:** Authored eight original Harbor PDFs (fourteen pages, 412,981 bytes), actual page thumbnails, a hashed source manifest and independent field/event/payment truth. All fourteen page renders were inspected. The verifier checks 128 numeric field groups / 146 occurrences: printed numeric multisets are checked against extracted original text; the three image-only pages were checked visually and confirmed to have no hidden text. D03/D06 count once; D07 includes the excluded transfer and visible fixed snapshot date; D08 supplies every August comparison record.
+
+Built the real eight-document gallery and pinned local PDF.js worker/runtime preparation, centered paper viewer, page selector, width-fit/zoom, keyboard scrolling, page/row source targeting, embedded-text disclosure, download/open-original fallback and per-file error states. Bounded streaming/signature/hash checks protect original loading; rendering has page/image/canvas/deadline bounds and owned-resource cleanup. No PDF scripting or annotation interaction layer is installed.
+
+Final `pnpm check` passed formatting, lint, strict types, 33-source-file boundaries, 75 tests in nine files and both builds. Browser verification rendered all fourteen pages, checked nine viewports from 280px phone to 1920px desktop plus short landscape, exercised focus cycles/return and page scrolling, and opened cited page two / row P-904. Rapid zoom to 200% and Fit worked without dialog overflow. An intentionally damaged original produced a safe error with fallback; its exact bytes were restored, hashes reverified, and reopening/download succeeded. Final mobile control grouping was rechecked at compact phone/landscape sizes.
+
+Settled read-only validation found no actionable findings. See [fixture research and provenance](../research/HARBOR-FIXTURES.md), [validation](../validation/RET-003.md) and [file-level commit plan](../commit-plans/RET-003.md). RET-004 is eligible locally. Owner visual/hardware feedback and RET-005's live OCR accuracy remain pending. No paid provider call, visitor upload storage, cloud resource or deployment occurred.

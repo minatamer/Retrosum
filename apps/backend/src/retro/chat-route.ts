@@ -3,7 +3,15 @@ import { RETRO_LIMITS } from "@retrosum/contracts";
 import { validateRetroInput } from "@retrosum/money";
 import type { AppRuntime } from "../runtime/compose.js";
 import { investigate } from "./investigator.js";
-export async function chatRoute(runtime: AppRuntime, request: Request, response: Response) {
+import { requestInputHash, runCookie } from "../security/admission.js";
+import { admissionStatus, safeAdmissionError } from "../security/routes.js";
+export async function chatRoute(
+  runtime: AppRuntime,
+  request: Request,
+  response: Response,
+  action: "chat" | "insights" = "chat",
+  capacityHeld = false,
+) {
   if (request.headers.origin !== runtime.config.FRONTEND_ORIGIN) {
     response.status(403).json({ error: "origin_not_allowed" });
     return;
@@ -27,6 +35,7 @@ export async function chatRoute(runtime: AppRuntime, request: Request, response:
   response.once("close", abort);
   let release: (() => void) | undefined;
   let untrack: (() => void) | undefined;
+  let releasePaid: (() => void) | undefined;
   try {
     const input = validateRetroInput(request.body);
     untrack = runtime.operations.track(input.workspace.id, controller);
@@ -35,8 +44,21 @@ export async function chatRoute(runtime: AppRuntime, request: Request, response:
       input.workspace.expiresAt <= runtime.ports.clock.now()
     )
       throw new RangeError("session_expired");
-    release = runtime.admission.enter(); // Shared expensive-operation capacity with extraction.
-    runtime.retroAdmission.reserve(input.workspace.id, input.operationId);
+    if (!capacityHeld) release = runtime.admission.enter();
+    if (runtime.config.FAKE_MODE)
+      runtime.retroAdmission.reserve(input.workspace.id, input.operationId);
+    if (!runtime.config.FAKE_MODE) {
+      const cookie = runCookie(request.headers.cookie),
+        grant = request.headers["x-retrosum-grant"];
+      if (!cookie || typeof grant !== "string") throw new RangeError("invalid_grant");
+      releasePaid = runtime.paidAdmission.consume(cookie, grant, {
+        action,
+        workspaceId: input.workspace.id,
+        operationId: input.operationId,
+        inputHash: requestInputHash(input),
+        retry: false,
+      });
+    }
     const result = await investigate(input, provider, controller.signal);
     if (!response.destroyed) response.json(result);
   } catch (error) {
@@ -53,22 +75,27 @@ export async function chatRoute(runtime: AppRuntime, request: Request, response:
               "context_too_large",
             ].includes(message)
           ? message
-          : "invalid_or_ungrounded_turn";
+          : !runtime.config.FAKE_MODE && !releasePaid
+            ? safeAdmissionError(error)
+            : "invalid_or_ungrounded_turn";
       response
         .status(
-          code === "turn_timeout"
-            ? 504
-            : code === "turn_allowance_used" || code === "admission_full"
-              ? 429
-              : code === "instance_busy" || code === "operation_replayed"
-                ? 409
-                : 400,
+          !runtime.config.FAKE_MODE && !releasePaid
+            ? admissionStatus(code)
+            : code === "turn_timeout"
+              ? 504
+              : code === "turn_allowance_used" || code === "admission_full"
+                ? 429
+                : code === "instance_busy" || code === "operation_replayed"
+                  ? 409
+                  : 400,
         )
         .json({ error: code });
     }
   } finally {
     clearTimeout(timer);
     release?.();
+    releasePaid?.();
     untrack?.();
     response.removeListener("close", abort);
   }

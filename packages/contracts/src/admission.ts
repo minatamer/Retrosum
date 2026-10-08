@@ -1,0 +1,35 @@
+import { z } from "zod";
+import { workspaceIdSchema } from "./ids.js";
+export const PROCESSING_DISCLOSURE_VERSION = "retrosum-processing-v1";
+export const paidActionSchema = z.enum(["extract", "chat", "insights"]);
+export const inputHashSchema = z.string().regex(/^[a-f0-9]{64}$/u);
+export const admissionSessionSchema = z.strictObject({
+  workspaceId: workspaceIdSchema,
+  disclosureVersion: z.literal(PROCESSING_DISCLOSURE_VERSION),
+  consent: z.literal(true),
+});
+export const grantRequestSchema = z
+  .strictObject({
+    ...admissionSessionSchema.shape,
+    action: paidActionSchema,
+    operationId: z.string().regex(/^[A-Za-z0-9_-]{1,100}$/u),
+    inputHash: inputHashSchema,
+    documentHash: inputHashSchema.optional(),
+    retry: z.boolean().default(false),
+    challengeToken: z.string().min(1).max(2048),
+  })
+  .superRefine((v, ctx) => {
+    if (v.action === "extract" ? !v.documentHash : v.documentHash || v.retry)
+      ctx.addIssue({ code: "custom", message: "Invalid action identity." });
+  });
+export const grantResultSchema = z.strictObject({
+  grant: z.string().min(1).max(2048),
+  expiresAt: z.number().int().positive(),
+  disclosureVersion: z.literal(PROCESSING_DISCLOSURE_VERSION),
+});
+export const admissionSessionResultSchema = z.strictObject({
+  expiresAt: z.number().int().positive(),
+  disclosureVersion: z.literal(PROCESSING_DISCLOSURE_VERSION),
+});
+export type PaidAction = z.infer<typeof paidActionSchema>;
+export type GrantRequest = z.infer<typeof grantRequestSchema>;

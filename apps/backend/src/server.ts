@@ -25,6 +25,9 @@ export async function startServer() {
   const runtime = composeRuntime(config, {
     clock: systemClock,
     createRequestId: () => "request_" + randomUUID(),
+    metric: (metric) => {
+      process.stdout.write(JSON.stringify({ event: "operation", ...metric }) + "\n");
+    },
     ...(provider ? { provider } : {}),
   });
   const server = createApp(runtime).listen(config.PORT, config.HOST);

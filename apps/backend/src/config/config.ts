@@ -26,6 +26,10 @@ const configSchema = z.object({
     }),
   OPENAI_API_KEY: z.string().max(300).default(""),
   TURNSTILE_SECRET_KEY: z.string().max(300).default(""),
+  TURNSTILE_SITE_KEY: z
+    .string()
+    .regex(/^[A-Za-z0-9_-]{0,100}$/u)
+    .default(""),
   GRANT_SIGNING_SECRET: z.string().max(300).default(""),
 });
 export type AppConfig = Readonly<z.infer<typeof configSchema>>;

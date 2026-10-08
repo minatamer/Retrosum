@@ -13,8 +13,12 @@ export class ExtractionAdmission {
   enter() {
     if (this.intakeActive || this.active) throw new RangeError("instance_busy");
     this.intakeActive = true;
+    let released = false;
     return () => {
-      this.intakeActive = false;
+      if (!released) {
+        released = true;
+        this.intakeActive = false;
+      }
     };
   }
   reserve(workspaceId: string, operationId: string, hash: string, retry: boolean) {
@@ -43,8 +47,12 @@ export class ExtractionAdmission {
     budget.originals.add(hash);
     if (retry) budget.retries++;
     this.active = true;
+    let released = false;
     return () => {
-      this.active = false;
+      if (!released) {
+        released = true;
+        this.active = false;
+      }
     };
   }
 }

@@ -8,3 +8,4 @@ export * from "./recognition.js";
 export * from "./retro.js";
 export * from "./retro-change.js";
 export * from "./export.js";
+export * from "./admission.js";

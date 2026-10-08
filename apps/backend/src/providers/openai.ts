@@ -7,6 +7,7 @@ import {
 import type { AiProviderPort } from "../runtime/provider-port.js";
 import { createOpenAiInvestigator } from "./openai-investigator.js";
 import { MODEL } from "./policy.js";
+import { readBoundedJson } from "../security/read-json.js";
 export { MODEL } from "./policy.js";
 
 export const PROMPT_VERSION = "pdf-transcription-v1";
@@ -48,24 +49,9 @@ export function createOpenAiProvider(key: string, fetcher: typeof fetch = fetch)
         throw new RangeError("provider_rejected");
       }
       if (!response.body) throw new RangeError("provider_outcome_unknown");
-      const reader = response.body.getReader();
-      let length = 0;
-      const chunks: Uint8Array[] = [];
-      try {
-        while (true) {
-          const part = await reader.read();
-          if (part.done) break;
-          length += part.value.byteLength;
-          if (length > 1024 * 1024) {
-            await reader.cancel();
-            throw new RangeError("provider_output_limit");
-          }
-          chunks.push(part.value);
-        }
-      } finally {
-        reader.releaseLock();
-      }
-      const parsed = responseSchema.safeParse(JSON.parse(Buffer.concat(chunks).toString("utf8")));
+      const parsed = responseSchema.safeParse(
+        await readBoundedJson(response, 1024 * 1024, bounded),
+      );
       if (!parsed.success) throw new RangeError("provider_incomplete_or_invalid");
       const content = parsed.data.output.flatMap((item) => item.content ?? []);
       if (content.some((item) => item.type === "refusal")) throw new RangeError("provider_refusal");

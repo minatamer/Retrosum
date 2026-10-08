@@ -1,4 +1,8 @@
-import { capabilitiesSchema, DEMO_LIMITS } from "@retrosum/contracts";
+import {
+  capabilitiesSchema,
+  DEMO_LIMITS,
+  PROCESSING_DISCLOSURE_VERSION,
+} from "@retrosum/contracts";
 import type { RuntimeCapabilities } from "@retrosum/contracts";
 import type { AppConfig } from "../config/config.js";
 import type { Clock } from "./clock.js";
@@ -6,10 +10,16 @@ import type { AiProviderPort } from "./provider-port.js";
 import { ExtractionAdmission } from "../documents/admission.js";
 import { RetroAdmission } from "../retro/admission.js";
 import { OperationLifecycle } from "./operation-lifecycle.js";
+import { PaidAdmission, type ChallengeVerifier } from "../security/admission.js";
+import { turnstileVerifier } from "../security/challenge.js";
+import { LIVE_ACCEPTANCE_VERIFIED } from "../providers/policy.js";
+import type { OperationalMetric } from "../security/metrics.js";
 export interface RuntimePorts {
   clock: Clock;
   createRequestId(): string;
   provider?: AiProviderPort;
+  challengeVerifier?: ChallengeVerifier;
+  metric?(metric: OperationalMetric): void;
 }
 export interface AppRuntime {
   config: AppConfig;
@@ -19,6 +29,7 @@ export interface AppRuntime {
   admission: ExtractionAdmission;
   retroAdmission: RetroAdmission;
   operations: OperationLifecycle;
+  paidAdmission: PaidAdmission;
 }
 export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRuntime {
   // Live support stays closed until exact-field, token and admission acceptance.
@@ -46,6 +57,13 @@ export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRunti
     documents: documentsAvailable ? { available: true } : { available: false, reason },
     copilot: copilotAvailable ? { available: true } : { available: false, reason },
     limits: DEMO_LIMITS,
+    processing: {
+      disclosureVersion: PROCESSING_DISCLOSURE_VERSION,
+      provider: "OpenAI",
+      siteKey: config.TURNSTILE_SITE_KEY,
+      admissionAvailable:
+        !config.FAKE_MODE && config.PAID_DEMO_ENABLED && (documentsAvailable || copilotAvailable),
+    },
   });
   return Object.freeze({
     config,
@@ -55,5 +73,16 @@ export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRunti
     admission: new ExtractionAdmission(ports.clock.now),
     retroAdmission: new RetroAdmission(ports.clock.now),
     operations: new OperationLifecycle(),
+    paidAdmission: new PaidAdmission(
+      config.GRANT_SIGNING_SECRET,
+      ports.clock.now,
+      () => !config.FAKE_MODE && config.PAID_DEMO_ENABLED && LIVE_ACCEPTANCE_VERIFIED,
+      ports.challengeVerifier ??
+        turnstileVerifier(
+          config.TURNSTILE_SECRET_KEY,
+          new URL(config.FRONTEND_ORIGIN).hostname,
+          ports.clock.now,
+        ),
+    ),
   });
 }

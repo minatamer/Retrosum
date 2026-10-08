@@ -3,6 +3,8 @@ import { extractionResultSchema } from "@retrosum/contracts";
 import type { AppRuntime } from "../runtime/compose.js";
 import { inspectPdf, verifyOriginal } from "./inspection.js";
 import { readExtraction } from "./multipart.js";
+import { requestInputHash, runCookie } from "../security/admission.js";
+import { admissionStatus, safeAdmissionError, paidPreflight } from "../security/routes.js";
 const publicErrors = new Set([
   "invalid_multipart",
   "invalid_original",
@@ -20,10 +22,20 @@ export async function extractRoute(runtime: AppRuntime, req: Request, res: Respo
     res.status(403).json({ error: "origin_not_allowed" });
     return;
   }
-  if (!runtime.capabilities.documents.available || !runtime.ports.provider?.interpretDocument) {
-    res.status(503).json({ error: runtime.capabilities.documents.reason ?? "adapter_not_ready" });
+  if (
+    !runtime.capabilities.documents.available ||
+    !runtime.ports.provider?.interpretDocument ||
+    (!runtime.config.FAKE_MODE && !runtime.config.PAID_DEMO_ENABLED)
+  ) {
+    res.status(503).json({
+      error:
+        !runtime.config.FAKE_MODE && !runtime.config.PAID_DEMO_ENABLED
+          ? "paid_disabled"
+          : (runtime.capabilities.documents.reason ?? "adapter_not_ready"),
+    });
     return;
   }
+  if (!paidPreflight(runtime, req, res, "extract")) return;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 90000);
   const abort = () => {
@@ -34,6 +46,7 @@ export async function extractRoute(runtime: AppRuntime, req: Request, res: Respo
   let release: (() => void) | undefined;
   let releaseIntake: (() => void) | undefined;
   let untrack: (() => void) | undefined;
+  let releasePaid: (() => void) | undefined;
   try {
     releaseIntake = runtime.admission.enter();
     const { metadata, bytes } = await readExtraction(req, controller.signal);
@@ -52,6 +65,19 @@ export async function extractRoute(runtime: AppRuntime, req: Request, res: Respo
       metadata.envelope.bytes < bytes.byteLength
     )
       throw new RangeError("invalid_original");
+    if (!runtime.config.FAKE_MODE) {
+      const cookie = runCookie(req.headers.cookie),
+        grant = req.headers["x-retrosum-grant"];
+      if (!cookie || typeof grant !== "string") throw new RangeError("invalid_grant");
+      releasePaid = runtime.paidAdmission.consume(cookie, grant, {
+        action: "extract",
+        workspaceId: metadata.workspaceId,
+        operationId: metadata.operationId,
+        inputHash: requestInputHash(metadata),
+        documentHash: metadata.document.sha256,
+        retry: metadata.retry,
+      });
+    }
     const output = await runtime.ports.provider.interpretDocument(
       { metadata, bytes },
       controller.signal,
@@ -71,21 +97,26 @@ export async function extractRoute(runtime: AppRuntime, req: Request, res: Respo
         ? "cancelled_or_timeout"
         : error instanceof Error && publicErrors.has(error.message)
           ? error.message
-          : "interpretation_failed";
+          : !runtime.config.FAKE_MODE && !releasePaid
+            ? safeAdmissionError(error)
+            : "interpretation_failed";
       res
         .status(
-          code === "fake_unrecognized_pdf"
-            ? 422
-            : code === "body_too_large"
-              ? 413
-              : code === "instance_busy" || code === "operation_replayed"
-                ? 409
-                : 400,
+          !runtime.config.FAKE_MODE && !releasePaid
+            ? admissionStatus(code)
+            : code === "fake_unrecognized_pdf"
+              ? 422
+              : code === "body_too_large"
+                ? 413
+                : code === "instance_busy" || code === "operation_replayed"
+                  ? 409
+                  : 400,
         )
         .json({ error: code });
     }
   } finally {
     release?.();
+    releasePaid?.();
     releaseIntake?.();
     clearTimeout(timer);
     untrack?.();

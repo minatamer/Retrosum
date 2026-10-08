@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { MAX_FILE_BYTES, MAX_TOTAL_BYTES } from "./source.js";
+import { PROCESSING_DISCLOSURE_VERSION } from "./admission.js";
 export const DEMO_LIMITS = Object.freeze({
   files: 10,
   pages: 20,
@@ -28,6 +29,14 @@ export const capabilitiesSchema = z.strictObject({
     totalBytes: z.literal(DEMO_LIMITS.totalBytes),
     sessionMilliseconds: z.literal(DEMO_LIMITS.sessionMilliseconds),
   }),
+  processing: z
+    .strictObject({
+      disclosureVersion: z.literal(PROCESSING_DISCLOSURE_VERSION),
+      provider: z.literal("OpenAI"),
+      siteKey: z.string().regex(/^[A-Za-z0-9_-]{0,100}$/u),
+      admissionAvailable: z.boolean(),
+    })
+    .optional(),
 });
 export type RuntimeCapabilities = z.infer<typeof capabilitiesSchema>;
 export const unavailableCapabilities = (): RuntimeCapabilities => ({

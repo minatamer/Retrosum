@@ -1,0 +1,430 @@
+.rs-wordmark {
+  font:
+    600 clamp(1.65rem, 2.5vw, 2.1rem)/1 var(--font-editorial),
+    Georgia,
+    serif;
+  letter-spacing: -0.065em;
+  white-space: nowrap;
+  color: var(--rs-brand-green);
+  text-decoration: none;
+}
+.rs-wordmark span {
+  color: var(--rs-brand-orange);
+}
+.rs-wordmark[data-tone="inverse"] {
+  color: var(--rs-ivory);
+}
+.rs-wordmark[data-tone="inverse"] span {
+  color: var(--rs-orange);
+}
+.rs-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  min-height: 48px;
+  padding: 0.85rem 1.5rem;
+  border-radius: 100px;
+  border: 1px solid transparent;
+  color: var(--rs-ivory);
+  background: var(--rs-forest);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--rs-motion-hover),
+    box-shadow var(--rs-motion-hover),
+    transform var(--rs-motion-hover) var(--rs-ease);
+}
+.rs-button:hover:not(:disabled) {
+  background: #275a49;
+  box-shadow: 0 8px 20px rgb(10 32 25 / 15%);
+  transform: translateY(-2px);
+}
+.rs-button:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+.rs-button[data-variant="light"] {
+  background: var(--rs-ivory);
+  color: var(--rs-ink);
+}
+.rs-button[data-variant="light"]:hover {
+  background: #fff;
+}
+.rs-button[data-variant="warm"] {
+  background: var(--rs-orange);
+  color: var(--rs-forest-deep);
+}
+.rs-button[data-variant="warm"]:hover {
+  background: #fac6a4;
+}
+.rs-button[data-variant="ghost"] {
+  background: transparent;
+  border-color: currentColor;
+  color: inherit;
+}
+.rs-button[data-variant="ghost"]:hover {
+  background: rgb(130 156 134 / 15%);
+}
+.rs-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.rs-arrow {
+  font-size: 1.25em;
+  line-height: 1;
+}
+.rs-eyebrow {
+  font-size: 0.72rem;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 500;
+}
+.rs-muted {
+  color: var(--rs-muted);
+}
+.rs-numeral {
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.025em;
+}
+.rs-glass {
+  --rs-focus: #f3d190;
+  color: var(--rs-ivory);
+  background: var(--rs-glass-fallback);
+  border: 1px solid var(--rs-glass-border);
+  box-shadow:
+    var(--rs-glass-edge),
+    0 20px 50px rgb(4 19 13 / 28%);
+}
+@supports (backdrop-filter: blur(1px)) {
+  .rs-glass {
+    background: var(--rs-glass-sheen), var(--rs-glass-surface);
+    backdrop-filter: var(--rs-glass-backdrop);
+  }
+}
+.rs-card {
+  border: 1px solid var(--rs-line);
+  border-radius: var(--rs-radius);
+  background: var(--rs-panel);
+  padding: clamp(1.2rem, 3vw, 2rem);
+}
+.rs-spotlight {
+  outline: 2px solid var(--rs-orange);
+  outline-offset: 8px;
+  animation: rs-spotlight-in var(--rs-motion-panel) var(--rs-ease) both;
+}
+.rs-form-field {
+  display: grid;
+  gap: 0.45rem;
+}
+.rs-form-field > span {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.rs-form-field input,
+.rs-form-field textarea,
+.rs-form-field select {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #b9c5b6;
+  border-radius: 0.7rem;
+  background: #fffdf7;
+  color: var(--rs-ink);
+  padding: 0.7rem 0.9rem;
+}
+.rs-field-filling {
+  animation: rs-field-fill 450ms var(--rs-ease) both;
+}
+.rs-paper-dialog {
+  --rs-focus: #98442f;
+  width: min(58rem, calc(100vw - 2rem));
+  max-width: none;
+  max-height: calc(100dvh - 2rem);
+  border: 0;
+  border-radius: 1rem;
+  padding: 0;
+  color: var(--rs-ink);
+  background: var(--rs-paper);
+  box-shadow: 0 40px 120px rgb(0 16 9 / 45%);
+}
+.rs-paper-dialog[open] {
+  animation: rs-paper-in var(--rs-motion-panel) var(--rs-ease) both;
+}
+.rs-paper-dialog::backdrop {
+  background: rgb(5 23 17 / 62%);
+  backdrop-filter: blur(6px);
+}
+.rs-dialog-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.3rem;
+  border-bottom: 1px solid var(--rs-paper-line);
+}
+.rs-dialog-heading h2 {
+  margin: 0.3rem 0;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+}
+.rs-dialog-close {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--rs-paper-line);
+  background: transparent;
+  color: var(--rs-ink);
+  cursor: pointer;
+  font-size: 1.4rem;
+}
+.rs-dialog-content {
+  padding: clamp(1rem, 4vw, 2rem);
+}
+.rs-dialog-content p {
+  line-height: 1.6;
+}
+.rs-composer-wrap {
+  width: min(46rem, 100%);
+  color: var(--rs-ivory);
+}
+.rs-composer-form {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 100px;
+  padding: 0.6rem 0.65rem 0.6rem 1.15rem;
+  min-height: 64px;
+}
+.rs-composer-mark {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  color: var(--rs-orange);
+}
+.rs-composer-form input {
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  color: var(--rs-ivory);
+  background: transparent;
+  padding: 0.5rem 0;
+  outline-offset: 1px;
+  font-size: 1rem;
+}
+.rs-composer-form input::placeholder {
+  color: #d2ddd1;
+  opacity: 1;
+}
+.rs-composer-form button {
+  border: 0;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  color: var(--rs-forest-deep);
+  background: var(--rs-orange);
+  cursor: pointer;
+}
+.rs-composer-form button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.rs-composer-messages {
+  display: grid;
+  gap: 0.8rem;
+  max-height: min(38dvh, 18rem);
+  overflow-y: auto;
+  padding: 0.6rem 0.3rem 1rem;
+  scrollbar-width: thin;
+}
+.rs-chat-user {
+  justify-self: end;
+  max-width: 88%;
+  padding: 0.7rem 1rem;
+  border-radius: 1.15rem 1.15rem 0.35rem 1.15rem;
+  background: #345344;
+  border: 1px solid var(--rs-glass-border);
+  line-height: 1.55;
+  box-shadow: 0 8px 25px rgb(8 24 17 / 15%);
+  animation: rs-message-in 260ms var(--rs-ease) both;
+}
+.rs-chat-retro {
+  padding: 0.4rem 0.6rem;
+  line-height: 1.6;
+  animation: rs-message-in 320ms var(--rs-ease) both;
+}
+.rs-chat-retro .rs-eyebrow {
+  display: block;
+  color: var(--rs-orange);
+  margin-bottom: 0.3rem;
+}
+.rs-chat-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.8rem 0.4rem;
+}
+.rs-chat-shortcuts button {
+  border: 1px solid #6d8773;
+  border-radius: 30px;
+  min-height: 40px;
+  padding: 0.45rem 0.85rem;
+  color: var(--rs-ivory);
+  background: var(--rs-forest);
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background var(--rs-motion-hover);
+}
+.rs-chat-shortcuts button:hover {
+  background: #315b48;
+}
+.rs-chat-footnote {
+  margin: 0.5rem 0 0;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--rs-muted);
+}
+.rs-workspace {
+  --rs-focus: #f3d190;
+  min-height: 100svh;
+  background: var(--rs-forest-deep);
+  color: var(--rs-ivory);
+}
+.rs-workspace-header {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.4rem var(--rs-gutter);
+  border-bottom: 1px solid var(--rs-line);
+}
+.rs-workspace-header > a:last-child {
+  font-size: 0.8rem;
+  color: var(--rs-muted);
+}
+.rs-workspace-main {
+  max-width: var(--rs-max-width);
+  margin: auto;
+  padding: 2.5rem var(--rs-gutter) var(--rs-composer-space);
+}
+.rs-workspace-main > h1 {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  margin: 0.5rem 0 1rem;
+}
+.rs-workspace-main > p {
+  max-width: 42rem;
+  line-height: 1.65;
+}
+.rs-workspace-main button,
+.rs-workspace-main a,
+.rs-workspace-main input {
+  scroll-margin-block-end: calc(var(--rs-composer-space) + 1rem);
+}
+.rs-workspace-panels {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 1.4rem;
+  margin-top: 2rem;
+}
+.rs-workspace-panels h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 0 0 0.8rem;
+}
+.rs-workspace-panels p {
+  line-height: 1.65;
+  color: var(--rs-muted);
+}
+.rs-workspace-panels ul {
+  padding-left: 1.2rem;
+  line-height: 2;
+}
+.rs-floating-composer {
+  position: fixed;
+  z-index: 30;
+  bottom: max(1.1rem, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(46rem, calc(100% - 2rem));
+}
+.rs-floating-composer .rs-composer-messages {
+  max-height: min(20dvh, 12rem);
+  border-radius: 1rem;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(180deg, rgb(16 42 35 / 96%), rgb(16 42 35 / 90%));
+  box-shadow: 0 12px 40px rgb(4 20 13 / 20%);
+}
+.rs-floating-composer .rs-chat-shortcuts {
+  padding-block: 0.4rem;
+}
+@keyframes rs-paper-in {
+  from {
+    opacity: 0;
+    transform: translateY(35px) rotate(-1deg) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rs-message-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rs-spotlight-in {
+  from {
+    outline-offset: 14px;
+    outline-color: transparent;
+  }
+  to {
+    outline-offset: 8px;
+    outline-color: var(--rs-orange);
+  }
+}
+@keyframes rs-field-fill {
+  from {
+    box-shadow: 0 0 0 4px rgb(235 174 134 / 35%);
+  }
+  to {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+@media (max-width: 48rem) {
+  .rs-workspace-panels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 25rem) {
+  .rs-button {
+    padding-inline: 1.1rem;
+    font-size: 0.88rem;
+  }
+  .rs-composer-form {
+    padding-left: 0.7rem;
+    gap: 0.25rem;
+  }
+  .rs-composer-mark {
+    width: 24px;
+    flex-basis: 24px;
+  }
+}
+@media (max-height: 32rem) and (orientation: landscape) {
+  .rs-composer-messages {
+    max-height: 22dvh;
+  }
+  .rs-chat-shortcuts {
+    padding-block: 0.4rem;
+  }
+  .rs-floating-composer {
+    bottom: 0.5rem;
+  }
+}

@@ -1,0 +1,44 @@
+:root {
+  color-scheme: light;
+  --rs-forest: #173c32;
+  --rs-forest-deep: #102a23;
+  --rs-panel: #21483c;
+  --rs-brand-green: #263c34;
+  --rs-brand-orange: #98442f;
+  --rs-orange: #ebae86;
+  --rs-ivory: #faf4e9;
+  --rs-paper: #f3ecdf;
+  --rs-ink: #263c34;
+  --rs-muted: #bccbc0;
+  --rs-muted-ink: #5d6b61;
+  --rs-line: rgb(237 244 231 / 18%);
+  --rs-paper-line: #d6dace;
+  --rs-income: #a5d5af;
+  --rs-cost: #efb38d;
+  --rs-cash: #8dd4c9;
+  --rs-comparison: #d0bee5;
+  --rs-review: #f3d190;
+  --rs-danger: #ffb3a3;
+  --rs-focus: #98442f;
+  --rs-glass-fallback: #17382f;
+  --rs-glass-surface: rgb(15 43 35 / 88%);
+  --rs-glass-border: rgb(224 241 223 / 30%);
+  --rs-glass-backdrop: blur(22px) saturate(145%);
+  --rs-glass-edge: inset 0 1px 0 rgb(255 255 255 / 18%), inset 0 -1px 0 rgb(105 148 125 / 18%);
+  --rs-glass-sheen: linear-gradient(
+    118deg,
+    rgb(255 255 255 / 8%),
+    transparent 35% 72%,
+    rgb(235 174 134 / 5%)
+  );
+  --rs-radius: 1.25rem;
+  --rs-shadow: 0 24px 70px rgb(8 26 20 / 20%);
+  --rs-max-width: 82rem;
+  --rs-gutter: clamp(1.25rem, 5vw, 5rem);
+  --rs-motion-press: 120ms;
+  --rs-motion-hover: 180ms;
+  --rs-motion-panel: 360ms;
+  --rs-motion-entrance: 640ms;
+  --rs-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --rs-composer-space: 21rem;
+}

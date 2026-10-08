@@ -1,10 +1,10 @@
 # Retrosum — Product, Architecture and Delivery Blueprint
 
-**Status:** proposed implementation source of truth, ready for owner review.  
+**Status:** active implementation source of truth; external acceptance remains pending.
 **Prepared:** 7 October 2026. **Updated:** 8 October 2026 with the owner’s core-flow, design, accuracy and Retro requirements.<br>
 **Product:** a public, disposable business money workspace demonstrating useful AI.  
 **Companion:** [Retrosum product overview](RETROSUM_OVERVIEW.html).  
-**Implementation status:** RET-001 through RET-005 are verified locally: foundation, brand/landing, visible sample PDFs/viewer, exact money/manual CRUD/Undo/recovery and actual-byte simulated PDF intake/recognition/source review. RET-006 dashboard is next. Owner aesthetics, live accuracy/spend and cloud deployment remain pending; public live capability stays closed. See each ticket's evidence, [money/session decisions](engineering/MONEY-SESSIONS.md) and [recognition decisions](engineering/RECOGNITION.md).<br>
+**Implementation status:** RET-001 through RET-006 are verified locally: foundation, brand/landing, visible sample PDFs/viewer, exact money/manual CRUD/Undo/recovery and actual-byte simulated PDF intake/recognition/source review. The source-backed interactive dashboard, chart tables, scope filters and revision-current detail/source navigation are verified locally. RET-007 Retro conversation and guidance is next. Owner aesthetics, live accuracy/spend and cloud deployment remain pending; public live capability stays closed. See each ticket's evidence, [money/session decisions](engineering/MONEY-SESSIONS.md) [recognition decisions](engineering/RECOGNITION.md) and [dashboard decisions](engineering/DASHBOARD.md).<br>
 **Execution status:** the owner authorized the [12-ticket queue](tickets/README.md) in a local fake-mode execute/validate loop, including RET-012 local preparation and per-ticket commits after clean validation. Actual paid tests, owner visual feedback and cloud deployment happen later.
 
 Retrosum turns a small collection of business documents into understandable money records, a traceable overview, and an AI assistant named **Retro** that explains the dashboard, summarizes supplied records, guides the visitor and helps create, edit and remove session records. The visitor can inspect the evidence, correct an interpretation, review a duplicate or payment relationship, and export the result.
@@ -419,7 +419,7 @@ The small initial fixture has sparse dated events. Do not draw a smooth invented
 
 Use 450–650 ms chart entrances, 250–400 ms data transitions, 120–180 ms hover/focus feedback and spring easing with restrained overshoot for panels. Stable data keys preserve continuity through filters and CRUD; cancelled/outdated updates cannot keep animating stale values. Animate from old validated data to new validated data, then settle. Do not loop numeric counters or animate profit as if money is still being received.
 
-**Proposed chart implementation:** Recharts for common SVG bar/line/area/donut views, wrapped by feature-owned chart components; Motion for panel/tooltip/layout transitions only where it adds value. Shared tokens and `packages/money` series feed every chart. Evaluate the current versions and keyboard/touch/resize performance before pinning; library animation alone does not satisfy the experience. A custom SVG waterfall is justified only if the chosen library cannot provide the required detail cleanly. Avoid adding several competing chart libraries. [Recharts guide](https://recharts.github.io/en-US/guide/), [Motion animation guidance](https://motion.dev/docs/react-animation).
+**Implemented local chart choice (RET-006):** small bounded custom SVG bars/arcs, native interaction buttons, CSS entrances/transitions and exact `packages/money` facts/series. This measured case needs no chart dependency. Each view has keyboard/touch actions, source detail and an equivalent data table; stable values, calm motion and accessibility come from the feature contract rather than a library default. Cost/counterparty Other groups preserve all members, and cash uses at most six actual-date buckets. See [dashboard decisions and evidence](engineering/DASHBOARD.md). The initial research considered [Recharts](https://recharts.github.io/en-US/guide/) and [Motion](https://motion.dev/docs/react-animation); the ticket explicitly permits this bounded custom case.
 
 No animation-disable setting belongs in the application. Tune the normal motion to be calm, non-flashing and non-essential to reading exact values. Financial correctness, source access and usable phone layout remain release requirements alongside visual polish.
 
@@ -1045,7 +1045,7 @@ Reset does not delete a file the visitor already downloaded or revoke every copy
 | Runtime contracts | Zod | Shared external-boundary validation. |
 | Pure money domain | Small browser-safe `packages/money` | One calculation/review implementation needed by browser and API. |
 | PDF preview | Locally bundled PDF.js candidate | Existing family experience in ScreenPilot; evaluated document preview. |
-| Charts and motion | Recharts + Motion candidate, with small SVG where simpler | Smooth source-linked chart/tour/form interactions; measure actual need and bundle only used modules. |
+| Charts and motion | Bounded custom SVG/native controls and CSS transitions (RET-006 local implementation) | Smooth source-linked charts without an unnecessary dependency; tours/forms follow in RET-007/008. |
 | Icons | One consistent icon family, such as the Lucide family already used in ClipBuilder | Recognizable actions with accessible text. |
 | Styling | Shared CSS tokens and component styles | Fits the custom vintage visual direction without multiple UI systems. |
 | Tests | Vitest, Testing Library, Supertest; focused browser E2E | Matches inherited verification style. |
@@ -1057,7 +1057,7 @@ Reset does not delete a file the visitor already downloaded or revoke every copy
 
 Observed package versions differ between the repositories: ClipBuilder pins pnpm 11.19.0 and Next.js 16.3.8; ScreenPilot pins pnpm 11.24.0 with a Next.js 16 range. These are local observations on 7 October 2026, not recommendations to copy every version. Bootstrap must choose one tested compatible exact set and validate supported/secure releases then.
 
-No TypeScript/React major upgrade is authorized merely by this blueprint. There is currently no Retrosum application to migrate. Select the compatible family once, commit the lockfile, and avoid drifting tool versions across packages.
+No TypeScript/React major upgrade is authorized merely by this blueprint. RET-001 pinned the tested compatible family and lockfile; avoid drifting tool versions across packages.
 
 ### 14.2 Runtime topology
 

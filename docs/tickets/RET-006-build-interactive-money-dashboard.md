@@ -1,6 +1,6 @@
 # RET-006 — Build the beautiful interactive dashboard and source drill-down
 
-Status: **Planned — not implemented**  
+Status: **Implemented and verified locally — owner visual acceptance pending**
 Last synchronized: **8 October 2026**  
 Depends on: [RET-004](RET-004-build-money-state-crud-and-refresh.md), [RET-005](RET-005-deliver-live-pdf-recognition-and-review.md)  
 Blocks: RET-007  
@@ -40,14 +40,16 @@ Areas owned by this packet:
 
 ## Acceptance criteria
 
-- [ ] Every KPI in section 6.5 appears with accurate date/basis/coverage semantics.
-- [ ] Every chart mark and headline has appropriate contributor/source access.
-- [ ] No hidden dataset, fake trend, unsupported balance or misleading zero state exists.
-- [ ] Hover/focus/click/tap are polished, useful and keyboard reachable.
-- [ ] Animations feel smooth and professional without an off setting.
-- [ ] CRUD, duplicate resolution and Undo update all derived views coherently.
-- [ ] Phone/tablet/desktop layout keeps figures and actions readable.
-- [ ] Table alternatives and source links expose the same values as charts.
+- [x] Every KPI in section 6.5 appears with accurate date/basis/coverage semantics.
+- [x] Every chart mark and headline has appropriate contributor/source access.
+- [x] No hidden dataset, fake trend, unsupported balance or misleading zero state exists.
+- [x] Hover/focus/click/tap are polished, useful and keyboard reachable.
+- [x] Animations feel smooth and professional without an off setting.
+- [x] CRUD, duplicate resolution and Undo update all derived views coherently.
+- [x] Phone/tablet/desktop layout keeps figures and actions readable.
+- [x] Table alternatives and source links expose the same values as charts.
+
+These checks establish implemented local behavior. Owner aesthetic acceptance and physical-device feedback remain pending; local inspection does not claim that external approval.
 
 ## Verification and evidence
 
@@ -69,4 +71,6 @@ Keep this packet one coherent outcome: necessary UI, contracts, backend/local ef
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
 
-**Execution record:** Not started. No tests, assets, application feature, provider call or deployment is completed by creating this packet.
+**Execution record:** Implemented the shared typed fact/series catalogue, period/as-of/category/counterparty scope, exact availability/exclusions, prior comparisons and due/ageing semantics; responsive custom SVG/native-control charts, equivalent tables, profit reconciliation and current-revision contributor/original dialogs. One browser session connects Overview/Documents/Records; explicit intake continues while Overview is viewed. Narrow existing-flow integration shares availability with Records, suppresses inactive overlays and restores source-dialog focus. No chart dependency, hidden dataset, model-plotted amount or animation-off control was added.
+
+Local evidence: actual sample scanning/review, exact Harbor/August figures, Rent 800/62.5% and D04 access, D08 page 2 access, manual 200 cost/refresh/Undo, missing-history/cash/settlement and filtered-loss/as-of cases, tables, keyboard tooltips/arc/source focus and revision changes while a detail stays open. Ten viewport sizes plus an inspected 1366×900 composition have no page overflow and measured composer clearance. See [dashboard decisions](../engineering/DASHBOARD.md), [validation](../validation/RET-006.md) and [three-group file-level plan](../commit-plans/RET-006.md). Final settled gates passed: 124 tests in 15 files, 66 source boundaries, strict types, lint, formatting and both production builds. Pass B found no actionable findings after the prior-coverage wording fix. Owner aesthetics, physical-device feedback, live accuracy/spend and cloud acceptance remain deferred; no paid request, push or deployment occurred.

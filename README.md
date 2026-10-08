@@ -11,7 +11,7 @@ The interface and sample documents use English and USD. Every sample figure come
 - [Twelve detailed implementation tickets and dependencies](docs/tickets/README.md)
 - [Documentation map and authority](docs/README.md)
 
-**Status:** RET-001 through RET-005 are verified locally: foundation, brand/landing, eight visible PDFs, exact money/manual CRUD/Undo/recovery, and simulated actual-byte PDF recognition with grounded field review. The workspace starts empty; processing adds visible-source records. Unfamiliar uploads remain previewable without a fake OCR claim. RET-006 connects the interactive dashboard next. Owner aesthetics, full Retro behavior, live accuracy/spend and deployment remain pending; public live capability stays closed. See [recognition decisions](docs/engineering/RECOGNITION.md) and each ticket’s evidence.
+**Status:** RET-001 through RET-006 are verified locally: foundation, brand/landing, eight visible PDFs, exact money/manual CRUD/Undo/recovery, and simulated actual-byte PDF recognition with grounded field review. The workspace starts empty; processing adds visible-source records. Unfamiliar uploads remain previewable without a fake OCR claim. The interactive dashboard connects exact scoped facts, charts, tables and original-page drill-down. RET-007 adds Retro conversation and guidance next. Owner aesthetics, full Retro behavior, live accuracy/spend and deployment remain pending; public live capability stays closed. See [dashboard decisions](docs/engineering/DASHBOARD.md), [recognition decisions](docs/engineering/RECOGNITION.md) and each ticket’s evidence.
 
 ## Local development
 

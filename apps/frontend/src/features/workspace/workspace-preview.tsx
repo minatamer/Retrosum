@@ -6,8 +6,17 @@ import { PaperDialog } from "../../components/ui/paper-dialog";
 import { Button } from "../../components/ui/button";
 import { RuntimeStatus } from "../runtime/runtime-status";
 import { DocumentGallery } from "../documents/document-gallery";
+import { SessionProvider } from "../session/session-provider";
+import { RecordsWorkspace } from "../records/records-workspace";
 
 export function WorkspacePreview() {
+  return (
+    <SessionProvider>
+      <WorkspaceContent />
+    </SessionProvider>
+  );
+}
+function WorkspaceContent() {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [preview, setPreview] = useState<"welcome" | "tour" | "draft">("welcome");
   const descriptions = {
@@ -52,6 +61,7 @@ export function WorkspacePreview() {
         its details into your financial overview.
       </p>
       <RuntimeStatus />
+      <RecordsWorkspace />
       <div className="rs-workspace-panels">
         <section className="rs-card">
           <h2>Start with documents.</h2>
@@ -64,7 +74,10 @@ export function WorkspacePreview() {
             <li>Rent & subscription receipts</li>
             <li>Payments & a comparison month</li>
           </ul>
-          <p>Document viewing is ready. Processing and your own PDF intake connect next.</p>
+          <p>
+            Document viewing and manual records are ready. Processing and your own PDF intake
+            connect next.
+          </p>
         </section>
         <section className="rs-card">
           <h2>Space to try things.</h2>
@@ -72,7 +85,10 @@ export function WorkspacePreview() {
             English-language PDFs. USD amounts. A temporary session that survives refresh and
             expires after two hours once you start it.
           </p>
-          <p>Try the visual Retro shortcuts below, or open the session details.</p>
+          <p>
+            Create invoices, costs, payments and contacts above. Latest Undo and refresh recovery
+            work in this browser tab.
+          </p>
           <Button variant="warm" onClick={() => setDetailsOpen(true)}>
             View session details <span aria-hidden="true">↗</span>
           </Button>
@@ -86,20 +102,17 @@ export function WorkspacePreview() {
         caption="Session design"
       >
         <p>
-          Your records and PDF previews will stay in this browser tab. Refresh recovery lasts up to
-          two hours; export your work before clearing or leaving the session.
+          Your records stay in this browser tab. Refresh recovery lasts up to two hours; export your
+          work before clearing or leaving the session.
         </p>
         <p>
           Fake development mode simulates AI interactions without provider calls. Live document
           processing will require an explicit choice before sending PDFs to OpenAI.
         </p>
-        <label className="rs-form-field">
-          <span>Example business name</span>
-          <input defaultValue="Harbor Studio" aria-describedby="form-preview-note" />
-        </label>
-        <p id="form-preview-note">
-          Editable visual form preview. This field does not save a business or create a financial
-          record.
+        <p>
+          Uploaded originals use temporary browser-only PDF storage. Immutable sample PDFs can be
+          opened again from the published collection. Closing cleanup is best effort; expired cached
+          files are swept on the next visit.
         </p>
       </PaperDialog>
     </WorkspaceShell>

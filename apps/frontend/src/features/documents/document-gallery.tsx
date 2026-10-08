@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PdfViewer } from "./pdf-viewer";
 import { resolveSourceTarget, sampleAssets } from "./sample-assets";
 import styles from "./documents.module.css";
+import { useSession } from "../session/session-provider";
 
 const layoutLabels: Record<string, string> = {
   "editorial-service": "Service invoice",
@@ -16,6 +17,7 @@ const layoutLabels: Record<string, string> = {
 };
 
 export function DocumentGallery() {
+  const { ready } = useSession();
   const [selection, setSelection] = useState<ReturnType<typeof resolveSourceTarget> | null>(null);
   const [thumbnailErrors, setThumbnailErrors] = useState<readonly string[]>([]);
   return (
@@ -39,6 +41,7 @@ export function DocumentGallery() {
             key={asset.id}
             className={styles.documentCard}
             type="button"
+            disabled={!ready}
             aria-label={`View ${asset.label}: ${asset.title}`}
             onClick={() =>
               setSelection(resolveSourceTarget(sampleAssets, { documentId: asset.id, page: 1 }))
@@ -85,6 +88,7 @@ export function DocumentGallery() {
         </p>
         <button
           type="button"
+          disabled={!ready}
           onClick={() => {
             const asset = sampleAssets.find((item) => item.label === "D07");
             if (asset)

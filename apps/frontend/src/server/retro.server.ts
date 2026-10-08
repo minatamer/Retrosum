@@ -1,7 +1,12 @@
 import "server-only";
 import { RETRO_LIMITS, retroRequestSchema, retroResponseSchema } from "@retrosum/contracts";
 import { readBackendCapabilities } from "./capabilities.server";
-import { backendRequest, admissionHeaders, readBounded } from "./backend.server";
+import {
+  backendRequest,
+  admissionHeaders,
+  readBounded,
+  frontendRequestOrigin,
+} from "./backend.server";
 export async function forwardRetro(
   request: Request,
   fetcher: typeof fetch = fetch,
@@ -11,8 +16,7 @@ export async function forwardRetro(
   const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
   const error = (code: string, status: number) =>
     Response.json({ error: code }, { status, headers });
-  if (request.headers.get("origin") !== new URL(request.url).origin)
-    return error("origin_not_allowed", 403);
+  if (!frontendRequestOrigin(request, environment)) return error("origin_not_allowed", 403);
   if (
     !/^application\/json(?:;|$)/u.test(request.headers.get("content-type") ?? "") ||
     !request.body

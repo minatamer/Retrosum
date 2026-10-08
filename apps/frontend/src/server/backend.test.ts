@@ -1,8 +1,16 @@
 import { describe, it, expect, vi } from "vitest";
 vi.mock("server-only", () => ({}));
-import { backendRequest, admissionHeaders, readBounded } from "./backend.server.js";
+import {
+  backendRequest,
+  admissionHeaders,
+  readBounded,
+  frontendRequestOrigin,
+} from "./backend.server.js";
 import { forwardAdmission } from "./admission.server.js";
-import { PROCESSING_DISCLOSURE_VERSION } from "@retrosum/contracts";
+import { forwardRetro } from "./retro.server.js";
+import { forwardExtraction } from "./extraction.server.js";
+import { revokeSession } from "./session.server.js";
+import { PROCESSING_DISCLOSURE_VERSION, unavailableCapabilities } from "@retrosum/contracts";
 const env = {
   BACKEND_ORIGIN: "https://retrosum-private.run.app",
   BACKEND_AUDIENCE: "https://retrosum-private.run.app",
@@ -11,6 +19,86 @@ const env = {
 const token = (aud: string, exp = Math.floor(Date.now() / 1000) + 3600) =>
   `header.${Buffer.from(JSON.stringify({ aud, exp })).toString("base64url")}.signature`;
 describe("fixed private identity and bounded admission bridge", () => {
+  it("uses the exact configured public origin behind TLS/port termination and ignores spoofed forwarding", async () => {
+    const configuration = { FRONTEND_ORIGIN: "https://retrosum.example", K_SERVICE: "frontend" };
+    const incoming = (origin = configuration.FRONTEND_ORIGIN, multipart = false) =>
+      new Request("http://localhost:8080/api/retrosum/v1/chat", {
+        method: "POST",
+        headers: {
+          Origin: origin,
+          "Content-Type": multipart ? "multipart/form-data; boundary=demo" : "application/json",
+          "X-Forwarded-Host": "attacker.example",
+          "X-Forwarded-Proto": "https",
+        },
+        body: "{}",
+      });
+    expect(frontendRequestOrigin(incoming(), configuration)).toBe(configuration.FRONTEND_ORIGIN);
+    expect(
+      frontendRequestOrigin(incoming("https://attacker.example"), configuration),
+    ).toBeUndefined();
+    expect(frontendRequestOrigin(incoming(), { K_SERVICE: "frontend" })).toBeUndefined();
+    for (const origin of [
+      "https://retrosum.example/",
+      "http://retrosum.example",
+      "https://user:pass@retrosum.example",
+    ])
+      expect(frontendRequestOrigin(incoming(origin), { FRONTEND_ORIGIN: origin })).toBeUndefined();
+    const fetcher = vi.fn<typeof fetch>(() =>
+      Promise.resolve(Response.json(unavailableCapabilities())),
+    );
+    expect((await forwardRetro(incoming(), fetcher, configuration)).status).toBe(503);
+    expect(
+      (
+        await forwardExtraction(
+          incoming(configuration.FRONTEND_ORIGIN, true),
+          fetcher,
+          configuration,
+        )
+      ).status,
+    ).toBe(503);
+    expect(fetcher).toHaveBeenCalledTimes(2);
+    expect(
+      (await forwardRetro(incoming("https://attacker.example"), fetcher, configuration)).status,
+    ).toBe(403);
+    expect(
+      (await forwardExtraction(incoming("https://attacker.example", true), fetcher, configuration))
+        .status,
+    ).toBe(403);
+    expect(
+      (await revokeSession(incoming("https://attacker.example"), fetcher, configuration)).status,
+    ).toBe(403);
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+  it("requires Secure admission cookies for the public TLS origin even when the internal URL is HTTP", async () => {
+    const configuration = { FRONTEND_ORIGIN: "https://retrosum.example", K_SERVICE: "frontend" };
+    const incoming = () =>
+      new Request("http://localhost:8080/api/retrosum/v1/session", {
+        method: "POST",
+        headers: { Origin: configuration.FRONTEND_ORIGIN, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          workspaceId: "workspace_test",
+          consent: true,
+          disclosureVersion: PROCESSING_DISCLOSURE_VERSION,
+        }),
+      });
+    for (const secure of [false, true]) {
+      const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(
+        Response.json(
+          { expiresAt: Date.now() + 10000, disclosureVersion: PROCESSING_DISCLOSURE_VERSION },
+          {
+            headers: {
+              "Set-Cookie":
+                "retrosum_run=body.signature; Path=/; Max-Age=1800; HttpOnly; SameSite=Strict" +
+                (secure ? "; Secure" : ""),
+            },
+          },
+        ),
+      );
+      expect((await forwardAdmission(incoming(), "session", fetcher, configuration)).status).toBe(
+        secure ? 200 : 503,
+      );
+    }
+  });
   it("local requests drop caller authorization; hosted requests obtain an audience-bound runtime identity", async () => {
     const fetcher = vi.fn<typeof fetch>(async () => Response.json({ ok: true }));
     await backendRequest(

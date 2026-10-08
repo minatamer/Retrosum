@@ -5,7 +5,12 @@ import {
   grantResultSchema,
   admissionSessionResultSchema,
 } from "@retrosum/contracts";
-import { admissionHeaders, backendRequest, readBounded } from "./backend.server";
+import {
+  admissionHeaders,
+  backendRequest,
+  readBounded,
+  frontendRequestOrigin,
+} from "./backend.server";
 export async function forwardAdmission(
   request: Request,
   kind: "session" | "grant",
@@ -16,7 +21,8 @@ export async function forwardAdmission(
     "Cache-Control": "no-store",
     "X-Content-Type-Options": "nosniff",
   };
-  if (request.headers.get("origin") !== new URL(request.url).origin)
+  const publicOrigin = frontendRequestOrigin(request, environment);
+  if (!publicOrigin)
     return Response.json({ error: "origin_not_allowed" }, { status: 403, headers });
   if (
     !request.body ||
@@ -61,7 +67,7 @@ export async function forwardAdmission(
           cookie,
         ) ||
         cookie.length > 2200 ||
-        (new URL(request.url).protocol === "https:" && !cookie.endsWith("; Secure"))
+        (publicOrigin.startsWith("https://") && !cookie.endsWith("; Secure"))
       )
         throw new Error();
       headers["Set-Cookie"] = cookie;

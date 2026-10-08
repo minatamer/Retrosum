@@ -1,13 +1,18 @@
 import "server-only";
 import { workspaceIdSchema } from "@retrosum/contracts";
-import { backendRequest, admissionHeaders, readBounded } from "./backend.server";
+import {
+  backendRequest,
+  admissionHeaders,
+  readBounded,
+  frontendRequestOrigin,
+} from "./backend.server";
 export async function revokeSession(
   request: Request,
   fetcher: typeof fetch = fetch,
   environment: Record<string, string | undefined> = process.env,
 ) {
   const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
-  if (request.headers.get("origin") !== new URL(request.url).origin)
+  if (!frontendRequestOrigin(request, environment))
     return Response.json({ error: "origin_not_allowed" }, { status: 403, headers });
   if (!/^application\/json(?:;|$)/u.test(request.headers.get("content-type") ?? ""))
     return Response.json({ error: "invalid_session" }, { status: 400, headers });

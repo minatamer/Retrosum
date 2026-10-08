@@ -9,6 +9,29 @@ const paths = new Set<PrivatePath>([
   "/v1/session",
   "/v1/grants",
 ]);
+// TLS/port termination changes Next's internal URL. Only the configured public
+// origin is authoritative; forwarded Host/Proto headers never supply authority.
+export function frontendRequestOrigin(
+  request: Request,
+  environment: Record<string, string | undefined>,
+): string | undefined {
+  try {
+    const canonical =
+      environment.FRONTEND_ORIGIN ??
+      (environment.K_SERVICE ? undefined : new URL(request.url).origin);
+    if (!canonical || request.headers.get("origin") !== canonical) return;
+    const url = new URL(canonical);
+    if (
+      url.origin !== canonical ||
+      (url.protocol !== "https:" &&
+        !(url.protocol === "http:" && ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)))
+    )
+      return;
+    return canonical;
+  } catch {
+    return;
+  }
+}
 export async function readBounded(
   stream: ReadableStream<Uint8Array>,
   limit: number,

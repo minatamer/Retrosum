@@ -10,3 +10,4 @@ export {
 } from "./metrics.js";
 export { applyCommand, undoLatest, validateSession } from "./commands.js";
 export * from "./recognition.js";
+export * from "./dashboard.js";

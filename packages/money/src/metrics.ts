@@ -31,8 +31,12 @@ export function changeTenths(current: number, previous: number) {
   if (previous <= 0) return null;
   return ratioTenths(Number(BigInt(current) - BigInt(previous)), previous);
 }
-export function calculateMetrics(workspace: Workspace, filter: Pick<SessionFilter, "from" | "to">) {
+export function calculateMetrics(workspace: Workspace, filter: Omit<SessionFilter, "register">) {
   const inPeriod = (date: string) => date >= filter.from && date <= filter.to;
+  const asOf = filter.asOf ?? workspace.asOf;
+  const matches = (record: Workspace["events"][number]) =>
+    (!filter.category || record.category === filter.category) &&
+    (!filter.counterpartyId || record.counterpartyId === filter.counterpartyId);
   const eligibleEvents = workspace.events.filter(
     (record) =>
       record.status === "posted" && sourceEligible(workspace, record.sources, record.origin),
@@ -40,7 +44,9 @@ export function calculateMetrics(workspace: Workspace, filter: Pick<SessionFilte
   const eligiblePayments = workspace.payments.filter((record) =>
     sourceEligible(workspace, record.sources, record.origin),
   );
-  const periodEvents = eligibleEvents.filter((record) => inPeriod(record.occurredOn));
+  const periodEvents = eligibleEvents.filter(
+    (record) => inPeriod(record.occurredOn) && matches(record),
+  );
   const unknownNet = periodEvents.filter(
     (record) => record.netMinor === undefined && (record.taxMinor ?? 0) > 0,
   );
@@ -63,7 +69,13 @@ export function calculateMetrics(workspace: Workspace, filter: Pick<SessionFilte
         basis: "net",
       })),
   );
-  const cashRows = eligiblePayments.filter((record) => inPeriod(record.occurredOn));
+  // A whole payment cannot be attributed to one category from partial allocations.
+  const cashRows = eligiblePayments.filter(
+    (record) =>
+      inPeriod(record.occurredOn) &&
+      !filter.category &&
+      (!filter.counterpartyId || record.counterpartyId === filter.counterpartyId),
+  );
   const movement = (record: (typeof cashRows)[number]): Contribution => ({
     id: record.id,
     amountMinor: record.amountMinor,
@@ -75,7 +87,7 @@ export function calculateMetrics(workspace: Workspace, filter: Pick<SessionFilte
   const allocated = new Map<string, number[]>();
   const settlementSources = new Map<string, SourceReference[]>();
   for (const payment of eligiblePayments) {
-    if (payment.occurredOn > workspace.asOf) continue;
+    if (payment.occurredOn > asOf) continue;
     for (const allocation of payment.allocations) {
       allocated.set(allocation.eventId, [
         ...(allocated.get(allocation.eventId) ?? []),
@@ -90,6 +102,7 @@ export function calculateMetrics(workspace: Workspace, filter: Pick<SessionFilte
   const openRows: Contribution[] = [];
   const unknownBalances: string[] = [];
   for (const record of periodEvents) {
+    if (record.occurredOn > asOf) continue;
     const matched = sumAmounts(allocated.get(record.id) ?? []);
     if (record.paidClaim || record.balanceState === "paid") continue;
     if (record.balanceState === "unknown" && matched === 0) {
@@ -113,7 +126,7 @@ export function calculateMetrics(workspace: Workspace, filter: Pick<SessionFilte
   const overdue = metric(
     openRows.filter((row) => {
       const event = periodById.get(row.id);
-      return Boolean(event?.dueOn && event.dueOn < workspace.asOf);
+      return Boolean(event?.dueOn && event.dueOn < asOf);
     }),
   );
   const profitMinor = sumAmounts([income.minor, -costs.minor]);
@@ -146,12 +159,15 @@ export function calculateMetrics(workspace: Workspace, filter: Pick<SessionFilte
       unknownNet: unknownNet.map((record) => record.id),
       unknownBalances,
       heldOrDuplicate: workspace.events
-        .filter((record) => !eligibleEvents.includes(record))
+        .filter(
+          (record) =>
+            inPeriod(record.occurredOn) && matches(record) && !eligibleEvents.includes(record),
+        )
         .map((record) => record.id),
       transfers: cashRows
         .filter((record) => record.direction === "internal_transfer")
         .map((record) => record.id),
     },
-    scope: { from: filter.from, to: filter.to, asOf: workspace.asOf, revision: workspace.revision },
+    scope: { from: filter.from, to: filter.to, asOf, revision: workspace.revision },
   };
 }

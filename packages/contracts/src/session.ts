@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { commandIdSchema, revisionSchema, workspaceIdSchema } from "./ids.js";
+import { commandIdSchema, contactIdSchema, revisionSchema, workspaceIdSchema } from "./ids.js";
 import { undoReceiptSchema, workspaceSchema } from "./commands.js";
 import { dateSchema } from "./records.js";
 
@@ -9,6 +9,9 @@ export const sessionFilterSchema = z.strictObject({
   from: dateSchema,
   to: dateSchema,
   register: z.enum(["invoices", "costs", "payments", "contacts"]).default("invoices"),
+  category: z.string().trim().min(1).max(60).optional(),
+  counterpartyId: contactIdSchema.optional(),
+  asOf: dateSchema.optional(),
 });
 export const finalizedMessageSchema = z.strictObject({
   id: z.string().min(1).max(100),

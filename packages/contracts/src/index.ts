@@ -6,3 +6,4 @@ export * from "./capabilities.js";
 export * from "./session.js";
 export * from "./recognition.js";
 export * from "./retro.js";
+export * from "./retro-change.js";

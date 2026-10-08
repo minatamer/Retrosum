@@ -3,6 +3,7 @@ import { commandIdSchema, revisionSchema, workspaceIdSchema } from "./ids.js";
 import { undoReceiptSchema, workspaceSchema } from "./commands.js";
 import { sessionFilterSchema } from "./filters.js";
 import { retroResponseSchema } from "./retro.js";
+import { retroChangeResultSchema } from "./retro-change.js";
 export { sessionFilterSchema } from "./filters.js";
 
 export const SESSION_LIFETIME_MS = 2 * 60 * 60 * 1000;
@@ -13,6 +14,7 @@ export const finalizedMessageSchema = z.strictObject({
   text: z.string().max(2000),
   revision: revisionSchema,
   response: retroResponseSchema.optional(),
+  changeResult: retroChangeResultSchema.optional(),
 });
 export const sessionSchema = z.strictObject({
   workspace: workspaceSchema,

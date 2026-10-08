@@ -296,7 +296,8 @@ describe("bounded investigator dispatch", () => {
     expect(body.store).toBe(false);
     expect(body.max_output_tokens).toBe(1500);
     expect(body.parallel_tool_calls).toBe(false);
-    expect(body.tools).toHaveLength(10);
+    expect(body.tools).toHaveLength(11);
+    expect(body.tools.find((tool) => tool.name === "prepare_session_change").strict).toBe(true);
     expect(body.input[0].content[0].text).not.toContain("simulationDecision");
     const bad = vi.fn(async () => Response.json({ status: "incomplete", output: [] }));
     await expect(

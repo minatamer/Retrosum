@@ -3,6 +3,7 @@ import { workspaceSchema } from "./commands.js";
 import { revisionSchema, workspaceIdSchema } from "./ids.js";
 import { sessionFilterSchema } from "./filters.js";
 import { sourceReferenceSchema } from "./source.js";
+import { retroChangeIntentSchema, retroChangePreparationSchema } from "./retro-change.js";
 
 export const RETRO_LIMITS = Object.freeze({
   turns: 8,
@@ -43,6 +44,7 @@ export const retroTopicSchema = z.enum([
   "coverage",
 ]);
 export const retroDecisionSchema = z.discriminatedUnion("kind", [
+  z.strictObject({ kind: z.literal("change_request"), intent: retroChangeIntentSchema }),
   z.strictObject({
     kind: z.literal("explanation"),
     topic: retroTopicSchema,
@@ -83,6 +85,7 @@ export const retroResponseSchema = z.strictObject({
   steps: z
     .array(z.strictObject({ tool: z.string().max(40), count: z.number().int().min(0).max(50) }))
     .max(4),
+  change: retroChangePreparationSchema.optional(),
 });
 export const retroRequestSchema = z
   .strictObject({
@@ -90,6 +93,7 @@ export const retroRequestSchema = z
     workspace: workspaceSchema,
     scope: retroScopeSchema,
     prompt: z.string().trim().min(1).max(1000),
+    changeContext: retroChangeIntentSchema.optional(),
     recent: z
       .array(z.strictObject({ role: z.enum(["user", "retro"]), text: z.string().max(2000) }))
       .max(8),
@@ -101,6 +105,7 @@ export const retroRequestSchema = z
       ctx.addIssue({ code: "custom", message: "Reversed period." });
   });
 export const retroToolSchema = z.discriminatedUnion("name", [
+  z.strictObject({ name: z.literal("prepare_session_change"), args: retroChangeIntentSchema }),
   z.strictObject({ name: z.literal("get_summary"), args: z.strictObject({}) }),
   z.strictObject({ name: z.literal("compare_periods"), args: z.strictObject({}) }),
   z.strictObject({

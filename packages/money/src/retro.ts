@@ -10,10 +10,12 @@ import {
   type RetroTopic,
   type RetroTarget,
   type Workspace,
+  type RetroChangeIntent,
 } from "@retrosum/contracts";
 import { buildDashboard, type DashboardCatalogue, type DashboardFact } from "./dashboard.js";
 import { validateGraph } from "./graph.js";
 import { formatAmount } from "./amount.js";
+import { fakeChangeIntent, prepareRetroChange } from "./retro-change.js";
 
 export function retroScopeKey(scope: RetroScope) {
   return JSON.stringify([
@@ -71,7 +73,12 @@ export function explainTopic(topic: RetroTopic, catalogue: DashboardCatalogue): 
     : { kind: "limited_result", reason: "unknown_history" };
 }
 // Only intent recognition is simulated. Every returned amount comes from this snapshot.
-export function fakeRetroDecision(prompt: string, catalogue: DashboardCatalogue): RetroDecision {
+export function fakeRetroDecision(
+  prompt: string,
+  catalogue: DashboardCatalogue,
+  workspace?: Workspace,
+  changeContext?: RetroChangeIntent,
+): RetroDecision {
   const text = prompt.toLowerCase();
   if (
     /ignore.*(instruction|rule)|system prompt|execute.*(code|script)|https?:\/\/|<script/u.test(
@@ -81,7 +88,10 @@ export function fakeRetroDecision(prompt: string, catalogue: DashboardCatalogue)
     return { kind: "limited_result", reason: "injection" };
   if (/invest|tax advice|should i|recommend|buy stocks/u.test(text))
     return { kind: "limited_result", reason: "advice" };
-  if (/email|send money|transfer|pay.*supplier|connect.*bank/u.test(text))
+  if (
+    /send.*email|email.*(customer|supplier)|send money|pay.*supplier|connect.*bank/u.test(text) ||
+    (/transfer/u.test(text) && !/record|add|create/u.test(text))
+  )
     return { kind: "limited_result", reason: "external_action" };
   if (/simulate (failure|refusal|tool cap)/u.test(text))
     return {
@@ -92,6 +102,10 @@ export function fakeRetroDecision(prompt: string, catalogue: DashboardCatalogue)
           ? "tool_limit"
           : "failed",
     };
+  if (workspace) {
+    const intent = fakeChangeIntent(prompt, workspace, changeContext);
+    if (intent) return { kind: "change_request", intent };
+  }
   if (
     /create|add.*(expense|bill|payment|contact)|delete|remove|update|edit.*(invoice|expense)|due date/u.test(
       text,
@@ -202,6 +216,16 @@ export function createRetroResponse(
     decision: grounded,
     sources: unique.slice(0, 100),
     steps,
+    ...(grounded.kind === "change_request"
+      ? {
+          change: prepareRetroChange(
+            grounded.intent,
+            request.workspace,
+            request.scope,
+            request.operationId.slice(6),
+          ),
+        }
+      : {}),
   });
 }
 export function isRetroCurrent(response: RetroResponse, workspace: Workspace, scope: RetroScope) {
@@ -242,6 +266,19 @@ export function renderRetroResponse(
   catalogue: DashboardCatalogue,
 ): { intro: string; facts: DashboardFact[]; closing: string } {
   const decision = response.decision;
+  if (decision.kind === "change_request")
+    return {
+      intro:
+        response.change?.kind === "ready"
+          ? "I’ve prepared an editable session form. Review its fields and financial effect before confirming."
+          : response.change?.kind === "clarification"
+            ? "A few details are needed together before I can prepare this form."
+            : response.change?.kind === "rejected"
+              ? response.change.reason
+              : "This change could not be validated.",
+      facts: [],
+      closing: "Confirmation and Undo use no AI requests.",
+    };
   if (decision.kind === "limited_result")
     return { intro: limitedCopy[decision.reason]!, facts: [], closing: "" };
   if (decision.kind === "clarification")
@@ -304,6 +341,13 @@ export function executeRetroTool(
   const tool = retroToolSchema.parse(input);
   const graph = request.workspace;
   switch (tool.name) {
+    case "prepare_session_change":
+      return prepareRetroChange(
+        tool.args,
+        request.workspace,
+        request.scope,
+        request.operationId.slice(6),
+      );
     case "get_summary":
       return topicFacts("summary", catalogue).map((id) => briefFact(catalogue.facts[id]!));
     case "compare_periods":

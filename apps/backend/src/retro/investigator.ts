@@ -23,6 +23,7 @@ export type InvestigationContext = {
   topics: { topic: string; factIds: string[] }[];
   facts: ReturnType<typeof briefFact>[];
   simulationDecision: RetroDecision;
+  changeContext?: RetroRequest["changeContext"];
 };
 export type ToolResult = { call: ToolCall; result: unknown };
 export interface RecordInvestigator {
@@ -64,7 +65,13 @@ export async function investigate(
     scope: request.scope,
     topics,
     facts: ids.map((id) => briefFact(catalogue.facts[id]!)),
-    simulationDecision: fakeRetroDecision(request.prompt, catalogue),
+    simulationDecision: fakeRetroDecision(
+      request.prompt,
+      catalogue,
+      request.workspace,
+      request.changeContext,
+    ),
+    ...(request.changeContext ? { changeContext: request.changeContext } : {}),
   };
   const history: ToolResult[] = [];
   const bounded = AbortSignal.any([signal, AbortSignal.timeout(RETRO_LIMITS.deadlineMs)]);

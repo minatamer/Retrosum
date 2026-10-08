@@ -16,7 +16,7 @@ import { OriginalViewer } from "./original-viewer";
 import { DocumentReview } from "./document-review";
 import styles from "./recognition.module.css";
 
-export function DocumentIntake() {
+export function DocumentIntake({ active: activeView = true }: { active?: boolean }) {
   const { controller, session, ready } = useSession();
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(
@@ -344,7 +344,7 @@ export function DocumentIntake() {
           </article>
         ))}
       </div>
-      {review && (
+      {activeView && review && (
         <DocumentReview
           {...review}
           onClose={() => setReview(null)}
@@ -355,7 +355,7 @@ export function DocumentIntake() {
           }}
         />
       )}
-      {source && (
+      {activeView && source && (
         <OriginalViewer
           target={source}
           onClose={() => {

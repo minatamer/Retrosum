@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import type { SessionAction, SessionFilter, SourceReference } from "@retrosum/contracts";
-import { calculateMetrics, formatAmount, invoiceAmounts } from "@retrosum/money";
+import { buildDashboard, formatAmount, invoiceAmounts } from "@retrosum/money";
+import { factValue } from "../dashboard/format";
 import { Button } from "../../components/ui/button";
 import { PaperDialog } from "../../components/ui/paper-dialog";
 import { useSession } from "../session/session-provider";
@@ -36,7 +37,8 @@ export function RecordsWorkspace() {
       </section>
     );
   const workspace = session.workspace;
-  const result = calculateMetrics(workspace, session.filters);
+  const catalogue = buildDashboard(workspace, session.filters);
+  const result = catalogue.metrics;
   const family = session.filters.register;
   const act = (operation: () => void) => {
     setError(null);
@@ -126,17 +128,17 @@ export function RecordsWorkspace() {
       <div className={styles.metrics} aria-label="Current financial totals">
         <div>
           <span>Income</span>
-          <strong>{formatAmount(result.income.minor)}</strong>
+          <strong>{factValue(catalogue.facts.income!)}</strong>
           <small>Net / stated document basis</small>
         </div>
         <div>
           <span>Costs</span>
-          <strong>{formatAmount(result.costs.minor)}</strong>
+          <strong>{factValue(catalogue.facts.costs!)}</strong>
           <small>Explicit tax shown separately</small>
         </div>
         <div>
           <span>Profit preview</span>
-          <strong>{formatAmount(result.profitMinor)}</strong>
+          <strong>{factValue(catalogue.facts.profit!)}</strong>
           <small>
             {result.marginTenths === null
               ? "Margin unavailable"
@@ -145,19 +147,19 @@ export function RecordsWorkspace() {
         </div>
         <div>
           <span>Recorded cash movement</span>
-          <strong>{formatAmount(result.netCashMinor)}</strong>
+          <strong>{factValue(catalogue.facts.cash_net!)}</strong>
           <small>In less out · excludes transfers</small>
         </div>
       </div>
       <div className={styles.balanceLine}>
         <span>
-          Customer open <b>{formatAmount(result.customerOpen.minor)}</b>
+          Customer open <b>{factValue(catalogue.facts.customer_open!)}</b>
         </span>
         <span>
-          Supplier open <b>{formatAmount(result.supplierOpen.minor)}</b>
+          Supplier open <b>{factValue(catalogue.facts.supplier_open!)}</b>
         </span>
         <span>
-          Explicit tax <b>{formatAmount(result.tax.minor)}</b>
+          Explicit tax <b>{factValue(catalogue.facts.tax!)}</b>
         </span>
       </div>
       {(result.exclusions.unknownBalances.length > 0 ||

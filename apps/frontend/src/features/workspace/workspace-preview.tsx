@@ -1,15 +1,35 @@
 "use client";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { WorkspaceShell } from "../../components/ui/workspace-shell";
 import { ComposerShell } from "../../components/ui/composer-shell";
 import { PaperDialog } from "../../components/ui/paper-dialog";
-import { Button } from "../../components/ui/button";
 import { RuntimeStatus } from "../runtime/runtime-status";
 import { DocumentGallery } from "../documents/document-gallery";
-import { SessionProvider } from "../session/session-provider";
+import { SessionProvider, useSession } from "../session/session-provider";
 import { RecordsWorkspace } from "../records/records-workspace";
 import { DocumentIntake } from "../documents/document-intake";
+import { Dashboard } from "../dashboard/dashboard";
+import styles from "./workspace.module.css";
 
+type View = "overview" | "documents" | "records";
+const subscribe = (listener: () => void) => {
+  window.addEventListener("hashchange", listener);
+  return () => window.removeEventListener("hashchange", listener);
+};
+const currentView = (): View =>
+  window.location.hash === "#documents"
+    ? "documents"
+    : window.location.hash === "#records"
+      ? "records"
+      : "overview";
+const serverView = (): View => "overview";
+function navigate(view: View) {
+  if (window.location.hash !== `#${view}`) {
+    window.history.pushState(null, "", `#${view}`);
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
 export function WorkspacePreview() {
   return (
     <SessionProvider>
@@ -18,20 +38,21 @@ export function WorkspacePreview() {
   );
 }
 function WorkspaceContent() {
+  const view = useSyncExternalStore(subscribe, currentView, serverView);
+  const { session } = useSession();
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [preview, setPreview] = useState<"welcome" | "tour" | "draft">("welcome");
   const descriptions = {
-    welcome:
-      "Welcome to your temporary workspace. Start with documents, explore their numbers, and ask me to help with your next task.",
-    tour: "Documents are your starting point. The overview will show income, costs, profit and cash; you’ll be able to open a figure and inspect its original source.",
+    welcome: "Every number has a paper trail. Tap a chart to explore its original sources.",
+    tour: "Start in Documents, review the sources, then explore Overview. Records lets you create, edit and undo changes in this session.",
     draft:
-      "In the completed flow, I’ll prepare an editable form and fill it step by step. You review the details before confirming; your most recent action can be undone.",
+      "I’ll prepare an editable form and fill it step by step. You review the details before confirming; your most recent action can be undone.",
   };
   const composer = (
     <ComposerShell
       value=""
       disabled
-      footnote="Design preview · Full chat follows."
+      footnote="Interaction preview · Full Retro chat follows."
       shortcuts={
         <>
           <button type="button" onClick={() => setPreview("tour")}>
@@ -51,70 +72,72 @@ function WorkspaceContent() {
   );
   return (
     <WorkspaceShell composer={composer}>
-      <span className="rs-eyebrow rs-muted">A fresh perspective starts here</span>
-      <h1>
-        Your documents.
-        <br />
-        Your financial story.
-      </h1>
-      <p>
-        Start with the fictional Harbor Studio collection. Inspect each original PDF before turning
-        its details into your financial overview.
-      </p>
-      <RuntimeStatus />
-      <DocumentIntake />
-      <RecordsWorkspace />
-      <div className="rs-workspace-panels">
-        <section className="rs-card">
-          <h2>Start with documents.</h2>
+      <div className={styles.layout}>
+        <nav className={styles.nav} aria-label="Workspace areas">
+          <span className={styles.business}>
+            {session?.workspace.business.name ?? "Your workspace"}
+          </span>
+          {(["overview", "documents", "records"] as const).map((name, index) => (
+            <a
+              href={`#${name}`}
+              key={name}
+              aria-current={view === name ? "page" : undefined}
+              onClick={(event) => {
+                event.preventDefault();
+                navigate(name);
+              }}
+            >
+              <span aria-hidden="true">0{index + 1}</span>
+              {name.charAt(0).toUpperCase() + name.slice(1)}
+              {name === "documents" && session && (
+                <small>{session.workspace.documents.length}</small>
+              )}
+            </a>
+          ))}
+          <button type="button" onClick={() => setDetailsOpen(true)}>
+            Session details ↗
+          </button>
           <p>
-            Eight real PDFs bring together varied printed, scanned and synthetic handwriting-style
-            layouts. The complete collection is viewable below.
+            Private browser workspace.
+            <br />
+            USD · English
           </p>
-          <ul>
-            <li>Customer invoices & supplier bills</li>
-            <li>Rent & subscription receipts</li>
-            <li>Payments & a comparison month</li>
-          </ul>
-          <p>
-            Process the collection above. Simulated source-linked figures follow the same review
-            path while live accuracy and spend checks remain pending.
-          </p>
-        </section>
-        <section className="rs-card">
-          <h2>Space to try things.</h2>
-          <p>
-            English-language PDFs. USD amounts. A temporary session that survives refresh and
-            expires after two hours once you start it.
-          </p>
-          <p>
-            Create invoices, costs, payments and contacts above. Latest Undo and refresh recovery
-            work in this browser tab.
-          </p>
-          <Button variant="warm" onClick={() => setDetailsOpen(true)}>
-            View session details <span aria-hidden="true">↗</span>
-          </Button>
-        </section>
+        </nav>
+        <div className={styles.content}>
+          <div hidden={view !== "overview"}>
+            {view === "overview" && <Dashboard onDocuments={() => navigate("documents")} />}
+          </div>
+          <div hidden={view !== "documents"}>
+            <header className={styles.heading}>
+              <span className="rs-eyebrow rs-muted">Your original evidence</span>
+              <h1>Start with the paper trail.</h1>
+              <p>Eight visible PDFs, varied layouts, one source-backed financial story.</p>
+            </header>
+            <RuntimeStatus />
+            <DocumentIntake active={view === "documents"} />
+            {view === "documents" && <DocumentGallery />}
+          </div>
+          <div hidden={view !== "records"}>{view === "records" && <RecordsWorkspace />}</div>
+        </div>
       </div>
-      <DocumentGallery />
       <PaperDialog
         open={detailsOpen}
         onClose={() => setDetailsOpen(false)}
         title="A temporary place for your finances"
-        caption="Session design"
+        caption="Browser session"
       >
         <p>
-          Your records stay in this browser tab. Refresh recovery lasts up to two hours; export your
-          work before clearing or leaving the session.
+          Your records stay in this browser tab. Refresh recovery lasts up to two hours. Uploaded
+          originals use temporary browser-only PDF storage; immutable sample PDFs can be opened from
+          the published collection.
         </p>
         <p>
-          Fake development mode simulates AI interactions without provider calls. Live document
-          processing will require an explicit choice before sending PDFs to OpenAI.
+          Fake development mode simulates AI interactions without provider calls. Live processing
+          requires explicit disclosure and the pending accuracy/spend gates.
         </p>
         <p>
-          Uploaded originals use temporary browser-only PDF storage. Immutable sample PDFs can be
-          opened again from the published collection. Closing cleanup is best effort; expired cached
-          files are swept on the next visit.
+          Closing cleanup is best effort; expired remnants are swept on your next visit. You can
+          clear the session from Records. Exports follow in the delivery queue.
         </p>
       </PaperDialog>
     </WorkspaceShell>

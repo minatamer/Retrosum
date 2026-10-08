@@ -21,8 +21,15 @@ export function PaperDialog({
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
+    const opener = document.activeElement;
     if (open && !dialog.open) dialog.showModal();
     if (!open && dialog.open) dialog.close();
+    return () => {
+      if (!open) return;
+      if (dialog.open) dialog.close();
+      if (opener?.isConnected && "focus" in opener && typeof opener.focus === "function")
+        opener.focus({ preventScroll: true });
+    };
   }, [open]);
   useEffect(() => {
     if (!open) return;

@@ -170,7 +170,7 @@ export class SessionController {
           }
           session = createEmptySession(this.environment.identity(), this.environment.now());
           notice =
-            "The previous workspace was expired or could not be safely restored. A fresh empty session is ready.";
+            "The previous workspace expired or could not be safely restored. A fresh browser session started.";
         }
       } else session = createEmptySession(this.environment.identity(), this.environment.now());
     } catch {
@@ -363,7 +363,7 @@ export class SessionController {
       (await this.environment.cache().get(token.workspaceId, doc));
     return this.isCurrent(token) ? blob : null;
   }
-  async reset(message = "A fresh empty session is ready.") {
+  async reset(message = "A fresh browser session started.") {
     const old = this.snapshot.session?.workspace.id;
     const ownedLease = this.lease;
     this.lease = null;

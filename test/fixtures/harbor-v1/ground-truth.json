@@ -1,0 +1,477 @@
+{
+  "fixtureVersion": "harbor-v1",
+  "authority": "Independent transcription for fake/evaluation only. Never pass to a live provider or seed a live graph.",
+  "numericInventoryFormat": "Each field is [raw token, occurrence count, normalized value, scale, ledger treatment]. Page/block locators identify visible context; no bounding boxes.",
+  "documents": [
+    {
+      "label": "D01",
+      "raster": false,
+      "pages": [
+        {
+          "page": 1,
+          "blockId": "invoice",
+          "fields": [
+            ["HS-101", 1, "HS-101", "identifier", "event_reference"],
+            ["2026-09-04", 1, "2026-09-04", "ISO_date", "event_date"],
+            ["2026-09-18", 1, "2026-09-18", "ISO_date", "due_date"],
+            ["12", 1, 12, "hours", "line_quantity"],
+            ["8", 1, 8, "hours", "line_quantity"],
+            ["150.00", 2, 15000, "USD_cents", "unit_price"],
+            ["1,800.00", 1, 180000, "USD_cents", "line_net"],
+            ["1,200.00", 1, 120000, "USD_cents", "line_net"],
+            ["3,000.00", 2, 300000, "USD_cents", "subtotal_and_total"],
+            ["0.00", 1, 0, "USD_cents", "separate_tax"]
+          ]
+        },
+        {
+          "page": 2,
+          "blockId": "service-notes",
+          "fields": [
+            ["HS-101", 2, "HS-101", "identifier", "same_event"],
+            ["12", 1, 12, "hours", "same_line"],
+            ["8", 1, 8, "hours", "same_line"],
+            ["150.00", 2, 15000, "USD_cents", "same_unit_price"],
+            ["1,800.00", 1, 180000, "USD_cents", "same_line"],
+            ["1,200.00", 1, 120000, "USD_cents", "same_line"],
+            ["3,000.00", 1, 300000, "USD_cents", "same_event"],
+            ["0.00", 1, 0, "USD_cents", "same_tax"],
+            ["2026-09-18", 1, "2026-09-18", "ISO_date", "same_due_date"]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "D02",
+      "raster": false,
+      "pages": [
+        {
+          "page": 1,
+          "blockId": "invoice",
+          "fields": [
+            ["HS-102", 1, "HS-102", "identifier", "event_reference"],
+            ["2026-09-24", 1, "2026-09-24", "ISO_date", "event_date"],
+            ["2026-10-08", 1, "2026-10-08", "ISO_date", "due_date"],
+            ["1", 1, 1, "projects", "line_quantity"],
+            ["2", 1, 2, "sessions", "line_quantity"],
+            ["1,200.00", 2, 120000, "USD_cents", "unit_price_and_line"],
+            ["300.00", 1, 30000, "USD_cents", "unit_price"],
+            ["600.00", 1, 60000, "USD_cents", "line_net"],
+            ["1,800.00", 2, 180000, "USD_cents", "subtotal_and_open_total"],
+            ["0.00", 1, 0, "USD_cents", "tax"]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "D03",
+      "raster": true,
+      "pages": [
+        {
+          "page": 1,
+          "blockId": "bill",
+          "fields": [
+            ["A-77", 1, "A-77", "identifier", "event_reference"],
+            ["2026-09-20", 1, "2026-09-20", "ISO_date", "event_date"],
+            ["2026-10-10", 1, "2026-10-10", "ISO_date", "due_date"],
+            ["12", 1, 12, "packs", "line_quantity"],
+            ["30.00", 1, 3000, "USD_cents", "unit_price"],
+            ["360.00", 2, 36000, "USD_cents", "line_and_net"],
+            ["10%", 1, 1000, "basis_points", "tax_rate"],
+            ["36.00", 1, 3600, "USD_cents", "tax"],
+            ["396.00", 1, 39600, "USD_cents", "gross_open"]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "D04",
+      "raster": true,
+      "pages": [
+        {
+          "page": 1,
+          "blockId": "receipt",
+          "fields": [
+            ["R-091", 1, "R-091", "identifier", "event_reference"],
+            ["2026-09-01", 1, "2026-09-01", "ISO_date", "paid_date"],
+            ["2026", 1, 2026, "year", "rent_period"],
+            ["800.00", 1, 80000, "USD_cents", "paid_rent"],
+            ["0.00", 1, 0, "USD_cents", "tax"]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "D05",
+      "raster": false,
+      "pages": [
+        {
+          "page": 1,
+          "blockId": "receipt",
+          "fields": [
+            ["PC-091", 1, "PC-091", "identifier", "event_reference"],
+            ["1", 1, 1, "months", "line_quantity"],
+            ["2026-09-01", 1, "2026-09-01", "ISO_date", "period_start"],
+            ["2026-09-30", 1, "2026-09-30", "ISO_date", "period_end"],
+            ["2026-09-12", 1, "2026-09-12", "ISO_date", "paid_date"],
+            ["120.00", 2, 12000, "USD_cents", "unit_price_and_total"],
+            ["0.00", 1, 0, "USD_cents", "tax"]
+          ]
+        },
+        {
+          "page": 2,
+          "blockId": "service-notes",
+          "fields": [
+            ["PC-091", 2, "PC-091", "identifier", "same_event"],
+            ["2026-09-01", 1, "2026-09-01", "ISO_date", "same_period_start"],
+            ["2026-09-30", 1, "2026-09-30", "ISO_date", "same_period_end"],
+            ["120.00", 1, 12000, "USD_cents", "same_total"],
+            ["0.00", 1, 0, "USD_cents", "same_tax"],
+            ["2026-09-12", 1, "2026-09-12", "ISO_date", "same_paid_date"]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "D06",
+      "raster": true,
+      "duplicateOf": "D03",
+      "pages": [
+        {
+          "page": 1,
+          "blockId": "bill",
+          "fields": [
+            ["A-77", 2, "A-77", "identifier", "same_event"],
+            ["2026-09-20", 1, "2026-09-20", "ISO_date", "same_date"],
+            ["2026-10-10", 1, "2026-10-10", "ISO_date", "same_due_date"],
+            ["12", 1, 12, "packs", "same_quantity"],
+            ["30.00", 1, 3000, "USD_cents", "same_unit_price"],
+            ["360.00", 2, 36000, "USD_cents", "same_line_and_net"],
+            ["10%", 1, 1000, "basis_points", "same_tax_rate"],
+            ["36.00", 1, 3600, "USD_cents", "same_tax"],
+            ["396.00", 1, 39600, "USD_cents", "same_gross_open"]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "D07",
+      "raster": false,
+      "pages": [
+        {
+          "page": 1,
+          "blockId": "P-901/P-902",
+          "fields": [
+            ["2026", 1, 2026, "year", "register_period"],
+            ["P-901", 1, "P-901", "identifier", "payment_row"],
+            ["2026-09-18", 1, "2026-09-18", "ISO_date", "movement_date"],
+            ["+3,000.00", 1, 300000, "USD_cents", "incoming"],
+            ["HS-101", 1, "HS-101", "identifier", "invoice_match"],
+            ["P-902", 1, "P-902", "identifier", "payment_row"],
+            ["2026-09-01", 1, "2026-09-01", "ISO_date", "movement_date"],
+            ["-800.00", 1, -80000, "USD_cents", "outgoing"],
+            ["R-091", 1, "R-091", "identifier", "rent_match"],
+            ["2026-10-03", 1, "2026-10-03", "ISO_date", "snapshot_as_of"]
+          ]
+        },
+        {
+          "page": 2,
+          "blockId": "P-903/P-904",
+          "fields": [
+            ["2026", 1, 2026, "year", "register_period"],
+            ["P-903", 1, "P-903", "identifier", "payment_row"],
+            ["2026-09-12", 1, "2026-09-12", "ISO_date", "movement_date"],
+            ["-120.00", 1, -12000, "USD_cents", "outgoing"],
+            ["PC-091", 1, "PC-091", "identifier", "software_match"],
+            ["P-904", 1, "P-904", "identifier", "payment_row"],
+            ["2026-09-26", 1, "2026-09-26", "ISO_date", "movement_date"],
+            ["-200.00", 1, -20000, "USD_cents", "internal_transfer_excluded"],
+            ["TR-091", 2, "TR-091", "identifier", "transfer_reference"],
+            ["3,000.00", 1, 300000, "USD_cents", "incoming_summary"],
+            ["920.00", 1, 92000, "USD_cents", "operating_out_summary"],
+            ["2,080.00", 1, 208000, "USD_cents", "net_operating_summary"],
+            ["1,880.00", 1, 188000, "USD_cents", "net_all_rows_summary"]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "D08",
+      "raster": false,
+      "pages": [
+        {
+          "page": 1,
+          "blockId": "history-summary",
+          "fields": [
+            ["2026", 1, 2026, "year", "history_period"],
+            ["AU-101", 1, "AU-101", "identifier", "summary_event"],
+            ["2,500.00", 1, 250000, "USD_cents", "summary_income"],
+            ["AU-102", 1, "AU-102", "identifier", "summary_event"],
+            ["1,500.00", 1, 150000, "USD_cents", "summary_income"],
+            ["R-081", 1, "R-081", "identifier", "summary_event"],
+            ["800.00", 1, 80000, "USD_cents", "summary_cost"],
+            ["NS-A-10", 1, "NS-A-10", "identifier", "summary_event"],
+            ["200.00", 1, 20000, "USD_cents", "summary_cost"],
+            ["PC-081", 1, "PC-081", "identifier", "summary_event"],
+            ["100.00", 1, 10000, "USD_cents", "summary_cost"],
+            ["4,000.00", 1, 400000, "USD_cents", "income_total"],
+            ["1,100.00", 1, 110000, "USD_cents", "cost_total"],
+            ["2,900.00", 1, 290000, "USD_cents", "profit_preview"]
+          ]
+        },
+        {
+          "page": 2,
+          "blockId": "AU-101/AU-102",
+          "fields": [
+            ["AU-101", 1, "AU-101", "identifier", "event_reference"],
+            ["2026-08-06", 1, "2026-08-06", "ISO_date", "event_date"],
+            ["2026-08-20", 1, "2026-08-20", "ISO_date", "due_date"],
+            ["10", 1, 10, "hours", "line_quantity"],
+            ["250.00", 2, 25000, "USD_cents", "unit_prices"],
+            ["2,500.00", 1, 250000, "USD_cents", "net_and_gross"],
+            ["0.00", 2, 0, "USD_cents", "taxes"],
+            ["AU-102", 1, "AU-102", "identifier", "event_reference"],
+            ["2026-08-21", 1, "2026-08-21", "ISO_date", "event_date"],
+            ["2026-09-04", 1, "2026-09-04", "ISO_date", "due_date"],
+            ["6", 1, 6, "hours", "line_quantity"],
+            ["1,500.00", 1, 150000, "USD_cents", "net_and_gross"]
+          ]
+        },
+        {
+          "page": 3,
+          "blockId": "R-081/PC-081",
+          "fields": [
+            ["R-081", 1, "R-081", "identifier", "event_reference"],
+            ["2026-08-01", 1, "2026-08-01", "ISO_date", "event_date"],
+            ["1", 2, 1, "units", "quantities"],
+            ["800.00", 2, 80000, "USD_cents", "unit_price_and_total"],
+            ["0.00", 2, 0, "USD_cents", "taxes"],
+            ["PC-081", 1, "PC-081", "identifier", "event_reference"],
+            ["2026-08-12", 1, "2026-08-12", "ISO_date", "event_date"],
+            ["100.00", 2, 10000, "USD_cents", "unit_price_and_total"]
+          ]
+        },
+        {
+          "page": 4,
+          "blockId": "NS-A-10",
+          "fields": [
+            ["NS-A-10", 1, "NS-A-10", "identifier", "event_reference"],
+            ["2026-08-15", 1, "2026-08-15", "ISO_date", "event_date"],
+            ["4", 1, 4, "packs", "line_quantity"],
+            ["50.00", 1, 5000, "USD_cents", "unit_price"],
+            ["200.00", 1, 20000, "USD_cents", "net_and_gross"],
+            ["0.00", 1, 0, "USD_cents", "tax"]
+          ]
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "reference": "HS-101",
+      "document": "D01",
+      "page": 1,
+      "direction": "income",
+      "counterparty": "Cedar Works",
+      "date": "2026-09-04",
+      "dueDate": "2026-09-18",
+      "netCents": 300000,
+      "taxCents": 0,
+      "grossCents": 300000,
+      "status": "unknown",
+      "category": "Services",
+      "lineAmounts": [180000, 120000]
+    },
+    {
+      "reference": "HS-102",
+      "document": "D02",
+      "page": 1,
+      "direction": "income",
+      "counterparty": "Maple Retail",
+      "date": "2026-09-24",
+      "dueDate": "2026-10-08",
+      "netCents": 180000,
+      "taxCents": 0,
+      "grossCents": 180000,
+      "status": "open",
+      "category": "Services",
+      "lineAmounts": [120000, 60000]
+    },
+    {
+      "reference": "A-77",
+      "document": "D03",
+      "additionalEvidence": ["D06"],
+      "page": 1,
+      "direction": "cost",
+      "counterparty": "Northstar Supplies",
+      "date": "2026-09-20",
+      "dueDate": "2026-10-10",
+      "netCents": 36000,
+      "taxCents": 3600,
+      "grossCents": 39600,
+      "status": "open",
+      "category": "Materials",
+      "lineAmounts": [36000]
+    },
+    {
+      "reference": "R-091",
+      "document": "D04",
+      "page": 1,
+      "direction": "cost",
+      "counterparty": "Cove Spaces",
+      "date": "2026-09-01",
+      "netCents": 80000,
+      "taxCents": 0,
+      "grossCents": 80000,
+      "status": "paid",
+      "category": "Rent",
+      "lineAmounts": [80000]
+    },
+    {
+      "reference": "PC-091",
+      "document": "D05",
+      "page": 1,
+      "direction": "cost",
+      "counterparty": "PaperCloud",
+      "date": "2026-09-12",
+      "netCents": 12000,
+      "taxCents": 0,
+      "grossCents": 12000,
+      "status": "paid",
+      "category": "Software",
+      "lineAmounts": [12000]
+    },
+    {
+      "reference": "AU-101",
+      "document": "D08",
+      "page": 2,
+      "direction": "income",
+      "counterparty": "Cedar Works",
+      "date": "2026-08-06",
+      "dueDate": "2026-08-20",
+      "netCents": 250000,
+      "taxCents": 0,
+      "grossCents": 250000,
+      "status": "unknown",
+      "category": "Services",
+      "lineAmounts": [250000]
+    },
+    {
+      "reference": "AU-102",
+      "document": "D08",
+      "page": 2,
+      "direction": "income",
+      "counterparty": "Maple Retail",
+      "date": "2026-08-21",
+      "dueDate": "2026-09-04",
+      "netCents": 150000,
+      "taxCents": 0,
+      "grossCents": 150000,
+      "status": "unknown",
+      "category": "Services",
+      "lineAmounts": [150000]
+    },
+    {
+      "reference": "R-081",
+      "document": "D08",
+      "page": 3,
+      "direction": "cost",
+      "counterparty": "Cove Spaces",
+      "date": "2026-08-01",
+      "netCents": 80000,
+      "taxCents": 0,
+      "grossCents": 80000,
+      "status": "unknown",
+      "category": "Rent",
+      "lineAmounts": [80000]
+    },
+    {
+      "reference": "PC-081",
+      "document": "D08",
+      "page": 3,
+      "direction": "cost",
+      "counterparty": "PaperCloud",
+      "date": "2026-08-12",
+      "netCents": 10000,
+      "taxCents": 0,
+      "grossCents": 10000,
+      "status": "unknown",
+      "category": "Software",
+      "lineAmounts": [10000]
+    },
+    {
+      "reference": "NS-A-10",
+      "document": "D08",
+      "page": 4,
+      "direction": "cost",
+      "counterparty": "Northstar Supplies",
+      "date": "2026-08-15",
+      "netCents": 20000,
+      "taxCents": 0,
+      "grossCents": 20000,
+      "status": "unknown",
+      "category": "Materials",
+      "lineAmounts": [20000]
+    }
+  ],
+  "payments": [
+    {
+      "rowId": "P-901",
+      "document": "D07",
+      "page": 1,
+      "date": "2026-09-18",
+      "reference": "HS-101",
+      "counterparty": "Cedar Works",
+      "signedCents": 300000,
+      "kind": "operating"
+    },
+    {
+      "rowId": "P-902",
+      "document": "D07",
+      "page": 1,
+      "date": "2026-09-01",
+      "reference": "R-091",
+      "counterparty": "Cove Spaces",
+      "signedCents": -80000,
+      "kind": "operating"
+    },
+    {
+      "rowId": "P-903",
+      "document": "D07",
+      "page": 2,
+      "date": "2026-09-12",
+      "reference": "PC-091",
+      "counterparty": "PaperCloud",
+      "signedCents": -12000,
+      "kind": "operating"
+    },
+    {
+      "rowId": "P-904",
+      "document": "D07",
+      "page": 2,
+      "date": "2026-09-26",
+      "reference": "TR-091",
+      "counterparty": "Harbor-owned reserve",
+      "signedCents": -20000,
+      "kind": "internal_transfer"
+    }
+  ],
+  "expectations": {
+    "September": {
+      "income": 480000,
+      "costs": 128000,
+      "profit": 352000,
+      "marginPercent": 73.3,
+      "cashIn": 300000,
+      "cashOut": 92000,
+      "netOperatingMovement": 208000,
+      "receivable": 180000,
+      "payable": 39600,
+      "rentSharePercent": 62.5
+    },
+    "August": {
+      "income": 400000,
+      "costs": 110000,
+      "profit": 290000
+    }
+  }
+}

@@ -4,15 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --hostname 127.0.0.1 --port 3000",
+    "dev": "node ../../scripts/prepare-pdf-assets.mjs && next dev --hostname 127.0.0.1 --port 3000",
     "start": "next start --hostname 127.0.0.1 --port 3000",
-    "build": "next build",
+    "build": "node ../../scripts/prepare-pdf-assets.mjs && next build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@retrosum/contracts": "workspace:*",
     "@retrosum/money": "workspace:*",
     "next": "16.4.0",
+    "pdfjs-dist": "6.4.299",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "0.0.1"

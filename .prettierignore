@@ -18,3 +18,4 @@ docs/tickets/RET-007-build-retro-conversation-and-guidance.md
 docs/tickets/RET-008-deliver-retro-animated-crud.md
 docs/tickets/RET-009-complete-exports-and-session-lifecycle.md
 artifacts/
+apps/frontend/public/pdfjs/

@@ -10,3 +10,4 @@ coverage/
 artifacts/local/
 *.log
 .DS_Store
+apps/frontend/public/pdfjs/

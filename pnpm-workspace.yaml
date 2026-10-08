@@ -1,0 +1,14 @@
+packages:
+  - apps/*
+  - packages/*
+
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: false
+
+saveExact: true
+engineStrict: true
+strictPeerDependencies: true
+
+minimumReleaseAge: 1440

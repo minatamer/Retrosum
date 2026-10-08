@@ -1,6 +1,6 @@
 # Retrosum implementation ticket queue
 
-Updated **8 October 2026**. The owner authorized the full local fake-mode execute/validate loop and per-ticket commits. **RET-001 is Complete; RET-002, RET-003 and RET-004 are implemented and verified locally with owner visual acceptance pending; RET-005 is next.** The [source of truth](../RETROSUM_DEMO_SOURCE_OF_TRUTH.md) owns product/architecture behavior; the [HTML brief](../RETROSUM_OVERVIEW.html) summarizes it. Actual live accuracy/spend, owner visual feedback and cloud deployment remain pending.
+Updated **8 October 2026**. The owner authorized the full local fake-mode execute/validate loop and per-ticket commits. **RET-001 is Complete; RET-002 through RET-005 are implemented and verified locally with their deferred acceptance gates pending; RET-006 is next.** The [source of truth](../RETROSUM_DEMO_SOURCE_OF_TRUTH.md) owns product/architecture behavior; the [HTML brief](../RETROSUM_OVERVIEW.html) summarizes it. Actual live accuracy/spend, owner visual feedback and cloud deployment remain pending. RET-005 public live capability stays closed.
 
 ## Why twelve packets
 
@@ -16,7 +16,7 @@ RET-001 establishes safe boundaries. RET-002/003 make the brand and visible evid
 | [RET-002](RET-002-build-brand-and-landing.md)                 | Build the brand system and calm sourced landing                          | RET-001          | Local; visual pending |
 | [RET-003](RET-003-author-sample-pdfs-and-viewer.md)           | Author the visible PDF corpus and floating paper viewer                  | RET-002          | Local; visual pending |
 | [RET-004](RET-004-build-money-state-crud-and-refresh.md)      | Build the canonical money workspace, CRUD, Undo and refresh recovery     | RET-001, RET-003 | Local; visual pending |
-| [RET-005](RET-005-deliver-live-pdf-recognition-and-review.md) | Deliver live OpenAI PDF recognition, review and exact-number evaluation  | RET-004          | Planned               |
+| [RET-005](RET-005-deliver-live-pdf-recognition-and-review.md) | Deliver live OpenAI PDF recognition, review and exact-number evaluation  | RET-004          | Local; live pending   |
 | [RET-006](RET-006-build-interactive-money-dashboard.md)       | Build the beautiful interactive dashboard and source drill-down          | RET-004, RET-005 | Planned               |
 | [RET-007](RET-007-build-retro-conversation-and-guidance.md)   | Build Retro conversation, grounded explanations and interactive guidance | RET-006          | Planned               |
 | [RET-008](RET-008-deliver-retro-animated-crud.md)             | Deliver Retro animated forms, confirmation and inline Undo               | RET-007          | Planned               |

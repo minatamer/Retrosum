@@ -1,6 +1,6 @@
 # RET-005 — Deliver live OpenAI PDF recognition, review and exact-number evaluation
 
-Status: **Planned — not implemented**  
+Status: **Implemented locally — live and owner visual acceptance pending**
 Last synchronized: **8 October 2026**  
 Depends on: [RET-004](RET-004-build-money-state-crud-and-refresh.md)  
 Blocks: RET-006, RET-010  
@@ -41,13 +41,13 @@ Areas owned by this packet:
 
 ## Acceptance criteria
 
-- [ ] Sample and visitor live routes share validation/provider behavior; no hidden prepared public data.
-- [ ] Actual inspected PDF bytes are sent; OpenAI credentials never enter browser/public frontend.
-- [ ] Each accepted numeric field has exact source evidence and no invented confidence score.
-- [ ] Multipage statements/history preserve every eligible record and locator without truncation.
-- [ ] Ambiguous or inconsistent critical figures are held, not guessed into the money graph.
-- [ ] Disabled/invalid/stale/replayed requests dispatch zero extra model work.
-- [ ] Fake/error/abort/partial success paths preserve honest provenance and previews.
+- [x] Sample and visitor routes share bounded validation/provider contracts; live dispatch stays closed, and the browser has no prepared financial graph.
+- [x] Actual inspected PDF bytes feed the request path and injected OpenAI adapter; credentials remain backend-only. No real paid request was made.
+- [x] Local accepted numeric fields retain exact page/raw/unit evidence and no invented confidence score; live transcription accuracy remains separately unverified.
+- [x] Multipage statements/history preserve every eligible record and locator without truncation in the declared corpus.
+- [x] Ambiguous or inconsistent critical figures are held, not guessed into the money graph.
+- [x] Disabled/invalid/stale/replayed local/injected requests cause no extra automatic dispatch; live admission remains closed pending hardening/measurement.
+- [x] Fake/error/abort/partial success paths preserve honest provenance and previews.
 - [ ] Public live support stays closed until two-run exact-field acceptance, including genuine handwriting, passes.
 
 ## Verification and evidence
@@ -70,4 +70,6 @@ Keep this packet one coherent outcome: necessary UI, contracts, backend/local ef
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
 
-**Execution record:** Not started. No tests, assets, application feature, provider call or deployment is completed by creating this packet.
+**Execution record, 8 October 2026:** Actual-byte sequential sample/visitor intake, browser and isolated server PDF inspection, bounded multipart/private bridge, strict versioned interpretation, full numeric inventory, deterministic grounding/arithmetic/role checks, review holds/duplicate confirmation, source-page preview, review effects/latest Undo, guarded OpenAI adapter and explicit fake composition are implemented. The declared eight-PDF simulation preserves 128 numeric groups / 146 occurrences and all ten events / four payments / four imported invoices. Accepted September totals are 4,800 income / 1,280 costs / 3,520 profit / 2,080 recorded operating cash, with 1,800 / 396 known open balances. Unfamiliar visitor PDFs remain previewable/manual-entry inputs without fabricated recognition. Completed sources survive refresh without automatic rebilling; a successful manual command cancels unfinished recognition while preserving its own Undo.
+
+The settled checks and read-only validation are recorded in [RET-005 evidence](../validation/RET-005.md). The independent actual-PDF evaluation runner is prepared; its default inspection-only run verified eight hashes / fourteen pages and left numeric/live acceptance Pending. Public live capability remains closed regardless of present flags/keys. No paid call, key setup, database, cloud resource, push or deployment occurred. D04 is synthetic handwriting-style, permitted by the owner’s recreation instruction; it is not human-written OCR evidence. RET-006 is eligible for local execution.

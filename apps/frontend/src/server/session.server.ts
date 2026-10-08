@@ -1,5 +1,6 @@
 import "server-only";
 import { workspaceIdSchema } from "@retrosum/contracts";
+import { backendRequest, admissionHeaders, readBounded } from "./backend.server";
 export async function revokeSession(
   request: Request,
   fetcher: typeof fetch = fetch,
@@ -12,32 +13,8 @@ export async function revokeSession(
     return Response.json({ error: "invalid_session" }, { status: 400, headers });
   const signal = AbortSignal.any([request.signal, AbortSignal.timeout(5000)]);
   try {
-    const reader = request.body?.getReader();
-    if (!reader) throw new Error();
-    let raw = "",
-      count = 0;
-    const decoder = new TextDecoder();
-    const abort = () => {
-      void reader.cancel().catch(() => undefined);
-    };
-    signal.addEventListener("abort", abort, { once: true });
-    try {
-      signal.throwIfAborted();
-      while (true) {
-        const part = await reader.read();
-        signal.throwIfAborted();
-        if (part.done) break;
-        count += part.value.byteLength;
-        if (count > 256) throw new Error();
-        raw += decoder.decode(part.value, { stream: true });
-      }
-      raw += decoder.decode();
-    } finally {
-      signal.removeEventListener("abort", abort);
-      await reader.cancel().catch(() => undefined);
-      reader.releaseLock();
-    }
-    const body: unknown = JSON.parse(raw);
+    if (!request.body) throw new Error();
+    const body: unknown = JSON.parse(await readBounded(request.body, 256, signal));
     if (
       !body ||
       typeof body !== "object" ||
@@ -46,8 +23,8 @@ export async function revokeSession(
     )
       throw new Error();
     const workspaceId = workspaceIdSchema.parse(body.workspaceId);
-    const response = await fetcher(
-      new URL("/v1/session", environment.BACKEND_ORIGIN ?? "http://127.0.0.1:4000"),
+    const response = await backendRequest(
+      "/v1/session",
       {
         method: "DELETE",
         cache: "no-store",
@@ -56,9 +33,12 @@ export async function revokeSession(
         headers: {
           "Content-Type": "application/json",
           Origin: environment.FRONTEND_ORIGIN ?? "http://localhost:3000",
+          ...admissionHeaders(request),
         },
         body: JSON.stringify({ workspaceId }),
       },
+      fetcher,
+      environment,
     );
     await response.body?.cancel();
     return Response.json(

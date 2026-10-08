@@ -6,15 +6,21 @@ import {
   type ExtractionRequest,
 } from "@retrosum/contracts";
 
-export async function readJson(response: Response, maximum: number) {
+export async function readJson(response: Response, maximum: number, signal?: AbortSignal) {
   if (!response.body) throw new RangeError("The server response was empty.");
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let length = 0;
   let text = "";
+  const abort = () => {
+    void reader.cancel().catch(() => undefined);
+  };
+  signal?.addEventListener("abort", abort, { once: true });
   try {
+    signal?.throwIfAborted();
     while (true) {
       const part = await reader.read();
+      signal?.throwIfAborted();
       if (part.done) break;
       length += part.value.byteLength;
       if (length > maximum) {
@@ -25,12 +31,15 @@ export async function readJson(response: Response, maximum: number) {
     }
     return JSON.parse(text + decoder.decode()) as unknown;
   } finally {
+    signal?.removeEventListener("abort", abort);
+    await reader.cancel().catch(() => undefined);
     reader.releaseLock();
   }
 }
 export async function recognitionCapabilities(signal: AbortSignal) {
+  const deadline = AbortSignal.any([signal, AbortSignal.timeout(5000)]);
   const response = await fetch("/api/retrosum/v1/config", {
-    signal: AbortSignal.any([signal, AbortSignal.timeout(5000)]),
+    signal: deadline,
     cache: "no-store",
     redirect: "error",
   });
@@ -38,7 +47,7 @@ export async function recognitionCapabilities(signal: AbortSignal) {
     throw new RangeError(
       "Document processing is temporarily unavailable. Originals and manual records remain available.",
     );
-  return capabilitiesSchema.parse(await readJson(response, 8192));
+  return capabilitiesSchema.parse(await readJson(response, 8192, deadline));
 }
 const messages: Record<string, string> = {
   fake_unrecognized_pdf:
@@ -51,19 +60,26 @@ const messages: Record<string, string> = {
     "Live recognition is awaiting owner accuracy and spend verification. Your original remains in this browser.",
   instance_busy: "Another document operation is active. Try again deliberately when it finishes.",
 };
-export async function extractOriginal(input: ExtractionRequest, blob: Blob, signal: AbortSignal) {
+export async function extractOriginal(
+  input: ExtractionRequest,
+  blob: Blob,
+  signal: AbortSignal,
+  grant?: string,
+) {
   const metadata = extractionRequestSchema.parse(input);
   const form = new FormData();
   form.set("metadata", JSON.stringify(metadata));
   form.set("file", blob, "document.pdf");
+  const deadline = AbortSignal.any([signal, AbortSignal.timeout(95000)]);
   const response = await fetch("/api/retrosum/v1/extract", {
     method: "POST",
     body: form,
-    signal: AbortSignal.any([signal, AbortSignal.timeout(95000)]),
+    signal: deadline,
+    headers: grant ? { "X-Retrosum-Grant": grant } : {},
     cache: "no-store",
     redirect: "error",
   });
-  const body = await readJson(response, MAX_RECOGNITION_BYTES);
+  const body = await readJson(response, MAX_RECOGNITION_BYTES, deadline);
   if (!response.ok) {
     const code =
       typeof body === "object" && body !== null && "error" in body && typeof body.error === "string"

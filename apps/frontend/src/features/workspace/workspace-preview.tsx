@@ -10,6 +10,7 @@ import { DocumentIntake } from "../documents/document-intake";
 import { Dashboard } from "../dashboard/dashboard";
 import { Retro } from "../retro/retro";
 import { ExportPanel } from "../exports/export-panel";
+import { ProcessingProvider, ProcessingDetails } from "../processing/processing-provider";
 import { navigateWorkspace, type WorkspaceView } from "./navigation";
 import styles from "./workspace.module.css";
 
@@ -32,7 +33,9 @@ function navigate(view: View) {
 export function WorkspacePreview() {
   return (
     <SessionProvider>
-      <WorkspaceContent />
+      <ProcessingProvider>
+        <WorkspaceContent />
+      </ProcessingProvider>
     </SessionProvider>
   );
 }
@@ -70,6 +73,7 @@ function WorkspaceContent() {
             Session details ↗
           </button>
           <ExportPanel key={`${generation}/${session?.workspace.id ?? "opening"}`} />
+          <ProcessingDetails key={`processing/${generation}`} />
           <p>
             Private browser workspace.
             <br />

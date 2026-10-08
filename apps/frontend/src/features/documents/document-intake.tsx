@@ -15,9 +15,11 @@ import { loadSampleBytes } from "./pdf-policy";
 import { OriginalViewer } from "./original-viewer";
 import { DocumentReview } from "./document-review";
 import styles from "./recognition.module.css";
+import { usePaidProcessing } from "../processing/processing-provider";
 
 export function DocumentIntake({ active: activeView = true }: { active?: boolean }) {
   const { controller, session, ready } = useSession();
+  const authorize = usePaidProcessing();
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(
     "Start with the visible collection or select your own PDFs.",
@@ -106,9 +108,16 @@ export function DocumentIntake({ active: activeView = true }: { active?: boolean
       if (item.doc.provenance === "visitor_upload")
         await controller.cachePdf(token, item.doc, item.blob).catch(() => undefined);
     }
-    await processDocuments(controller, unique, signal, (text) => {
-      if (mounted.current) setProgress(text);
-    });
+    await processDocuments(
+      controller,
+      unique,
+      signal,
+      (text) => {
+        if (mounted.current) setProgress(text);
+      },
+      false,
+      authorize,
+    );
   };
   const sample = () =>
     void run(async (signal) => {
@@ -153,6 +162,7 @@ export function DocumentIntake({ active: activeView = true }: { active?: boolean
         signal,
         setProgress,
         doc.recognitionAttempted,
+        authorize,
       );
     });
   return (

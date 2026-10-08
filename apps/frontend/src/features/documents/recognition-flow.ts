@@ -1,5 +1,6 @@
 import {
   documentSchema,
+  extractionRequestSchema,
   MAX_TOTAL_BYTES,
   type SourceDocument,
   type OperationToken,
@@ -10,6 +11,7 @@ import type { SessionController } from "../session/session-controller";
 import { inspectOriginal } from "./inspect-client";
 import { recognitionCapabilities, extractOriginal } from "./recognition-client";
 import { loadSampleBytes } from "./pdf-policy";
+import { hashRequest, type AuthorizePaid } from "../processing/processing-client";
 
 export type IntakeItem = { doc: SourceDocument; blob: Blob };
 export function updateDocument(
@@ -116,6 +118,7 @@ export async function processDocuments(
   signal: AbortSignal,
   progress: (text: string) => void,
   retry = false,
+  authorize?: AuthorizePaid,
 ) {
   let token = controller.token(`batch_${crypto.randomUUID()}`);
   let capabilities;
@@ -164,25 +167,44 @@ export async function processDocuments(
       if (capabilities.mode === "fake") await pause(signal);
       if (!controller.isCurrent(token))
         throw new RangeError("The workspace changed before submission.");
-      token = updateDocument(controller, token, item.doc.id, { recognitionAttempted: true });
-      const result = await extractOriginal(
-        {
-          operationId: crypto.randomUUID(),
-          workspaceId: token.workspaceId,
-          revision: token.inputRevision,
-          retry,
-          business: session.workspace.business,
-          asOf: session.workspace.asOf,
-          document: item.doc,
-          envelope: {
-            files: docs.length,
-            pages: docs.reduce((sum, doc) => sum + doc.pageCount, 0),
-            bytes: docs.reduce((sum, doc) => sum + doc.byteLength, 0),
-          },
+      const metadata = extractionRequestSchema.parse({
+        operationId: crypto.randomUUID(),
+        workspaceId: token.workspaceId,
+        // Bind the revision that the submission marker will create after consent.
+        revision: token.inputRevision + 1,
+        retry,
+        business: session.workspace.business,
+        asOf: session.workspace.asOf,
+        document: item.doc,
+        envelope: {
+          files: docs.length,
+          pages: docs.reduce((sum, doc) => sum + doc.pageCount, 0),
+          bytes: docs.reduce((sum, doc) => sum + doc.byteLength, 0),
         },
-        item.blob,
-        signal,
-      );
+      });
+      const grant =
+        capabilities.mode === "live"
+          ? await authorize?.(
+              {
+                action: "extract",
+                workspaceId: metadata.workspaceId,
+                operationId: metadata.operationId,
+                inputHash: await hashRequest(metadata),
+                documentHash: metadata.document.sha256,
+                retry: metadata.retry,
+              },
+              capabilities,
+              signal,
+            )
+          : undefined;
+      if (capabilities.mode === "live" && !grant)
+        throw new RangeError(
+          "Live processing requires disclosure and admission. No PDF was submitted.",
+        );
+      if (!controller.isCurrent(token))
+        throw new RangeError("The workspace changed before submission.");
+      token = updateDocument(controller, token, item.doc.id, { recognitionAttempted: true });
+      const result = await extractOriginal(metadata, item.blob, signal, grant);
       if (!controller.isCurrent(token))
         throw new RangeError(
           "The workspace changed. This result was discarded without automatic retry.",

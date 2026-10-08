@@ -9,7 +9,9 @@ export function inspectBoundary(file, source) {
   const money = normalized.startsWith("packages/money/");
   const frontend = normalized.startsWith("apps/frontend/src/");
   const server =
-    normalized.endsWith(".server.ts") || normalized.startsWith("apps/frontend/src/app/api/");
+    normalized.endsWith(".server.ts") ||
+    normalized.startsWith("apps/frontend/src/app/api/") ||
+    normalized === "apps/frontend/src/proxy.ts";
   const findings = [];
   let serverOnlyImported = false;
   const ast = ts.createSourceFile(
@@ -41,7 +43,14 @@ export function inspectBoundary(file, source) {
       const owner = normalized.split("/").slice(0, 2).join("/");
       if (!target.startsWith(owner + "/"))
         add(node, "Relative imports cannot cross workspace owners.");
-      if (frontend && !server && (target.includes(".server") || target.includes("/server/")))
+      if (
+        frontend &&
+        !server &&
+        (target.includes(".server") ||
+          target.includes("/server/") ||
+          target === "apps/frontend/src/proxy" ||
+          target === "apps/frontend/src/proxy.ts")
+      )
         add(node, "Browser-owned modules cannot import server modules.");
     }
     if (

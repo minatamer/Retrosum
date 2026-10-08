@@ -1,6 +1,7 @@
 import "server-only";
 import { MAX_FILE_BYTES, MAX_RECOGNITION_BYTES, extractionResultSchema } from "@retrosum/contracts";
 import { readBackendCapabilities } from "./capabilities.server";
+import { backendRequest, admissionHeaders, readBounded } from "./backend.server";
 
 const BODY_LIMIT = MAX_FILE_BYTES + 64 * 1024;
 export async function forwardExtraction(
@@ -72,7 +73,6 @@ export async function forwardExtraction(
   });
   try {
     // The capability reader has already validated this exact configured private origin.
-    const origin = new URL(environment.BACKEND_ORIGIN ?? "http://127.0.0.1:4000");
     const options: RequestInit & { duplex: "half" } = {
       method: "POST",
       body,
@@ -83,29 +83,12 @@ export async function forwardExtraction(
       headers: {
         "Content-Type": type,
         Origin: environment.FRONTEND_ORIGIN ?? "http://localhost:3000",
+        ...admissionHeaders(request),
       },
     };
-    const response = await fetcher(new URL("/v1/extract", origin), options);
+    const response = await backendRequest("/v1/extract", options, fetcher, environment);
     if (!response.body) return error("backend_unavailable", 503);
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let count = 0;
-    let text = "";
-    try {
-      while (true) {
-        const part = await reader.read();
-        if (part.done) break;
-        count += part.value.byteLength;
-        if (count > MAX_RECOGNITION_BYTES) {
-          await reader.cancel();
-          return error("invalid_backend_response", 502);
-        }
-        text += decoder.decode(part.value, { stream: true });
-      }
-      text += decoder.decode();
-    } finally {
-      reader.releaseLock();
-    }
+    const text = await readBounded(response.body, MAX_RECOGNITION_BYTES, signal);
     const payload: unknown = JSON.parse(text);
     if (!response.ok) {
       const code =
@@ -118,7 +101,7 @@ export async function forwardExtraction(
           : "interpretation_failed";
       return error(
         code,
-        [400, 409, 413, 422, 503].includes(response.status) ? response.status : 502,
+        [400, 403, 409, 413, 422, 429, 503, 504].includes(response.status) ? response.status : 502,
       );
     }
     const parsed = extractionResultSchema.safeParse(payload);

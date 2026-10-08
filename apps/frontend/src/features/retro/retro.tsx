@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import {
   capabilitiesSchema,
   retroResponseSchema,
+  retroRequestSchema,
   retroScopeSchema,
   type FinalizedMessage,
   type RetroResponse,
@@ -35,6 +36,9 @@ import { GuidanceOutline, TourStep, useGuidance } from "./guidance";
 import styles from "./retro.module.css";
 import { ChangePreview } from "./change-preview";
 import { navigateWorkspace } from "../workspace/navigation";
+import { usePaidProcessing } from "../processing/processing-provider";
+import { hashRequest } from "../processing/processing-client";
+import { readJson } from "../documents/recognition-client";
 
 type Pending = {
   prompt: string;
@@ -51,6 +55,7 @@ const TOPIC_LABELS: Partial<Record<RetroTopic, string>> = {
 };
 export function Retro() {
   const { controller, session, generation, ready } = useSession();
+  const authorize = usePaidProcessing();
   const [capabilities, setCapabilities] = useState<RuntimeCapabilities | null>(null);
   const [runtimeRefresh, setRuntimeRefresh] = useState(0);
   const [dismissedSuggestion, setDismissedSuggestion] = useState<string | null>(null);
@@ -89,7 +94,7 @@ export function Retro() {
     void fetch("/api/retrosum/v1/config", { cache: "no-store", signal: abort.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("Unavailable");
-        const result = capabilitiesSchema.parse(await response.json());
+        const result = capabilitiesSchema.parse(await readJson(response, 8192, abort.signal));
         if (!abort.signal.aborted) setCapabilities(result);
       })
       .catch(() => {
@@ -229,12 +234,26 @@ export function Retro() {
           [{ tool: "get_summary", count: 7 }],
         );
       } else {
+        const normalized = retroRequestSchema.parse(payload);
+        const grant = await authorize(
+          {
+            action: "chat",
+            workspaceId: normalized.workspace.id,
+            operationId: normalized.operationId,
+            inputHash: await hashRequest(normalized),
+            retry: false,
+          },
+          capabilities,
+          effect.signal,
+        );
+        if (!controller.isCurrent(token))
+          throw new Error("The workspace changed before submission.");
         const response = await fetch("/api/retrosum/v1/chat", {
           method: "POST",
           cache: "no-store",
           signal: effect.signal,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          headers: { "Content-Type": "application/json", "X-Retrosum-Grant": grant },
+          body: JSON.stringify(normalized),
         });
         if (!response.ok)
           throw new Error(
@@ -242,7 +261,7 @@ export function Retro() {
               ? "Your live turn allowance is used. Local guidance is still available."
               : "The live turn could not be completed. No automatic retry ran.",
           );
-        result = retroResponseSchema.parse(await response.json());
+        result = retroResponseSchema.parse(await readJson(response, 128 * 1024, effect.signal));
       }
       const latest = controller.getSnapshot().session;
       if (

@@ -49,7 +49,11 @@ export default ts.config(
     rules: { "no-restricted-globals": ["error", "process", "Buffer"] },
   },
   {
-    files: ["apps/frontend/src/**/*.server.ts", "apps/frontend/src/app/api/**/*.ts"],
+    files: [
+      "apps/frontend/src/**/*.server.ts",
+      "apps/frontend/src/app/api/**/*.ts",
+      "apps/frontend/src/proxy.ts",
+    ],
     languageOptions: { globals: globals.node },
     rules: { "no-restricted-globals": "off" },
   },

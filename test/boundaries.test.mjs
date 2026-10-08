@@ -10,6 +10,7 @@ describe("executable ownership and platform boundaries", () => {
     ["packages/money/src/bad.ts", 'window["localStorage"].getItem("secret");'],
     ["packages/money/src/bad.ts", 'const root=globalThis; root.fetch("https://example.com");'],
     ["apps/frontend/src/features/bad.ts", 'import { key } from "../../server/private.server";'],
+    ["apps/frontend/src/features/bad.ts", 'import { proxy } from "../proxy";'],
     ["apps/frontend/src/features/bad.ts", 'import { app } from "@retrosum/backend";'],
     ["apps/backend/src/bad.ts", 'import { Page } from "@retrosum/frontend";'],
     ["packages/money/src/bad.ts", 'import { value } from "../../../apps/backend/src/value.js";'],

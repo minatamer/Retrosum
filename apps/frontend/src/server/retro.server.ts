@@ -1,10 +1,12 @@
 import "server-only";
 import { RETRO_LIMITS, retroRequestSchema, retroResponseSchema } from "@retrosum/contracts";
 import { readBackendCapabilities } from "./capabilities.server";
+import { backendRequest, admissionHeaders, readBounded } from "./backend.server";
 export async function forwardRetro(
   request: Request,
   fetcher: typeof fetch = fetch,
   environment: Record<string, string | undefined> = process.env,
+  action: "chat" | "insights" = "chat",
 ): Promise<Response> {
   const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
   const error = (code: string, status: number) =>
@@ -25,19 +27,24 @@ export async function forwardRetro(
     const payload = retroRequestSchema.parse(
       JSON.parse(await readBounded(request.body, RETRO_LIMITS.bodyBytes, signal)),
     );
-    const origin = new URL(environment.BACKEND_ORIGIN ?? "http://127.0.0.1:4000");
     forwarded = true;
-    const response = await fetcher(new URL("/v1/chat", origin), {
-      method: "POST",
-      signal,
-      redirect: "error",
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-        Origin: environment.FRONTEND_ORIGIN ?? "http://localhost:3000",
+    const response = await backendRequest(
+      action === "chat" ? "/v1/chat" : "/v1/insights",
+      {
+        method: "POST",
+        signal,
+        redirect: "error",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: environment.FRONTEND_ORIGIN ?? "http://localhost:3000",
+          ...admissionHeaders(request),
+        },
+        body: JSON.stringify(payload),
       },
-      body: JSON.stringify(payload),
-    });
+      fetcher,
+      environment,
+    );
     if (!response.body) return error("backend_unavailable", 503);
     const raw: unknown = JSON.parse(await readBounded(response.body, 128 * 1024, signal));
     if (!response.ok) {
@@ -51,7 +58,7 @@ export async function forwardRetro(
           : "investigation_failed";
       return error(
         code,
-        [400, 409, 413, 429, 503, 504].includes(response.status) ? response.status : 502,
+        [400, 403, 409, 413, 429, 503, 504].includes(response.status) ? response.status : 502,
       );
     }
     return Response.json(retroResponseSchema.parse(raw), { headers });
@@ -72,31 +79,5 @@ export async function forwardRetro(
             ? 502
             : 400,
     );
-  }
-}
-async function readBounded(stream: ReadableStream<Uint8Array>, limit: number, signal: AbortSignal) {
-  const reader = stream.getReader();
-  const decoder = new TextDecoder();
-  let bytes = 0;
-  let text = "";
-  const abort = () => {
-    void reader.cancel().catch(() => undefined);
-  };
-  signal.addEventListener("abort", abort, { once: true });
-  try {
-    signal.throwIfAborted();
-    while (true) {
-      const part = await reader.read();
-      signal.throwIfAborted();
-      if (part.done) break;
-      bytes += part.value.byteLength;
-      if (bytes > limit) throw new RangeError("body_too_large");
-      text += decoder.decode(part.value, { stream: true });
-    }
-    return text + decoder.decode();
-  } finally {
-    signal.removeEventListener("abort", abort);
-    await reader.cancel().catch(() => undefined);
-    reader.releaseLock();
   }
 }

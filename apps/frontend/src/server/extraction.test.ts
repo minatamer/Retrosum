@@ -63,8 +63,8 @@ describe("bounded same-origin document bridge", () => {
       .mockImplementationOnce(async (_url, options) => {
         expect(await new Response(options?.body).text()).toBe("small multipart body");
         expect(options?.headers).toEqual({
-          "Content-Type": "multipart/form-data; boundary=demo",
-          Origin: "http://localhost:3000",
+          "content-type": "multipart/form-data; boundary=demo",
+          origin: "http://localhost:3000",
         });
         return Response.json({ secret: "rejected provider content" });
       });

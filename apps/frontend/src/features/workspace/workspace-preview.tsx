@@ -9,6 +9,7 @@ import { RecordsWorkspace } from "../records/records-workspace";
 import { DocumentIntake } from "../documents/document-intake";
 import { Dashboard } from "../dashboard/dashboard";
 import { Retro } from "../retro/retro";
+import { ExportPanel } from "../exports/export-panel";
 import { navigateWorkspace, type WorkspaceView } from "./navigation";
 import styles from "./workspace.module.css";
 
@@ -68,6 +69,7 @@ function WorkspaceContent() {
           <button type="button" onClick={() => setDetailsOpen(true)}>
             Session details ↗
           </button>
+          <ExportPanel key={`${generation}/${session?.workspace.id ?? "opening"}`} />
           <p>
             Private browser workspace.
             <br />
@@ -111,7 +113,9 @@ function WorkspaceContent() {
         </p>
         <p>
           Closing cleanup is best effort; expired remnants are swept on your next visit. You can
-          clear the session from Records. Exports follow in the delivery queue.
+          clear the session from Records or review an export first. Refresh keeps the original fixed
+          deadline; it never renews the two-hour session. Reset cannot remove prior downloads or
+          recall provider-controlled copies.
         </p>
       </PaperDialog>
     </WorkspaceShell>

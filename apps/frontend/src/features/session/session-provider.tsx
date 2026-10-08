@@ -19,6 +19,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       if (session && session.workspace.expiresAt <= Date.now())
         void controller.reset("Your two-hour session expired. A fresh browser session started.");
     }, 1000);
+    const sweep = window.setInterval(() => void controller.sweepExpired(), 60000);
     const onPageHide = () => controller.dispose();
     window.addEventListener("pagehide", onPageHide);
     const onPageShow = (event: PageTransitionEvent) => {
@@ -27,6 +28,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     window.addEventListener("pageshow", onPageShow);
     return () => {
       window.clearInterval(timer);
+      window.clearInterval(sweep);
       window.removeEventListener("pagehide", onPageHide);
       window.removeEventListener("pageshow", onPageShow);
       controller.dispose();

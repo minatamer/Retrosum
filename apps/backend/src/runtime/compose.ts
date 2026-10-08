@@ -5,6 +5,7 @@ import type { Clock } from "./clock.js";
 import type { AiProviderPort } from "./provider-port.js";
 import { ExtractionAdmission } from "../documents/admission.js";
 import { RetroAdmission } from "../retro/admission.js";
+import { OperationLifecycle } from "./operation-lifecycle.js";
 export interface RuntimePorts {
   clock: Clock;
   createRequestId(): string;
@@ -17,6 +18,7 @@ export interface AppRuntime {
   ready: boolean;
   admission: ExtractionAdmission;
   retroAdmission: RetroAdmission;
+  operations: OperationLifecycle;
 }
 export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRuntime {
   // Live support stays closed until exact-field, token and admission acceptance.
@@ -52,5 +54,6 @@ export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRunti
     ready: config.FAKE_MODE || documentsAvailable || copilotAvailable,
     admission: new ExtractionAdmission(ports.clock.now),
     retroAdmission: new RetroAdmission(ports.clock.now),
+    operations: new OperationLifecycle(),
   });
 }

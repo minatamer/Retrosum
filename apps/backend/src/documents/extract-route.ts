@@ -33,9 +33,11 @@ export async function extractRoute(runtime: AppRuntime, req: Request, res: Respo
   res.once("close", abort);
   let release: (() => void) | undefined;
   let releaseIntake: (() => void) | undefined;
+  let untrack: (() => void) | undefined;
   try {
     releaseIntake = runtime.admission.enter();
     const { metadata, bytes } = await readExtraction(req, controller.signal);
+    untrack = runtime.operations.track(metadata.workspaceId, controller);
     verifyOriginal(bytes, metadata.document);
     release = runtime.admission.reserve(
       metadata.workspaceId,
@@ -86,6 +88,7 @@ export async function extractRoute(runtime: AppRuntime, req: Request, res: Respo
     release?.();
     releaseIntake?.();
     clearTimeout(timer);
+    untrack?.();
     req.removeListener("aborted", abort);
     res.removeListener("close", abort);
   }

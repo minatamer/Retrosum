@@ -1,6 +1,7 @@
 import express from "express";
 import type { ErrorRequestHandler, Express } from "express";
-import { requestIdSchema } from "@retrosum/contracts";
+import { requestIdSchema, workspaceIdSchema } from "@retrosum/contracts";
+import { z } from "zod";
 import type { AppRuntime } from "../runtime/compose.js";
 import { extractRoute } from "../documents/extract-route.js";
 import { chatRoute } from "../retro/chat-route.js";
@@ -57,6 +58,25 @@ export function createApp(runtime: AppRuntime): Express {
     response.json(runtime.capabilities);
   });
   app.post("/v1/extract", (request, response) => extractRoute(runtime, request, response));
+  app.delete("/v1/session", (request, response) => {
+    if (request.headers.origin !== runtime.config.FRONTEND_ORIGIN) {
+      response.status(403).json({ error: "origin_not_allowed" });
+      return;
+    }
+    const parsed = z.strictObject({ workspaceId: workspaceIdSchema }).safeParse(request.body);
+    if (!parsed.success) {
+      response.status(400).json({ error: "invalid_session" });
+      return;
+    }
+    runtime.operations.revoke(parsed.data.workspaceId);
+    response.set("Set-Cookie", "retrosum_action=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict");
+    response.json({
+      cancellationRequested: true,
+      actionCookieCleared: true,
+      allowanceRetained: true,
+      providerCopiesRecalled: false,
+    });
+  });
   app.use((_request, response) => {
     response.status(404).json({ error: "not_found" });
   });

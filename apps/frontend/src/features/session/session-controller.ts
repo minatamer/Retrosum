@@ -30,6 +30,7 @@ export type SessionEnvironment = {
   storage: () => Storage;
   lease: (id: string) => Promise<SessionLease>;
   cache: () => Cache;
+  revoke?: (workspaceId: string) => Promise<boolean>;
 };
 export type SessionSnapshot = {
   session: MoneySession | null;
@@ -85,6 +86,21 @@ const browserEnvironment: SessionEnvironment = {
   storage: () => window.sessionStorage,
   lease: (id) => acquireSessionOwnership(id, navigator.locks),
   cache: () => new PdfBlobCache(window.indexedDB),
+  revoke: async (workspaceId) => {
+    try {
+      const response = await fetch("/api/retrosum/v1/session", {
+        method: "DELETE",
+        cache: "no-store",
+        signal: AbortSignal.timeout(6000),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workspaceId }),
+      });
+      await response.body?.cancel();
+      return response.ok;
+    } catch {
+      return false;
+    }
+  },
 };
 export class SessionController {
   private snapshot: SessionSnapshot = EMPTY_SNAPSHOT;
@@ -372,17 +388,20 @@ export class SessionController {
     this.effects.clear();
     this.originals.clear();
     this.publish({ ...EMPTY_SNAPSHOT, generation, notice: message });
+    const remote =
+      old && this.environment.revoke ? this.environment.revoke(old).catch(() => false) : null;
+    let incompleteCleanup = false;
     if (ownedLease?.acquired) {
       try {
         this.environment.storage().removeItem(PROJECTION_KEY);
       } catch {
-        /* New projection will be attempted; never claim cleanup succeeded. */
+        incompleteCleanup = true;
       }
       if (old) {
         try {
           await this.environment.cache().removeWorkspace(old);
         } catch {
-          /* Expired cache is swept on a later visit. */
+          incompleteCleanup = true;
         }
       }
     }
@@ -400,10 +419,27 @@ export class SessionController {
       generation,
       ready: true,
       persistence: "loading",
-      notice: message,
+      notice: incompleteCleanup
+        ? `${message} Some browser storage could not be removed; expired leftovers will be retried when Retrosum runs again.`
+        : message,
       missingDocumentIds: [],
     });
     this.publish({ ...this.snapshot, ...this.persist(session) });
+    if (remote) {
+      const confirmed = await remote;
+      if (generation === this.snapshot.generation && this.snapshot.ready)
+        this.publish({
+          ...this.snapshot,
+          notice: `${this.snapshot.notice ?? message} ${confirmed ? "Remote cancellation was requested." : "Remote cancellation could not be confirmed; local reset still completed."} Prior downloads and provider-controlled copies cannot be recalled.`,
+        });
+    }
+  }
+  async sweepExpired() {
+    try {
+      await this.environment.cache().sweepExpired(this.environment.now());
+    } catch {
+      /* A later startup/sweep retries expired leftovers. */
+    }
   }
   dispose() {
     for (const effect of this.effects) effect.abort();

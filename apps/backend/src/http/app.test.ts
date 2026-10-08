@@ -13,6 +13,33 @@ const makeApp = (environment: Record<string, string | undefined> = {}) =>
     }),
   );
 describe("safe explicit HTTP composition", () => {
+  it("content-free reset cancels only owned work and keeps replay/turn counters", async () => {
+    const runtime = composeRuntime(parseConfig({}), {
+        clock: systemClock,
+        createRequestId: () => "request_test",
+      }),
+      app = createApp(runtime);
+    const owned = new AbortController(),
+      other = new AbortController();
+    runtime.operations.track("workspace_clear", owned);
+    runtime.operations.track("workspace_other", other);
+    runtime.retroAdmission.reserve("workspace_clear", "op_once");
+    await request(app).delete("/v1/session").send({ workspaceId: "workspace_clear" }).expect(403);
+    const result = await request(app)
+      .delete("/v1/session")
+      .set("Origin", "http://localhost:3000")
+      .send({ workspaceId: "workspace_clear" })
+      .expect(200);
+    expect(owned.signal.aborted).toBe(true);
+    expect(other.signal.aborted).toBe(false);
+    expect(result.body.providerCopiesRecalled).toBe(false);
+    expect(() => runtime.retroAdmission.reserve("workspace_clear", "op_once")).toThrow(/replayed/);
+    await request(app)
+      .delete("/v1/session")
+      .set("Origin", "http://localhost:3000")
+      .send({ workspaceId: "workspace_clear", records: "secret" })
+      .expect(400);
+  });
   it("starts fake by default and exposes only approved capabilities", async () => {
     const app = makeApp();
     const health = await request(app).get("/v1/health").expect(200);

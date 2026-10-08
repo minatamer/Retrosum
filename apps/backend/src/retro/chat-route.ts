@@ -26,8 +26,10 @@ export async function chatRoute(runtime: AppRuntime, request: Request, response:
   };
   response.once("close", abort);
   let release: (() => void) | undefined;
+  let untrack: (() => void) | undefined;
   try {
     const input = validateRetroInput(request.body);
+    untrack = runtime.operations.track(input.workspace.id, controller);
     if (
       input.workspace.createdAt > runtime.ports.clock.now() ||
       input.workspace.expiresAt <= runtime.ports.clock.now()
@@ -67,6 +69,7 @@ export async function chatRoute(runtime: AppRuntime, request: Request, response:
   } finally {
     clearTimeout(timer);
     release?.();
+    untrack?.();
     response.removeListener("close", abort);
   }
 }

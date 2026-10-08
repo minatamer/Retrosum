@@ -550,7 +550,12 @@ export function RecordsWorkspace() {
           Your current records, Undo and this session’s cached originals will be cleared. A fresh
           empty session starts with its own two-hour expiry. This cannot be undone.
         </p>
-        <p>Closed-browser cleanup is best effort; expired remnants are swept on your next visit.</p>
+        <p>
+          Closing or crashing the browser cannot erase storage immediately; expired leftovers are
+          removed when Retrosum runs again. Reset cannot remove files already downloaded or recall
+          provider-controlled copies. Remote cancellation is best effort and does not renew paid
+          allowances.
+        </p>
         <Button
           variant="warm"
           onClick={() => {

@@ -74,6 +74,30 @@ function harness(storage = new MemoryStorage(), cache = new MemoryCache(), owned
   };
 }
 describe("bounded browser refresh and lifecycle", () => {
+  it("local reset completes despite server/storage cleanup failure, isolates late work and retains fixed expiry", async () => {
+    const h = harness();
+    h.environment.revoke = async () => false;
+    await h.controller.initialize();
+    const old = h.controller.getSnapshot().session.workspace.id,
+      token = h.controller.token("old");
+    const effect = new AbortController();
+    h.controller.trackEffect(effect);
+    h.cache.removeWorkspace = async () => {
+      throw new Error("blocked");
+    };
+    await h.controller.reset();
+    const current = h.controller.getSnapshot();
+    expect(effect.signal.aborted).toBe(true);
+    expect(current.session.workspace.id).not.toBe(old);
+    expect(h.controller.isCurrent(token)).toBe(false);
+    expect(current.notice).toContain("could not be removed");
+    expect(current.notice).toContain("could not be confirmed");
+    const expires = current.session.workspace.expiresAt;
+    h.controller.dispose();
+    await h.controller.initialize();
+    expect(h.controller.getSnapshot().session.workspace.expiresAt).toBe(expires);
+    h.controller.dispose();
+  });
   it("cancels active recognition on a successful edit and preserves an Undo that cannot restart reading", async () => {
     const h = harness();
     await h.controller.initialize();

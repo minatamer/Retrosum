@@ -1,6 +1,6 @@
 # Retrosum implementation ticket queue
 
-Updated **8 October 2026**. The owner authorized the full local fake-mode execute/validate loop and per-ticket commits. **RET-001 is Complete; RET-002 through RET-010 are implemented and verified locally with their deferred acceptance gates pending; RET-011 is next.** The [source of truth](../RETROSUM_DEMO_SOURCE_OF_TRUTH.md) owns product/architecture behavior; the [HTML brief](../RETROSUM_OVERVIEW.html) summarizes it. Actual live accuracy/spend, owner visual feedback and cloud deployment remain pending. Public live capability stays closed.
+Updated **8 October 2026**. The owner authorized the full local fake-mode execute/validate loop and per-ticket commits. **RET-001 is Complete; RET-002 through RET-011 are implemented and verified locally with their deferred acceptance gates pending; RET-012 local preparation is next.** The [source of truth](../RETROSUM_DEMO_SOURCE_OF_TRUTH.md) owns product/architecture behavior; the [HTML brief](../RETROSUM_OVERVIEW.html) summarizes it. Actual live accuracy/spend, owner visual feedback and cloud deployment remain pending. Public live capability stays closed.
 
 ## Why twelve packets
 
@@ -22,10 +22,10 @@ RET-001 establishes safe boundaries. RET-002/003 make the brand and visible evid
 | [RET-008](RET-008-deliver-retro-animated-crud.md)             | Deliver Retro animated forms, confirmation and inline Undo               | RET-007          | Local; live pending       |
 | [RET-009](RET-009-complete-exports-and-session-lifecycle.md)  | Complete exports and whole-session reset, expiry and recovery            | RET-008          | Local; visual pending     |
 | [RET-010](RET-010-harden-privacy-admission-and-spend.md)      | Harden privacy, private transport, abuse controls and spend readiness    | RET-005, RET-009 | Local; live/cloud pending |
-| [RET-011](RET-011-verify-product-and-audit-release.md)        | Verify responsive product quality and audit the release candidate        | RET-010          | Planned                   |
+| [RET-011](RET-011-verify-product-and-audit-release.md)        | Verify responsive product quality and audit the release candidate        | RET-010          | Local; deferred pending   |
 | [RET-012](RET-012-deploy-and-validate-cloud-run.md)           | Deploy manually, validate live behavior and record rollback              | RET-011          | Planned                   |
 
-The next eligible local packet is **RET-011**. The canonical order above is sufficient; do not infer parallel agent authorization from the dependency graph. Start a packet only when the user requests implementation and its required local dependency evidence exists.
+The next eligible local packet is **RET-012**, limited to local packaging/preparation. The canonical order above is sufficient; do not infer parallel agent authorization from the dependency graph. Start a packet only when the user requests implementation and its required local dependency evidence exists.
 
 ## Non-negotiable product decisions
 

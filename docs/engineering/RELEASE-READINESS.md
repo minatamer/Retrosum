@@ -1,6 +1,6 @@
 # Release readiness and operator-owned gates
 
-Updated **8 October 2026**, RET-010 local hardening. No live provider test, cloud resource, challenge registration, container build, push or deployment has occurred. RET-011 verifies the local product; RET-012 prepares local deployment files before future separately authorized cloud work.
+Updated **8 October 2026**, RET-011 local product acceptance. No live provider test, cloud resource, challenge registration, container build, push or deployment has occurred. [Product acceptance](PRODUCT-ACCEPTANCE.md) records the exact candidate, connected simulated flow, device matrix, 190-test settled gates and measured resource/asset limits. RET-012 prepares local deployment files before future separately authorized cloud work.
 
 ## Local controls already available
 

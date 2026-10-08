@@ -1,6 +1,6 @@
 # RET-011 — Verify responsive product quality and audit the release candidate
 
-Status: **Planned — not implemented**  
+Status: **Implemented locally — deferred acceptance pending**<br>
 Last synchronized: **8 October 2026**  
 Depends on: [RET-010](RET-010-harden-privacy-admission-and-spend.md)  
 Blocks: RET-012  
@@ -43,11 +43,13 @@ Areas owned by this packet:
 - [ ] Complete flow works coherently and all three pillars meet intended visual/functional quality.
 - [ ] Source-backed metrics, live numeric acceptance and CRUD/Undo/export checks have exact evidence.
 - [ ] Phone/keyboard/touch/source/dialog/composer interactions are usable and unobstructed.
-- [ ] Smooth signature animations remain enabled with accessible normal controls.
+- [x] Smooth signature animations remain enabled with accessible normal controls (local browser evidence; physical/owner review pending).
 - [ ] Performance/resource behavior is measured and no material leak/overrun remains.
-- [ ] Exact release candidate passes settled quality/test/build/packaging checks.
-- [ ] Privacy/support/performance claims match observed behavior and evidence class.
-- [ ] Material release blockers are resolved or explicitly keep public launch unavailable.
+- [x] Exact release candidate passes settled quality/test/build/packaging checks (local assets/build; Linux images remain RET-012's gate).
+- [x] Privacy/support/performance claims match observed behavior and evidence class.
+- [x] Material release blockers are resolved or explicitly keep public launch unavailable.
+
+The combined flow/visual, live numeric, physical input and full profiling criteria remain unchecked above. Locally verified portions: all eight PDFs/fourteen pages, source review/duplicate handling, exact dashboard drill-down, eight-step tour, animated editable invoice/cost/issue/Undo, actual ZIP download, refresh/reset/fresh scan; ten hero and eight dashboard viewport sizes; keyboard focus/table access; actual asset/inspection/RSS/warm-HTTP measurements. Physical/assistive/browser profiling and live numeric/spend remain unperformed.
 
 ## Verification and evidence
 
@@ -71,4 +73,4 @@ Keep this packet one coherent outcome: necessary UI, contracts, backend/local ef
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
 
-**Execution record:** Not started. No tests, assets, application feature, provider call or deployment is completed by creating this packet.
+**Execution record:** [Product acceptance and exact candidate](../engineering/PRODUCT-ACCEPTANCE.md), [read-only validation/evidence](../validation/RET-011.md) and [file-level commit plan](../commit-plans/RET-011.md). Fixed observed English date preparation and narrow-phone target size. Final root gates passed: 105 boundaries, 190 tests in 25 files and both production builds; read-only Pass A has no actionable findings. No provider, container/cloud or deployment action occurred. RET-012 local preparation is eligible; public live capability remains closed.

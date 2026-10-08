@@ -10,6 +10,8 @@ Queue: [Ticket index](README.md)
 
 ## Outcome and standalone context
 
+**Current owner authorization, 8 October 2026:** include this packet's local packaging and deployment preparation in the execute/validate loop after RET-011. Prepare Dockerfiles, configuration templates, probes, operator guides and rollback instructions locally. Use available local verification without requiring Docker Desktop installation. Actual image publication, cloud resources, credentials, domains and deployment remain deferred. Keep unperformed container/live/cloud acceptance explicitly pending; do not request these inputs during the local loop.
+
 Prepare and, when authorized, deploy the exact accepted release to the same tool family as ScreenPilot/ClipBuilder: public Next frontend and private Express backend on Google Cloud Run, Artifact Registry, Secret Manager/runtime IAM, Cloudflare DNS/Turnstile and manual release control. No server database or uploaded-document bucket is required.
 
 Perform concrete packaging/setup planning before any approval checkpoint. This documentation ticket does not itself authorize new paid/cloud/public actions. At execution, use existing user authorization where provided; seek only actually missing external-action approval after the exact deployable result is ready.
@@ -52,15 +54,15 @@ Areas owned by this packet:
 
 ## Verification and evidence
 
-| Case | Evidence |
-| --- | --- |
-| Anonymous private API vs frontend identity | Rejection vs accepted no-cost probe |
-| Public client assets/config | No provider secrets/private resource leakage |
-| Paid-off before enable/after emergency switch | Zero dispatch and usable local features |
-| Bounded live eight-PDF sample | Exact results/source evidence and actual usage |
-| Refresh and stale grant | No automatic rebilling or restored secret capability |
-| Deployed timeout/partial failure | Honest recovery and no hidden fake substitution |
-| Rollback and old browser projection | Safe compatibility or explicit clean restart |
+| Case                                          | Evidence                                             |
+| --------------------------------------------- | ---------------------------------------------------- |
+| Anonymous private API vs frontend identity    | Rejection vs accepted no-cost probe                  |
+| Public client assets/config                   | No provider secrets/private resource leakage         |
+| Paid-off before enable/after emergency switch | Zero dispatch and usable local features              |
+| Bounded live eight-PDF sample                 | Exact results/source evidence and actual usage       |
+| Refresh and stale grant                       | No automatic rebilling or restored secret capability |
+| Deployed timeout/partial failure              | Honest recovery and no hidden fake substitution      |
+| Rollback and old browser projection           | Safe compatibility or explicit clean restart         |
 
 Record only verified cloud facts and actual owner-run paid evidence. If authorization/configuration/live gate is missing, leave deployment pending with the prepared concrete artifact and specific missing input; do not claim completion or create a new alternative infrastructure stack.
 

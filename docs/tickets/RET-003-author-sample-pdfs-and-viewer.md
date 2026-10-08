@@ -12,7 +12,7 @@ Queue: [Ticket index](README.md)
 
 Deliver the modest eight-PDF Harbor Studio sample and an actual professional viewing experience. Every sample dashboard figure, comparison, payment and source claim must be inspectable in these files. Public live processing later consumes the same bytes; fake/evaluation expected results are internal truth, not a hidden financial dataset.
 
-The initial target is approximately 12–16 pages across eight files, with a hard 20-page combined envelope. At least four distinct printed layout families and one genuinely handwritten receipt demonstrate variety. A second handwritten document is optional only if it improves the story and stays within the bounds.
+The initial target is approximately 12–16 pages across eight files, with a hard 20-page combined envelope. At least four distinct printed layout families and one handwriting example demonstrate variety. The owner permits fetching a reusable specimen or recreating one; an owner-provided human scan is not a dependency. A second handwritten document is optional only if it improves the story and stays within the bounds.
 
 ## Dependency evidence and ownership
 
@@ -29,7 +29,7 @@ Areas owned by this packet:
 
 1. Author D01–D08 exactly as blueprint section 7: two outgoing invoices (3,000/1,800), Northstar bill (360 net/36 tax/396 gross), rent 800, software 120, duplicate bill, September payment register and August history pack. Keep all amounts/roles/dates readable in the actual PDFs.
 2. Research common service invoice, bill, subscription receipt and statement layouts from the cited primary template sources. Draw original fictional layouts; use no real customer/bank data or third-party brand claims.
-3. Obtain a legible human pen/stylus-written D04 receipt with controlled modern fields, scan it and package it as a PDF. Record authorship and independent transcription. If the genuine specimen is not yet available, mark that asset/handwriting acceptance pending; do not replace it with a handwriting font and claim genuine handwriting support.
+3. Research reusable handwritten receipt/invoice specimens and ways to recreate D04. Prefer an original fictional Cove Spaces receipt with the controlled modern fields; the owner explicitly permits a recreated handwriting-style sample. A licensed handwriting font such as Caveat can render verified text/numbers into a readable raster page, then into an image-only PDF without an invisible text layer supplying the answers. Retain authorship/source/license and independent transcription; label recreated material as synthetic handwriting-style, not human-written. An authentic downloaded specimen must have documented reuse rights and visible values; never relabel its dates/currency/parties to fit Harbor's ledger. Historical examples can inform the design without adding a ninth financial document. No owner-supplied scan or measured OpenAI OCR result is needed to finish local authoring/viewing.
 4. Give D07/D08 visible row IDs/dates/references and per-record page locators. D08 physically contains all August records behind 4,000 income and 1,100 costs. Do not fetch or seed a second invisible showcase ledger. More detail may subdivide existing totals only with updated visible evidence.
 5. Verify every printed numeric field independently: document/date digits, quantities, unit prices, net/tax/gross, movement signs and totals. Capture raw text, normalized value, page/block locator, inclusion treatment and expected relation in ground truth. A final matching sum is insufficient.
 6. Generate MIME/hash/page/byte metadata and real first-page thumbnails. Manifest references sample provenance and fixture version; expected-result files are explicitly fake/evaluation-only. Live composition must not import them.
@@ -40,7 +40,7 @@ Areas owned by this packet:
 ## Acceptance criteria
 
 - [ ] Eight real readable PDFs exist; all displayed sample facts map to their visible content.
-- [ ] Four printed layout families and one genuinely handwritten PDF are documented with ground truth.
+- [ ] Four printed layout families and one fetched or recreated handwriting PDF are documented with ground truth and accurate provenance.
 - [ ] All August comparisons are backed by D08, and September payment rows are backed by D07.
 - [ ] Files fit 10 files/20 MiB/20 pages and per-file bounds; manifest hashes/page counts match actual bytes.
 - [ ] D03/D06 are visibly the same bill; fixture truth counts their event once.
@@ -50,17 +50,19 @@ Areas owned by this packet:
 
 ## Verification and evidence
 
-| Case | Evidence |
-| --- | --- |
-| All PDF pages | Rendered inspection at readable scale and independent numeric check |
-| Main ledger | 4,800 income / 1,280 costs / 3,520 profit / 73.3% margin |
-| Cash/open | 3,000 in / 920 out / 1,800 customer open / 396 supplier open |
-| Comparison evidence | All 4,000/1,100 August source entries viewable |
-| Viewer | First/last page, zoom, keyboard, focus return, phone sizing, fallback |
-| Unsupported/damaged PDF | Safe error, released resources, no external resource execution |
-| Authorship/handwriting | Genuine specimen evidence rather than model accuracy claim |
+| Case                    | Evidence                                                                                                                      |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| All PDF pages           | Rendered inspection at readable scale and independent numeric check                                                           |
+| Main ledger             | 4,800 income / 1,280 costs / 3,520 profit / 73.3% margin                                                                      |
+| Cash/open               | 3,000 in / 920 out / 1,800 customer open / 396 supplier open                                                                  |
+| Comparison evidence     | All 4,000/1,100 August source entries viewable                                                                                |
+| Viewer                  | First/last page, zoom, keyboard, focus return, phone sizing, fallback                                                         |
+| Unsupported/damaged PDF | Safe error, released resources, no external resource execution                                                                |
+| Authorship/handwriting  | Source/license or recreation method, visible field truth and accurate human/synthetic classification; no unmeasured OCR claim |
 
 This packet verifies authored truth and viewing, not OpenAI accuracy. RET-005 owns independently dispatched live recognition runs. Update fixture version and all expectations together when any visible financial source changes.
+
+Research checked 8 October 2026: the [Grolier Club Burr Printing House invoice](https://grolierclub.omeka.net/exhibits/show/second-printing-revolution/typesetting) has an [original downloadable scan and public-domain marking on Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Burr_printing_house_receipt.jpg). It is an authentic historical reference, not Harbor's rent evidence. Google's [Caveat description](https://github.com/google/fonts/blob/main/ofl/caveat/DESCRIPTION.en_us.html) documents its handwriting design and contextual variation; its [SIL Open Font License](https://raw.githubusercontent.com/google/fonts/main/ofl/caveat/OFL.txt) permits use/embedding subject to its terms. Keep the license with any bundled font. These are researched authoring routes, not assets already created or OCR already tested.
 
 ## Scope limits and completion record
 

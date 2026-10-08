@@ -4,8 +4,8 @@
 **Prepared:** 7 October 2026. **Updated:** 8 October 2026 with the owner’s core-flow, design, accuracy and Retro requirements.<br>
 **Product:** a public, disposable business money workspace demonstrating useful AI.  
 **Companion:** [Retrosum product overview](RETROSUM_OVERVIEW.html).  
-**Implementation status:** documentation only. No application, live integration, deployment or accuracy claim is established by this file.  
-**Planning status:** the owner has authorized detailed ticket planning. The [12-ticket queue](tickets/README.md) is now the implementation plan. Every ticket is **Planned**; no application implementation, paid test, credential setup or deployment is completed by this documentation pass.
+**Implementation status:** RET-001 foundation verified locally; product features and live accuracy/deployment remain pending. See each ticket's evidence record.  
+**Execution status:** the owner authorized the [12-ticket queue](tickets/README.md) in a local fake-mode execute/validate loop, including RET-012 local preparation and per-ticket commits after clean validation. Actual paid tests, owner visual feedback and cloud deployment happen later.
 
 Retrosum turns a small collection of business documents into understandable money records, a traceable overview, and an AI assistant named **Retro** that explains the dashboard, summarizes supplied records, guides the visitor and helps create, edit and remove session records. The visitor can inspect the evidence, correct an interpretation, review a duplicate or payment relationship, and export the result.
 
@@ -112,6 +112,8 @@ ClipBuilder's Remotion composition, FFmpeg pipeline, renderer and media storage 
 | Brand and motion | Logo green/orange, ivory, professional vintage typography, calm photo hero, smooth charts; no animation-off product setting | Owner requirement |
 | Initial AI funding | Approximately USD 5 of OpenAI credits for initial testing; meter actual consumption | Owner preference; no assertion that it covers all tests or public traffic |
 | Delivery plan | Twelve cohesive packets with outcome, ownership, dependencies and focused verification | Owner now authorized tickets; adopt ClipBuilder consolidation |
+| Handwriting authoring | Research/fetch a reusable specimen or recreate a fictional handwriting-style receipt; record human/synthetic provenance accurately | Owner clarification, 8 October 2026; no owner-provided scan prerequisite |
+| Current execution phase | Authorized local fake-mode execute/validate loop across all tickets; RET-012 local packaging/preparation included; live accuracy/spend, owner visual feedback and actual cloud deployment later | Owner authorization, 8 October 2026; no cloud changes or paid calls during this loop |
 
 Published performance remains unproved until implemented and measured. `gpt-6.1-sol` currently supports image input, structured outputs and function calling; its official standard short-context rates are USD 2 input / USD 10 output per million tokens. Recheck availability and rates at setup. [OpenAI model reference](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
 
@@ -207,7 +209,7 @@ The landing is calm, professional and photographic. Its eye catcher is one beaut
 | Photographic hero | Wide office photo, dark forest-green overlay, off-white heading, orange detail, two clear CTAs | Feel the professional brand and understand the promise. |
 | Outcome preview | A clearly labelled synthetic dashboard excerpt with real sample figures | See what digitized paperwork becomes. |
 | Three core pillars | Exact document reading; interactive money picture; Retro helping explain and act | Establish steps 3, 4 and 5 as the product’s center. |
-| Sample document gallery | Eight viewable PDF originals: varied invoice/bill/receipt layouts, multipage payment/history records and one genuinely handwritten receipt | See variety before choosing a file. |
+| Sample document gallery | Eight viewable PDF originals: varied invoice/bill/receipt layouts, multipage payment/history records and one handwriting example with documented provenance | See variety before choosing a file. |
 | Finances are becoming digital | Two or three dated statistics with scope and source links; named AI examples | Place the product in a credible wider transition. |
 | Meet Retro | Summary, tour, dashboard explanation and invoice/expense creation examples | Show an assistant that helps complete tasks. |
 | Traceability moment | Click a KPI → its contributing records → source amount | Establish that attractive charts remain checkable. |
@@ -479,7 +481,7 @@ Exports remain available when live processing or chat is disabled. If nothing is
 
 Use **Harbor Studio**, an English-speaking small service business. All source and created record amounts are USD. September 2026 is the main selected period; the fixture has an explicit fixed as-of date of 3 October 2026. August is a comparison period only because its records are printed in D08. These dates are synthetic demo context; do not mix them with the visitor's real current date.
 
-The initial corpus has **eight PDFs and approximately 12–16 pages**, never more than the 20-page processing envelope. Aim for four distinct printed layout families plus one genuinely handwritten receipt. Multipage PDFs provide meaningful line items and a modest history/payment register without dozens of independent uploads. One handwritten original is mandatory; a second is optional only if it adds a distinct useful case and passes exact-number evaluation.
+The initial corpus has **eight PDFs and approximately 12–16 pages**, never more than the 20-page processing envelope. Aim for four distinct printed layout families plus one handwriting example with documented provenance. Multipage PDFs provide meaningful line items and a modest history/payment register without dozens of independent uploads. One handwritten original is mandatory; a second is optional only if it adds a distinct useful case and passes exact-number evaluation.
 
 ### 7.2 Original files
 
@@ -488,7 +490,7 @@ The initial corpus has **eight PDFs and approximately 12–16 pages**, never mor
 | D01 | `harbor-HS-101.pdf` | Harbor → Cedar Works; issued 4 September, due 18 September; USD 3,000, no separately charged tax; 2 service lines; optional second page with scope/terms | Clean professional service invoice; source-stated and calculated numbers agree |
 | D02 | `harbor-HS-102.pdf` | Harbor → Maple Retail; issued 24 September, due 8 October; USD 1,800; explicitly open | Different grid/sidebar invoice layout; open receivable |
 | D03 | `northstar-A-77-scan.pdf` | Northstar → Harbor; issued 20 September, due 10 October; net 360, tax 36, gross 396; explicitly open | Scanned supplier bill; tax and direction |
-| D04 | `rent-R-091-handwritten.pdf` | Cove Spaces → Harbor; genuinely handwritten receipt for September rent; USD 800, stated paid, no separate tax | One handwritten page scanned into a PDF; modern controlled ground truth |
+| D04 | `rent-R-091-handwritten.pdf` | Cove Spaces → Harbor; fetched or recreated handwriting-style receipt for September rent; USD 800, stated paid, no separate tax | One raster handwriting page inside a PDF; modern controlled ground truth and explicit human/synthetic provenance |
 | D05 | `papercloud-September.pdf` | PaperCloud → Harbor; USD 120 software, 12 September, stated paid, no separate tax | Subscription receipt in a compact layout; optional terms page |
 | D06 | `northstar-A-77-second-copy.pdf` | Same economic bill as D03, visibly a second scan/rendition | Duplicate review; one bill counted once |
 | D07 | `harbor-payments-September.pdf` | Readable statement-style payment register: +3,000 Cedar; −800 rent; −120 PaperCloud; −200 transfer between Harbor-owned accounts; explicit dates/references | Multipage readable payment evidence; movement matching; transfer excluded from costs |
@@ -498,9 +500,11 @@ No private-data-looking random noise is needed. Additional dated rows may subdiv
 
 ### 7.3 Original visual identities and viewing
 
-Draw original synthetic layouts informed by FreshBooks/Vertex42/common service invoice and receipt patterns. Do not copy a provider's branding or customer information. All files carry fictional business/contact information and a discrete synthetic-demo notice. D04 must be written with pen or stylus by a person; a handwriting font is not evidence of OCR. Wrap its readable scan in a PDF and independently transcribe its numeric fields.
+Draw original synthetic layouts informed by FreshBooks/Vertex42/common service invoice and receipt patterns. Do not copy a provider's branding or customer information. All files carry fictional business/contact information and a discrete synthetic-demo notice. For D04 the owner permits research/fetching or recreation; an owner-provided pen/stylus specimen is not required. Prefer recreating the controlled Cove Spaces receipt so its September rent, USD 800 and paid status remain visible and consistent with Harbor. A licensed handwriting font such as Caveat can produce a readable raster page, packaged as an image-only PDF without an invisible answer-supplying text layer. Preserve authorship/license and independently verify every numeric field. Call a recreated example **Synthetic handwriting-style receipt**; call it human-written only with authentic provenance. Local fake recognition is simulation; later live evaluation measures reading the actual raster PDF, and a recreated font specimen alone cannot establish arbitrary real-handwriting accuracy.
 
-Every original is visible in the collection, including D06 duplicate and D08 comparison pages. Cards show a real first-page thumbnail, source name, PDF/page count, layout hint and optional **Handwritten** badge. Click opens a centered dialog where the paper rises with a restrained perspective/scale animation and settles. Use actual PDF.js-rendered pages, page navigation, fit/zoom and a download/open-original fallback. The floating motion happens on entry, never continuously while reading. Review and metric links open the relevant page of this same viewer.
+Research checked 8 October 2026: Google's [Caveat description](https://github.com/google/fonts/blob/main/ofl/caveat/DESCRIPTION.en_us.html) documents its handwriting design and contextual letter variation; the [font license](https://raw.githubusercontent.com/google/fonts/main/ofl/caveat/OFL.txt) permits use and embedding under SIL OFL terms. Authentic archived receipt scans are also available: the [Grolier Club Burr invoice](https://grolierclub.omeka.net/exhibits/show/second-printing-revolution/typesetting) has an [original download and public-domain marking on Commons](https://commons.wikimedia.org/wiki/File:Burr_printing_house_receipt.jpg). Research these for visual form and reusable provenance. Do not change a downloaded original's historical dates/parties/currency and pretend it is Harbor's modern rent evidence. Authoring this PDF and measuring live OCR are separate steps; neither requires the owner to provide a scan during local development.
+
+Every original is visible in the collection, including D06 duplicate and D08 comparison pages. Cards show a real first-page thumbnail, source name, PDF/page count, layout hint and optional **Handwritten** or **Synthetic handwriting-style** badge matching its provenance. Click opens a centered dialog where the paper rises with a restrained perspective/scale animation and settles. Use actual PDF.js-rendered pages, page navigation, fit/zoom and a download/open-original fallback. The floating motion happens on entry, never continuously while reading. Review and metric links open the relevant page of this same viewer.
 
 Do not expose expected-output JSON as financial evidence. Evaluation fixtures are internal test truth; financial provenance points to the PDF. Local manual records instead carry an explicit **Created in this session** badge and their command provenance.
 
@@ -542,7 +546,7 @@ Live sample acceptance reads the real bytes through the same private API as visi
 
 FreshBooks' PDF invoice guidance and Vertex42's basic/service/consulting/receipt layouts inform the core fields and variety; author original assets rather than downloading a template bundle wholesale. At least four layouts plus the handwritten page must pass exact-field comparison on two independently dispatched live runs with the recorded model/prompt/schema version. No Gemini benchmark is a prerequisite. This evaluation checks the chosen OpenAI route.
 
-The previously researched historical Burr receipt is a historical research link only. It is not a required ninth document, does not feed Harbor's ledger and does not replace the modern handwritten sample. The first demo demonstrates printed and handwritten layouts within PDFs, not universal support for every file or illegible page.
+The historical Burr receipt remains a reusable research reference, not a required ninth document or Harbor ledger entry. A recreated modern D04 is permitted and keeps all visible financial evidence consistent. If an authentic external specimen is later included as a reading challenge, keep its actual identity/values and explicitly record its relationship to the workspace before changing the corpus. The first demo demonstrates the evaluated printed and handwriting-style layouts within PDFs; its claims follow actual asset provenance and later measured live evidence.
 
 ## 8. Inputs, previews and recognition
 
@@ -630,7 +634,7 @@ Never silently replace a printed total with a calculated total. Show **Source sa
 
 ### 8.7 Zero-error numeric transcription acceptance
 
-The owner’s numeric requirement is a primary release gate. Define the scope precisely: **zero incorrect numeric transcriptions in the published, evaluated demo corpus**, including the genuine handwritten sample, across the recorded live acceptance runs. This is a target until measured. Vision models can misread text, rotation and small details; no provider’s schema mode guarantees field truth. [OpenAI vision limitations](https://developers.openai.com/api/docs/guides/images-vision).
+The owner’s numeric requirement is a primary release gate. Define the scope precisely: **zero incorrect numeric transcriptions in the published, evaluated demo corpus**, including the documented handwriting sample, across the recorded live acceptance runs. This is a target until measured. Vision models can misread text, rotation and small details; no provider’s schema mode guarantees field truth. [OpenAI vision limitations](https://developers.openai.com/api/docs/guides/images-vision).
 
 1. Preserve each source number string and its page/row/cell/block reference before normalization. Monetary values use exact decimal strings or minor-unit integers; never binary-floating arithmetic for money.
 2. Prefer native PDF text/cell/structured parsing when it faithfully represents the source. Use vision for scanned/handwritten material and a bounded readable representation. Native text is also checked; OCR text is not independently authoritative.
@@ -1131,7 +1135,7 @@ Retrosum/
 │  ├─ frontend/
 │  │  ├─ README.md
 │  │  ├─ .env.example
-│  │  ├─ Dockerfile
+│  │  ├─ Dockerfile                 # RET-012 only; deferred
 │  │  ├─ next.config.ts
 │  │  ├─ public/samples/               # Original synthetic assets and renditions
 │  │  └─ src/
@@ -1153,7 +1157,7 @@ Retrosum/
 │  └─ backend/
 │     ├─ README.md
 │     ├─ .env.example
-│     ├─ Dockerfile
+│     ├─ Dockerfile                 # RET-012 only; deferred
 │     └─ src/
 │        ├─ app.ts                    # Construct Express without listening
 │        ├─ server.ts                 # Explicit configuration/start/shutdown
@@ -1682,6 +1686,8 @@ Requested local startup uses normal configured behavior; automated tests use iso
 
 ## 22. Cloud infrastructure and deployment
 
+**Deferred phase — owner clarification, 8 October 2026.** Dockerfile/image authoring, Docker engine startup, Linux container verification, cloud setup and public deployment all wait until the owner requests RET-012. Local ticket implementation runs directly with pnpm/Node. This section and the future Dockerfile paths in the repository plan describe eventual deployment, not current build prerequisites. The reference repos already contain frontend/backend Dockerfiles; Retrosum is retaining that eventual approach without requiring Docker for local development.
+
 ### 22.1 Same deployment tool family
 
 Retrosum should use the siblings' deployment tools: local Docker build, Google Cloud CLI, Artifact Registry, Google Cloud Run, Secret Manager and service-account IAM. GitHub Actions runs unpaid quality checks. Initial deployment is manually controlled from the audited checkout; no deployment CI, Terraform, Kubernetes or load balancer is necessary for the first managed-URL release.
@@ -1909,7 +1915,7 @@ Assert exact dispatch counts at metered boundaries. Double click, retry, reset, 
 | Retro invoice CRUD | Clarify missing essentials; preview/confirm once; draft excluded; issue affects its own period; payment distinct. |
 | Retro delete/update | Exact target and effect preview; revision-safe application; allocations protected; local Undo. |
 | Retro summary/tour | Current fact sources; registered targets; useful phone/keyboard navigation; no hidden calls. |
-| Numeric extraction gate | All published legible numeric fields exact in recorded live runs; genuine handwriting included. |
+| Numeric extraction gate | All published legible numeric fields exact in recorded live runs; handwriting example included with its actual provenance. |
 | Dashboard polish | Smooth chart changes, hover/focus/tap details, click-through evidence, readable negative/empty states. |
 | Own supported files | Actual recognition, evidence and partial failure behavior. |
 | Missing prior period | No invented comparison; helpful request for supplied data. |
@@ -2047,7 +2053,7 @@ Remaining release inputs are operational: actual OpenAI account/model access, me
 
 - Visitor understands the photographic landing and can start without an account.
 - Dated adoption facts retain scope, source links and accurate company-example wording.
-- Originals are readable; at least four distinct synthetic layout families exist, including genuine handwriting.
+- Originals are readable; at least four distinct synthetic layout families exist, including the documented handwriting example.
 - Zero numeric transcription errors are recorded across the published legible live-evaluation suite; uncertain challenges are held safely.
 - Own-input support claims match evaluated formats; public-sample-live and development-fake modes are honest.
 - Exact sample facts and double-counting invariants pass through the shared money engine.

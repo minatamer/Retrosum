@@ -33,7 +33,7 @@ Areas owned by this packet:
 4. Verify semantic headings/buttons/dialog focus, keyboard chart/detail/source actions, View data tables, screen-reader announcements, target highlighting/tour focus and error recovery. Preserve requested motion; there is no product animation-off switch. Avoid flashing and make controls/values accessible through their normal states.
 5. Measure bundle/first-content/gallery/PDF render memory, chart update smoothness, bounded page caches and lifecycle leaks on target browser/devices. Establish performance targets from measurement rather than claim invented response times. No provider calls triggered by hover/filter/navigation.
 6. Audit dependency/contract boundaries, duplicate financial logic, stale TODO/mock leakage, active/fake mode imports, secret/client exposure, unsupported format claims, dangerous logs and oversized parser/export resources. Run settled root quality/test/build gates once final fixes settle.
-7. Inspect production container contents/startup and asset/font/PDF worker packaging. No temp scripts, private inputs, `.env`, sibling project identifiers or live expected-result imports belong in release.
+7. Inspect local production build output and asset/font/PDF worker packaging. No temp scripts, private inputs, `.env`, sibling project identifiers or live expected-result imports belong in release. Docker image contents/Linux startup verification belongs to deferred RET-012 and is not required to finish this local pass.
 8. Capture exact commit/worktree digest/candidate versions and evidence. Track fake/injected, local browser, owner-run live and cloud evidence separately. A ticket-named commit or passing test count does not prove the product flow.
 9. Update active docs and HTML to final behavior; ticket status reflects actual completion with remaining live/cloud prerequisites explicitly pending. Do not publish “zero mistakes on every document” or pretend broad finance compliance.
 10. Prepare a concise release readiness/rollback handoff for RET-012 with actual provider spend, configured limits, domain/IAM/operator inputs and unresolved blockers. Resolve material local issues in this packet rather than making deployment repair them silently.
@@ -51,19 +51,21 @@ Areas owned by this packet:
 
 ## Verification and evidence
 
-| Case | Evidence |
-| --- | --- |
-| Whole-flow local fake run | Production-shaped UI and zero network/inference |
-| Bounded owner live run | Actual corpus accuracy/usage, no cached result substitution |
-| Device/input matrix | Screenshots plus keyboard/touch/screen-reader notes |
-| Loss/zero/missing/ambiguous cases | Honest math and readable design |
-| Repeat refresh/Reset/expiry | No lifecycle leak, stale command or rebilling |
-| Production builds/images | Exact asset/dependency/startup inventory |
-| Final claim audit | Docs/HTML/UI agreement and clear pending cloud inputs |
+| Case                              | Evidence                                                    |
+| --------------------------------- | ----------------------------------------------------------- |
+| Whole-flow local fake run         | Production-shaped UI and zero network/inference             |
+| Bounded owner live run            | Actual corpus accuracy/usage, no cached result substitution |
+| Device/input matrix               | Screenshots plus keyboard/touch/screen-reader notes         |
+| Loss/zero/missing/ambiguous cases | Honest math and readable design                             |
+| Repeat refresh/Reset/expiry       | No lifecycle leak, stale command or rebilling               |
+| Production builds/images          | Exact asset/dependency/startup inventory                    |
+| Final claim audit                 | Docs/HTML/UI agreement and clear pending cloud inputs       |
 
 Broaden tests only for new fixes or unresolved concerns. Record what was actually run and the exact limitations; do not replace a concise release audit with a copied chronological log of every tool invocation.
 
 ## Scope limits and completion record
+
+For the current owner-authorized execution scope, live numeric/spend measurements, owner aesthetic feedback and actual cloud deployment happen later. A completed local fake-mode walkthrough and local quality review may be recorded as **Implemented locally — deferred acceptance pending**, retaining each unperformed check explicitly. Proceed to RET-012 local packaging/preparation after clean local validation; do not ask for cloud credentials during the local loop.
 
 Keep this packet one coherent outcome: necessary UI, contracts, backend/local effects, recovery and focused verification belong together. Do not create extra tickets for individual buttons, charts, fields or endpoints. Follow the blueprint's English/USD, PDF evidence, live-public/fake-development, no-server-database, temporary browser storage and motion decisions.
 

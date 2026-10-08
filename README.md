@@ -11,7 +11,7 @@ The interface and sample documents use English and USD. Every sample figure come
 - [Twelve detailed implementation tickets and dependencies](docs/tickets/README.md)
 - [Documentation map and authority](docs/README.md)
 
-**Status:** RET-001 foundation verified locally. The strict pnpm workspace, shared contracts, exact money helpers, minimal pages and no-key runtime pass the quality gates. Product features, authored sample PDFs, live accuracy evidence and deployment remain pending; the minimal pages do not represent the finished demo. RET-002 is next.
+**Status:** RET-001 foundation and RET-002 brand/landing are verified locally. The full-screen photographic hero, local typography, sourced adoption section and responsive workspace preview pass quality gates and browser checks. Owner aesthetic review remains pending. RET-003 is next: visible sample PDFs and their paper viewer. Financial state, full Retro behavior, live accuracy and deployment remain upcoming work.
 
 ## Local development
 

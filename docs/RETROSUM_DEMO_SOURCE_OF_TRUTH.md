@@ -4,7 +4,7 @@
 **Prepared:** 7 October 2026. **Updated:** 8 October 2026 with the owner’s core-flow, design, accuracy and Retro requirements.<br>
 **Product:** a public, disposable business money workspace demonstrating useful AI.  
 **Companion:** [Retrosum product overview](RETROSUM_OVERVIEW.html).  
-**Implementation status:** RET-001 foundation verified locally; product features and live accuracy/deployment remain pending. See each ticket's evidence record.  
+**Implementation status:** RET-001 foundation and RET-002 brand/landing verified locally; owner aesthetic acceptance is pending. RET-003 sample PDFs/viewer are next; remaining product features and live accuracy/deployment remain pending. See each ticket's evidence record.<br>
 **Execution status:** the owner authorized the [12-ticket queue](tickets/README.md) in a local fake-mode execute/validate loop, including RET-012 local preparation and per-ticket commits after clean validation. Actual paid tests, owner visual feedback and cloud deployment happen later.
 
 Retrosum turns a small collection of business documents into understandable money records, a traceable overview, and an AI assistant named **Retro** that explains the dashboard, summarizes supplied records, guides the visitor and helps create, edit and remove session records. The visitor can inspect the evidence, correct an interpretation, review a duplicate or payment relationship, and export the result.

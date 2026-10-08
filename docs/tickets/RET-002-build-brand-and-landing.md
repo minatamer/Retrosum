@@ -1,6 +1,6 @@
 # RET-002 — Build the brand system and calm sourced landing
 
-Status: **Planned — not implemented**  
+Status: **Implemented locally — owner visual acceptance pending**<br>
 Last synchronized: **8 October 2026**  
 Depends on: [RET-001](RET-001-initialize-workspace-and-contracts.md)  
 Blocks: RET-003  
@@ -39,25 +39,26 @@ Areas owned by this packet:
 
 ## Acceptance criteria
 
-- [ ] Hero is calm, striking and readable at phone/laptop/wide sizes without stock banking clichés or overly busy motion.
-- [ ] Brand, typography and financial numeral style are consistent.
-- [ ] Adoption statistics retain dates, denominators and direct primary links.
-- [ ] Glass has enough contrast with a solid fallback where backdrop filtering is unsupported.
-- [ ] Retro shell is a floating pill; user and Retro message treatment match the owner decision.
-- [ ] Keyboard focus/dialog behavior works; composer does not cover content or mobile input controls.
-- [ ] No animation-disabling product setting or borrowed suppression rule exists.
-- [ ] Asset provenance and licences are recorded; marketing does not claim live accuracy already achieved.
+- [x] Hero fills tested phone/laptop/wide viewports; copy and CTAs remain readable.
+- [x] Brand, typography and financial numeral style are consistent.
+- [x] Adoption statistics retain dates, denominators and direct primary links.
+- [x] Glass has enough contrast with a solid fallback where backdrop filtering is unsupported.
+- [x] Retro shell is a floating pill; user and Retro message treatment match the owner decision.
+- [x] Browser keyboard focus/dialog behavior works; measured composer clearance protects actions in tested viewports.
+- [x] No animation-disabling product setting or borrowed suppression rule exists.
+- [x] Asset provenance and licences are recorded; marketing does not claim live accuracy already achieved.
+- [ ] Owner aesthetic acceptance and real phone software-keyboard/touch verification (deferred; viewport and browser keyboard checks passed).
 
 ## Verification and evidence
 
-| Case | Evidence |
-| --- | --- |
-| Phone 320/390, laptop 1366, wide desktop | Screenshots and no unintended horizontal overflow |
-| Long hero text/font fallback | Readable lines, stable layout, clear CTA |
-| Glass over light/dark content | Contrast/fallback proof |
-| Keyboard navigation and dialog | Correct focus entry/trap/return and Escape close |
-| Mobile keyboard/safe area | Visible composer and no covered submit/source action |
-| Sources/assets | Link and rights inventory; no external runtime font/photo dependency |
+| Case                                     | Evidence                                                             |
+| ---------------------------------------- | -------------------------------------------------------------------- |
+| Phone 320/390, laptop 1366, wide desktop | Screenshots and no unintended horizontal overflow                    |
+| Long hero text/font fallback             | Readable lines, stable layout, clear CTA                             |
+| Glass over light/dark content            | Contrast/fallback proof                                              |
+| Keyboard navigation and dialog           | Correct focus entry/trap/return and Escape close                     |
+| Mobile keyboard/safe area                | Visible composer and no covered submit/source action                 |
+| Sources/assets                           | Link and rights inventory; no external runtime font/photo dependency |
 
 Run settled frontend quality/build gates and focused visual/manual checks. Do not add unit tests asserting every CSS token or screenshot pixel. Record remaining aesthetic feedback concretely; an unreviewed mock is not evidence of an accepted production layout.
 
@@ -67,4 +68,8 @@ Keep this packet one coherent outcome: necessary UI, contracts, backend/local ef
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
 
-**Execution record:** Not started. No tests, assets, application feature, provider call or deployment is completed by creating this packet.
+**Execution record — 8 October 2026:** Implemented the real Next.js photographic landing, local Fraunces/IBM Plex Sans fonts, brand tokens, sourced adoption evidence and reusable button/glass/paper-dialog/composer/workspace primitives. Sample/upload CTAs enter the real workspace route with explicit preview states. PDF intake, real chart state and full Retro interaction remain owned by subsequent packets.
+
+`pnpm check` passed formatting, lint, strict typechecking, 29-source-file boundary inspection, all 67 tests in seven files, and both production builds. Browser checks covered standard 320–1920px viewports, short landscape and extra 280/320px phones; the hero filled the viewport without horizontal overflow. Temporary Georgia/Arial fallback checks passed and the test override was removed. Dialog focus entry, explicit first/last Tab cycling, Escape, focus return and scroll restoration passed. Measured dock reservation kept workspace actions usable at six representative viewport sizes. Asset/source provenance and contrast measurements are recorded in [design evidence](../design/RET-002-DESIGN.md).
+
+Settled read-only validation found no actionable findings. See [validation](../validation/RET-002.md) and [file-level commit plan](../commit-plans/RET-002.md). Owner visual review and actual hardware input checks remain deferred; they do not block local RET-003 work. No paid provider calls, cloud resources or deployment were performed.

@@ -4,4 +4,4 @@ Root pnpm dev:frontend builds shared exports and starts Next on 127.0.0.1:3000. 
 
 Browser features use public contracts/money and same-origin API routes. The server-only capability bridge defaults to http://127.0.0.1:4000; the client never receives the private origin. No public environment variable enables live AI or contains a key. Root .env files are not part of the workflow.
 
-The current pages are the RET-001 foundation; brand/landing belong to RET-002 and the working workspace arrives through RET-003 onward. The production output uses standalone tracing for later packaging. Docker/cloud verification is deferred.
+RET-001 through RET-007 are verified locally: responsive brand/landing, visible PDFs/viewer, exact money/session recovery/manual CRUD, simulated actual-byte recognition/review, interactive source-backed dashboard and floating Retro conversation/tour. The chat bridge is private and server-only; browser simulations use current facts without AI requests. RET-008 adds animated editable CRUD proposals. The production output uses standalone tracing for later packaging. Owner visual, live AI and Docker/cloud verification remain deferred.

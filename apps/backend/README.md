@@ -4,4 +4,4 @@ Root pnpm dev:backend builds shared contracts/money and starts the explicit tsx 
 
 GET /v1/health is no-cost liveness; GET /v1/ready reflects usable runtime composition; GET /v1/config returns only public validated capabilities. Fake/paid-off is the default. Live prerequisites yield unavailable status, never fake output. The app factory has no listener or provider side effects.
 
-Module ownership: config parses once, runtime composes injected ports, HTTP maps fixed routes, server is the explicit entry. Document/OpenAI use cases arrive in RET-005. No hosted storage/database. Logs must remain content-free.
+Module ownership: config parses once, runtime composes injected ports, HTTP maps fixed routes, server is the explicit entry. Document recognition/review arrived in RET-005; RET-007 adds graph-revalidated, bounded Retro investigation and the private `/v1/chat` route. Fake/injected checks pass locally. Public live capabilities remain closed pending admission, accuracy and spend acceptance. No hosted storage/database. Logs remain content-free.

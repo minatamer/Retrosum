@@ -1,6 +1,6 @@
 # RET-007 — Build Retro conversation, grounded explanations and interactive guidance
 
-Status: **Planned — not implemented**  
+Status: **Implemented locally — deferred acceptance pending**<br>
 Last synchronized: **8 October 2026**  
 Depends on: [RET-006](RET-006-build-interactive-money-dashboard.md)  
 Blocks: RET-008  
@@ -40,14 +40,16 @@ Areas owned by this packet:
 
 ## Acceptance criteria
 
-- [ ] Floating glass pill, user bubbles and unboxed Retro text follow the owner direction.
-- [ ] Retro summarizes, explains, answers, tours, scrolls and highlights actual fields/sections.
-- [ ] Every financial claim binds validated current facts and source references.
-- [ ] Quick replies work with keyboard/touch and reduce typing without hidden requests.
-- [ ] Tool/turn/deadline limits and paid-off behavior are enforced server-side.
-- [ ] Manual local guidance and source viewing remain useful during API outage.
-- [ ] Fake generic examples exercise the same UI/choreography honestly.
-- [ ] Stale/filter-changed/late results cannot masquerade as current facts.
+- [x] Floating glass pill, user bubbles and unboxed Retro text follow the owner direction locally; owner visual acceptance remains pending.
+- [x] Retro summarizes, explains, answers, tours, scrolls and highlights actual fields/sections in local mode.
+- [x] Financial claims bind validated current facts and source references; live factual acceptance remains pending.
+- [x] Native quick replies reduce typing without hidden requests; physical touch acceptance remains pending.
+- [x] Tool/turn/deadline limits and paid-off behavior are enforced server-side in injected/local checks.
+- [x] Manual local guidance and source viewing remain useful during API outage.
+- [x] Fake generic examples exercise the same UI/choreography honestly.
+- [x] Stale/filter-changed/late results cannot masquerade as current facts.
+- [ ] Owner aesthetics and physical mobile-keyboard/touch/zoom acceptance.
+- [ ] Real live factual/tool behavior and evaluated token/spend envelope.
 
 ## Verification and evidence
 
@@ -69,4 +71,4 @@ Keep this packet one coherent outcome: necessary UI, contracts, backend/local ef
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
 
-**Execution record:** Not started. No tests, assets, application feature, provider call or deployment is completed by creating this packet.
+**Execution record:** RET-006 dependency verified at `fe71dfc`, `3daf4e5` and `fc1db33`. Shared response/tool/target schemas, pure current-fact grounding and generic fake intents, bounded server investigation/admission/native OpenAI adapter, private chat bridge and floating conversation/guidance are implemented. Required settled gates passed 140 tests in 17 files, 80 source boundaries, lint, strict types, formatting and both production builds. Browser checks covered current rent/source, all eight tour steps, manual edit/Undo summaries, cancellation, scope-changed late-result rejection and ten device sizes. Read-only Pass A found no actionable findings. Live operation remains closed pending agreed admission/accuracy/spend gates; owner visual/physical-device acceptance remains pending. See [engineering decisions](../engineering/RETRO.md), [validation evidence](../validation/RET-007.md) and [file-level plan](../commit-plans/RET-007.md). RET-008 may proceed locally.

@@ -1,30 +1,23 @@
 "use client";
-import { useState, type FormEvent, type ReactNode } from "react";
 import {
-  contactIdSchema,
-  contactSchema,
-  eventIdSchema,
-  eventSchema,
-  invoiceIdSchema,
-  invoiceSchema,
-  paymentIdSchema,
-  paymentSchema,
-  type Contact,
-  type FinancialEvent,
-  type Invoice,
-  type Payment,
-  type SessionAction,
-  type Workspace,
-} from "@retrosum/contracts";
-import { parseAmount, sumAmounts } from "@retrosum/money";
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
+import type { Payment, SessionAction, Workspace } from "@retrosum/contracts";
+import {
+  buildRecordAction,
+  nextInvoiceNumber,
+  type RecordFormValues,
+  type RecordSelection,
+} from "@retrosum/money";
+export type { RecordSelection } from "@retrosum/money";
 import { Button } from "../../components/ui/button";
 import styles from "./records.module.css";
 
-export type RecordSelection =
-  | { family: "contacts"; record?: Contact }
-  | { family: "costs"; record?: FinancialEvent }
-  | { family: "invoices"; record?: Invoice }
-  | { family: "payments"; record?: Payment };
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="rs-form-field">
@@ -33,12 +26,6 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
     </label>
   );
 }
-const text = (data: FormData, name: string) => String(data.get(name) ?? "").trim();
-const amount = (data: FormData, name: string) => {
-  const value = parseAmount(text(data, name));
-  if (value < 0) throw new RangeError("Amounts must be zero or greater.");
-  return value;
-};
 const dollars = (minor: number) => (minor / 100).toFixed(2);
 function Contacts({
   workspace,
@@ -68,10 +55,23 @@ export function RecordForm({
   selection,
   workspace,
   onSave,
+  animation,
+  onPreview,
+  submitLabel,
+  submitDisabled,
 }: {
   selection: RecordSelection;
   workspace: Workspace;
   onSave: (action: SessionAction, label: string) => void;
+  animation?: {
+    values: RecordFormValues;
+    identity: string;
+    trackEffect(effect: AbortController): () => void;
+    onComplete(): void;
+  };
+  onPreview?: (action: SessionAction | null, label: string) => void;
+  submitLabel?: string;
+  submitDisabled?: boolean;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [lineKeys, setLineKeys] = useState(() =>
@@ -81,122 +81,59 @@ export function RecordForm({
     ),
   );
   const [nextLine, setNextLine] = useState(lineKeys.length);
-  const [direction, setDirection] = useState(
+  const [direction, setDirection] = useState<Payment["direction"]>(
     selection.family === "payments" ? (selection.record?.direction ?? "in") : "in",
   );
-  const [invoiceStatus, setInvoiceStatus] = useState(
+  const [invoiceStatus, setInvoiceStatus] = useState<"draft" | "issued">(
     selection.family === "invoices" ? (selection.record?.status ?? "draft") : "draft",
   );
-  const editing = Boolean(selection.record);
-  const date = workspace.asOf;
+  const form = useRef<HTMLFormElement>(null),
+    dirty = useRef(new Set<string>());
+  const notifyLatest = useRef<(element: HTMLFormElement) => void>(() => undefined);
+  const editing = Boolean(selection.record),
+    date = workspace.asOf;
+  const convert = (element: HTMLFormElement) => {
+    const data: RecordFormValues = Object.fromEntries(
+      [...new FormData(element)].map(([key, value]) => [key, String(value)]),
+    );
+    data.lineKeys = lineKeys.join(",");
+    data.direction = data.direction ?? direction;
+    data.status = data.status ?? invoiceStatus;
+    if (selection.family === "payments")
+      data.contact =
+        workspace.events.find((record) => record.id === data.allocation)?.counterpartyId ??
+        data.contact ??
+        "";
+    if (animation && selection.family === "payments")
+      data.preserveAllocations = !dirty.current.has("allocation")
+        ? (animation.values.preserveAllocations ?? "no")
+        : "no";
+    const action = buildRecordAction(selection, data, animation?.identity ?? crypto.randomUUID());
+    const label =
+      selection.family === "invoices" &&
+      invoiceStatus === "issued" &&
+      selection.record?.status === "draft"
+        ? `Issue invoice ${"record" in action && "number" in action.record ? action.record.number : ""}`
+        : `${editing ? "Update" : selection.family === "invoices" ? "Create draft" : "Create"} ${selection.family === "costs" ? "cost" : selection.family.slice(0, -1)}`;
+    return { action, label };
+  };
+  const notify = (element: HTMLFormElement) => {
+    try {
+      const result = convert(element);
+      onPreview?.(result.action, result.label);
+    } catch {
+      onPreview?.(null, "");
+    }
+  };
+  useLayoutEffect(() => {
+    notifyLatest.current = notify;
+  });
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
     try {
-      const data = new FormData(event.currentTarget);
-      const uuid = crypto.randomUUID();
-      switch (selection.family) {
-        case "contacts": {
-          const record = contactSchema.parse({
-            id: selection.record?.id ?? contactIdSchema.parse(`contact_${uuid}`),
-            name: text(data, "name"),
-            role: text(data, "role"),
-            ...(text(data, "email") ? { email: text(data, "email") } : {}),
-          });
-          onSave(
-            { type: editing ? "update_contact" : "create_contact", record },
-            `${editing ? "Update" : "Create"} ${record.name}`,
-          );
-          break;
-        }
-        case "costs": {
-          const netMinor = amount(data, "net");
-          const taxMinor = amount(data, "tax");
-          const record = eventSchema.parse({
-            ...selection.record,
-            id: selection.record?.id ?? eventIdSchema.parse(`event_${uuid}`),
-            kind: "cost",
-            counterpartyId: text(data, "contact"),
-            description: text(data, "description"),
-            occurredOn: text(data, "date"),
-            ...(text(data, "due") ? { dueOn: text(data, "due") } : { dueOn: undefined }),
-            amountMinor: sumAmounts([netMinor, taxMinor]),
-            netMinor,
-            taxMinor,
-            currency: "USD",
-            basis: "gross",
-            status: selection.record?.status ?? "posted",
-            paidClaim: text(data, "balance") === "paid",
-            balanceState: text(data, "balance"),
-            category: text(data, "category"),
-            reference: text(data, "reference"),
-            sources: selection.record?.sources ?? [],
-            origin: selection.record?.origin ?? "session",
-          });
-          onSave(
-            { type: editing ? "update_event" : "create_event", record },
-            `${editing ? "Update" : "Create"} cost`,
-          );
-          break;
-        }
-        case "invoices": {
-          const record = invoiceSchema.parse({
-            ...selection.record,
-            id: selection.record?.id ?? invoiceIdSchema.parse(`invoice_${uuid}`),
-            number: text(data, "number"),
-            customerId: text(data, "contact"),
-            issuedOn: text(data, "date"),
-            ...(text(data, "due") ? { dueOn: text(data, "due") } : { dueOn: undefined }),
-            currency: "USD",
-            notes: text(data, "notes"),
-            status: selection.record ? invoiceStatus : "draft",
-            taxMinor: amount(data, "tax"),
-            lines: lineKeys.map((key) => ({
-              description: text(data, `${key}-description`),
-              quantity: text(data, `${key}-quantity`),
-              unitPriceMinor: amount(data, `${key}-price`),
-            })),
-          });
-          onSave(
-            { type: editing ? "update_invoice" : "create_invoice", record },
-            invoiceStatus === "issued" && selection.record?.status === "draft"
-              ? `Issue invoice ${record.number}`
-              : `${editing ? "Update" : "Create draft"} invoice ${record.number}`,
-          );
-          break;
-        }
-        case "payments": {
-          const eventId = text(data, "allocation");
-          const target = workspace.events.find((record) => record.id === eventId);
-          const counterparty = target?.counterpartyId ?? text(data, "contact");
-          const record = paymentSchema.parse({
-            ...selection.record,
-            id: selection.record?.id ?? paymentIdSchema.parse(`payment_${uuid}`),
-            occurredOn: text(data, "date"),
-            direction,
-            amountMinor: amount(data, "amount"),
-            currency: "USD",
-            reference: text(data, "reference"),
-            ...(counterparty && direction !== "internal_transfer"
-              ? { counterpartyId: counterparty }
-              : { counterpartyId: undefined }),
-            allocations:
-              eventId && direction !== "internal_transfer"
-                ? [{ eventId, amountMinor: amount(data, "allocated") }]
-                : [],
-            ...(direction === "internal_transfer"
-              ? { fromAccount: text(data, "from"), toAccount: text(data, "to") }
-              : { fromAccount: undefined, toAccount: undefined }),
-            sources: selection.record?.sources ?? [],
-            origin: selection.record?.origin ?? "session",
-          });
-          onSave(
-            { type: editing ? "update_payment" : "create_payment", record },
-            `${editing ? "Update" : "Record"} payment`,
-          );
-          break;
-        }
-      }
+      const result = convert(event.currentTarget);
+      onSave(result.action, result.label);
     } catch (cause) {
       setError(
         cause instanceof RangeError
@@ -205,8 +142,104 @@ export function RecordForm({
       );
     }
   };
+  useEffect(() => {
+    if (!animation) return;
+    const root = form.current;
+    if (!root) return;
+    const effect = new AbortController(),
+      untrack = animation.trackEffect(effect);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let stopped = false;
+    // Resolve each control when its turn arrives: direction can mount transfer fields.
+    const fields = Object.entries(animation.values);
+    let index = 0;
+    const next = () => {
+      if (stopped || effect.signal.aborted) return;
+      const field = fields[index++];
+      if (!field) {
+        notifyLatest.current(root);
+        animation.onComplete();
+        return;
+      }
+      const [name, value] = field;
+      const node = root.elements.namedItem(name);
+      if (!(
+        node instanceof HTMLInputElement ||
+        node instanceof HTMLSelectElement ||
+        node instanceof HTMLTextAreaElement
+      )) {
+        next();
+        return;
+      }
+      if (dirty.current.has(name)) {
+        next();
+        return;
+      }
+      root
+        .querySelectorAll("[data-retro-filling]")
+        .forEach((element) => element.removeAttribute("data-retro-filling"));
+      node.setAttribute("data-retro-filling", "true");
+      const write = (written: string) => {
+        if (dirty.current.has(name) || stopped || effect.signal.aborted) return false;
+        if (name === "direction") setDirection(written as Payment["direction"]);
+        else if (name === "status") setInvoiceStatus(written as "draft" | "issued");
+        node.value = written;
+        return true;
+      };
+      const typed =
+        (node instanceof HTMLTextAreaElement ||
+          (node instanceof HTMLInputElement && node.type === "text")) &&
+        value.length > 0;
+      let length = 0;
+      const step = () => {
+        length = Math.min(value.length, length + Math.max(1, Math.ceil(value.length / 12)));
+        if (!write(typed ? value.slice(0, length) : value)) {
+          node.removeAttribute("data-retro-filling");
+          next();
+          return;
+        }
+        if (typed && length < value.length) timer = setTimeout(step, 25);
+        else {
+          node.removeAttribute("data-retro-filling");
+          timer = setTimeout(next, 110);
+        }
+      };
+      timer = setTimeout(step, 120);
+    };
+    const cancel = () => {
+      stopped = true;
+      if (timer) clearTimeout(timer);
+      root
+        .querySelectorAll("[data-retro-filling]")
+        .forEach((element) => element.removeAttribute("data-retro-filling"));
+    };
+    effect.signal.addEventListener("abort", cancel, { once: true });
+    timer = setTimeout(next, 160);
+    return () => {
+      effect.abort();
+      cancel();
+      untrack();
+      effect.signal.removeEventListener("abort", cancel);
+    };
+  }, [animation]);
   return (
-    <form onSubmit={submit} className={styles.form}>
+    <form
+      ref={form}
+      onSubmit={submit}
+      className={styles.form}
+      onChange={(event) => {
+        const node = event.target;
+        if (
+          node instanceof HTMLInputElement ||
+          node instanceof HTMLSelectElement ||
+          node instanceof HTMLTextAreaElement
+        ) {
+          dirty.current.add(node.name);
+          node.removeAttribute("data-retro-filling");
+        }
+        notify(event.currentTarget);
+      }}
+    >
       {selection.family === "contacts" && (
         <>
           <Field label="Contact name">
@@ -332,7 +365,7 @@ export function RecordForm({
               name="number"
               required
               maxLength={40}
-              defaultValue={selection.record?.number ?? `INV-${workspace.invoices.length + 1}`}
+              defaultValue={selection.record?.number ?? nextInvoiceNumber(workspace)}
             />
           </Field>
           <div className={styles.twoColumns}>
@@ -422,6 +455,7 @@ export function RecordForm({
           {selection.record && (
             <Field label="Invoice status">
               <select
+                name="status"
                 value={invoiceStatus}
                 onChange={(event) => setInvoiceStatus(event.target.value as "draft" | "issued")}
               >
@@ -443,6 +477,7 @@ export function RecordForm({
         <>
           <Field label="Direction">
             <select
+              name="direction"
               value={direction}
               onChange={(event) => setDirection(event.target.value as Payment["direction"])}
             >
@@ -572,16 +607,17 @@ export function RecordForm({
           {error}
         </p>
       )}
-      <Button type="submit">
-        {selection.family === "invoices" &&
-        invoiceStatus === "issued" &&
-        selection.record?.status === "draft"
-          ? "Issue invoice"
-          : editing
-            ? "Save changes"
-            : selection.family === "invoices"
-              ? "Save draft invoice"
-              : "Create record"}
+      <Button type="submit" disabled={submitDisabled}>
+        {submitLabel ??
+          (selection.family === "invoices" &&
+          invoiceStatus === "issued" &&
+          selection.record?.status === "draft"
+            ? "Issue invoice"
+            : editing
+              ? "Save changes"
+              : selection.family === "invoices"
+                ? "Save draft invoice"
+                : "Create record")}
       </Button>
     </form>
   );

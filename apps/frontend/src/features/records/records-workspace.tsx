@@ -205,7 +205,7 @@ export function RecordsWorkspace() {
       <div className={styles.register} aria-label={`${names[family]} register`}>
         {family === "contacts" &&
           workspace.contacts.map((record) => (
-            <article className={styles.record} key={record.id}>
+            <article id={`record-${record.id}`} className={styles.record} key={record.id}>
               <div>
                 <span className={styles.recordBadge}>{record.role}</span>
                 <h3>{record.name}</h3>
@@ -234,7 +234,7 @@ export function RecordsWorkspace() {
           ))}
         {family === "invoices" &&
           workspace.invoices.map((record) => (
-            <article className={styles.record} key={record.id}>
+            <article id={`record-${record.id}`} className={styles.record} key={record.id}>
               <div>
                 <span className={styles.recordBadge}>{record.status}</span>
                 <h3>{record.number}</h3>
@@ -284,7 +284,7 @@ export function RecordsWorkspace() {
           workspace.events
             .filter((record) => record.kind === "cost")
             .map((record) => (
-              <article className={styles.record} key={record.id}>
+              <article id={`record-${record.id}`} className={styles.record} key={record.id}>
                 <div>
                   <span className={styles.recordBadge}>
                     {record.status} · {record.balanceState}
@@ -342,7 +342,7 @@ export function RecordsWorkspace() {
             ))}
         {family === "payments" &&
           workspace.payments.map((record) => (
-            <article className={styles.record} key={record.id}>
+            <article id={`record-${record.id}`} className={styles.record} key={record.id}>
               <div>
                 <span className={styles.recordBadge}>
                   {record.direction === "internal_transfer"

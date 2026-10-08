@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   capabilitiesSchema,
   retroResponseSchema,
@@ -10,6 +11,8 @@ import {
   type RuntimeCapabilities,
   type SourceReference,
   type SessionFilter,
+  type RetroChangeIntent,
+  type RetroChangeResult,
 } from "@retrosum/contracts";
 import {
   buildDashboard,
@@ -20,6 +23,8 @@ import {
   isRetroCurrent,
   renderRetroResponse,
   retroScopeKey,
+  patchChangeIntent,
+  verifyRetroChange,
 } from "@retrosum/money";
 import { ComposerShell } from "../../components/ui/composer-shell";
 import { PaperDialog } from "../../components/ui/paper-dialog";
@@ -28,6 +33,8 @@ import { FactDetail } from "../dashboard/fact-detail";
 import { OriginalViewer } from "../documents/original-viewer";
 import { GuidanceOutline, TourStep, useGuidance } from "./guidance";
 import styles from "./retro.module.css";
+import { ChangePreview } from "./change-preview";
+import { navigateWorkspace } from "../workspace/navigation";
 
 type Pending = {
   prompt: string;
@@ -53,6 +60,16 @@ export function Retro() {
   const [detail, setDetail] = useState<{ id: string; revision: number } | null>(null);
   const [source, setSource] = useState<SourceReference | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [activeChange, setActiveChange] = useState<{
+    response: RetroResponse;
+    contextKey: string;
+    target: HTMLElement;
+  } | null>(null);
+  const cancelChange = useCallback(() => {
+    setActiveChange(null);
+    setExpanded(true);
+    setNotice("Proposal cancelled. No records were changed.");
+  }, []);
   const request = useRef<AbortController | null>(null);
   const messagesBox = useRef<HTMLDivElement | null>(null);
   const catalogue = useMemo(
@@ -113,10 +130,23 @@ export function Retro() {
     setPending(null);
     setExpanded(true);
     if (response.decision.kind === "tour") guidance.show("overview", 0);
+    if (response.change?.kind === "ready") {
+      verifyRetroChange(response, workspace);
+      const target = document.getElementById("retro-change-stage");
+      if (target) setActiveChange({ response, contextKey, target });
+      setExpanded(false);
+      navigateWorkspace("records");
+      window.requestAnimationFrame(() =>
+        document
+          .getElementById("retro-proposal")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+      );
+    }
   };
   const local = (topic: RetroTopic) => {
     if (busy) return;
     guidance.stop();
+    setActiveChange(null);
     setNotice(null);
     finish(
       TOPIC_LABELS[topic] ?? `Explain ${topic}`,
@@ -136,6 +166,7 @@ export function Retro() {
   const send = async (prompt: string) => {
     if (busy || !prompt.trim() || prompt.length > 1000) return;
     guidance.stop();
+    setActiveChange(null);
     setInput("");
     setExpanded(true);
     setNotice(null);
@@ -153,11 +184,18 @@ export function Retro() {
     const untrack = controller.trackEffect(effect);
     const token = controller.token(`retro_${crypto.randomUUID()}`);
     const capturedScope = retroScopeKey(actualScope);
+    const previousResponse = session.messages.at(-1)?.response;
+    const changeContext =
+      previousResponse?.change?.kind === "clarification" &&
+      isRetroCurrent(previousResponse, workspace, actualScope)
+        ? previousResponse.change.intent
+        : undefined;
     const payload = {
       operationId: token.operationId,
       workspace,
       scope: actualScope,
       prompt: prompt.trim(),
+      ...(changeContext ? { changeContext } : {}),
       recent: session.messages
         .slice(-8)
         .map(({ role, text }) => ({ role, text }))
@@ -184,9 +222,12 @@ export function Retro() {
       let result: RetroResponse;
       if (capabilities.mode === "fake") {
         await pause(/simulate stale/u.test(prompt.toLowerCase()) ? 3500 : 650, effect.signal);
-        result = createRetroResponse(payload, fakeRetroDecision(prompt, catalogue), "fake", [
-          { tool: "get_summary", count: 7 },
-        ]);
+        result = createRetroResponse(
+          payload,
+          fakeRetroDecision(prompt, catalogue, workspace, payload.changeContext),
+          "fake",
+          [{ tool: "get_summary", count: 7 }],
+        );
       } else {
         const response = await fetch("/api/retrosum/v1/chat", {
           method: "POST",
@@ -219,6 +260,7 @@ export function Retro() {
       if (!isRetroCurrent(result, latest.workspace, actualScope))
         throw new Error("The returned answer does not match the current snapshot.");
       renderRetroResponse(result, catalogue); // Ground again before any final figures appear.
+      verifyRetroChange(result, workspace);
       setPending({
         prompt,
         stage: "validated",
@@ -246,9 +288,9 @@ export function Retro() {
         stage: effect.signal.aborted ? "cancelled" : "failed",
         text: effect.signal.aborted
           ? "This turn was cancelled or the records changed. Nothing was applied. You can ask again."
-          : cause instanceof Error
+          : cause instanceof Error && cause.name !== "ZodError"
             ? cause.message
-            : "This turn failed. Local guidance remains available.",
+            : "This turn could not be verified. Nothing was applied. Local guidance remains available.",
       });
     } finally {
       window.clearTimeout(deadline);
@@ -259,6 +301,57 @@ export function Retro() {
   const lastMessage = [...session.messages].reverse().find((message) => message.role === "retro");
   const last = lastMessage?.response;
   const staleLast = last ? !isRetroCurrent(last, workspace, actualScope) : false;
+  const localChange = (intent: RetroChangeIntent, prompt: string) => {
+    if (busy) return;
+    guidance.stop();
+    setActiveChange(null);
+    finish(
+      prompt,
+      createRetroResponse(
+        {
+          operationId: `retro_${crypto.randomUUID()}`,
+          workspace,
+          scope: actualScope,
+          prompt,
+          recent: [],
+        },
+        { kind: "change_request", intent },
+        "local",
+      ),
+    );
+  };
+  const appliedChange = (result: RetroChangeResult) => {
+    setActiveChange(null);
+    setNotice(null);
+    setExpanded(true);
+    const current = controller.getSnapshot().session;
+    if (current)
+      controller.setMessages(
+        [
+          ...current.messages,
+          {
+            id: `retro_${crypto.randomUUID()}`,
+            role: "retro" as const,
+            text: `${result.label} completed in this browser session.`,
+            revision: current.workspace.revision,
+            changeResult: result,
+          },
+        ].slice(-40),
+      );
+  };
+  const openResult = (result: RetroChangeResult) => {
+    setExpanded(false);
+    controller.setFilters({
+      ...controller.getSnapshot().session!.filters,
+      register: result.family,
+    });
+    navigateWorkspace("records");
+    window.requestAnimationFrame(() =>
+      document
+        .getElementById(`record-${result.recordId}`)
+        ?.scrollIntoView({ behavior: "smooth", block: "center" }),
+    );
+  };
   const openFact = (id: string) => {
     guidance.stop();
     setDetail({ id, revision: workspace.revision });
@@ -266,11 +359,13 @@ export function Retro() {
   const clear = () => {
     if (!busy) {
       controller.setMessages([]);
+      setActiveChange(null);
       setPending(null);
       guidance.stop();
     }
   };
   const tour = () => {
+    setActiveChange(null);
     setExpanded(true);
     guidance.show("overview", 0);
   };
@@ -288,6 +383,18 @@ export function Retro() {
   };
   return (
     <div id="retro-composer" className={styles.retro}>
+      {activeChange?.contextKey === contextKey &&
+        activeChange.response.change?.kind === "ready" &&
+        createPortal(
+          <ChangePreview
+            key={activeChange.response.change.command.id}
+            proposal={activeChange.response.change}
+            response={activeChange.response}
+            onCancel={cancelChange}
+            onApplied={appliedChange}
+          />,
+          activeChange.target,
+        )}
       <GuidanceOutline active={guidance.active} onStop={guidance.stop} />
       <div className={styles.topline}>
         <span>
@@ -393,6 +500,39 @@ export function Retro() {
                           ? "This stored answer could not be verified. Use a current local explanation."
                           : message.text)}
                     </p>
+                    {message.changeResult && (
+                      <div className={styles.sources}>
+                        <button type="button" onClick={() => openResult(message.changeResult!)}>
+                          View {message.changeResult.family}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={
+                            session.undo?.commandId !== message.changeResult.commandId ||
+                            session.undo?.appliedAtRevision !== workspace.revision
+                          }
+                          onClick={undo}
+                        >
+                          Undo
+                        </button>
+                      </div>
+                    )}
+                    {response?.change?.kind === "clarification" && !stale && (
+                      <ul className={styles.missing}>
+                        {response.change.missing.map((text) => (
+                          <li key={text}>{text}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {response?.change?.kind === "ready" &&
+                      !stale &&
+                      (activeChange?.response.change?.kind !== "ready" ||
+                        activeChange.response.change.command.id !== response.change.command.id) && (
+                        <p className={styles.caption}>
+                          This saved preview is read-only. Prepare a fresh request to edit and
+                          confirm.
+                        </p>
+                      )}
                     {content && content.facts.length > 0 && (
                       <div className={styles.facts}>
                         {content.facts.map((fact) => (
@@ -482,6 +622,45 @@ export function Retro() {
               <button type="button" disabled={busy} onClick={tour}>
                 Show me around
               </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() =>
+                  localChange(
+                    { family: "invoices", operation: "create", query: null, fields: [] },
+                    "Create an invoice",
+                  )
+                }
+              >
+                Create invoice
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() =>
+                  localChange(
+                    { family: "costs", operation: "create", query: null, fields: [] },
+                    "Add a cost",
+                  )
+                }
+              >
+                Add cost
+              </button>
+              {last?.change?.kind === "clarification" &&
+                !staleLast &&
+                last.change.choices.map((choice) => (
+                  <button
+                    type="button"
+                    key={JSON.stringify(choice)}
+                    disabled={busy}
+                    onClick={() =>
+                      last.change?.kind === "clarification" &&
+                      localChange(patchChangeIntent(last.change.intent, choice), choice.label)
+                    }
+                  >
+                    {choice.label}
+                  </button>
+                ))}
               {last?.decision.kind === "clarification" &&
                 !staleLast &&
                 last.decision.choices.map((topic) => (

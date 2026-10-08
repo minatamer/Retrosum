@@ -75,6 +75,7 @@ function WorkspaceContent() {
           </p>
         </nav>
         <div className={styles.content}>
+          <div id="retro-change-stage" />
           <div hidden={view !== "overview"}>
             {view === "overview" && <Dashboard onDocuments={() => navigate("documents")} />}
           </div>

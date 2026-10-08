@@ -31,6 +31,33 @@ const ready = (change, session, id = "change_test") => {
 };
 const apply = (proposal, session) => applyCommand(session, proposal.command, proposal.label);
 describe("Retro preparation shares real commands without mutating snapshots", () => {
+  it("preserves explicit English event dates and holds incomplete or invalid dates", () => {
+    const session = harborSession();
+    for (const date of ["September 25, 2026", "25 September 2026", "25th Sep 2026", "2026-09-25"]) {
+      const parsed = fakeChangeIntent(
+        `Add a USD 200 cost for Northstar Supplies on ${date} for site visit`,
+        session.workspace,
+      );
+      const proposal = ready(parsed, session, "english_date");
+      expect(proposal.command.actions[0].record.occurredOn).toBe("2026-09-25");
+      expect(proposal.effects.find((effect) => effect.factId === "costs").after).toBe(148000);
+    }
+    for (const date of ["September 25", "February 30, 2026"]) {
+      const parsed = fakeChangeIntent(
+        `Add a USD 200 cost for Northstar Supplies on ${date} for site visit`,
+        session.workspace,
+      );
+      expect(prepareRetroChange(parsed, session.workspace, scope, "invalid_date").kind).toBe(
+        "clarification",
+      );
+    }
+    const invoice = fakeChangeIntent(
+      "Create an invoice for Cedar Works, USD 2000, due on November 30, 2026 for design",
+      session.workspace,
+    );
+    expect(invoice.fields.find((field) => field.name === "due").value).toBe("2026-11-30");
+    expect(invoice.fields.some((field) => field.name === "date")).toBe(false);
+  });
   it("does not truncate malformed grouping or excess decimal precision into a smaller amount", () => {
     const session = harborSession();
     for (const value of ["2,00", "2,000.123", "200.999"]) {

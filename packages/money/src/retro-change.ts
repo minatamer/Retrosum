@@ -322,6 +322,8 @@ export function prepareRetroChange(
       )
         missing.push("Exact USD amount (net; tax is shown separately)");
     }
+    if (values.date && !dateSchema.safeParse(values.date).success)
+      missing.push("A valid complete record date including its year");
     if (values.due && !dateSchema.safeParse(values.due).success) {
       missing.push("A complete due date including its year");
       const monthDay = englishDate(values.due, false);
@@ -646,8 +648,14 @@ export function fakeChangeIntent(
     const raw = due[1]!.split(/\s+for\s+/iu)[0]!.trim();
     set("due", dateSchema.safeParse(raw).success ? raw : (englishDate(raw, true) ?? raw));
   }
-  const date = /\b(?:dated|on|date)(?:\s+to)?\s*[:=]?\s*(\d{4}-\d{2}-\d{2})/iu.exec(text);
-  if (date && !due?.[1]?.includes(date[1]!)) set("date", date[1]);
+  const date =
+    /\b(?:dated|on|date)(?:\s+to)?\s*[:=]?\s*(\d{4}-\d{2}-\d{2}|\d{1,2}(?:st|nd|rd|th)?\s+[a-z]+(?:\s+\d{4})?|[a-z]+\s+\d{1,2}(?:st|nd|rd|th)?(?:\s*,?\s*\d{4})?)/iu.exec(
+      text,
+    );
+  if (date && !due?.[1]?.includes(date[1]!)) {
+    const raw = date[1]!.trim();
+    set("date", dateSchema.safeParse(raw).success ? raw : (englishDate(raw, true) ?? raw));
+  }
   const contact = workspace.contacts.filter((row) => lower.includes(fold(row.name)));
   if (family !== "contacts") {
     if (contact.length === 1) set("contact", contact[0]!.id);

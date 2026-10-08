@@ -1,6 +1,6 @@
 # RET-008 — Deliver Retro animated forms, confirmation and inline Undo
 
-Status: **Planned — not implemented**  
+Status: **Implemented and verified locally — live/owner acceptance pending**<br>
 Last synchronized: **8 October 2026**  
 Depends on: [RET-007](RET-007-build-retro-conversation-and-guidance.md)  
 Blocks: RET-009  
@@ -40,14 +40,16 @@ Areas owned by this packet:
 
 ## Acceptance criteria
 
-- [ ] Natural-language core CRUD prepares real editable forms for all four object families.
-- [ ] Form-fill animation is polished, interruptible and never overwrites visitor edits.
-- [ ] Missing/ambiguous core fields are clarified with useful shortcuts.
-- [ ] One inline confirmation applies validated commands locally with zero extra inference.
-- [ ] Draft/issued/payment distinctions and before/after effects are accurate.
-- [ ] Latest Undo is small, discoverable, revision-safe and coherent across all derived views.
-- [ ] Duplicate/stale/expired proposal actions cannot mutate records.
-- [ ] Fake mode shows the same form/action choreography without claims of arbitrary live understanding.
+- [x] Natural-language core CRUD prepares real editable forms for all four object families — bounded generic fake mode and injected contracts verified; actual live language acceptance pending.
+- [x] Form-fill animation is interruptible and never overwrites visitor edits — actual browser verified; owner polish/physical-device acceptance pending.
+- [x] Missing/ambiguous core fields are clarified with useful shortcuts.
+- [x] One inline confirmation applies validated commands locally with zero extra inference.
+- [x] Draft/issued/payment distinctions and before/after effects are accurate.
+- [x] Latest Undo is small, discoverable, revision-safe and coherent across current derived views; exports follow in RET-009.
+- [x] Duplicate/stale/expired proposal actions cannot mutate records.
+- [x] Fake mode shows the same form/action choreography without claims of arbitrary live understanding.
+
+Checked criteria describe local implementation/evidence. Live OpenAI accuracy/spend, owner aesthetic approval and physical device keyboard/touch remain unchecked external acceptance.
 
 ## Verification and evidence
 
@@ -69,4 +71,4 @@ Keep this packet one coherent outcome: necessary UI, contracts, backend/local ef
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
 
-**Execution record:** Not started. No tests, assets, application feature, provider call or deployment is completed by creating this packet.
+**Execution record — 8 October 2026:** Reused the RET-004 command/inverse engine and RET-007 bounded conversation. Delivered bounded shared preparation and pure real-form conversion; exact company/date/amount clarification; deterministic edited-form previews; all four animated editable form families; one zero-inference confirmation; record navigation and refresh-safe latest Undo. Explicit issue, payment match/edit/remove, relational invoice deletion/full inverse, visitor edits, cancellation, source provenance and pending-preview refresh were checked in the actual browser. Ten viewports from 280×480 through 1440×900 had no horizontal page overflow. Final `pnpm check` passed formatting, lint, strict types, 84 boundaries, 151 tests in 18 files and both production builds. Read-only validation Pass A: no actionable findings. See [engineering decisions](../engineering/RETRO.md), [actual evidence and deferred gates](../validation/RET-008.md) and [file allocation](../commit-plans/RET-008.md). No paid request, push or deployment. RET-009 is the next eligible local packet.

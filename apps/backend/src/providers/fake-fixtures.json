@@ -1,0 +1,1776 @@
+{
+  "3a3fd106210471aa43cb0a7b7f7a8d4fe1ce0c1dcb0f87bc7073904677873f00": {
+    "version": "recognition-v1",
+    "kind": "invoice",
+    "currency": "USD",
+    "business": "Harbor Studio",
+    "asOfField": null,
+    "fields": [
+      {
+        "key": "p1_0",
+        "page": 1,
+        "block": "invoice",
+        "raw": "HS-101",
+        "occurrences": 1,
+        "normalized": "HS-101",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_1",
+        "page": 1,
+        "block": "invoice",
+        "raw": "2026-09-04",
+        "occurrences": 1,
+        "normalized": "2026-09-04",
+        "scale": "ISO_date",
+        "treatment": "event_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_2",
+        "page": 1,
+        "block": "invoice",
+        "raw": "2026-09-18",
+        "occurrences": 1,
+        "normalized": "2026-09-18",
+        "scale": "ISO_date",
+        "treatment": "due_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_3",
+        "page": 1,
+        "block": "invoice",
+        "raw": "12",
+        "occurrences": 1,
+        "normalized": "12",
+        "scale": "hours",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_4",
+        "page": 1,
+        "block": "invoice",
+        "raw": "8",
+        "occurrences": 1,
+        "normalized": "8",
+        "scale": "hours",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_5",
+        "page": 1,
+        "block": "invoice",
+        "raw": "150.00",
+        "occurrences": 2,
+        "normalized": "15000",
+        "scale": "USD_cents",
+        "treatment": "unit_price",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_6",
+        "page": 1,
+        "block": "invoice",
+        "raw": "1,800.00",
+        "occurrences": 1,
+        "normalized": "180000",
+        "scale": "USD_cents",
+        "treatment": "line_net",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_7",
+        "page": 1,
+        "block": "invoice",
+        "raw": "1,200.00",
+        "occurrences": 1,
+        "normalized": "120000",
+        "scale": "USD_cents",
+        "treatment": "line_net",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_8",
+        "page": 1,
+        "block": "invoice",
+        "raw": "3,000.00",
+        "occurrences": 2,
+        "normalized": "300000",
+        "scale": "USD_cents",
+        "treatment": "subtotal_and_total",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_9",
+        "page": 1,
+        "block": "invoice",
+        "raw": "0.00",
+        "occurrences": 1,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "separate_tax",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_0",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "HS-101",
+        "occurrences": 2,
+        "normalized": "HS-101",
+        "scale": "identifier",
+        "treatment": "same_event",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_1",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "12",
+        "occurrences": 1,
+        "normalized": "12",
+        "scale": "hours",
+        "treatment": "same_line",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_2",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "8",
+        "occurrences": 1,
+        "normalized": "8",
+        "scale": "hours",
+        "treatment": "same_line",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_3",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "150.00",
+        "occurrences": 2,
+        "normalized": "15000",
+        "scale": "USD_cents",
+        "treatment": "same_unit_price",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_4",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "1,800.00",
+        "occurrences": 1,
+        "normalized": "180000",
+        "scale": "USD_cents",
+        "treatment": "same_line",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_5",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "1,200.00",
+        "occurrences": 1,
+        "normalized": "120000",
+        "scale": "USD_cents",
+        "treatment": "same_line",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_6",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "3,000.00",
+        "occurrences": 1,
+        "normalized": "300000",
+        "scale": "USD_cents",
+        "treatment": "same_event",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_7",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "0.00",
+        "occurrences": 1,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "same_tax",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_8",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "2026-09-18",
+        "occurrences": 1,
+        "normalized": "2026-09-18",
+        "scale": "ISO_date",
+        "treatment": "same_due_date",
+        "ambiguous": false
+      }
+    ],
+    "events": [
+      {
+        "party": "Cedar Works",
+        "businessRole": "issuer",
+        "description": "HS-101",
+        "category": "Services",
+        "dateField": "p1_1",
+        "dueField": "p1_2",
+        "referenceField": "p1_0",
+        "grossField": "p1_8",
+        "netField": "p1_8",
+        "taxField": "p1_9",
+        "balanceState": "unknown",
+        "lines": [
+          {
+            "description": "HS-101 service / item",
+            "quantity": "p1_3",
+            "unitPrice": "p1_5",
+            "total": "p1_6"
+          },
+          {
+            "description": "HS-101 service / item",
+            "quantity": "p1_4",
+            "unitPrice": "p1_5",
+            "total": "p1_7"
+          }
+        ]
+      }
+    ],
+    "payments": [],
+    "warnings": []
+  },
+  "4b9183fc675c77d66f1107c44c05f2dc1d2bc37ed69332fbbe494dd356a26c87": {
+    "version": "recognition-v1",
+    "kind": "invoice",
+    "currency": "USD",
+    "business": "Harbor Studio",
+    "asOfField": null,
+    "fields": [
+      {
+        "key": "p1_0",
+        "page": 1,
+        "block": "invoice",
+        "raw": "HS-102",
+        "occurrences": 1,
+        "normalized": "HS-102",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_1",
+        "page": 1,
+        "block": "invoice",
+        "raw": "2026-09-24",
+        "occurrences": 1,
+        "normalized": "2026-09-24",
+        "scale": "ISO_date",
+        "treatment": "event_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_2",
+        "page": 1,
+        "block": "invoice",
+        "raw": "2026-10-08",
+        "occurrences": 1,
+        "normalized": "2026-10-08",
+        "scale": "ISO_date",
+        "treatment": "due_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_3",
+        "page": 1,
+        "block": "invoice",
+        "raw": "1",
+        "occurrences": 1,
+        "normalized": "1",
+        "scale": "projects",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_4",
+        "page": 1,
+        "block": "invoice",
+        "raw": "2",
+        "occurrences": 1,
+        "normalized": "2",
+        "scale": "sessions",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_5",
+        "page": 1,
+        "block": "invoice",
+        "raw": "1,200.00",
+        "occurrences": 2,
+        "normalized": "120000",
+        "scale": "USD_cents",
+        "treatment": "unit_price_and_line",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_6",
+        "page": 1,
+        "block": "invoice",
+        "raw": "300.00",
+        "occurrences": 1,
+        "normalized": "30000",
+        "scale": "USD_cents",
+        "treatment": "unit_price",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_7",
+        "page": 1,
+        "block": "invoice",
+        "raw": "600.00",
+        "occurrences": 1,
+        "normalized": "60000",
+        "scale": "USD_cents",
+        "treatment": "line_net",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_8",
+        "page": 1,
+        "block": "invoice",
+        "raw": "1,800.00",
+        "occurrences": 2,
+        "normalized": "180000",
+        "scale": "USD_cents",
+        "treatment": "subtotal_and_open_total",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_9",
+        "page": 1,
+        "block": "invoice",
+        "raw": "0.00",
+        "occurrences": 1,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "tax",
+        "ambiguous": false
+      }
+    ],
+    "events": [
+      {
+        "party": "Maple Retail",
+        "businessRole": "issuer",
+        "description": "HS-102",
+        "category": "Services",
+        "dateField": "p1_1",
+        "dueField": "p1_2",
+        "referenceField": "p1_0",
+        "grossField": "p1_8",
+        "netField": "p1_8",
+        "taxField": "p1_9",
+        "balanceState": "open",
+        "lines": [
+          {
+            "description": "HS-102 service / item",
+            "quantity": "p1_3",
+            "unitPrice": "p1_5",
+            "total": "p1_5"
+          },
+          {
+            "description": "HS-102 service / item",
+            "quantity": "p1_4",
+            "unitPrice": "p1_6",
+            "total": "p1_7"
+          }
+        ]
+      }
+    ],
+    "payments": [],
+    "warnings": []
+  },
+  "96b87955f5b02bbcd84adc26fdec169d0e28edc4d65c63939a9f985241c11606": {
+    "version": "recognition-v1",
+    "kind": "bill",
+    "currency": "USD",
+    "business": "Harbor Studio",
+    "asOfField": null,
+    "fields": [
+      {
+        "key": "p1_0",
+        "page": 1,
+        "block": "bill",
+        "raw": "A-77",
+        "occurrences": 1,
+        "normalized": "A-77",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_1",
+        "page": 1,
+        "block": "bill",
+        "raw": "2026-09-20",
+        "occurrences": 1,
+        "normalized": "2026-09-20",
+        "scale": "ISO_date",
+        "treatment": "event_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_2",
+        "page": 1,
+        "block": "bill",
+        "raw": "2026-10-10",
+        "occurrences": 1,
+        "normalized": "2026-10-10",
+        "scale": "ISO_date",
+        "treatment": "due_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_3",
+        "page": 1,
+        "block": "bill",
+        "raw": "12",
+        "occurrences": 1,
+        "normalized": "12",
+        "scale": "packs",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_4",
+        "page": 1,
+        "block": "bill",
+        "raw": "30.00",
+        "occurrences": 1,
+        "normalized": "3000",
+        "scale": "USD_cents",
+        "treatment": "unit_price",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_5",
+        "page": 1,
+        "block": "bill",
+        "raw": "360.00",
+        "occurrences": 2,
+        "normalized": "36000",
+        "scale": "USD_cents",
+        "treatment": "line_and_net",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_6",
+        "page": 1,
+        "block": "bill",
+        "raw": "10%",
+        "occurrences": 1,
+        "normalized": "1000",
+        "scale": "basis_points",
+        "treatment": "tax_rate",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_7",
+        "page": 1,
+        "block": "bill",
+        "raw": "36.00",
+        "occurrences": 1,
+        "normalized": "3600",
+        "scale": "USD_cents",
+        "treatment": "tax",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_8",
+        "page": 1,
+        "block": "bill",
+        "raw": "396.00",
+        "occurrences": 1,
+        "normalized": "39600",
+        "scale": "USD_cents",
+        "treatment": "gross_open",
+        "ambiguous": false
+      }
+    ],
+    "events": [
+      {
+        "party": "Northstar Supplies",
+        "businessRole": "recipient",
+        "description": "A-77",
+        "category": "Materials",
+        "dateField": "p1_1",
+        "dueField": "p1_2",
+        "referenceField": "p1_0",
+        "grossField": "p1_8",
+        "netField": "p1_5",
+        "taxField": "p1_7",
+        "balanceState": "open",
+        "lines": [
+          {
+            "description": "A-77 service / item",
+            "quantity": "p1_3",
+            "unitPrice": "p1_4",
+            "total": "p1_5"
+          }
+        ]
+      }
+    ],
+    "payments": [],
+    "warnings": []
+  },
+  "4d32f64eacf93ddbf0ad6a04caf902b7a1524693801c0cef6cb00a6f7f1c196c": {
+    "version": "recognition-v1",
+    "kind": "receipt",
+    "currency": "USD",
+    "business": "Harbor Studio",
+    "asOfField": null,
+    "fields": [
+      {
+        "key": "p1_0",
+        "page": 1,
+        "block": "receipt",
+        "raw": "R-091",
+        "occurrences": 1,
+        "normalized": "R-091",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_1",
+        "page": 1,
+        "block": "receipt",
+        "raw": "2026-09-01",
+        "occurrences": 1,
+        "normalized": "2026-09-01",
+        "scale": "ISO_date",
+        "treatment": "paid_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_2",
+        "page": 1,
+        "block": "receipt",
+        "raw": "2026",
+        "occurrences": 1,
+        "normalized": "2026",
+        "scale": "year",
+        "treatment": "rent_period",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_3",
+        "page": 1,
+        "block": "receipt",
+        "raw": "800.00",
+        "occurrences": 1,
+        "normalized": "80000",
+        "scale": "USD_cents",
+        "treatment": "paid_rent",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_4",
+        "page": 1,
+        "block": "receipt",
+        "raw": "0.00",
+        "occurrences": 1,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "tax",
+        "ambiguous": false
+      }
+    ],
+    "events": [
+      {
+        "party": "Cove Spaces",
+        "businessRole": "recipient",
+        "description": "R-091",
+        "category": "Rent",
+        "dateField": "p1_1",
+        "dueField": null,
+        "referenceField": "p1_0",
+        "grossField": "p1_3",
+        "netField": "p1_3",
+        "taxField": "p1_4",
+        "balanceState": "paid",
+        "lines": []
+      }
+    ],
+    "payments": [],
+    "warnings": []
+  },
+  "ef1a28806a65d8a59cd9e9ce4d3432b8e9da6f0285e795e88330bbca0cb9e756": {
+    "version": "recognition-v1",
+    "kind": "receipt",
+    "currency": "USD",
+    "business": "Harbor Studio",
+    "asOfField": null,
+    "fields": [
+      {
+        "key": "p1_0",
+        "page": 1,
+        "block": "receipt",
+        "raw": "PC-091",
+        "occurrences": 1,
+        "normalized": "PC-091",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_1",
+        "page": 1,
+        "block": "receipt",
+        "raw": "1",
+        "occurrences": 1,
+        "normalized": "1",
+        "scale": "months",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_2",
+        "page": 1,
+        "block": "receipt",
+        "raw": "2026-09-01",
+        "occurrences": 1,
+        "normalized": "2026-09-01",
+        "scale": "ISO_date",
+        "treatment": "period_start",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_3",
+        "page": 1,
+        "block": "receipt",
+        "raw": "2026-09-30",
+        "occurrences": 1,
+        "normalized": "2026-09-30",
+        "scale": "ISO_date",
+        "treatment": "period_end",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_4",
+        "page": 1,
+        "block": "receipt",
+        "raw": "2026-09-12",
+        "occurrences": 1,
+        "normalized": "2026-09-12",
+        "scale": "ISO_date",
+        "treatment": "paid_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_5",
+        "page": 1,
+        "block": "receipt",
+        "raw": "120.00",
+        "occurrences": 2,
+        "normalized": "12000",
+        "scale": "USD_cents",
+        "treatment": "unit_price_and_total",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_6",
+        "page": 1,
+        "block": "receipt",
+        "raw": "0.00",
+        "occurrences": 1,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "tax",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_0",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "PC-091",
+        "occurrences": 2,
+        "normalized": "PC-091",
+        "scale": "identifier",
+        "treatment": "same_event",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_1",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "2026-09-01",
+        "occurrences": 1,
+        "normalized": "2026-09-01",
+        "scale": "ISO_date",
+        "treatment": "same_period_start",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_2",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "2026-09-30",
+        "occurrences": 1,
+        "normalized": "2026-09-30",
+        "scale": "ISO_date",
+        "treatment": "same_period_end",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_3",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "120.00",
+        "occurrences": 1,
+        "normalized": "12000",
+        "scale": "USD_cents",
+        "treatment": "same_total",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_4",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "0.00",
+        "occurrences": 1,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "same_tax",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_5",
+        "page": 2,
+        "block": "service-notes",
+        "raw": "2026-09-12",
+        "occurrences": 1,
+        "normalized": "2026-09-12",
+        "scale": "ISO_date",
+        "treatment": "same_paid_date",
+        "ambiguous": false
+      }
+    ],
+    "events": [
+      {
+        "party": "PaperCloud",
+        "businessRole": "recipient",
+        "description": "PC-091",
+        "category": "Software",
+        "dateField": "p1_4",
+        "dueField": null,
+        "referenceField": "p1_0",
+        "grossField": "p1_5",
+        "netField": "p1_5",
+        "taxField": "p1_6",
+        "balanceState": "paid",
+        "lines": [
+          {
+            "description": "PC-091 service / item",
+            "quantity": "p1_1",
+            "unitPrice": "p1_5",
+            "total": "p1_5"
+          }
+        ]
+      }
+    ],
+    "payments": [],
+    "warnings": []
+  },
+  "22e872de86b7cd80ecc8400e653be3bb35951cecdddbd4a96958a309a9083b6b": {
+    "version": "recognition-v1",
+    "kind": "bill",
+    "currency": "USD",
+    "business": "Harbor Studio",
+    "asOfField": null,
+    "fields": [
+      {
+        "key": "p1_0",
+        "page": 1,
+        "block": "bill",
+        "raw": "A-77",
+        "occurrences": 2,
+        "normalized": "A-77",
+        "scale": "identifier",
+        "treatment": "same_event",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_1",
+        "page": 1,
+        "block": "bill",
+        "raw": "2026-09-20",
+        "occurrences": 1,
+        "normalized": "2026-09-20",
+        "scale": "ISO_date",
+        "treatment": "same_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_2",
+        "page": 1,
+        "block": "bill",
+        "raw": "2026-10-10",
+        "occurrences": 1,
+        "normalized": "2026-10-10",
+        "scale": "ISO_date",
+        "treatment": "same_due_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_3",
+        "page": 1,
+        "block": "bill",
+        "raw": "12",
+        "occurrences": 1,
+        "normalized": "12",
+        "scale": "packs",
+        "treatment": "same_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_4",
+        "page": 1,
+        "block": "bill",
+        "raw": "30.00",
+        "occurrences": 1,
+        "normalized": "3000",
+        "scale": "USD_cents",
+        "treatment": "same_unit_price",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_5",
+        "page": 1,
+        "block": "bill",
+        "raw": "360.00",
+        "occurrences": 2,
+        "normalized": "36000",
+        "scale": "USD_cents",
+        "treatment": "same_line_and_net",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_6",
+        "page": 1,
+        "block": "bill",
+        "raw": "10%",
+        "occurrences": 1,
+        "normalized": "1000",
+        "scale": "basis_points",
+        "treatment": "same_tax_rate",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_7",
+        "page": 1,
+        "block": "bill",
+        "raw": "36.00",
+        "occurrences": 1,
+        "normalized": "3600",
+        "scale": "USD_cents",
+        "treatment": "same_tax",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_8",
+        "page": 1,
+        "block": "bill",
+        "raw": "396.00",
+        "occurrences": 1,
+        "normalized": "39600",
+        "scale": "USD_cents",
+        "treatment": "same_gross_open",
+        "ambiguous": false
+      }
+    ],
+    "events": [
+      {
+        "party": "Northstar Supplies",
+        "businessRole": "recipient",
+        "description": "A-77",
+        "category": "Materials",
+        "dateField": "p1_1",
+        "dueField": "p1_2",
+        "referenceField": "p1_0",
+        "grossField": "p1_8",
+        "netField": "p1_5",
+        "taxField": "p1_7",
+        "balanceState": "open",
+        "lines": [
+          {
+            "description": "A-77 service / item",
+            "quantity": "p1_3",
+            "unitPrice": "p1_4",
+            "total": "p1_5"
+          }
+        ]
+      }
+    ],
+    "payments": [],
+    "warnings": []
+  },
+  "b39ab69a821e1aaa53dc5a99d08dcdf0a089f1dfa84ceafd2d992de6e5d351c0": {
+    "version": "recognition-v1",
+    "kind": "payment_register",
+    "currency": "USD",
+    "business": "Harbor Studio",
+    "asOfField": "p1_9",
+    "fields": [
+      {
+        "key": "p1_0",
+        "page": 1,
+        "block": "P-901/P-902",
+        "raw": "2026",
+        "occurrences": 1,
+        "normalized": "2026",
+        "scale": "year",
+        "treatment": "register_period",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_1",
+        "page": 1,
+        "block": "P-901/P-902",
+        "raw": "P-901",
+        "occurrences": 1,
+        "normalized": "P-901",
+        "scale": "identifier",
+        "treatment": "payment_row",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_2",
+        "page": 1,
+        "block": "P-901/P-902",
+        "raw": "2026-09-18",
+        "occurrences": 1,
+        "normalized": "2026-09-18",
+        "scale": "ISO_date",
+        "treatment": "movement_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_3",
+        "page": 1,
+        "block": "P-901/P-902",
+        "raw": "+3,000.00",
+        "occurrences": 1,
+        "normalized": "300000",
+        "scale": "USD_cents",
+        "treatment": "incoming",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_4",
+        "page": 1,
+        "block": "P-901/P-902",
+        "raw": "HS-101",
+        "occurrences": 1,
+        "normalized": "HS-101",
+        "scale": "identifier",
+        "treatment": "invoice_match",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_5",
+        "page": 1,
+        "block": "P-901/P-902",
+        "raw": "P-902",
+        "occurrences": 1,
+        "normalized": "P-902",
+        "scale": "identifier",
+        "treatment": "payment_row",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_6",
+        "page": 1,
+        "block": "P-901/P-902",
+        "raw": "2026-09-01",
+        "occurrences": 1,
+        "normalized": "2026-09-01",
+        "scale": "ISO_date",
+        "treatment": "movement_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_7",
+        "page": 1,
+        "block": "P-901/P-902",
+        "raw": "-800.00",
+        "occurrences": 1,
+        "normalized": "-80000",
+        "scale": "USD_cents",
+        "treatment": "outgoing",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_8",
+        "page": 1,
+        "block": "P-901/P-902",
+        "raw": "R-091",
+        "occurrences": 1,
+        "normalized": "R-091",
+        "scale": "identifier",
+        "treatment": "rent_match",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_9",
+        "page": 1,
+        "block": "P-901/P-902",
+        "raw": "2026-10-03",
+        "occurrences": 1,
+        "normalized": "2026-10-03",
+        "scale": "ISO_date",
+        "treatment": "snapshot_as_of",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_0",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "2026",
+        "occurrences": 1,
+        "normalized": "2026",
+        "scale": "year",
+        "treatment": "register_period",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_1",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "P-903",
+        "occurrences": 1,
+        "normalized": "P-903",
+        "scale": "identifier",
+        "treatment": "payment_row",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_2",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "2026-09-12",
+        "occurrences": 1,
+        "normalized": "2026-09-12",
+        "scale": "ISO_date",
+        "treatment": "movement_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_3",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "-120.00",
+        "occurrences": 1,
+        "normalized": "-12000",
+        "scale": "USD_cents",
+        "treatment": "outgoing",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_4",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "PC-091",
+        "occurrences": 1,
+        "normalized": "PC-091",
+        "scale": "identifier",
+        "treatment": "software_match",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_5",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "P-904",
+        "occurrences": 1,
+        "normalized": "P-904",
+        "scale": "identifier",
+        "treatment": "payment_row",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_6",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "2026-09-26",
+        "occurrences": 1,
+        "normalized": "2026-09-26",
+        "scale": "ISO_date",
+        "treatment": "movement_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_7",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "-200.00",
+        "occurrences": 1,
+        "normalized": "-20000",
+        "scale": "USD_cents",
+        "treatment": "internal_transfer_excluded",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_8",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "TR-091",
+        "occurrences": 2,
+        "normalized": "TR-091",
+        "scale": "identifier",
+        "treatment": "transfer_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_9",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "3,000.00",
+        "occurrences": 1,
+        "normalized": "300000",
+        "scale": "USD_cents",
+        "treatment": "incoming_summary",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_10",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "920.00",
+        "occurrences": 1,
+        "normalized": "92000",
+        "scale": "USD_cents",
+        "treatment": "operating_out_summary",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_11",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "2,080.00",
+        "occurrences": 1,
+        "normalized": "208000",
+        "scale": "USD_cents",
+        "treatment": "net_operating_summary",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_12",
+        "page": 2,
+        "block": "P-903/P-904",
+        "raw": "1,880.00",
+        "occurrences": 1,
+        "normalized": "188000",
+        "scale": "USD_cents",
+        "treatment": "net_all_rows_summary",
+        "ambiguous": false
+      }
+    ],
+    "events": [],
+    "payments": [
+      {
+        "party": "Cedar Works",
+        "direction": "in",
+        "dateField": "p1_2",
+        "referenceField": "p1_1",
+        "amountField": "p1_3",
+        "eventReference": "HS-101",
+        "fromAccount": null,
+        "toAccount": null
+      },
+      {
+        "party": "Cove Spaces",
+        "direction": "out",
+        "dateField": "p1_6",
+        "referenceField": "p1_5",
+        "amountField": "p1_7",
+        "eventReference": "R-091",
+        "fromAccount": null,
+        "toAccount": null
+      },
+      {
+        "party": "PaperCloud",
+        "direction": "out",
+        "dateField": "p2_2",
+        "referenceField": "p2_1",
+        "amountField": "p2_3",
+        "eventReference": "PC-091",
+        "fromAccount": null,
+        "toAccount": null
+      },
+      {
+        "party": "",
+        "direction": "internal_transfer",
+        "dateField": "p2_6",
+        "referenceField": "p2_5",
+        "amountField": "p2_7",
+        "eventReference": null,
+        "fromAccount": "checking",
+        "toAccount": "reserve"
+      }
+    ],
+    "warnings": []
+  },
+  "b2aa8449ee80a23f8785f9bc5bf83ee52006adf25eb0f9a311ba48a86ad3b6f8": {
+    "version": "recognition-v1",
+    "kind": "history",
+    "currency": "USD",
+    "business": "Harbor Studio",
+    "asOfField": null,
+    "fields": [
+      {
+        "key": "p1_0",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "2026",
+        "occurrences": 1,
+        "normalized": "2026",
+        "scale": "year",
+        "treatment": "history_period",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_1",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "AU-101",
+        "occurrences": 1,
+        "normalized": "AU-101",
+        "scale": "identifier",
+        "treatment": "summary_event",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_2",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "2,500.00",
+        "occurrences": 1,
+        "normalized": "250000",
+        "scale": "USD_cents",
+        "treatment": "summary_income",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_3",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "AU-102",
+        "occurrences": 1,
+        "normalized": "AU-102",
+        "scale": "identifier",
+        "treatment": "summary_event",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_4",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "1,500.00",
+        "occurrences": 1,
+        "normalized": "150000",
+        "scale": "USD_cents",
+        "treatment": "summary_income",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_5",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "R-081",
+        "occurrences": 1,
+        "normalized": "R-081",
+        "scale": "identifier",
+        "treatment": "summary_event",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_6",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "800.00",
+        "occurrences": 1,
+        "normalized": "80000",
+        "scale": "USD_cents",
+        "treatment": "summary_cost",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_7",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "NS-A-10",
+        "occurrences": 1,
+        "normalized": "NS-A-10",
+        "scale": "identifier",
+        "treatment": "summary_event",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_8",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "200.00",
+        "occurrences": 1,
+        "normalized": "20000",
+        "scale": "USD_cents",
+        "treatment": "summary_cost",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_9",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "PC-081",
+        "occurrences": 1,
+        "normalized": "PC-081",
+        "scale": "identifier",
+        "treatment": "summary_event",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_10",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "100.00",
+        "occurrences": 1,
+        "normalized": "10000",
+        "scale": "USD_cents",
+        "treatment": "summary_cost",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_11",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "4,000.00",
+        "occurrences": 1,
+        "normalized": "400000",
+        "scale": "USD_cents",
+        "treatment": "income_total",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_12",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "1,100.00",
+        "occurrences": 1,
+        "normalized": "110000",
+        "scale": "USD_cents",
+        "treatment": "cost_total",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_13",
+        "page": 1,
+        "block": "history-summary",
+        "raw": "2,900.00",
+        "occurrences": 1,
+        "normalized": "290000",
+        "scale": "USD_cents",
+        "treatment": "profit_preview",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_0",
+        "page": 2,
+        "block": "AU-101/AU-102",
+        "raw": "AU-101",
+        "occurrences": 1,
+        "normalized": "AU-101",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_1",
+        "page": 2,
+        "block": "AU-101/AU-102",
+        "raw": "2026-08-06",
+        "occurrences": 1,
+        "normalized": "2026-08-06",
+        "scale": "ISO_date",
+        "treatment": "event_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_2",
+        "page": 2,
+        "block": "AU-101/AU-102",
+        "raw": "2026-08-20",
+        "occurrences": 1,
+        "normalized": "2026-08-20",
+        "scale": "ISO_date",
+        "treatment": "due_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_3",
+        "page": 2,
+        "block": "AU-101/AU-102",
+        "raw": "10",
+        "occurrences": 1,
+        "normalized": "10",
+        "scale": "hours",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_4",
+        "page": 2,
+        "block": "AU-101/AU-102",
+        "raw": "250.00",
+        "occurrences": 2,
+        "normalized": "25000",
+        "scale": "USD_cents",
+        "treatment": "unit_prices",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_5",
+        "page": 2,
+        "block": "AU-101/AU-102",
+        "raw": "2,500.00",
+        "occurrences": 1,
+        "normalized": "250000",
+        "scale": "USD_cents",
+        "treatment": "net_and_gross",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_6",
+        "page": 2,
+        "block": "AU-101/AU-102",
+        "raw": "0.00",
+        "occurrences": 2,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "taxes",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_7",
+        "page": 2,
+        "block": "AU-101/AU-102",
+        "raw": "AU-102",
+        "occurrences": 1,
+        "normalized": "AU-102",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_8",
+        "page": 2,
+        "block": "AU-101/AU-102",
+        "raw": "2026-08-21",
+        "occurrences": 1,
+        "normalized": "2026-08-21",
+        "scale": "ISO_date",
+        "treatment": "event_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_9",
+        "page": 2,
+        "block": "AU-101/AU-102",
+        "raw": "2026-09-04",
+        "occurrences": 1,
+        "normalized": "2026-09-04",
+        "scale": "ISO_date",
+        "treatment": "due_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_10",
+        "page": 2,
+        "block": "AU-101/AU-102",
+        "raw": "6",
+        "occurrences": 1,
+        "normalized": "6",
+        "scale": "hours",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_11",
+        "page": 2,
+        "block": "AU-101/AU-102",
+        "raw": "1,500.00",
+        "occurrences": 1,
+        "normalized": "150000",
+        "scale": "USD_cents",
+        "treatment": "net_and_gross",
+        "ambiguous": false
+      },
+      {
+        "key": "p3_0",
+        "page": 3,
+        "block": "R-081/PC-081",
+        "raw": "R-081",
+        "occurrences": 1,
+        "normalized": "R-081",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p3_1",
+        "page": 3,
+        "block": "R-081/PC-081",
+        "raw": "2026-08-01",
+        "occurrences": 1,
+        "normalized": "2026-08-01",
+        "scale": "ISO_date",
+        "treatment": "event_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p3_2",
+        "page": 3,
+        "block": "R-081/PC-081",
+        "raw": "1",
+        "occurrences": 2,
+        "normalized": "1",
+        "scale": "units",
+        "treatment": "quantities",
+        "ambiguous": false
+      },
+      {
+        "key": "p3_3",
+        "page": 3,
+        "block": "R-081/PC-081",
+        "raw": "800.00",
+        "occurrences": 2,
+        "normalized": "80000",
+        "scale": "USD_cents",
+        "treatment": "unit_price_and_total",
+        "ambiguous": false
+      },
+      {
+        "key": "p3_4",
+        "page": 3,
+        "block": "R-081/PC-081",
+        "raw": "0.00",
+        "occurrences": 2,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "taxes",
+        "ambiguous": false
+      },
+      {
+        "key": "p3_5",
+        "page": 3,
+        "block": "R-081/PC-081",
+        "raw": "PC-081",
+        "occurrences": 1,
+        "normalized": "PC-081",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p3_6",
+        "page": 3,
+        "block": "R-081/PC-081",
+        "raw": "2026-08-12",
+        "occurrences": 1,
+        "normalized": "2026-08-12",
+        "scale": "ISO_date",
+        "treatment": "event_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p3_7",
+        "page": 3,
+        "block": "R-081/PC-081",
+        "raw": "100.00",
+        "occurrences": 2,
+        "normalized": "10000",
+        "scale": "USD_cents",
+        "treatment": "unit_price_and_total",
+        "ambiguous": false
+      },
+      {
+        "key": "p4_0",
+        "page": 4,
+        "block": "NS-A-10",
+        "raw": "NS-A-10",
+        "occurrences": 1,
+        "normalized": "NS-A-10",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p4_1",
+        "page": 4,
+        "block": "NS-A-10",
+        "raw": "2026-08-15",
+        "occurrences": 1,
+        "normalized": "2026-08-15",
+        "scale": "ISO_date",
+        "treatment": "event_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p4_2",
+        "page": 4,
+        "block": "NS-A-10",
+        "raw": "4",
+        "occurrences": 1,
+        "normalized": "4",
+        "scale": "packs",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p4_3",
+        "page": 4,
+        "block": "NS-A-10",
+        "raw": "50.00",
+        "occurrences": 1,
+        "normalized": "5000",
+        "scale": "USD_cents",
+        "treatment": "unit_price",
+        "ambiguous": false
+      },
+      {
+        "key": "p4_4",
+        "page": 4,
+        "block": "NS-A-10",
+        "raw": "200.00",
+        "occurrences": 1,
+        "normalized": "20000",
+        "scale": "USD_cents",
+        "treatment": "net_and_gross",
+        "ambiguous": false
+      },
+      {
+        "key": "p4_5",
+        "page": 4,
+        "block": "NS-A-10",
+        "raw": "0.00",
+        "occurrences": 1,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "tax",
+        "ambiguous": false
+      }
+    ],
+    "events": [
+      {
+        "party": "Cedar Works",
+        "businessRole": "issuer",
+        "description": "AU-101",
+        "category": "Services",
+        "dateField": "p2_1",
+        "dueField": "p2_2",
+        "referenceField": "p2_0",
+        "grossField": "p2_5",
+        "netField": "p2_5",
+        "taxField": "p2_6",
+        "balanceState": "unknown",
+        "lines": [
+          {
+            "description": "AU-101 service / item",
+            "quantity": "p2_3",
+            "unitPrice": "p2_4",
+            "total": "p2_5"
+          }
+        ]
+      },
+      {
+        "party": "Maple Retail",
+        "businessRole": "issuer",
+        "description": "AU-102",
+        "category": "Services",
+        "dateField": "p2_8",
+        "dueField": "p2_9",
+        "referenceField": "p2_7",
+        "grossField": "p2_11",
+        "netField": "p2_11",
+        "taxField": "p2_6",
+        "balanceState": "unknown",
+        "lines": [
+          {
+            "description": "AU-102 service / item",
+            "quantity": "p2_10",
+            "unitPrice": "p2_4",
+            "total": "p2_11"
+          }
+        ]
+      },
+      {
+        "party": "Cove Spaces",
+        "businessRole": "recipient",
+        "description": "R-081",
+        "category": "Rent",
+        "dateField": "p3_1",
+        "dueField": null,
+        "referenceField": "p3_0",
+        "grossField": "p3_3",
+        "netField": "p3_3",
+        "taxField": "p3_4",
+        "balanceState": "unknown",
+        "lines": []
+      },
+      {
+        "party": "PaperCloud",
+        "businessRole": "recipient",
+        "description": "PC-081",
+        "category": "Software",
+        "dateField": "p3_6",
+        "dueField": null,
+        "referenceField": "p3_5",
+        "grossField": "p3_7",
+        "netField": "p3_7",
+        "taxField": "p3_4",
+        "balanceState": "unknown",
+        "lines": []
+      },
+      {
+        "party": "Northstar Supplies",
+        "businessRole": "recipient",
+        "description": "NS-A-10",
+        "category": "Materials",
+        "dateField": "p4_1",
+        "dueField": null,
+        "referenceField": "p4_0",
+        "grossField": "p4_4",
+        "netField": "p4_4",
+        "taxField": "p4_5",
+        "balanceState": "unknown",
+        "lines": [
+          {
+            "description": "NS-A-10 service / item",
+            "quantity": "p4_2",
+            "unitPrice": "p4_3",
+            "total": "p4_4"
+          }
+        ]
+      }
+    ],
+    "payments": [],
+    "warnings": []
+  }
+}

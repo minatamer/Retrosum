@@ -43,6 +43,26 @@ export const documentSchema = z.strictObject({
     "visitor_upload",
   ]),
   disposition: z.enum(["active", "held", "duplicate"]).default("active"),
+  recognitionMode: z.enum(["fake", "live", "manual"]).optional(),
+  recognitionAttempted: z.boolean().default(false),
+  reviewBlocked: z.boolean().default(false),
+  reviewNotes: z.array(z.string().max(300)).max(30).default([]),
+  numericFields: z
+    .array(
+      z.strictObject({
+        key: z.string().max(60),
+        page: z.number().int().min(1).max(20),
+        block: z.string().max(80),
+        raw: z.string().max(100),
+        normalized: z.string().max(100).nullable(),
+        scale: z.string().max(40),
+        occurrences: z.number().int().min(1).max(100),
+        treatment: z.string().max(80),
+        check: z.enum(["native_checked", "visual_review", "ambiguous"]),
+      }),
+    )
+    .max(500)
+    .default([]),
 });
 export type SourceReference = z.infer<typeof sourceReferenceSchema>;
 export type SourceDocument = z.infer<typeof documentSchema>;

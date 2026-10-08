@@ -7,7 +7,7 @@ import { parseConfig } from "./config/config.js";
 import { composeRuntime } from "./runtime/compose.js";
 import { systemClock } from "./runtime/clock.js";
 import { createApp } from "./http/app.js";
-export function startServer() {
+export async function startServer() {
   if (process.env.NODE_ENV !== "test") {
     try {
       const localValues = parseEnv(readFileSync(new URL("../.env.local", import.meta.url), "utf8"));
@@ -19,12 +19,16 @@ export function startServer() {
     }
   }
   const config = parseConfig(process.env);
+  const provider = config.FAKE_MODE
+    ? (await import("./providers/fake.js")).createFakeProvider(systemClock)
+    : undefined;
   const runtime = composeRuntime(config, {
     clock: systemClock,
     createRequestId: () => "request_" + randomUUID(),
+    ...(provider ? { provider } : {}),
   });
   const server = createApp(runtime).listen(config.PORT, config.HOST);
-  server.requestTimeout = 30_000;
+  server.requestTimeout = 95_000;
   server.headersTimeout = 10_000;
   server.keepAliveTimeout = 5_000;
   const shutdown = () => {
@@ -42,4 +46,8 @@ export function startServer() {
   });
   return server;
 }
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) startServer();
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url))
+  void startServer().catch(() => {
+    process.stderr.write("Retrosum backend could not initialize its safe runtime.\n");
+    process.exitCode = 1;
+  });

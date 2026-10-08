@@ -9,16 +9,19 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node scripts/copy-worker.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@retrosum/contracts": "workspace:*",
     "@retrosum/money": "workspace:*",
+    "busboy": "1.6.0",
     "express": "5.2.1",
+    "pdfjs-dist": "6.4.299",
     "zod": "4.6.5"
   },
   "devDependencies": {
+    "@types/busboy": "1.5.4",
     "@types/express": "5.0.6",
     "tsx": "4.23.15"
   }

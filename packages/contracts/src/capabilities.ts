@@ -14,6 +14,7 @@ export const unavailableCodeSchema = z.enum([
   "admission_missing",
   "adapter_not_ready",
   "backend_unavailable",
+  "acceptance_pending",
 ]);
 export const capabilitiesSchema = z.strictObject({
   schemaVersion: z.literal(1),

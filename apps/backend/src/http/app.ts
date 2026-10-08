@@ -2,6 +2,7 @@ import express from "express";
 import type { ErrorRequestHandler, Express } from "express";
 import { requestIdSchema } from "@retrosum/contracts";
 import type { AppRuntime } from "../runtime/compose.js";
+import { extractRoute } from "../documents/extract-route.js";
 export function createApp(runtime: AppRuntime): Express {
   const app = express();
   app.disable("x-powered-by");
@@ -33,6 +34,7 @@ export function createApp(runtime: AppRuntime): Express {
   app.get("/v1/config", (_request, response) => {
     response.json(runtime.capabilities);
   });
+  app.post("/v1/extract", (request, response) => extractRoute(runtime, request, response));
   app.use((_request, response) => {
     response.status(404).json({ error: "not_found" });
   });

@@ -3,6 +3,7 @@ import type { RuntimeCapabilities } from "@retrosum/contracts";
 import type { AppConfig } from "../config/config.js";
 import type { Clock } from "./clock.js";
 import type { AiProviderPort } from "./provider-port.js";
+import { ExtractionAdmission } from "../documents/admission.js";
 export interface RuntimePorts {
   clock: Clock;
   createRequestId(): string;
@@ -13,9 +14,10 @@ export interface AppRuntime {
   ports: RuntimePorts;
   capabilities: RuntimeCapabilities;
   ready: boolean;
+  admission: ExtractionAdmission;
 }
 export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRuntime {
-  // Live adapter installation belongs to RET-005. Never substitute a fake for a live request.
+  // Live support stays closed until exact-field, token and admission acceptance.
   const reason = config.FAKE_MODE
     ? "feature_pending"
     : !config.PAID_DEMO_ENABLED
@@ -24,18 +26,11 @@ export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRunti
         ? "key_missing"
         : !config.TURNSTILE_SECRET_KEY || config.GRANT_SIGNING_SECRET.length < 32
           ? "admission_missing"
-          : "adapter_not_ready";
+          : "acceptance_pending";
   const providerMatches = ports.provider?.kind === (config.FAKE_MODE ? "fake" : "openai");
-  const liveAllowed =
-    !config.FAKE_MODE && reason === "adapter_not_ready" && config.AI_PROVIDER === "openai";
   const documentsAvailable =
-    providerMatches &&
-    Boolean(ports.provider?.interpretDocument) &&
-    (config.FAKE_MODE || (liveAllowed && config.LIVE_DOCUMENTS_ENABLED));
-  const copilotAvailable =
-    providerMatches &&
-    Boolean(ports.provider?.answer) &&
-    (config.FAKE_MODE || (liveAllowed && config.LIVE_COPILOT_ENABLED));
+    providerMatches && Boolean(ports.provider?.interpretDocument) && config.FAKE_MODE;
+  const copilotAvailable = providerMatches && Boolean(ports.provider?.answer) && config.FAKE_MODE;
   const capabilities = capabilitiesSchema.parse({
     schemaVersion: 1,
     mode: config.FAKE_MODE
@@ -52,5 +47,6 @@ export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRunti
     ports,
     capabilities,
     ready: config.FAKE_MODE || documentsAvailable || copilotAvailable,
+    admission: new ExtractionAdmission(ports.clock.now),
   });
 }

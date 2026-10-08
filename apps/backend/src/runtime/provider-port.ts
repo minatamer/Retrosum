@@ -1,10 +1,7 @@
 import type {
   ChangeProposal,
-  Contact,
-  FinancialEvent,
-  Payment,
-  ReviewIssue,
-  SourceDocument,
+  DocumentInterpretation,
+  ExtractionRequest,
   Workspace,
 } from "@retrosum/contracts";
 
@@ -12,13 +9,11 @@ import type {
 export interface AiProviderPort {
   readonly kind: "fake" | "openai";
   interpretDocument?: (
-    input: Readonly<{ document: SourceDocument; bytes: Uint8Array }>,
+    input: Readonly<{ metadata: ExtractionRequest; bytes: Uint8Array }>,
     signal: AbortSignal,
   ) => Promise<{
-    contacts: Contact[];
-    events: FinancialEvent[];
-    payments: Payment[];
-    issues: ReviewIssue[];
+    interpretation: DocumentInterpretation;
+    usage: { inputTokens: number; outputTokens: number } | null;
   }>;
   answer?: (
     input: Readonly<{ workspace: Workspace; prompt: string }>,

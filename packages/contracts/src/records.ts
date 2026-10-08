@@ -71,7 +71,7 @@ export const invoiceSchema = z.strictObject({
   issuedOn: dateSchema,
   dueOn: dateSchema.optional(),
   currency: currencySchema,
-  lines: z.array(invoiceLineSchema).min(1).max(20),
+  lines: z.array(invoiceLineSchema).min(1).max(25),
   notes: z.string().max(1000),
   status: z.enum(["draft", "issued"]),
   eventId: eventIdSchema.optional(),

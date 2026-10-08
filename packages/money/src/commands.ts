@@ -195,6 +195,10 @@ export function applyCommand(
         const doc = workspace.documents.find((record) => record.id === action.documentId);
         if (!doc || !["ready", "needs_review"].includes(doc.state))
           throw new RangeError("This document is not ready for review.");
+        if (action.decision === "accept" && doc.reviewBlocked)
+          throw new RangeError(
+            "This document has unresolved numeric or role errors. Keep it held and create a corrected manual record.",
+          );
         doc.disposition =
           action.decision === "accept"
             ? "active"

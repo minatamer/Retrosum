@@ -1,6 +1,6 @@
 # RET-009 — Complete exports and whole-session reset, expiry and recovery
 
-Status: **Planned — not implemented**  
+Status: **Implemented locally — deferred acceptance pending**<br>
 Last synchronized: **8 October 2026**  
 Depends on: [RET-008](RET-008-deliver-retro-animated-crud.md)  
 Blocks: RET-010  
@@ -39,14 +39,15 @@ Areas owned by this packet:
 
 ## Acceptance criteria
 
-- [ ] Export is complete, accurate, mode-labelled and tied to one revision/period/basis.
-- [ ] Created invoice PDF shows correct core values/status and no fake payment/compliance claim.
-- [ ] Originals/sensitive fields follow explicit actual choices and preserve accurate privacy wording.
-- [ ] Reset and expiry clear owned browser content and stale actions without deleting unrelated sessions.
-- [ ] Cancellation/late result cannot resurrect cleared data or repeat paid work.
-- [ ] Refresh remains recoverable before expiry, and expiry is fixed.
-- [ ] Export/storage/download failures have useful recovery states and release buffers.
-- [ ] Provider/download retention limitations are stated accurately.
+- [x] Export is complete, accurate, mode-labelled and tied to one revision/period/basis (local exact graph/actual ZIP).
+- [x] Created invoice PDF shows correct core values/status and no fake payment/compliance claim (actual downloaded PDF and five-page stress render).
+- [x] Originals/sensitive fields follow explicit actual choices and preserve accurate privacy wording (default masking, independent choices, exact eight-original hashes).
+- [x] Reset and expiry clear owned browser content and stale actions without deleting unrelated sessions (local controller/lease/lifecycle checks and actual reset).
+- [x] Cancellation/late result cannot resurrect cleared data or repeat paid work (fake/injected generation, abort and retained-counter evidence; no paid call).
+- [x] Refresh remains recoverable before expiry, and expiry is fixed (actual reload and deterministic clock checks).
+- [x] Export/storage/download failures have useful recovery states and release buffers (bounded abort/URL lifecycle, missing-original/font and cleanup-failure checks).
+- [x] Provider/download retention limitations are stated accurately.
+- [ ] Owner visual/physical-device and real provider/cloud behavior acceptance (deferred).
 
 ## Verification and evidence
 
@@ -68,4 +69,4 @@ Keep this packet one coherent outcome: necessary UI, contracts, backend/local ef
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
 
-**Execution record:** Not started. No tests, assets, application feature, provider call or deployment is completed by creating this packet.
+**Execution record, 8 October 2026:** implemented the twelve-file default ZIP, optional conversation/exact originals, independent full identifiers, exact USD/date/provenance exports and local created-invoice PDF; reviewed native paper sheet and bounded lazy packaging; owned deadline/URL cancellation; fixed content-free private revoke; whole-session cleanup and truthful limits. Final settled `pnpm check` passed formatting, lint, strict types, 92 source boundaries, 162 tests in 20 files and both production builds. Ten browser sizes, actual default/full ZIP downloads, exact originals, invoice rendering, focus, refresh and reset passed locally. Read-only validation Pass A found no actionable findings on the combined worktree. See [engineering decisions](../engineering/EXPORTS-LIFECYCLE.md), [full evidence](../validation/RET-009.md) and [file-level plan](../commit-plans/RET-009.md). No paid call, push or deployment. RET-010 is eligible for local execution; external gates remain deferred and public live capability stays closed.

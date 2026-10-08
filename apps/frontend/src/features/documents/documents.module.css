@@ -1,0 +1,308 @@
+.collection {
+  margin-top: 3rem;
+  scroll-margin-top: 2rem;
+}
+.collectionHeading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.2rem;
+}
+.collectionHeading h2 {
+  margin: 0.7rem 0 0;
+  font-size: clamp(2.1rem, 4vw, 3.4rem);
+}
+.collectionCount {
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--rs-line);
+  border-radius: 2rem;
+  color: var(--rs-muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.intro {
+  max-width: 48rem;
+  line-height: 1.65;
+  color: var(--rs-muted);
+}
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.3rem;
+  margin-top: 2rem;
+}
+.documentCard {
+  min-width: 0;
+  border: 1px solid var(--rs-line);
+  border-radius: 1.2rem;
+  padding: 0.85rem;
+  color: var(--rs-ivory);
+  background: var(--rs-panel);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 230ms var(--rs-ease),
+    border-color 230ms var(--rs-ease),
+    box-shadow 230ms var(--rs-ease);
+}
+.documentCard:hover {
+  transform: translateY(-5px);
+  border-color: var(--rs-orange);
+  box-shadow: 0 18px 38px rgb(5 21 15 / 20%);
+}
+.thumbnail {
+  display: block;
+  position: relative;
+  aspect-ratio: 1 / 1.07;
+  overflow: hidden;
+  border-radius: 0.65rem;
+  background: #536759;
+  padding: 0.8rem 0.8rem 0;
+}
+.thumbnail img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: rotate(-2deg);
+  transform-origin: center bottom;
+  box-shadow: 0 8px 30px rgb(8 18 12 / 25%);
+  transition: transform 300ms var(--rs-ease);
+}
+.thumbnailError {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  padding: 1rem;
+  color: var(--rs-ivory);
+  background: var(--rs-panel);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.documentCard:nth-child(even) .thumbnail img {
+  transform: rotate(2deg);
+}
+.documentCard:hover .thumbnail img {
+  transform: rotate(0deg) translateY(-3px);
+}
+.paperLabel {
+  position: absolute;
+  left: 0.8rem;
+  right: 0.8rem;
+  bottom: 0.7rem;
+  display: flex;
+  justify-content: space-between;
+  color: var(--rs-forest-deep);
+  background: rgb(250 244 233 / 94%);
+  border: 1px solid #e7dfd0;
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.75rem;
+}
+.cardTitle {
+  display: block;
+  margin: 1rem 0.15rem 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.cardMeta {
+  display: block;
+  margin: 0 0.15rem 0.55rem;
+  color: var(--rs-muted);
+  font-size: 0.78rem;
+}
+.cardBadge {
+  display: block;
+  width: fit-content;
+  margin: 0 0.15rem 0.2rem;
+  padding: 0.3rem 0.45rem;
+  border-radius: 0.35rem;
+  color: var(--rs-orange);
+  background: rgb(235 174 134 / 8%);
+  font-size: 0.73rem;
+  line-height: 1.5;
+}
+.collectionNote {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1.3rem 0;
+  color: var(--rs-muted);
+  font-size: 0.85rem;
+}
+.collectionNote p {
+  max-width: 42rem;
+}
+.collectionNote button {
+  color: var(--rs-orange);
+  background: transparent;
+  border: 0;
+  min-height: 48px;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+  padding-bottom: 1rem;
+}
+.toolbar button,
+.toolbar select {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--rs-paper-line);
+  border-radius: 0.5rem;
+  color: var(--rs-ink);
+  background: #fffaf2;
+  font: inherit;
+  cursor: pointer;
+}
+.toolbar button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.zoom {
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 3rem;
+}
+.paperStage {
+  overflow: auto;
+  max-height: 62dvh;
+  min-height: 12rem;
+  padding: 1rem;
+  background: #dcded2;
+  border-radius: 0.8rem;
+  overscroll-behavior: contain;
+}
+.paperStage canvas {
+  display: block;
+  max-width: none;
+  margin: auto;
+  background: #fff;
+  box-shadow: 0 12px 30px rgb(28 45 31 / 18%);
+}
+.sourceHint {
+  border-left: 3px solid var(--rs-brand-orange);
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  background: #eee5d4;
+}
+.renderStatus {
+  min-height: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--rs-muted-ink);
+}
+.renderStatus[role="alert"] {
+  color: var(--rs-brand-orange);
+}
+.footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.footer span {
+  flex: 1 1 15rem;
+}
+.footer a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--rs-brand-orange);
+  padding: 0.5rem 0;
+}
+.textDetails {
+  margin-top: 0.7rem;
+  padding: 0.5rem 0;
+  font-size: 0.8rem;
+}
+.textDetails summary {
+  cursor: pointer;
+  padding: 0.6rem 0;
+}
+.textDetails p {
+  max-height: 14rem;
+  overflow: auto;
+  overflow-wrap: anywhere;
+}
+:global(.rs-paper-dialog-wide) {
+  width: min(60rem, calc(100vw - 2rem));
+}
+@media (max-width: 64rem) {
+  .gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 48rem) {
+  .gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+  .collectionHeading,
+  .collectionNote {
+    align-items: start;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+}
+@media (max-width: 30rem) {
+  .gallery {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .documentCard {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    column-gap: 1rem;
+  }
+  .thumbnail {
+    grid-row: 1 / 5;
+  }
+  .cardTitle {
+    align-self: end;
+    margin-top: 0.25rem;
+  }
+  .cardBadge {
+    align-self: start;
+  }
+  .toolbar {
+    justify-content: center;
+    gap: 0.3rem;
+  }
+  .toolbar label {
+    gap: 0.25rem;
+  }
+  .toolbar label select {
+    padding-inline: 0.3rem;
+  }
+  .zoom {
+    display: none;
+  }
+  :global(.rs-paper-dialog-wide) {
+    width: calc(100vw - 1rem);
+  }
+}
+@media (max-height: 36rem) {
+  .paperStage {
+    max-height: 47dvh;
+  }
+}

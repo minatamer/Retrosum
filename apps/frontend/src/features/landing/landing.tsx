@@ -205,7 +205,7 @@ export function Landing() {
             Explore sample documents <span aria-hidden="true">↗</span>
           </Link>
           <p className={styles.smallPrint}>
-            Collection preview. Each original PDF will be viewable before processing.
+            All eight original PDFs are viewable before processing.
           </p>
         </div>
       </section>

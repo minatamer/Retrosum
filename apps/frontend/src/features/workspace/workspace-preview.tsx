@@ -5,6 +5,7 @@ import { ComposerShell } from "../../components/ui/composer-shell";
 import { PaperDialog } from "../../components/ui/paper-dialog";
 import { Button } from "../../components/ui/button";
 import { RuntimeStatus } from "../runtime/runtime-status";
+import { DocumentGallery } from "../documents/document-gallery";
 
 export function WorkspacePreview() {
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -47,23 +48,23 @@ export function WorkspacePreview() {
         Your financial story.
       </h1>
       <p>
-        Welcome to Retrosum. This workspace currently previews the product’s design. The viewable
-        sample PDFs, processing flow and financial records connect in the next tickets.
+        Start with the fictional Harbor Studio collection. Inspect each original PDF before turning
+        its details into your financial overview.
       </p>
       <RuntimeStatus />
       <div className="rs-workspace-panels">
-        <section className="rs-card" id="documents">
+        <section className="rs-card">
           <h2>Start with documents.</h2>
           <p>
-            The fictional Harbor Studio collection will bring together eight PDFs with varied
-            printed, scanned and handwriting-style layouts.
+            Eight real PDFs bring together varied printed, scanned and synthetic handwriting-style
+            layouts. The complete collection is viewable below.
           </p>
           <ul>
             <li>Customer invoices & supplier bills</li>
             <li>Rent & subscription receipts</li>
             <li>Payments & a comparison month</li>
           </ul>
-          <p>Original PDFs are being authored. Document intake will appear here.</p>
+          <p>Document viewing is ready. Processing and your own PDF intake connect next.</p>
         </section>
         <section className="rs-card">
           <h2>Space to try things.</h2>
@@ -77,6 +78,7 @@ export function WorkspacePreview() {
           </Button>
         </section>
       </div>
+      <DocumentGallery />
       <PaperDialog
         open={detailsOpen}
         onClose={() => setDetailsOpen(false)}

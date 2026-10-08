@@ -45,3 +45,48 @@ export const documentSchema = z.strictObject({
 });
 export type SourceReference = z.infer<typeof sourceReferenceSchema>;
 export type SourceDocument = z.infer<typeof documentSchema>;
+
+const publicPdfPath = z.string().regex(/^\/samples\/harbor-v1\/[A-Za-z0-9_-]+\.pdf$/u);
+const publicThumbnailPath = z.string().regex(/^\/samples\/harbor-v1\/D0[1-8]\.webp$/u);
+export const sampleAssetSchema = documentSchema.extend({
+  label: z.string().regex(/^D0[1-8]$/u),
+  title: z.string().min(1).max(100),
+  layoutFamily: z.string().min(1).max(80),
+  pdfPath: publicPdfPath,
+  thumbnailPath: publicThumbnailPath,
+  duplicateOf: documentIdSchema.optional(),
+});
+export const sampleManifestSchema = z
+  .strictObject({
+    fixtureVersion: z.literal("harbor-v1"),
+    business: z.literal("Harbor Studio"),
+    currency: z.literal("USD"),
+    period: z.literal("2026-09"),
+    asOf: z.literal("2026-10-03"),
+    documents: z.array(sampleAssetSchema).length(8),
+  })
+  .superRefine((manifest, ctx) => {
+    const documents = manifest.documents;
+    const ids = new Set(documents.map((item) => item.id));
+    const paths = new Set(documents.map((item) => item.pdfPath));
+    const labels = new Set(documents.map((item) => item.label));
+    if (
+      ids.size !== documents.length ||
+      paths.size !== documents.length ||
+      labels.size !== documents.length
+    )
+      ctx.addIssue({ code: "custom", message: "Sample identities and paths must be unique." });
+    if (
+      documents.reduce((sum, item) => sum + item.pageCount, 0) > 20 ||
+      documents.reduce((sum, item) => sum + item.byteLength, 0) > MAX_TOTAL_BYTES
+    )
+      ctx.addIssue({ code: "custom", message: "Sample exceeds the combined admission envelope." });
+    for (const item of documents) {
+      if (item.duplicateOf && (item.duplicateOf === item.id || !ids.has(item.duplicateOf)))
+        ctx.addIssue({
+          code: "custom",
+          message: "Duplicate must refer to another visible source.",
+        });
+    }
+  });
+export type SampleAsset = z.infer<typeof sampleAssetSchema>;

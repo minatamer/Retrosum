@@ -6,12 +6,14 @@ export function PaperDialog({
   onClose,
   title,
   caption,
+  size = "standard",
   children,
 }: {
   open: boolean;
   onClose(): void;
   title: string;
   caption?: string;
+  size?: "standard" | "paper";
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -34,14 +36,14 @@ export function PaperDialog({
     <dialog
       ref={ref}
       aria-labelledby={titleId}
-      className="rs-paper-dialog"
+      className={`rs-paper-dialog${size === "paper" ? " rs-paper-dialog-wide" : ""}`}
       onKeyDown={(event) => {
         if (event.key !== "Tab") return;
         const controls = [
           ...event.currentTarget.querySelectorAll<HTMLElement>(
-            'button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]',
+            'button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), summary, [tabindex="0"]',
           ),
-        ].filter((element) => element.getClientRects().length > 0);
+        ].filter((element) => element.getClientRects().length > 0 && element.tabIndex >= 0);
         const first = controls[0];
         const last = controls.at(-1);
         if (!first || !last) {

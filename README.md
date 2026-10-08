@@ -11,7 +11,7 @@ The interface and sample documents use English and USD. Every sample figure come
 - [Twelve detailed implementation tickets and dependencies](docs/tickets/README.md)
 - [Documentation map and authority](docs/README.md)
 
-**Status:** RET-001 foundation, RET-002 brand/landing and RET-003 visible PDF corpus/viewer are verified locally. Eight actual PDFs contain fourteen pages with independently checked field truth; the responsive paper viewer renders every original. Owner aesthetic review remains pending. RET-004 is next: canonical financial state, real local CRUD, Undo and refresh recovery. Full Retro behavior, live accuracy and deployment remain upcoming work.
+**Status:** RET-001 through RET-004 are verified locally: foundation, brand/landing, eight visible PDFs with a real paper viewer, and the canonical money workspace. Manual invoices, costs/bills, payments and contacts share exact calculations, atomic commands, latest Undo and bounded refresh recovery. The workspace starts empty; RET-005 connects document recognition and intake next. Owner aesthetic review, full Retro behavior, live accuracy and deployment remain pending. See [money/session decisions](docs/engineering/MONEY-SESSIONS.md) and each ticket’s evidence.
 
 ## Local development
 

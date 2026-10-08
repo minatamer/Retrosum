@@ -1,6 +1,6 @@
 # RET-004 — Build the canonical money workspace, CRUD, Undo and refresh recovery
 
-Status: **Planned — not implemented**  
+Status: **Implemented locally — owner visual acceptance pending**<br>
 Last synchronized: **8 October 2026**  
 Depends on: [RET-001](RET-001-initialize-workspace-and-contracts.md), [RET-003](RET-003-author-sample-pdfs-and-viewer.md)  
 Blocks: RET-005, RET-006  
@@ -41,14 +41,15 @@ Areas owned by this packet:
 
 ## Acceptance criteria
 
-- [ ] Harbor fixture totals and every inclusion/exclusion formula match visible ground truth exactly.
-- [ ] All four object families support usable manual CRUD with provenance and sensible errors.
-- [ ] Draft/issued, paid claim/recorded movement, tax and unknown/open status are distinct.
-- [ ] D03/D06 duplicate and D07 payment matching cannot double count.
-- [ ] One command batch produces one revision, no partial graph and one eligible latest Undo.
-- [ ] Refresh restores records, PDFs, filters and eligible Undo without provider dispatch.
-- [ ] Corrupt/expired/oversized/storage-denied/missing-Blob states are truthful and safe.
-- [ ] Reset/expiry/tab ownership and stale async results cannot resurrect old data.
+- [x] Harbor fixture totals and every inclusion/exclusion formula match visible ground truth exactly in independent pure-engine tests.
+- [x] All four object families support usable manual CRUD with provenance and sensible errors; browser walkthrough completed.
+- [x] Draft/issued, paid claim/recorded movement, tax and unknown/open status are distinct.
+- [x] D03/D06 duplicate and D07 payment matching cannot double count.
+- [x] One command batch produces one revision, no partial graph and one eligible latest Undo.
+- [x] Refresh restores records, filters and eligible Undo without provider dispatch; published original PDFs reopen. Actual Blob transactions/controller restore are tested; visitor intake connects in RET-005.
+- [x] Corrupt/expired/oversized/storage-denied/missing-Blob states are truthful and safe in adversarial restore/cache checks.
+- [x] Reset/expiry/tab ownership and stale async results cannot resurrect old data, including overlapping Reset and asynchronous lock handoff regressions.
+- [ ] Owner aesthetic acceptance and real-device touch/software-keyboard feedback, explicitly deferred.
 
 ## Verification and evidence
 
@@ -70,4 +71,10 @@ Keep this packet one coherent outcome: necessary UI, contracts, backend/local ef
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
 
-**Execution record:** Not started. No tests, assets, application feature, provider call or deployment is completed by creating this packet.
+**Execution record — 8 October 2026:** Implemented the strict exact-money graph, invoice arithmetic, contributor/exclusion selectors, atomic revisioned command batches, replay protection and latest Undo. Browser forms/registers support invoices, costs/bills, payments and contacts through this sole authority. Fixed two-hour per-tab projection, exclusive ownership/fork policy, bounded native PDF Blob adapter, missing-original reconciliation and reset/expiry generation guards are connected through the session controller. The UI starts empty; no Harbor financial dataset is silently loaded. RET-005 owns intake/recognition and uses these APIs.
+
+Local verification: root `pnpm check` passed formatting, zero-warning lint, strict types, 45 source-file boundaries, **95 tests in 12 files**, and backend/Next production builds. Manual browser checks covered all four CRUD families; a $2,000 draft had no financial effect, issuing changed income/open only, a $500 partial payment changed cash/remaining balance, $200 cost edits/deletion/Undo worked, overpayment and used-contact deletion were rejected, a $200 owned transfer did not affect operating cash, and invoice deletion/Undo preserved/restored its payment relation. Refresh retained graph, filter and latest Undo at the original expiry; Reset returned an empty new session. Original D04 reopened after refresh.
+
+Responsive checks: invoice dialog at nine viewports from 280×480 through 1920×1080 plus short 667×375 landscape; cost/payment/contact forms at five representative sizes each. No page/dialog horizontal overflow, reachable sticky Close control, and keyboard last/first focus cycling, Escape and submit visibility were verified. Browser viewport override was reset afterward. Hardware touch/software keyboard was unavailable.
+
+Validation: the initial quick review found an overlapping Reset lease race and a stale recovery warning; execution fixed both with regressions. Revalidation found **no actionable findings** on the final local snapshot. See [validation evidence](../validation/RET-004.md) and [implementation decisions](../engineering/MONEY-SESSIONS.md). Three authorized file-level commit groups are allocated in [the commit plan](../commit-plans/RET-004.md). No paid inference, push, cloud resource or deployment occurred.

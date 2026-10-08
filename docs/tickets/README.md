@@ -1,6 +1,6 @@
 # Retrosum implementation ticket queue
 
-Updated **8 October 2026**. The owner authorized the full local fake-mode execute/validate loop and per-ticket commits. **RET-001 is Complete; RET-002 is implemented locally with owner visual acceptance pending; RET-003 is implemented locally with owner visual acceptance pending; RET-004 is next.** The [source of truth](../RETROSUM_DEMO_SOURCE_OF_TRUTH.md) owns product/architecture behavior; the [HTML brief](../RETROSUM_OVERVIEW.html) summarizes it. Actual live accuracy/spend, owner visual feedback and cloud deployment remain pending.
+Updated **8 October 2026**. The owner authorized the full local fake-mode execute/validate loop and per-ticket commits. **RET-001 is Complete; RET-002, RET-003 and RET-004 are implemented and verified locally with owner visual acceptance pending; RET-005 is next.** The [source of truth](../RETROSUM_DEMO_SOURCE_OF_TRUTH.md) owns product/architecture behavior; the [HTML brief](../RETROSUM_OVERVIEW.html) summarizes it. Actual live accuracy/spend, owner visual feedback and cloud deployment remain pending.
 
 ## Why twelve packets
 
@@ -15,7 +15,7 @@ RET-001 establishes safe boundaries. RET-002/003 make the brand and visible evid
 | [RET-001](RET-001-initialize-workspace-and-contracts.md)      | Initialize the workspace, contracts and safe runtime                     | None             | Complete              |
 | [RET-002](RET-002-build-brand-and-landing.md)                 | Build the brand system and calm sourced landing                          | RET-001          | Local; visual pending |
 | [RET-003](RET-003-author-sample-pdfs-and-viewer.md)           | Author the visible PDF corpus and floating paper viewer                  | RET-002          | Local; visual pending |
-| [RET-004](RET-004-build-money-state-crud-and-refresh.md)      | Build the canonical money workspace, CRUD, Undo and refresh recovery     | RET-001, RET-003 | Planned               |
+| [RET-004](RET-004-build-money-state-crud-and-refresh.md)      | Build the canonical money workspace, CRUD, Undo and refresh recovery     | RET-001, RET-003 | Local; visual pending |
 | [RET-005](RET-005-deliver-live-pdf-recognition-and-review.md) | Deliver live OpenAI PDF recognition, review and exact-number evaluation  | RET-004          | Planned               |
 | [RET-006](RET-006-build-interactive-money-dashboard.md)       | Build the beautiful interactive dashboard and source drill-down          | RET-004, RET-005 | Planned               |
 | [RET-007](RET-007-build-retro-conversation-and-guidance.md)   | Build Retro conversation, grounded explanations and interactive guidance | RET-006          | Planned               |
@@ -25,7 +25,7 @@ RET-001 establishes safe boundaries. RET-002/003 make the brand and visible evid
 | [RET-011](RET-011-verify-product-and-audit-release.md)        | Verify responsive product quality and audit the release candidate        | RET-010          | Planned               |
 | [RET-012](RET-012-deploy-and-validate-cloud-run.md)           | Deploy manually, validate live behavior and record rollback              | RET-011          | Planned               |
 
-The next eligible local packet is **RET-004**. The canonical order above is sufficient; do not infer parallel agent authorization from the dependency graph. Start a packet only when the user requests implementation and its required local dependency evidence exists.
+The next eligible local packet is **RET-005**. The canonical order above is sufficient; do not infer parallel agent authorization from the dependency graph. Start a packet only when the user requests implementation and its required local dependency evidence exists.
 
 ## Non-negotiable product decisions
 

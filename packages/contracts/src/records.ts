@@ -32,6 +32,10 @@ export const eventSchema = z.strictObject({
   taxMinor: nonnegativeMinorUnitsSchema.optional(),
   status: z.enum(["posted", "held", "duplicate"]),
   paidClaim: z.boolean(),
+  balanceState: z.enum(["unknown", "open", "paid"]).default("unknown"),
+  category: z.string().trim().max(60).default("Uncategorized"),
+  reference: z.string().trim().max(80).default(""),
+  editedAtRevision: z.number().int().nonnegative().optional(),
   sources: z.array(sourceReferenceSchema).max(20),
   origin: z.enum(["document", "session"]),
 });
@@ -48,6 +52,9 @@ export const paymentSchema = z.strictObject({
     .max(20),
   sources: z.array(sourceReferenceSchema).max(20),
   origin: z.enum(["document", "session"]),
+  fromAccount: z.string().min(1).max(80).optional(),
+  toAccount: z.string().min(1).max(80).optional(),
+  editedAtRevision: z.number().int().nonnegative().optional(),
 });
 export const invoiceLineSchema = z.strictObject({
   description: z.string().trim().min(1).max(200),
@@ -62,12 +69,16 @@ export const invoiceSchema = z.strictObject({
   number: z.string().trim().min(1).max(40),
   customerId: contactIdSchema,
   issuedOn: dateSchema,
-  dueOn: dateSchema,
+  dueOn: dateSchema.optional(),
   currency: currencySchema,
   lines: z.array(invoiceLineSchema).min(1).max(20),
   notes: z.string().max(1000),
   status: z.enum(["draft", "issued"]),
   eventId: eventIdSchema.optional(),
+  taxMinor: nonnegativeMinorUnitsSchema.default(0),
+  sources: z.array(sourceReferenceSchema).max(20).default([]),
+  origin: z.enum(["document", "session"]).default("session"),
+  editedAtRevision: z.number().int().nonnegative().optional(),
 });
 export type Money = z.infer<typeof moneySchema>;
 export type BusinessIdentity = z.infer<typeof businessIdentitySchema>;

@@ -42,6 +42,7 @@ export const documentSchema = z.strictObject({
     "authentic_reusable",
     "visitor_upload",
   ]),
+  disposition: z.enum(["active", "held", "duplicate"]).default("active"),
 });
 export type SourceReference = z.infer<typeof sourceReferenceSchema>;
 export type SourceDocument = z.infer<typeof documentSchema>;

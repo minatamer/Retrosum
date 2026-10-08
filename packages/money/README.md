@@ -1,3 +1,11 @@
 # Pure money domain
 
-Browser-safe exact decimal parsing, integer-cent formatting and bounded sums. Uses BigInt internally where aggregate/decimal conversion needs exactness; public storage/transport values remain safe integer cents. No platform/environment/provider/HTTP access. RET-004 extends this sole domain engine with financial meaning and commands.
+Browser-safe exact USD amounts, invoice arithmetic, canonical graph validation, financial selectors, atomic commands and latest-action Undo. BigInt handles decimal multiplication and signed half-up rounding; public storage/transport values remain bounded safe integer cents. No platform, environment, provider, persistence or HTTP access.
+
+`validateGraph` checks source pages, contact roles, unique economic references, explicit net/tax/gross equality, owned-account transfers, allocations, issued-invoice relations and whole-graph aggregate limits. Unknown settlement is separate from explicitly open or source-stated paid. Paid claims never create a movement.
+
+`calculateMetrics` derives income/costs on explicit net or labelled document-total basis, tax, profit/margin, unique operating cash, evidenced open/overdue balances, categories, contributors and exclusions. Event dates scope income/costs; movement dates scope cash. Settlement uses confirmed eligible payments through the fixed business snapshot date. Unknown taxed net is excluded rather than inferred. Current values and positive-baseline percentage changes use exact signed half-up rounding; nonpositive baselines have no ordinary growth percentage.
+
+`applyCommand` validates one to five related actions against workspace identity, revision and bounded command history. A detached final graph either commits once or throws without changing the input. Draft invoices have no event; issuing creates one deterministic linked sale. Deleting a sale/cost removes its allocations while preserving actual movements. A used contact cannot be deleted. Original source references survive edits; current monetary records carry the edit revision. Each action group supplies one full before-graph receipt. `undoLatest` checks its exact command/revision, restores the group at a new monotonic revision, and clears the receipt. Replay history is retained, capped at 500 actions without eviction.
+
+Apps import only public exports. The independent Harbor ledger under `test/fixtures` is test authority; production never starts with its records. See [browser session implementation](../../docs/engineering/MONEY-SESSIONS.md) for storage and operation ownership.

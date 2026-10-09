@@ -1,0 +1,95 @@
+.action {
+  margin-top: 1rem;
+  border-top: 1px solid #91af9a40;
+  padding-top: 1rem;
+  animation: appear 320ms ease both;
+}
+.action p {
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: #d3decf;
+}
+.action button {
+  min-height: 44px;
+  border: 1px solid #91af9a70;
+  border-radius: 12px;
+  padding: 0.65rem 0.9rem;
+  background: #23483a;
+  color: var(--rs-ivory);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition:
+    background 180ms,
+    transform 180ms;
+  margin: 0.25rem 0.35rem 0.25rem 0;
+}
+.action button:hover {
+  background: #345d49;
+  transform: translateY(-2px);
+}
+.action button:disabled {
+  opacity: 0.55;
+  cursor: default;
+  transform: none;
+}
+.action button[type="submit"] {
+  background: var(--rs-orange);
+  color: var(--rs-forest-deep);
+}
+.action label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  margin-bottom: 0.7rem;
+  min-width: 0;
+}
+.action input,
+.action select {
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+  font: inherit;
+  font-size: 16px;
+  padding: 0.6rem;
+  border-radius: 9px;
+  background: #173a30;
+  color: var(--rs-ivory);
+  border: 1px solid #91af9a70;
+  color-scheme: dark;
+}
+.fields,
+.choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.documents {
+  display: grid;
+  gap: 0.3rem;
+}
+.documents button {
+  display: grid;
+  gap: 0.3rem;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.documents small {
+  font-size: 0.7rem;
+  color: #bbcbbb;
+}
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 420px) {
+  .fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

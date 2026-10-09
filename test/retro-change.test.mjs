@@ -40,7 +40,7 @@ describe("Retro preparation shares real commands without mutating snapshots", ()
       );
       const proposal = ready(parsed, session, "english_date");
       expect(proposal.command.actions[0].record.occurredOn).toBe("2026-09-25");
-      expect(proposal.effects.find((effect) => effect.factId === "costs").after).toBe(148000);
+      expect(proposal.effects.find((effect) => effect.factId === "costs").after).toBe(255000);
     }
     for (const date of ["September 25", "February 30, 2026"]) {
       const parsed = fakeChangeIntent(
@@ -161,14 +161,14 @@ describe("Retro preparation shares real commands without mutating snapshots", ()
       session,
     );
     expect(proposal.effects.find((effect) => effect.factId === "costs")).toMatchObject({
-      before: 128000,
-      after: 148000,
+      before: 235000,
+      after: 255000,
     });
     session = apply(proposal, session);
-    expect(buildDashboard(session.workspace, scope).facts.profit.value).toBe(332000);
+    expect(buildDashboard(session.workspace, scope).facts.profit.value).toBe(225000);
     expect(() => apply(proposal, session)).toThrow(/already/);
     session = undoLatest(session, session.workspace.revision, proposal.command.id);
-    expect(buildDashboard(session.workspace, scope).facts.profit.value).toBe(352000);
+    expect(buildDashboard(session.workspace, scope).facts.profit.value).toBe(245000);
   });
   it("ambiguous identities, unknown targets, used-contact deletion and stale commands are blocked", () => {
     const session = harborSession();

@@ -4,14 +4,16 @@ import type { SourceReference } from "@retrosum/contracts";
 import { useSession } from "../session/session-provider";
 import { sampleAssets } from "./sample-assets";
 import { PdfViewer, type ViewerAsset } from "./pdf-viewer";
-import { PaperDialog } from "../../components/ui/paper-dialog";
+import { PaperDialog, type PaperOrigin } from "../../components/ui/paper-dialog";
 
 export function OriginalViewer({
   target,
   onClose,
+  origin,
 }: {
   target: SourceReference | null;
   onClose(): void;
+  origin?: PaperOrigin | undefined;
 }) {
   const { controller } = useSession();
   const [selection, setSelection] = useState<{
@@ -55,7 +57,7 @@ export function OriginalViewer({
   }, [controller, target]);
   if (!target) return null;
   if (selection && selection.target === target)
-    return <PdfViewer selection={selection} onClose={onClose} />;
+    return <PdfViewer selection={selection} onClose={onClose} origin={origin} />;
   return (
     <PaperDialog open onClose={onClose} title="Original PDF" caption="Browser source">
       <p role="status">{message}</p>

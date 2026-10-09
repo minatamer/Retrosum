@@ -1,12 +1,18 @@
 "use client";
 import { useState } from "react";
-import type { SessionAction, SessionFilter, SourceReference } from "@retrosum/contracts";
+import type {
+  SessionAction,
+  SessionFilter,
+  SourceDocument,
+  SourceReference,
+} from "@retrosum/contracts";
 import { buildDashboard, formatAmount, invoiceAmounts } from "@retrosum/money";
 import { factValue } from "../dashboard/format";
 import { Button } from "../../components/ui/button";
 import { PaperDialog } from "../../components/ui/paper-dialog";
 import { useSession } from "../session/session-provider";
 import { OriginalViewer } from "../documents/original-viewer";
+import { DocumentReview } from "../documents/document-review";
 import { RecordForm, type RecordSelection } from "./record-forms";
 import styles from "./records.module.css";
 
@@ -28,6 +34,11 @@ export function RecordsWorkspace() {
     revision: number;
   } | null>(null);
   const [source, setSource] = useState<SourceReference | null>(null);
+  const [review, setReview] = useState<{
+    doc: SourceDocument;
+    revision: number;
+    issueNotes: string[];
+  } | null>(null);
   const [resetOpen, setResetOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   if (!ready || !session)
@@ -40,6 +51,14 @@ export function RecordsWorkspace() {
   const catalogue = buildDashboard(workspace, session.filters);
   const result = catalogue.metrics;
   const family = session.filters.register;
+  const reviewDocuments = workspace.documents
+    .map((doc) => ({
+      doc,
+      issues: workspace.issues.filter(
+        (issue) => !issue.resolved && issue.documentIds.includes(doc.id),
+      ),
+    }))
+    .filter(({ issues }) => issues.length > 0);
   const act = (operation: () => void) => {
     setError(null);
     try {
@@ -73,9 +92,7 @@ export function RecordsWorkspace() {
     <section className={styles.section} id="records" aria-labelledby="records-heading">
       <div className={styles.heading}>
         <div>
-          <span className="rs-eyebrow rs-muted">
-            {workspace.business.name} · Revision {workspace.revision}
-          </span>
+          <span className="rs-eyebrow rs-muted">{workspace.business.name}</span>
           <h2 id="records-heading">A clear view of your records.</h2>
         </div>
         <span className={styles.sessionBadge}>
@@ -245,9 +262,7 @@ export function RecordsWorkspace() {
                 <small>
                   {record.dueOn ? `Due ${record.dueOn}` : "No due date"} ·{" "}
                   {record.origin === "document" ? "PDF source" : "Created in session"}
-                  {record.editedAtRevision
-                    ? ` · Edited at revision ${record.editedAtRevision}`
-                    : ""}
+                  {record.editedAtRevision ? " · Edited" : ""}
                 </small>
                 <div>{sources(record.sources)}</div>
               </div>
@@ -300,9 +315,7 @@ export function RecordsWorkspace() {
                   <small>
                     {record.category} ·{" "}
                     {record.origin === "document" ? "PDF source" : "Created in session"}
-                    {record.editedAtRevision
-                      ? ` · Edited at revision ${record.editedAtRevision}`
-                      : ""}
+                    {record.editedAtRevision ? " · Edited" : ""}
                   </small>
                   <div>{sources(record.sources)}</div>
                 </div>
@@ -358,9 +371,7 @@ export function RecordsWorkspace() {
                 </p>
                 <small>
                   {record.origin === "document" ? "PDF source" : "Recorded in session"}
-                  {record.editedAtRevision
-                    ? ` · Edited at revision ${record.editedAtRevision}`
-                    : ""}
+                  {record.editedAtRevision ? " · Edited" : ""}
                   {record.direction === "internal_transfer"
                     ? ` · ${record.fromAccount} → ${record.toAccount}`
                     : ""}
@@ -422,49 +433,87 @@ export function RecordsWorkspace() {
           </div>
         )}
       </div>
-      {workspace.issues.filter((issue) => !issue.resolved).length > 0 && (
-        <aside className={styles.review}>
-          <h3>Needs a careful look.</h3>
-          {workspace.issues
-            .filter((issue) => !issue.resolved)
-            .map((issue) => (
-              <div key={issue.id}>
-                <p>{issue.message}</p>
-                {issue.documentIds.map((id) => (
-                  <div key={id}>
-                    <span>{workspace.documents.find((doc) => doc.id === id)?.name}</span>
+      {reviewDocuments.length > 0 && (
+        <aside className={styles.review} aria-labelledby="records-review-heading">
+          <header className={styles.reviewHeader}>
+            <div>
+              <span className="rs-eyebrow">A final check</span>
+              <h3 id="records-review-heading">A few details need your eye.</h3>
+              <p>Check the originals before including held figures in your totals.</p>
+            </div>
+            <span className={styles.reviewCount}>
+              {reviewDocuments.length} {reviewDocuments.length === 1 ? "document" : "documents"}
+            </span>
+          </header>
+          <ul className={styles.reviewList}>
+            {reviewDocuments.map(({ doc, issues }) => {
+              const duplicate = issues.some((issue) => issue.code === "duplicate");
+              const handwritten = doc.provenance === "synthetic_handwriting";
+              const scanned = doc.reviewNotes.some((note) => note.includes("is image-only"));
+              const label = duplicate
+                ? "Duplicate check"
+                : handwritten
+                  ? "Handwriting review"
+                  : scanned
+                    ? "Scan review"
+                    : "Source review";
+              const description = doc.reviewBlocked
+                ? "Some figures need correcting before this source can be accepted."
+                : duplicate
+                  ? "Check whether this repeats a transaction already recorded."
+                  : handwritten
+                    ? "Compare the handwritten amounts with the original."
+                    : scanned
+                      ? "Compare the extracted figures with the scanned original."
+                      : issues[0]!.message;
+              const actionLabel = duplicate ? "Review duplicate" : "Review figures";
+              return (
+                <li key={doc.id} className={styles.reviewRow}>
+                  <span
+                    className={styles.reviewGlyph}
+                    aria-hidden="true"
+                    data-duplicate={duplicate}
+                  >
+                    <svg viewBox="0 0 24 28" fill="none">
+                      <path d="M3 1.5h11l7 7v18H3zM14 1.5v7h7M7 14h10M7 18h10M7 22h6" />
+                    </svg>
+                  </span>
+                  <div className={styles.reviewContent}>
+                    <div className={styles.reviewMeta}>
+                      <span data-duplicate={duplicate}>{label}</span>
+                      <small>
+                        {doc.pageCount} {doc.pageCount === 1 ? "page" : "pages"}
+                      </small>
+                    </div>
+                    <h4>{doc.name}</h4>
+                    <p>{description}</p>
+                  </div>
+                  <div className={styles.reviewActions}>
                     <Button
-                      variant="ghost"
+                      aria-label={`${actionLabel} in ${doc.name}`}
                       onClick={() =>
-                        act(() =>
-                          controller.apply(
-                            [{ type: "review_document", documentId: id, decision: "hold" }],
-                            "Hold source",
-                          ),
-                        )
+                        setReview({
+                          doc,
+                          revision: workspace.revision,
+                          issueNotes: issues.map((issue) => issue.message),
+                        })
                       }
                     >
-                      Hold source
+                      {actionLabel} <span aria-hidden="true">→</span>
                     </Button>
-                    {issue.code === "duplicate" && (
-                      <Button
-                        variant="ghost"
-                        onClick={() =>
-                          act(() =>
-                            controller.apply(
-                              [{ type: "review_document", documentId: id, decision: "duplicate" }],
-                              "Mark duplicate",
-                            ),
-                          )
-                        }
-                      >
-                        Mark duplicate
-                      </Button>
-                    )}
+                    <button
+                      type="button"
+                      className={styles.reviewSource}
+                      aria-label={`View PDF ${doc.name}`}
+                      onClick={() => setSource({ documentId: doc.id, page: 1 })}
+                    >
+                      View PDF <span aria-hidden="true">↗</span>
+                    </button>
                   </div>
-                ))}
-              </div>
-            ))}
+                </li>
+              );
+            })}
+          </ul>
         </aside>
       )}
       <div className={styles.sessionActions}>
@@ -553,8 +602,7 @@ export function RecordsWorkspace() {
         <p>
           Closing or crashing the browser cannot erase storage immediately; expired leftovers are
           removed when Retrosum runs again. Reset cannot remove files already downloaded or recall
-          provider-controlled copies. Remote cancellation is best effort and does not renew paid
-          allowances.
+          copies held by a processing service.
         </p>
         <Button
           variant="warm"
@@ -562,6 +610,7 @@ export function RecordsWorkspace() {
             setResetOpen(false);
             setSelection(null);
             setDeletion(null);
+            setReview(null);
             void controller.reset();
           }}
         >
@@ -569,6 +618,13 @@ export function RecordsWorkspace() {
         </Button>
       </PaperDialog>
       {source && <OriginalViewer target={source} onClose={() => setSource(null)} />}
+      {review && !source && (
+        <DocumentReview
+          {...review}
+          onClose={() => setReview(null)}
+          onSource={(target) => setSource(target)}
+        />
+      )}
     </section>
   );
 }

@@ -45,6 +45,7 @@ export function buildInvestigationRequest(
     topics: context.topics,
     facts: context.facts,
     changeContext: context.changeContext ?? null,
+    uiContext: context.uiContext ?? null,
   };
   const input: unknown[] = [
     { role: "user", content: [{ type: "input_text", text: JSON.stringify(publicContext) }] },
@@ -72,14 +73,22 @@ export function buildInvestigationRequest(
     background: false,
     reasoning: { effort: "low" },
     max_output_tokens: 1500,
-    instructions: PROMPT,
+    instructions:
+      PROMPT +
+      "\nFor chart, graph or KPI requests choose dashboard_request. Use only declared metrics and groupings. Chart style is null when unspecified so the visitor can choose illustrated styles. Quarterly views use supplied history, never invented months. Remove/restyle/move identifies a card by its visible title in target; use null when ambiguous and inspect get_ui_context for current cards. Dashboard proposals are applied only after visitor confirmation. Never output arbitrary values, HTML, executable chart configuration or claim a view has already been added." +
+      "\nFor workspace operations choose workspace_request: navigate; editable filter (full explicit dates, nullable fields, no guessed year); source (document ID/name/reference, bounded page, list_documents resolves choices); review (held/duplicate/handwritten or exact query, human decision only); records family; panel settings/reset/intake; sidebar; undo financial/layout or null for choice; positive USD income target as exact decimal string; restore_layout; clear_conversation; help. All are proposals with browser-owned controls. Reset, clearing chat and review never happen automatically. Workspace exports are unavailable; never propose the legacy export panel. Original PDF downloads use source controls. Currency requests open settings; the application automatically loads the ECB USD-to-EUR reference rate when EUR is selected. Never supply, invent or independently fetch a rate. Explain categories/customers/vendors/due_soon/tax using their declared exact fact IDs; tax is disclosure, not advice. When a record or document is ambiguous, retain the query and let the visitor select. For unsupported actions return limited_result. Session expiry and missing originals remain explicit limits.",
     include: ["reasoning.encrypted_content"],
     input,
     parallel_tool_calls: false,
     tools: retroToolSchema.options.map((schema) => ({
       type: "function",
       name: schema.shape.name.value,
-      description: "Bounded application-owned read/navigation query; never mutates records.",
+      description:
+        schema.shape.name.value === "list_documents"
+          ? "List up to 20 current document IDs, names, page counts and review states. Query by name/reference or held/duplicate/handwritten; empty query lists all. No raw bytes."
+          : schema.shape.name.value === "get_ui_context"
+            ? "Read current dashboard cards/preferences and up to 20 known category/counterparty choices. No private contact fields."
+            : "Bounded application-owned read/navigation/preparation query; never applies a record change.",
       strict: true,
       parameters: z.toJSONSchema(schema.shape.args),
     })),

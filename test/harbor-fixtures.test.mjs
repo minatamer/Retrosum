@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 import { createVerificationTask, numericTokens, verifyHarbor } from "../scripts/verify-harbor.mjs";
 
 test("fixture bytes, pages, complete numeric inventory and ledger relations agree", async () => {
-  expect(await verifyHarbor()).toMatchObject({ files: 8, pages: 14, rasterPages: 3 });
+  expect(await verifyHarbor()).toMatchObject({ files: 10, pages: 18, rasterPages: 3 });
 }, 15000);
 test("numeric inventory preserves identifiers, dates, signs, rates and amounts", () => {
   expect(numericTokens("NS-A-10 / 2026-08-15 / -200.00 USD / 10% / 4 packs")).toEqual([

@@ -71,8 +71,8 @@ const required =
 for (const path of required) await stat(join(root, path));
 if (kind === "frontend") {
   const publicFiles = inventory.filter((file) => file.path.startsWith("apps/frontend/public/"));
-  if (publicFiles.filter((file) => file.path.endsWith(".pdf")).length !== 8)
-    throw new Error("The release must contain all eight published PDF originals.");
+  if (publicFiles.filter((file) => file.path.endsWith(".pdf")).length !== 10)
+    throw new Error("The release must contain all ten published PDF originals.");
   if (
     !inventory.some((file) => file.path.includes("/.next/static/") && file.path.endsWith(".woff2"))
   )

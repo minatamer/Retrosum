@@ -1,4 +1,8 @@
 .rs-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  min-height: 44px;
   font:
     600 clamp(1.65rem, 2.5vw, 2.1rem)/1 var(--font-editorial),
     Georgia,
@@ -8,14 +12,29 @@
   color: var(--rs-brand-green);
   text-decoration: none;
 }
-.rs-wordmark span {
+.rs-brand-mark {
+  display: block;
+  flex-shrink: 0;
+  width: 1.1em;
+  height: 1.1em;
+}
+.rs-wordmark .rs-wordmark-accent {
   color: var(--rs-brand-orange);
 }
 .rs-wordmark[data-tone="inverse"] {
   color: var(--rs-ivory);
 }
-.rs-wordmark[data-tone="inverse"] span {
+.rs-wordmark[data-tone="inverse"] .rs-wordmark-accent {
   color: var(--rs-orange);
+}
+.rs-scroll-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
 }
 .rs-button {
   display: inline-flex;

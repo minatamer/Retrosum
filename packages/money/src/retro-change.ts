@@ -1,4 +1,5 @@
 import {
+  sessionSchema,
   retroChangeIntentSchema,
   retroChangePreparationSchema,
   commandSchema,
@@ -434,13 +435,13 @@ export function previewRetroCommand(
     actions: [action],
   });
   const after = applyCommand(
-    {
+    sessionSchema.parse({
       workspace,
       filters: { ...scope, register: intent.family },
       messages: [],
       undo: null,
       appliedCommandIds: [],
-    },
+    }),
     command,
     label,
   ).workspace;

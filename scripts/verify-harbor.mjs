@@ -38,7 +38,7 @@ export async function verifyHarbor() {
     await readFile(join(root, "test/fixtures/harbor-v1/ground-truth.json"), "utf8"),
   );
   assert.equal(manifest.fixtureVersion, truth.fixtureVersion);
-  assert.equal(manifest.documents.length, 8);
+  assert.equal(manifest.documents.length, 10);
   let pageCount = 0;
   let bytes = 0;
   let numericFields = 0;
@@ -116,7 +116,7 @@ export async function verifyHarbor() {
       await loading.destroy();
     }
   }
-  assert.equal(pageCount, 14);
+  assert.equal(pageCount, 18);
   assert.ok(pageCount <= 20 && bytes <= 20 * 1024 * 1024);
   assert.equal(truth.events.filter((event) => event.reference === "A-77").length, 1);
   for (const event of truth.events) {
@@ -155,7 +155,14 @@ export async function verifyHarbor() {
     .filter((row) => row.kind === "operating" && row.signedCents < 0)
     .reduce((sum, row) => sum + row.signedCents, 0);
   assert.deepEqual([incoming, outgoing, incoming - outgoing], [300000, 92000, 208000]);
-  return { files: 8, pages: pageCount, bytes, numericFields, numericOccurrences, rasterPages: 3 };
+  return {
+    files: manifest.documents.length,
+    pages: pageCount,
+    bytes,
+    numericFields,
+    numericOccurrences,
+    rasterPages: 3,
+  };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)

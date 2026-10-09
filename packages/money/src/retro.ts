@@ -16,6 +16,8 @@ import { buildDashboard, type DashboardCatalogue, type DashboardFact } from "./d
 import { validateGraph } from "./graph.js";
 import { formatAmount } from "./amount.js";
 import { fakeChangeIntent, prepareRetroChange } from "./retro-change.js";
+import { dashboardIntent } from "./custom-dashboard.js";
+import { fakeWorkspaceIntent, retroDocuments } from "./retro-workspace.js";
 
 export function retroScopeKey(scope: RetroScope) {
   return JSON.stringify([
@@ -40,6 +42,11 @@ const required: Record<RetroTopic, string[]> = {
   vendor: [],
   comparison: ["income", "prior:income", "costs", "prior:costs", "profit", "prior:profit"],
   coverage: ["coverage"],
+  due_soon: ["customer_soon", "supplier_soon"],
+  tax: ["tax"],
+  categories: [],
+  customers: [],
+  vendors: [],
 };
 const targets: Record<RetroTopic, RetroTarget> = {
   summary: "overview",
@@ -55,8 +62,16 @@ const targets: Record<RetroTopic, RetroTarget> = {
   vendor: "costs",
   comparison: "overview",
   coverage: "coverage",
+  due_soon: "open",
+  tax: "costs",
+  categories: "composition",
+  customers: "income",
+  vendors: "costs",
 };
 export function topicFacts(topic: RetroTopic, catalogue: DashboardCatalogue): string[] {
+  if (topic === "categories") return catalogue.categories.map((mark) => mark.factId);
+  if (topic === "customers") return catalogue.customers.map((mark) => mark.factId);
+  if (topic === "vendors") return catalogue.vendors.map((mark) => mark.factId);
   if (topic === "rent")
     return catalogue.categories
       .filter((mark) => mark.label.toLowerCase() === "rent")
@@ -103,6 +118,12 @@ export function fakeRetroDecision(
           : "failed",
     };
   if (workspace) {
+    if (/last year|forecast|predict|bank balance/u.test(text))
+      return { kind: "limited_result", reason: "unknown_history" };
+    const action = fakeWorkspaceIntent(prompt);
+    if (action) return { kind: "workspace_request", intent: action };
+    const dashboard = dashboardIntent(prompt);
+    if (dashboard) return dashboard;
     const intent = fakeChangeIntent(prompt, workspace, changeContext);
     if (intent) return { kind: "change_request", intent };
   }
@@ -145,31 +166,41 @@ export function fakeRetroDecision(
     };
   const topic: RetroTopic | null = /cash|received|movement/u.test(text)
     ? "cash"
-    : /overdue|due|open|unpaid/u.test(text)
-      ? "open"
-      : /rent/u.test(text)
-        ? "rent"
-        : /largest.*(cost|expense)|biggest.*(cost|expense)/u.test(text)
-          ? "largest_cost"
-          : /customer|client/u.test(text)
-            ? "customer"
-            : /vendor|supplier.*largest/u.test(text)
-              ? "vendor"
-              : /compare|previous|prior|august/u.test(text)
-                ? "comparison"
-                : /margin/u.test(text)
-                  ? "margin"
-                  : /profit|loss/u.test(text)
-                    ? "profit"
-                    : /review|coverage|duplicate/u.test(text)
-                      ? "coverage"
-                      : /cost|expense/u.test(text)
-                        ? "costs"
-                        : /income|revenue|sale/u.test(text)
-                          ? "income"
-                          : /summary|summarize|overview|dashboard|how.*doing/u.test(text)
-                            ? "summary"
-                            : null;
+    : /due soon/u.test(text)
+      ? "due_soon"
+      : /tax/u.test(text)
+        ? "tax"
+        : /categor|cost breakdown/u.test(text)
+          ? "categories"
+          : /customers|clients/u.test(text)
+            ? "customers"
+            : /vendors|suppliers/u.test(text)
+              ? "vendors"
+              : /overdue|due|open|unpaid/u.test(text)
+                ? "open"
+                : /rent/u.test(text)
+                  ? "rent"
+                  : /largest.*(cost|expense)|biggest.*(cost|expense)/u.test(text)
+                    ? "largest_cost"
+                    : /customer|client/u.test(text)
+                      ? "customer"
+                      : /vendor|supplier.*largest/u.test(text)
+                        ? "vendor"
+                        : /compare|previous|prior|august/u.test(text)
+                          ? "comparison"
+                          : /margin/u.test(text)
+                            ? "margin"
+                            : /profit|loss/u.test(text)
+                              ? "profit"
+                              : /review|coverage|duplicate/u.test(text)
+                                ? "coverage"
+                                : /cost|expense/u.test(text)
+                                  ? "costs"
+                                  : /income|revenue|sale/u.test(text)
+                                    ? "income"
+                                    : /summary|summarize|overview|dashboard|how.*doing/u.test(text)
+                                      ? "summary"
+                                      : null;
   return topic ? explainTopic(topic, catalogue) : { kind: "limited_result", reason: "unsupported" };
 }
 export function validateRetroInput(input: unknown): RetroRequest {
@@ -213,6 +244,7 @@ export function createRetroResponse(
     revision: request.workspace.revision,
     scope: request.scope,
     mode,
+    ...(request.uiContext ? { uiRevision: request.uiContext.dashboard.revision } : {}),
     decision: grounded,
     sources: unique.slice(0, 100),
     steps,
@@ -237,7 +269,7 @@ export function isRetroCurrent(response: RetroResponse, workspace: Workspace, sc
 }
 const limitedCopy: Record<string, string> = {
   unsupported:
-    "In this development simulation I understand summaries, dashboard figures, comparisons, sources and tours. Try a shortcut below.",
+    "I can help with summaries, dashboard figures, comparisons, sources, tours and record changes. Try a shortcut below.",
   advice:
     "I can explain your supplied records and their sources. Investment and tax recommendations are outside this demo.",
   external_action:
@@ -249,9 +281,8 @@ const limitedCopy: Record<string, string> = {
   tool_limit:
     "The investigation reached its tool limit. Your records are unchanged. Try one specific figure or inspect its contributors locally.",
   failed:
-    "The simulated investigation failed. Your records and local guidance are still available. Retry explicitly or use a local explanation.",
-  refusal:
-    "The simulated assistant declined this request. You can still explore supplied figures and their sources locally.",
+    "I couldn’t complete that request. Your records are safe. Try again, or choose an explanation below.",
+  refusal: "I can’t help with that request. You can still explore your figures and their sources.",
   crud_next:
     "Session records support invoices, costs, payments and contacts. Open Records to create, edit or remove them with an editable form and local confirmation.",
 };
@@ -266,6 +297,26 @@ export function renderRetroResponse(
   catalogue: DashboardCatalogue,
 ): { intro: string; facts: DashboardFact[]; closing: string } {
   const decision = response.decision;
+  if (decision.kind === "workspace_request")
+    return {
+      intro:
+        decision.intent.action === "help"
+          ? "Choose a task."
+          : "Here’s the next step. Review or choose the control below.",
+      facts: [],
+      closing: "",
+    };
+  if (decision.kind === "dashboard_request")
+    return {
+      intro:
+        decision.action === "chart"
+          ? "Let’s build that chart. Which style would you like?"
+          : decision.action === "kpi"
+            ? "Add this figure to your dashboard?"
+            : "Choose the dashboard card you want to change.",
+      facts: [],
+      closing: "",
+    };
   if (decision.kind === "change_request")
     return {
       intro:
@@ -277,7 +328,7 @@ export function renderRetroResponse(
               ? response.change.reason
               : "This change could not be validated.",
       facts: [],
-      closing: "Confirmation and Undo use no AI requests.",
+      closing: "Your records change only after you confirm. You can undo your latest change.",
     };
   if (decision.kind === "limited_result")
     return { intro: limitedCopy[decision.reason]!, facts: [], closing: "" };
@@ -285,15 +336,15 @@ export function renderRetroResponse(
     return {
       intro:
         decision.reason === "period"
-          ? "This request names a different period. Change Period & scope, then ask again; a local explanation of the current scope is available below. A live clarification reply uses another turn."
-          : "Which part would you like to explore? Choose a topic below. A live clarification reply uses another turn; local explanations use none.",
+          ? "This request names a different period. Change Period & scope, then ask again, or explore the current period below."
+          : "Which part would you like to explore? Choose a topic below.",
       facts: [],
       closing: "",
     };
   if (decision.kind === "tour")
     return {
       intro:
-        "Let’s explore your actual workspace. Each step points to a mounted section. You can go back, finish or keep typing at any time.",
+        "Let’s explore your workspace. I’ll point out each section as we go. You can go back, finish or keep typing at any time.",
       facts: [],
       closing: "",
     };
@@ -325,6 +376,12 @@ export function renderRetroResponse(
       "Compare the current period with the preceding supplied period. Each figure retains its own coverage and contributors.",
     coverage:
       "Coverage describes the whole document collection, including review holds and duplicates. It is not a complete accounting claim.",
+    due_soon: "These known open amounts are due within seven days of the selected as-of date.",
+    tax: "This is explicitly stated document tax. It does not calculate tax liability or recoverability.",
+    categories:
+      "Here’s how documented costs divide into categories. Each group opens its contributors.",
+    customers: "These counterparties contribute supplied income in this scope.",
+    vendors: "These counterparties contribute supplied costs in this scope.",
   };
   return {
     intro: intros[decision.topic],
@@ -341,6 +398,26 @@ export function executeRetroTool(
   const tool = retroToolSchema.parse(input);
   const graph = request.workspace;
   switch (tool.name) {
+    case "get_ui_context":
+      return {
+        dashboard: request.uiContext?.dashboard ?? null,
+        categories: [...new Set(graph.events.map((event) => event.category))].slice(0, 20),
+        counterparties: graph.contacts
+          .slice(0, 20)
+          .map(({ id, name, role }) => ({ id, name, role })),
+      };
+    case "list_documents":
+      return retroDocuments(graph, tool.args.query)
+        .slice(tool.args.offset, tool.args.offset + 20)
+        .map(({ id, name, kind, pageCount, state, disposition, provenance }) => ({
+          id,
+          name,
+          kind,
+          pageCount,
+          state,
+          disposition,
+          provenance,
+        }));
     case "prepare_session_change":
       return prepareRetroChange(
         tool.args,

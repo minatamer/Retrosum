@@ -114,10 +114,7 @@ export function ChangePreview({
     <section id="retro-proposal" className={styles.panel} aria-label="Retro editable proposal">
       <header>
         <div>
-          <span>
-            Retro · {response.mode === "fake" ? "Simulated preparation" : "Prepared form"} ·
-            Revision {proposal.command.basedOnRevision}
-          </span>
+          <span>Retro · Review your change</span>
           <h2>{proposal.label}</h2>
         </div>
         <button type="button" onClick={onCancel}>
@@ -126,8 +123,8 @@ export function ChangePreview({
       </header>
       <p className={styles.caption}>
         {filling
-          ? "Filling validated fields. You can edit any field now; your edits take priority."
-          : "Review the editable fields and current-scope effect, then confirm once."}{" "}
+          ? "Preparing your form. You can edit any field as it appears."
+          : "Review the details and their effect on your overview, then confirm."}{" "}
         USD · Dates and tax basis are visible below.
       </p>
       <div className={styles.body}>
@@ -178,7 +175,7 @@ export function ChangePreview({
           )}
         </div>
         <aside aria-label="Proposed financial effect">
-          <span className={styles.eyebrow}>Deterministic effect · selected scope</span>
+          <span className={styles.eyebrow}>Effect on your overview</span>
           <p>
             {response.scope.from} — {response.scope.to} · as of{" "}
             {response.scope.asOf ?? workspace.asOf}
@@ -201,7 +198,7 @@ export function ChangePreview({
           )}
           <p className={styles.caption}>
             This shows this dashboard scope only. Dates outside it can affect another period.
-            Confirming writes browser records; no money is sent.
+            Confirming updates your records. It does not send a payment.
           </p>
           {proposal.relationships.map((text) => (
             <p className={styles.relation} key={text}>

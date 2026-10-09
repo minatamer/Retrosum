@@ -32,10 +32,17 @@ import { PaperDialog } from "../../components/ui/paper-dialog";
 import { useSession } from "../session/session-provider";
 import { FactDetail } from "../dashboard/fact-detail";
 import { OriginalViewer } from "../documents/original-viewer";
-import { GuidanceOutline, TourStep, useGuidance } from "./guidance";
+import { GuidanceOutline, useGuidance } from "./guidance";
 import styles from "./retro.module.css";
 import { ChangePreview } from "./change-preview";
+import { DashboardRequestPreview } from "./dashboard-request";
+import { WorkspaceRequestPreview } from "./workspace-request";
 import { navigateWorkspace } from "../workspace/navigation";
+import {
+  cancelSmoothScroll,
+  scrollToElement,
+  scrollToSection,
+} from "../../components/ui/smooth-scroll";
 import { usePaidProcessing } from "../processing/processing-provider";
 import { hashRequest } from "../processing/processing-client";
 import { readJson } from "../documents/recognition-client";
@@ -60,7 +67,7 @@ export function Retro() {
   const [runtimeRefresh, setRuntimeRefresh] = useState(0);
   const [dismissedSuggestion, setDismissedSuggestion] = useState<string | null>(null);
   const [input, setInput] = useState("");
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [pending, setPending] = useState<Pending | null>(null);
   const [detail, setDetail] = useState<{ id: string; revision: number } | null>(null);
   const [source, setSource] = useState<SourceReference | null>(null);
@@ -85,6 +92,29 @@ export function Retro() {
   const contextKey = `${generation}/${session?.workspace.id}/${session?.workspace.revision}/${actualScope ? retroScopeKey(actualScope) : ""}`;
   const guidance = useGuidance(contextKey);
   const touring = guidance.active?.step !== undefined && guidance.active.step !== null;
+  const tourSeen = session?.experience.dashboardTourSeen;
+  const tourView = session?.experience.view;
+  const showGuidance = guidance.show;
+  const startTour = () => {
+    const current = controller.getSnapshot().session;
+    if (!current) return;
+    if (!current.experience.dashboardTourSeen)
+      controller.setExperience({ ...current.experience, dashboardTourSeen: true });
+    setActiveChange(null);
+    setExpanded(false);
+    guidance.show("overview", 0);
+  };
+  useEffect(() => {
+    if (!ready || tourSeen !== false || tourView !== "overview") return;
+    const timer = window.setTimeout(() => {
+      if (controller.claimDashboardTour()) {
+        setExpanded(false);
+        showGuidance("overview", 0);
+      }
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [controller, ready, tourSeen, tourView, showGuidance]);
+  useEffect(() => () => cancelSmoothScroll(), [contextKey]);
   const busy =
     pending?.stage === "submitting" ||
     pending?.stage === "staging" ||
@@ -107,8 +137,17 @@ export function Retro() {
   }, [runtimeRefresh]);
   useEffect(() => {
     const node = messagesBox.current;
-    if (node) node.scrollTo({ top: node.scrollHeight, behavior: "smooth" });
-  }, [session?.messages.length, pending?.stage, expanded]);
+    if (!node) return;
+    const answer = node.querySelector<HTMLElement>("article:last-of-type");
+    const top =
+      !pending && answer
+        ? node.scrollTop +
+          answer.getBoundingClientRect().top -
+          node.getBoundingClientRect().top -
+          12
+        : node.scrollHeight;
+    node.scrollTo({ top, behavior: "smooth" });
+  }, [session?.messages.length, pending, expanded]);
   if (!session || !catalogue || !actualScope || !ready)
     return <div className={styles.loading}>Retro is opening your browser workspace…</div>;
   const workspace = session.workspace;
@@ -134,18 +173,14 @@ export function Retro() {
     controller.setMessages([...current.messages, ...pair].slice(-40));
     setPending(null);
     setExpanded(true);
-    if (response.decision.kind === "tour") guidance.show("overview", 0);
+    if (response.decision.kind === "tour") startTour();
     if (response.change?.kind === "ready") {
       verifyRetroChange(response, workspace);
       const target = document.getElementById("retro-change-stage");
       if (target) setActiveChange({ response, contextKey, target });
       setExpanded(false);
       navigateWorkspace("records");
-      window.requestAnimationFrame(() =>
-        document
-          .getElementById("retro-proposal")
-          ?.scrollIntoView({ behavior: "smooth", block: "start" }),
-      );
+      window.requestAnimationFrame(() => scrollToSection("retro-proposal"));
     }
   };
   const local = (topic: RetroTopic) => {
@@ -170,6 +205,45 @@ export function Retro() {
   };
   const send = async (prompt: string) => {
     if (busy || !prompt.trim() || prompt.length > 1000) return;
+    const previous = session.messages.at(-1)?.response;
+    const wordStyle = (
+      {
+        line: "line",
+        "line chart": "line",
+        curve: "curve",
+        curved: "curve",
+        "curved chart": "curve",
+        smooth: "curve",
+        bar: "bar",
+        "bar chart": "bar",
+        pie: "pie",
+        "pie chart": "pie",
+        donut: "pie",
+      } as const
+    )[prompt.trim().toLowerCase() as "line"];
+    if (
+      wordStyle &&
+      previous?.decision.kind === "dashboard_request" &&
+      isRetroCurrent(previous, workspace, actualScope)
+    ) {
+      finish(
+        prompt,
+        createRetroResponse(
+          {
+            operationId: `retro_${crypto.randomUUID()}`,
+            workspace,
+            scope: actualScope,
+            prompt,
+            recent: [],
+            uiContext: { dashboard: session.dashboard },
+          },
+          { ...previous.decision, style: wordStyle },
+          "local",
+        ),
+      );
+      setInput("");
+      return;
+    }
     guidance.stop();
     setActiveChange(null);
     setInput("");
@@ -179,7 +253,7 @@ export function Retro() {
       setPending({
         prompt,
         stage: "failed",
-        text: "Live conversation is unavailable. Use the local explanation and tour shortcuts; your records remain usable.",
+        text: "Retro could not connect. Try reconnecting, or use the explanation and tour shortcuts below.",
       });
       return;
     }
@@ -200,6 +274,7 @@ export function Retro() {
       workspace,
       scope: actualScope,
       prompt: prompt.trim(),
+      uiContext: { dashboard: session.dashboard },
       ...(changeContext ? { changeContext } : {}),
       recent: session.messages
         .slice(-8)
@@ -212,10 +287,7 @@ export function Retro() {
     setPending({
       prompt,
       stage: "submitting",
-      text:
-        capabilities.mode === "fake"
-          ? "Understanding your request · Development simulation"
-          : "Investigating your current supplied records…",
+      text: "Understanding your request…",
     });
     try {
       await pause(300, effect.signal);
@@ -365,11 +437,10 @@ export function Retro() {
       register: result.family,
     });
     navigateWorkspace("records");
-    window.requestAnimationFrame(() =>
-      document
-        .getElementById(`record-${result.recordId}`)
-        ?.scrollIntoView({ behavior: "smooth", block: "center" }),
-    );
+    window.requestAnimationFrame(() => {
+      const record = document.getElementById(`record-${result.recordId}`);
+      if (record) scrollToElement(record, { block: "center" });
+    });
   };
   const openFact = (id: string) => {
     guidance.stop();
@@ -384,9 +455,7 @@ export function Retro() {
     }
   };
   const tour = () => {
-    setActiveChange(null);
-    setExpanded(true);
-    guidance.show("overview", 0);
+    startTour();
   };
   const undo = () => {
     guidance.stop();
@@ -401,7 +470,7 @@ export function Retro() {
     }
   };
   return (
-    <div id="retro-composer" className={styles.retro}>
+    <div id="retro-composer" className={styles.retro} data-expanded={expanded}>
       {activeChange?.contextKey === contextKey &&
         activeChange.response.change?.kind === "ready" &&
         createPortal(
@@ -414,19 +483,29 @@ export function Retro() {
           />,
           activeChange.target,
         )}
-      <GuidanceOutline active={guidance.active} onStop={guidance.stop} />
-      <div className={styles.topline}>
-        <span>
-          <i aria-hidden="true" /> Retro{" "}
-          <small>
-            {capabilities?.mode === "fake"
-              ? "Development simulation"
-              : capabilities?.mode === "live"
-                ? "Live AI"
-                : "Local guidance"}
-          </small>
-        </span>
-        <div>
+      <GuidanceOutline active={guidance.active} onStop={guidance.stop} show={guidance.show} />
+      <button
+        type="button"
+        className={styles.conversationToggle}
+        aria-expanded={expanded}
+        aria-label={expanded ? "Collapse conversation" : "Expand conversation"}
+        onClick={() => {
+          if (expanded || touring) guidance.stop();
+          setExpanded((value) => !value);
+        }}
+      >
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path
+            d="m5 11 4-4 4 4"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      {expanded && (!capabilities?.copilot.available || busy || session.undo) && (
+        <div className={styles.topline}>
           {!capabilities?.copilot.available && (
             <button
               type="button"
@@ -446,18 +525,7 @@ export function Retro() {
               Undo
             </button>
           )}
-          <button
-            type="button"
-            aria-expanded={expanded}
-            aria-label={expanded ? "Collapse conversation" : "Expand conversation"}
-            onClick={() => setExpanded((value) => !value)}
-          >
-            {expanded ? "Hide chat" : "Show chat"}
-          </button>
         </div>
-      </div>
-      {guidance.active?.step !== null && guidance.active && (
-        <TourStep active={guidance.active} show={guidance.show} stop={guidance.stop} />
       )}
       {expanded && !touring && (
         <div
@@ -497,28 +565,37 @@ export function Retro() {
             }
             return (
               <article key={message.id} className={styles.answer}>
-                <span className={styles.meta}>
-                  Retro ·{" "}
-                  {response?.mode === "fake"
-                    ? "Simulated"
-                    : response?.mode === "live"
-                      ? "Live"
-                      : "Local"}{" "}
-                  · Revision {message.revision}
-                </span>
+                <span className={styles.meta}>Retro</span>
                 {stale ? (
                   <p className={styles.stale}>
-                    This answer belongs to an earlier record revision or filter scope. Refresh it
-                    explicitly for the current figures.
+                    Your records or filters have changed since this answer. Refresh it to see the
+                    current figures.
                   </p>
                 ) : (
                   <>
                     <p>
                       {content?.intro ??
                         (response
-                          ? "This stored answer could not be verified. Use a current local explanation."
+                          ? "This answer could not be verified. Ask again for the current figures."
                           : message.text)}
                     </p>
+                    {response?.decision.kind === "dashboard_request" && content && (
+                      <DashboardRequestPreview
+                        decision={response.decision}
+                        response={response}
+                        proposalId={message.id}
+                      />
+                    )}
+                    {response?.decision.kind === "workspace_request" && content && (
+                      <WorkspaceRequestPreview
+                        decision={response.decision}
+                        response={response}
+                        proposalId={message.id}
+                        onPrompt={(prompt) => {
+                          void send(prompt);
+                        }}
+                      />
+                    )}
                     {message.changeResult && (
                       <div className={styles.sources}>
                         <button type="button" onClick={() => openResult(message.changeResult!)}>
@@ -624,13 +701,8 @@ export function Retro() {
           void send(input);
         }}
         disabled={busy}
-        footnote={
-          capabilities?.mode === "fake"
-            ? "Simulated language · exact local facts · no AI API requests"
-            : "Local shortcuts use no requests · live clarification uses another turn"
-        }
         shortcuts={
-          touring ? undefined : (
+          !expanded || touring ? undefined : (
             <>
               <button type="button" disabled={busy} onClick={() => local("summary")}>
                 Summarize this period
@@ -640,6 +712,29 @@ export function Retro() {
               </button>
               <button type="button" disabled={busy} onClick={tour}>
                 Show me around
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() =>
+                  finish(
+                    "What can Retro do?",
+                    createRetroResponse(
+                      {
+                        operationId: "retro_local_help",
+                        workspace,
+                        scope: actualScope,
+                        prompt: "Local capability help",
+                        recent: [],
+                        uiContext: { dashboard: session.dashboard },
+                      },
+                      { kind: "workspace_request", intent: { action: "help" } },
+                      "local",
+                    ),
+                  )
+                }
+              >
+                What can Retro do?
               </button>
               <button
                 type="button"

@@ -7,6 +7,7 @@ from pathlib import Path
 import hashlib
 import json
 import subprocess
+import sys
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from pypdf import PdfReader
 from reportlab.pdfgen import canvas
@@ -110,6 +111,57 @@ def raster_pdf(filename, image):
     pdf.drawImage(ImageReader(image), 0, 0, width=WIDTH, height=HEIGHT)
     pdf.save()
     assert not PdfReader(OUT / filename).pages[0].extract_text()
+
+
+def author_cost_packs():
+    packs = [
+        ("harbor-September-operations.pdf", "D09", "Materials and storage receipts", [
+            ("Northstar Supplies", "NS-092", "2026-09-08", "Materials",
+             "Presentation print materials / packs", "8", "30.00", "240.00"),
+            ("Cove Spaces", "ST-092", "2026-09-03", "Rent",
+             "September archive-storage rental", "1", "200.00", "200.00"),
+        ]),
+        ("harbor-September-services.pdf", "D10", "Creative and marketing receipts", [
+            ("Framecraft", "FC-091", "2026-09-15", "Services",
+             "Product image retouching / hours", "3", "150.00", "450.00"),
+            ("Beacon Media", "BM-091", "2026-09-22", "Marketing",
+             "September launch promotion", "1", "180.00", "180.00"),
+        ]),
+    ]
+    for filename, label, title, rows in packs:
+        pdf = new_pdf(filename)
+        for party, reference, date, category, description, quantity, price, amount in rows:
+            page(pdf, party, "PAID RECEIPT / " + reference)
+            text(pdf, "Billed to: Harbor Studio", 48, 163, 12, "Helvetica-Bold")
+            text(pdf, "Paid on: " + date, 48, 200)
+            text(pdf, "Expense category: " + category, 340, 200)
+            table(pdf, [(description, quantity, price, amount)], y=276)
+            totals(pdf, [("Subtotal / USD", amount), ("Separate tax / USD", "0.00"),
+                         ("Total paid / USD", amount)], y=432)
+            text(pdf, "Status: PAID IN FULL", 48, 577, 12, "Helvetica-Bold")
+            if reference == "ST-092":
+                text(pdf, "Archive storage is separate from the studio-rent receipt.", 48, 618)
+            else:
+                text(pdf, "This receipt records a separate purchase by Harbor Studio.", 48, 618)
+            text(pdf, "No separate payment-register entry is supplied for this purchase.", 48, 648)
+            pdf.showPage()
+        pdf.save()
+        register(filename, label, title, "receipt", "paired-cost-receipts", 2)
+
+
+def write_manifest():
+    assert len(manifest) == 10
+    pages = sum(item["pageCount"] for item in manifest)
+    assert pages == 18
+    assert all(item["byteLength"] <= 5 * 1024 * 1024 for item in manifest)
+    assert sum(item["byteLength"] for item in manifest) <= 20 * 1024 * 1024
+    result = {"fixtureVersion": VERSION, "business": "Harbor Studio", "currency": "USD",
+              "period": "2026-09", "asOf": "2026-10-03", "documents": manifest}
+    destination = ROOT / "apps/frontend/src/features/documents/sample-manifest.json"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps({"files": len(manifest), "pages": pages,
+                      "bytes": sum(item["byteLength"] for item in manifest)}))
 
 
 def author():
@@ -308,17 +360,19 @@ def author():
     pdf.save()
     register("harbor-August-records.pdf", "D08", "August comparison records", "history", "archive-record-pack", 4)
 
-    assert sum(item["pageCount"] for item in manifest) == 14
-    assert all(item["byteLength"] <= 5 * 1024 * 1024 for item in manifest)
-    assert sum(item["byteLength"] for item in manifest) <= 20 * 1024 * 1024
-    result = {"fixtureVersion": VERSION, "business": "Harbor Studio", "currency": "USD",
-              "period": "2026-09", "asOf": "2026-10-03", "documents": manifest}
-    destination = ROOT / "apps/frontend/src/features/documents/sample-manifest.json"
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"files": len(manifest), "pages": 14,
-                      "bytes": sum(item["byteLength"] for item in manifest)}))
+    author_cost_packs()
+    write_manifest()
 
 
 if __name__ == "__main__":
-    author()
+    if sys.argv[1:] == ["--cost-packs-only"]:
+        manifest.extend(json.loads((ROOT / "apps/frontend/src/features/documents/sample-manifest.json")
+                                   .read_text(encoding="utf-8"))["documents"][:8])
+        OUT.mkdir(parents=True, exist_ok=True)
+        SCRATCH.mkdir(parents=True, exist_ok=True)
+        author_cost_packs()
+        write_manifest()
+    elif not sys.argv[1:]:
+        author()
+    else:
+        raise SystemExit("Usage: author-harbor.py [--cost-packs-only]")

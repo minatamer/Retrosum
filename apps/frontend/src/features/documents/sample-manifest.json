@@ -133,6 +133,38 @@
       "layoutFamily": "archive-record-pack",
       "pdfPath": "/samples/harbor-v1/harbor-August-records.pdf",
       "thumbnailPath": "/samples/harbor-v1/D08.webp"
+    },
+    {
+      "id": "document_D09",
+      "label": "D09",
+      "name": "harbor-September-operations.pdf",
+      "title": "Materials and storage receipts",
+      "mime": "application/pdf",
+      "sha256": "03d9c65259c00adf5219b63b718b0bf0b0d18aa75d507282f883eda4ac9ba002",
+      "byteLength": 3667,
+      "pageCount": 2,
+      "kind": "receipt",
+      "state": "selected",
+      "provenance": "synthetic",
+      "layoutFamily": "paired-cost-receipts",
+      "pdfPath": "/samples/harbor-v1/harbor-September-operations.pdf",
+      "thumbnailPath": "/samples/harbor-v1/D09.webp"
+    },
+    {
+      "id": "document_D10",
+      "label": "D10",
+      "name": "harbor-September-services.pdf",
+      "title": "Creative and marketing receipts",
+      "mime": "application/pdf",
+      "sha256": "cb0e0de57c66b5c6494550f749e2eab5e539cf685234e9eb2d2d5a9b32dbb1b3",
+      "byteLength": 3661,
+      "pageCount": 2,
+      "kind": "receipt",
+      "state": "selected",
+      "provenance": "synthetic",
+      "layoutFamily": "paired-cost-receipts",
+      "pdfPath": "/samples/harbor-v1/harbor-September-services.pdf",
+      "thumbnailPath": "/samples/harbor-v1/D10.webp"
     }
   ]
 }

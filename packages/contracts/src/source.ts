@@ -68,9 +68,9 @@ export type SourceReference = z.infer<typeof sourceReferenceSchema>;
 export type SourceDocument = z.infer<typeof documentSchema>;
 
 const publicPdfPath = z.string().regex(/^\/samples\/harbor-v1\/[A-Za-z0-9_-]+\.pdf$/u);
-const publicThumbnailPath = z.string().regex(/^\/samples\/harbor-v1\/D0[1-8]\.webp$/u);
+const publicThumbnailPath = z.string().regex(/^\/samples\/harbor-v1\/D(?:0[1-9]|10)\.webp$/u);
 export const sampleAssetSchema = documentSchema.extend({
-  label: z.string().regex(/^D0[1-8]$/u),
+  label: z.string().regex(/^D(?:0[1-9]|10)$/u),
   title: z.string().min(1).max(100),
   layoutFamily: z.string().min(1).max(80),
   pdfPath: publicPdfPath,
@@ -84,7 +84,7 @@ export const sampleManifestSchema = z
     currency: z.literal("USD"),
     period: z.literal("2026-09"),
     asOf: z.literal("2026-10-03"),
-    documents: z.array(sampleAssetSchema).length(8),
+    documents: z.array(sampleAssetSchema).length(10),
   })
   .superRefine((manifest, ctx) => {
     const documents = manifest.documents;

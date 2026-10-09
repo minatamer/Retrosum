@@ -137,7 +137,7 @@ async function admit(
   const value = await readJson(response, 4096, deadline);
   if (!response.ok)
     throw new Error(
-      "Live admission is unavailable or its allowance is used. Local records and guidance remain available.",
+      "Processing is unavailable or this session’s allowance is used. You can still edit your records and explore the dashboard.",
     );
   return value;
 }
@@ -204,7 +204,7 @@ function LiveReview({ pending }: { pending: Pending }) {
   return (
     <PaperDialog
       open
-      title="Review this live AI action"
+      title="Review this action"
       caption="Your choice, before processing"
       onClose={() => pending.finish()}
     >
@@ -299,7 +299,7 @@ function Challenge({
         onReady={() => setLoaded(true)}
         onError={() => callbacks.current.failed()}
       />
-      <div ref={element} className={styles.challenge} aria-label="Verify this live action" />
+      <div ref={element} className={styles.challenge} aria-label="Verify this action" />
     </>
   );
 }
@@ -317,38 +317,56 @@ function HandlingCopy({
           ? action === "extract"
             ? "This selected PDF and its core business context will pass through Retrosum’s temporary server processing to OpenAI for interpretation."
             : "Your question, recent conversation and current financial records will pass through Retrosum’s temporary server processing to OpenAI. Original PDFs are not attached to this Retro turn."
-          : "Local simulation uses declared sample transcriptions and simulated Retro language. It makes no AI API calls. Live processing stays closed until owner accuracy, spending and deployment checks pass."}
+          : "Choose the documents you want to process, then review their details before adding them to your overview. You can inspect the originals and edit your records at any time."}
       </p>
       <p>
-        Uploaded originals are retained only in this browser’s temporary storage. Records recover on
-        refresh until the fixed two-hour deadline. Reset cancels owned work and clears local data;
-        closing cleanup is best effort, with expiry cleanup on a later visit.
+        Uploaded PDFs stay in this browser tab. Your records survive refresh for up to two hours.
+        Reset stops processing and clears the session; expired data is cleared when you return.
       </p>
+      {live && (
+        <p>
+          OpenAI may retain data under its abuse monitoring and file or image policies.{" "}
+          <a
+            href="https://developers.openai.com/api/docs/guides/your-data"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Read OpenAI’s data policy ↗
+          </a>
+        </p>
+      )}
       <p>
-        Live requests use OpenAI’s API with storage disabled. This does not promise zero provider
-        retention: abuse monitoring and file or image policies can apply.{" "}
-        <a
-          href="https://developers.openai.com/api/docs/guides/your-data"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Read OpenAI’s data policy ↗
-        </a>
-      </p>
-      <p>
-        Share only documents you are entitled to process. Reset cannot recall provider-controlled
-        copies or remove files you already downloaded. Local forms, arithmetic, tour, Undo and
-        exports use no AI inference.
+        Share only documents you are entitled to process. Reset cannot remove files you already
+        downloaded{live ? " or recall copies held by OpenAI" : ""}.
       </p>
     </>
   );
 }
-export function ProcessingDetails() {
+export function ProcessingDetails({ compact = false }: { compact?: boolean }) {
   const [target, setTarget] = useState<HTMLElement | null>(null);
   return (
     <>
-      <button type="button" onClick={() => setTarget(document.body)}>
-        How processing works ↗
+      <button
+        type="button"
+        aria-label="How processing works"
+        onClick={() => setTarget(document.body)}
+      >
+        {compact ? (
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v6 M12 7v1" />
+          </svg>
+        ) : (
+          "How processing works ↗"
+        )}
       </button>
       {target &&
         createPortal(

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import localFont from "next/font/local";
 import { headers } from "next/headers";
+import { ScrollToSection } from "../components/ui/scroll-to-section";
+import { CleanUrlNavigation } from "../components/ui/clean-url-navigation";
 import "./globals.css";
 const editorial = localFont({
   src: "../assets/fonts/fraunces.woff2",
@@ -29,9 +31,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <meta name="retrosum-csp-nonce" content={nonce} />
       </head>
       <body>
-        <a className="skip-link" href="#main">
+        <CleanUrlNavigation />
+        <ScrollToSection className="skip-link" targetId="main" focusTarget>
           Skip to content
-        </a>
+        </ScrollToSection>
         {children}
       </body>
     </html>

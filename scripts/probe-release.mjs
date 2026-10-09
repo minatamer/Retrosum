@@ -103,6 +103,8 @@ if (kind === "backend") {
     "northstar-A-77-second-copy",
     "harbor-payments-September",
     "harbor-August-records",
+    "harbor-September-operations",
+    "harbor-September-services",
   ];
   for (const sample of samples) {
     const pdf = await request(`/samples/harbor-v1/${sample}.pdf`);

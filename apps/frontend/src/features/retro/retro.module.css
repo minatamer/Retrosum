@@ -1,12 +1,62 @@
 .retro {
+  position: relative;
+  isolation: isolate;
   min-width: 0;
   color: var(--rs-ivory);
+  padding-top: 44px;
+}
+.retro[data-expanded="false"] {
+  border: 1px solid var(--rs-glass-border);
+  border-radius: 1.8rem;
+  background: var(--rs-glass-sheen), var(--rs-glass-surface);
+  backdrop-filter: var(--rs-glass-backdrop);
+  box-shadow: var(--rs-shadow);
+}
+.retro[data-expanded="false"] :global(.rs-composer-form) {
+  background: transparent;
+  border-color: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+.retro :global(.rs-composer-wrap) {
+  width: 100%;
+}
+.conversationToggle {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--rs-orange);
+  cursor: pointer;
+  transition: color 180ms ease;
+}
+.conversationToggle:hover {
+  color: var(--rs-ivory);
+}
+.conversationToggle svg {
+  transition: transform 260ms var(--rs-ease);
+}
+.retro[data-expanded="true"] .conversationToggle svg {
+  transform: rotate(180deg);
+}
+.retro[data-expanded="true"] :global(.rs-chat-shortcuts) {
+  animation: rs-message-in 260ms var(--rs-ease) both;
 }
 .retro :global(.rs-chat-shortcuts) {
   flex-wrap: nowrap;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scrollbar-width: thin;
+  scrollbar-color: rgb(190 214 193 / 45%) transparent;
   max-width: 100%;
 }
 .retro :global(.rs-chat-shortcuts button) {
@@ -15,32 +65,10 @@
 .topline {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 0.6rem;
   padding: 0.3rem 0.45rem 0.55rem;
   font-size: 0.82rem;
-}
-.topline > span {
-  display: flex;
-  gap: 0.4rem;
-  align-items: center;
-  white-space: nowrap;
-}
-.topline i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--rs-orange);
-  box-shadow: 0 0 14px rgb(235 174 134 / 30%);
-}
-.topline small {
-  color: #c2d2c5;
-  font-size: 0.72rem;
-}
-.topline > div {
-  display: flex;
-  gap: 0.3rem;
-  align-items: center;
 }
 .topline button,
 .clear {
@@ -75,6 +103,8 @@
     0 18px 60px rgb(0 12 7 / 28%),
     inset 0 1px 0 rgb(245 241 227 / 8%);
   scrollbar-width: thin;
+  scrollbar-color: rgb(190 214 193 / 45%) transparent;
+  animation: rs-message-in 260ms var(--rs-ease) both;
 }
 .welcome p {
   margin: 0.3rem 0;
@@ -213,12 +243,7 @@
   box-shadow:
     0 0 0 6px rgb(235 174 134 / 10%),
     0 0 30px rgb(235 174 134 / 10%);
-  transition:
-    top 220ms ease,
-    left 220ms ease,
-    width 220ms ease,
-    height 220ms ease;
-  animation: rs-message-in 300ms ease both;
+  animation: tour-focus-in 260ms ease both;
 }
 .outline > span {
   position: absolute;
@@ -232,25 +257,62 @@
   white-space: nowrap;
 }
 .tour {
+  position: fixed;
+  z-index: 72;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
   border: 1px solid #7c977b;
   border-radius: 1.2rem;
-  padding: 0.9rem 1rem;
-  background: rgb(29 57 44 / 97%);
-  box-shadow: 0 12px 35px rgb(0 12 7 / 22%);
-  margin-bottom: 0.7rem;
-  animation: rs-message-in 300ms ease both;
-  max-height: min(34dvh, 18rem);
+  padding: 1.1rem 1.2rem;
+  color: var(--rs-ivory);
+  background: #193d33;
+  box-shadow: 0 20px 65px rgb(0 12 7 / 40%);
+  animation: tour-focus-in 260ms ease both;
+  overflow: visible;
+}
+.tourCopy {
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.tour > .actions {
+  flex-shrink: 0;
+}
+.tourScrim {
+  position: fixed;
+  z-index: 69;
+  background: rgb(5 22 16 / 60%);
+  backdrop-filter: blur(3px);
+  animation: tour-focus-in 260ms ease both;
+}
+.tourOutline {
+  z-index: 71;
+  box-shadow:
+    0 0 0 4px rgb(235 174 134 / 22%),
+    0 0 30px rgb(235 174 134 / 30%);
+}
+.tourPointer {
+  position: fixed;
+  z-index: 72;
+  pointer-events: none;
+  width: 12px;
+  height: 12px;
+  background: #193d33;
+  border: 1px solid #7c977b;
+  transform: rotate(45deg);
+  animation: tour-focus-in 260ms ease both;
 }
 .tour strong {
   display: block;
   margin-top: 0.25rem;
   font-family: var(--font-editorial), Georgia, serif;
-  font-size: 1.25rem;
+  font-size: 1.45rem;
   font-weight: 500;
 }
 .tour p {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   line-height: 1.5;
   margin: 0.45rem 0 0.7rem;
 }
@@ -267,6 +329,14 @@
   padding: 1rem;
   font-size: 0.85rem;
 }
+@keyframes tour-focus-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 @keyframes working {
   from {
     opacity: 0.35;
@@ -281,12 +351,6 @@
     padding-inline: 0.2rem;
     gap: 0.1rem;
   }
-  .topline > span {
-    flex: 1;
-  }
-  .topline small {
-    font-size: 0.7rem;
-  }
   .messages {
     padding: 0.8rem 0.9rem;
     max-height: max(0px, min(27dvh, 18rem, calc(var(--rs-visual-height, 100dvh) - 220px)));
@@ -295,21 +359,12 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .tour {
-    padding: 0.7rem 0.8rem;
-    max-height: min(29dvh, 15rem);
-  }
-}
-@media (max-width: 30rem) {
-  .topline small {
-    display: none;
+    padding: 0.85rem 1rem;
   }
 }
 @media (max-height: 560px) {
   .messages {
     max-height: min(20dvh, 8rem);
-  }
-  .tour {
-    max-height: 29dvh;
   }
   .topline {
     padding-bottom: 0.1rem;

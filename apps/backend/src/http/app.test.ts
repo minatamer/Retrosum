@@ -13,6 +13,33 @@ const makeApp = (environment: Record<string, string | undefined> = {}) =>
     }),
   );
 describe("safe explicit HTTP composition", () => {
+  it.each(["true", "false"])("offers public FX in fake=%s with paid AI disabled", async (fake) => {
+    const quote = {
+      base: "USD" as const,
+      quote: "EUR" as const,
+      source: "ECB" as const,
+      date: "2026-10-09",
+      rateMicros: 892380,
+    };
+    const read = vi.fn().mockResolvedValue(quote);
+    const app = createApp(
+      composeRuntime(
+        parseConfig({
+          FAKE_MODE: fake,
+          AI_PROVIDER: fake === "true" ? "fake" : "openai",
+          PAID_DEMO_ENABLED: "false",
+        }),
+        { clock: systemClock, createRequestId: () => "request_test", exchangeRates: { read } },
+      ),
+    );
+    const result = await request(app).get("/v1/exchange-rate").expect(200);
+    expect(result.body).toEqual(quote);
+    expect(result.headers["cache-control"]).toBe("no-store");
+    expect(read).toHaveBeenCalledTimes(1);
+    read.mockRejectedValue(new Error("private upstream detail"));
+    const failure = await request(app).get("/v1/exchange-rate").expect(503);
+    expect(failure.body).toEqual({ error: "exchange_rate_unavailable" });
+  });
   it("content-free reset cancels only owned work and keeps replay/turn counters", async () => {
     const runtime = composeRuntime(parseConfig({}), {
         clock: systemClock,

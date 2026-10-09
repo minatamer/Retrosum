@@ -15,3 +15,5 @@ export * from "./retro.js";
 export * from "./record-form.js";
 export * from "./retro-change.js";
 export * from "./export.js";
+export * from "./custom-dashboard.js";
+export * from "./retro-workspace.js";

@@ -14,11 +14,16 @@ import { PaidAdmission, type ChallengeVerifier } from "../security/admission.js"
 import { turnstileVerifier } from "../security/challenge.js";
 import { LIVE_ACCEPTANCE_VERIFIED } from "../providers/policy.js";
 import type { OperationalMetric } from "../security/metrics.js";
+import {
+  createExchangeRateService,
+  type ExchangeRateService,
+} from "../providers/exchange-rates.js";
 export interface RuntimePorts {
   clock: Clock;
   createRequestId(): string;
   provider?: AiProviderPort;
   challengeVerifier?: ChallengeVerifier;
+  exchangeRates?: ExchangeRateService;
   metric?(metric: OperationalMetric): void;
 }
 export interface AppRuntime {
@@ -30,6 +35,7 @@ export interface AppRuntime {
   retroAdmission: RetroAdmission;
   operations: OperationLifecycle;
   paidAdmission: PaidAdmission;
+  exchangeRates: ExchangeRateService;
 }
 export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRuntime {
   // Live support stays closed until exact-field, token and admission acceptance.
@@ -70,6 +76,7 @@ export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRunti
     ports,
     capabilities,
     ready: config.FAKE_MODE || documentsAvailable || copilotAvailable,
+    exchangeRates: ports.exchangeRates ?? createExchangeRateService(ports.clock.now),
     admission: new ExtractionAdmission(ports.clock.now),
     retroAdmission: new RetroAdmission(ports.clock.now),
     operations: new OperationLifecycle(),

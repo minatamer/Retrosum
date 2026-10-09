@@ -45,6 +45,10 @@ for (const asset of manifest.documents) {
         "AU-102": [[6, 25000, 150000]],
         "NS-A-10": [[4, 5000, 20000]],
         "PC-091": [[1, 12000, 12000]],
+        "NS-092": [[8, 3000, 24000]],
+        "ST-092": [[1, 20000, 20000]],
+        "FC-091": [[3, 15000, 45000]],
+        "BM-091": [[1, 18000, 18000]],
       };
       for (const [quantity, price, total] of patterns[event.reference] ?? [])
         lines.push({
@@ -101,4 +105,6 @@ await writeFile(
   "apps/backend/src/providers/fake-fixtures.json",
   JSON.stringify(output, null, 2) + "\n",
 );
-console.log("Authored eight declared fake interpretations; not live OCR results.");
+console.log(
+  `Authored ${manifest.documents.length} declared fake interpretations; not live OCR results.`,
+);

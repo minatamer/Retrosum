@@ -11,6 +11,7 @@ import {
   mergeInterpretation,
   calculateMetrics,
   applyCommand,
+  buildDashboard,
 } from "../packages/money/dist/index.js";
 import { harborSession } from "./fixtures/harbor-v1/money-fixture.mjs";
 import { inspectPdf, verifyOriginal } from "../apps/backend/src/documents/inspection.ts";
@@ -48,7 +49,11 @@ const metadata = (doc, id = "operation_first", retry = false) =>
     },
     asOf: "2026-10-03",
     document: doc,
-    envelope: { files: 8, pages: 14, bytes: 412981 },
+    envelope: {
+      files: manifest.documents.length,
+      pages: manifest.documents.reduce((sum, doc) => sum + doc.pageCount, 0),
+      bytes: manifest.documents.reduce((sum, doc) => sum + doc.byteLength, 0),
+    },
   });
 let cases = [];
 beforeAll(async () => {
@@ -78,16 +83,36 @@ function empty() {
   };
 }
 describe("actual PDF recognition and source grounding", () => {
-  it("inspects all fourteen real pages; keeps raster sources held and deduplicates the second scan", () => {
+  it("inspects all eighteen real pages; populates five cost categories while keeping raster sources held", () => {
     let workspace = empty();
     for (const item of cases) workspace = mergeInterpretation(workspace, item.doc, item.output);
-    expect(workspace.events).toHaveLength(10);
+    expect(workspace.events).toHaveLength(14);
     expect(workspace.payments).toHaveLength(4);
     expect(workspace.invoices).toHaveLength(4);
-    expect(workspace.documents.map((doc) => doc.reviewBlocked)).toEqual(Array(8).fill(false));
+    expect(workspace.documents.map((doc) => doc.reviewBlocked)).toEqual(Array(10).fill(false));
     expect(
       workspace.documents.filter((doc) => doc.state === "needs_review").map((doc) => doc.name),
     ).toEqual([cases[2].doc.name, cases[3].doc.name, cases[5].doc.name]);
+    const initial = buildDashboard(workspace, { from: "2026-09-01", to: "2026-09-30" });
+    expect(initial.facts.costs.value).toBe(119000);
+    expect(initial.facts.profit.value).toBe(361000);
+    expect(Object.fromEntries(initial.categories.map((row) => [row.label, row.value]))).toEqual({
+      Materials: 24000,
+      Rent: 20000,
+      Services: 45000,
+      Marketing: 18000,
+      Software: 12000,
+    });
+    for (const label of ["Materials", "Rent", "Services", "Marketing"]) {
+      const fact = initial.facts[`category:${label}`];
+      expect(fact.contributors).toHaveLength(1);
+      expect(fact.contributors[0].sources).toEqual([
+        expect.objectContaining({
+          documentId: expect.stringMatching(/^document_D(?:09|10)$/u),
+          page: label === "Rent" || label === "Marketing" ? 2 : 1,
+        }),
+      ]);
+    }
     let session = { ...harborSession(), workspace };
     for (const [n, doc] of workspace.documents.entries())
       if (doc.state === "needs_review")
@@ -115,14 +140,14 @@ describe("actual PDF recognition and source grounding", () => {
       totals.netCashMinor,
       totals.customerOpen.minor,
       totals.supplierOpen.minor,
-    ]).toEqual([480000, 128000, 352000, 208000, 180000, 39600]);
-    expect(workspace.documents.reduce((sum, doc) => sum + doc.numericFields.length, 0)).toBe(128);
+    ]).toEqual([480000, 235000, 245000, 208000, 180000, 39600]);
+    expect(workspace.documents.reduce((sum, doc) => sum + doc.numericFields.length, 0)).toBe(150);
     expect(
       workspace.documents.reduce(
         (sum, doc) => sum + doc.numericFields.reduce((n, field) => n + field.occurrences, 0),
         0,
       ),
-    ).toBe(146);
+    ).toBe(178);
   });
   it("holds an incorrect raw digit even if grand totals still match", () => {
     const item = cases[0];

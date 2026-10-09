@@ -100,6 +100,20 @@ export function createApp(runtime: AppRuntime): Express {
   app.get("/v1/config", (_request, response) => {
     response.json(runtime.capabilities);
   });
+  app.get("/v1/exchange-rate", async (_request, response) => {
+    const controller = new AbortController();
+    const close = () => controller.abort();
+    response.once("close", close);
+    try {
+      const quote = await runtime.exchangeRates.read(controller.signal);
+      if (!controller.signal.aborted) response.json(quote);
+    } catch {
+      if (!controller.signal.aborted)
+        response.status(503).json({ error: "exchange_rate_unavailable" });
+    } finally {
+      response.removeListener("close", close);
+    }
+  });
   app.delete("/v1/session", (request, response) => {
     if (request.headers.origin !== runtime.config.FRONTEND_ORIGIN) {
       response.status(403).json({ error: "origin_not_allowed" });

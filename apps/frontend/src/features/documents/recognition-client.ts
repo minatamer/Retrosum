@@ -51,7 +51,7 @@ export async function recognitionCapabilities(signal: AbortSignal) {
 }
 const messages: Record<string, string> = {
   fake_unrecognized_pdf:
-    "Simulation has no declared transcription for this PDF. View the original and add its core records manually.",
+    "This PDF could not be interpreted. You can view the original and add its records manually.",
   document_allowance_used:
     "This session’s recognition allowance is used. Keep the original and enter records manually, or start a fresh workspace.",
   operation_replayed:

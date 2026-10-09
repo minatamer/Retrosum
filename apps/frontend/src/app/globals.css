@@ -71,10 +71,6 @@ body > .skip-link {
 body > .skip-link:focus {
   transform: none;
 }
-.runtime-status {
-  font-size: 0.75rem;
-  line-height: 1.5;
-}
 .sr-only {
   position: absolute;
   width: 1px;

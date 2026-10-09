@@ -732,118 +732,6 @@
   font-size: 0.85rem;
   line-height: 1.6;
 }
-.detail {
-  color: var(--rs-ink);
-  font-size: 0.9rem;
-  line-height: 1.65;
-}
-.detailValue {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin: 0.4rem 0 1.5rem;
-}
-.detailValue strong {
-  font-size: clamp(2rem, 6vw, 3rem);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  overflow-wrap: anywhere;
-}
-.detailValue span {
-  color: var(--rs-muted-ink);
-  font-size: 0.82rem;
-}
-.formula {
-  border-block: 1px solid var(--rs-paper-line);
-  margin: 1.5rem 0;
-}
-.formula > div {
-  display: grid;
-  grid-template-columns: 5.5rem minmax(0, 1fr);
-  padding: 0.8rem 0;
-  gap: 1rem;
-}
-.formula dt {
-  font-size: 0.78rem;
-  color: var(--rs-muted-ink);
-}
-.formula dd {
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-.detail h3 {
-  font-family: var(--font-editorial), Georgia, serif;
-  font-size: 1.4rem;
-  margin: 1.6rem 0 0.7rem;
-  font-weight: 500;
-}
-.detailRow {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  border-top: 1px solid var(--rs-paper-line);
-  padding: 1rem 0;
-  overflow-wrap: anywhere;
-}
-.detailRow > div {
-  min-width: 0;
-}
-.detailRow h4 {
-  margin: 0 0 0.5rem;
-  font-weight: 500;
-}
-.detailRow p {
-  margin: 0.4rem 0;
-  font-size: 0.82rem;
-}
-.detailRow small {
-  display: block;
-  color: var(--rs-muted-ink);
-  font-size: 0.75rem;
-}
-.rowAmount {
-  text-align: right;
-  max-width: 14rem;
-  font-variant-numeric: tabular-nums;
-}
-.rowAmount strong {
-  font-size: 1.05rem;
-  font-weight: 500;
-}
-.sourceChip {
-  display: inline-flex;
-  align-items: center;
-  margin: 0.65rem 0.5rem 0 0;
-  padding: 0.45rem 0.65rem;
-  min-height: 44px;
-  border-radius: 2rem;
-  background: var(--rs-paper);
-  border: 1px solid var(--rs-paper-line);
-  color: var(--rs-brand-orange);
-  font: inherit;
-  font-size: 0.75rem;
-  text-align: left;
-  overflow-wrap: anywhere;
-}
-.detailFootnote {
-  color: var(--rs-muted-ink);
-  font-size: 0.78rem;
-  border-top: 1px solid var(--rs-paper-line);
-  padding-top: 1rem;
-}
-.detail .notice {
-  border-color: var(--rs-paper-line);
-}
-.paperBridge {
-  background: var(--rs-forest);
-  color: var(--rs-ivory);
-  padding: 1rem;
-  border-radius: 0.8rem;
-  margin: 1.5rem 0;
-}
-.paperBridge h3 {
-  margin-top: 0;
-}
 @keyframes arrive {
   from {
     opacity: 0;
@@ -972,17 +860,6 @@
   }
   .comparisons b {
     font-size: 1.05rem;
-  }
-  .detailRow {
-    flex-direction: column;
-  }
-  .rowAmount {
-    text-align: left;
-    max-width: none;
-  }
-  .formula > div {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.3rem;
   }
   .emptyWelcome {
     padding: 1.2rem;

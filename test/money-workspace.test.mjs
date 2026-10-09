@@ -45,7 +45,7 @@ describe("canonical financial workspace", () => {
       result.netCashMinor,
       result.customerOpen.minor,
       result.supplierOpen.minor,
-    ]).toEqual([480000, 128000, 352000, 733, 300000, 92000, 208000, 180000, 39600]);
+    ]).toEqual([480000, 235000, 245000, 510, 300000, 92000, 208000, 180000, 39600]);
     expect(result.exclusions.transfers).toHaveLength(1);
     const august = calculateMetrics(session.workspace, { from: "2026-08-01", to: "2026-08-31" });
     expect([august.income.minor, august.costs.minor, august.profitMinor]).toEqual([
@@ -53,10 +53,10 @@ describe("canonical financial workspace", () => {
     ]);
     expect(august.exclusions.unknownBalances).toHaveLength(5);
     expect(changeTenths(480000, 400000)).toBe(200);
-    expect(changeTenths(128000, 110000)).toBe(164);
-    expect(changeTenths(352000, 290000)).toBe(214);
+    expect(changeTenths(235000, 110000)).toBe(1136);
+    expect(changeTenths(245000, 290000)).toBe(-155);
     expect(changeTenths(-1_000_000_000_000, 1_000_000_000_000)).toBe(-2000);
-    expect(ratioTenths(80000, 128000)).toBe(625);
+    expect(ratioTenths(100000, 235000)).toBe(426);
   });
   it("adds 200, recomputes once at one revision, then Undo restores the complete graph", () => {
     const before = harborSession();
@@ -69,12 +69,12 @@ describe("canonical financial workspace", () => {
       metrics(after).costs.minor,
       metrics(after).profitMinor,
       after.workspace.revision,
-    ]).toEqual([148000, 332000, 1]);
+    ]).toEqual([255000, 225000, 1]);
     const restored = undoLatest(after, 1, "command_one");
     expect(restored.workspace).toEqual({ ...before.workspace, revision: 2 });
     expect([metrics(restored).costs.minor, metrics(restored).profitMinor, restored.undo]).toEqual([
-      128000,
-      352000,
+      235000,
+      245000,
       null,
     ]);
     expect(() =>
@@ -216,7 +216,7 @@ describe("canonical financial workspace", () => {
       command(before, [{ type: "review_document", documentId: duplicate.id, decision: "accept" }]),
       "Review",
     );
-    expect(metrics(after).costs.minor).toBe(128000);
+    expect(metrics(after).costs.minor).toBe(235000);
     expect(() =>
       validateGraph({
         ...before.workspace,
@@ -242,7 +242,7 @@ describe("canonical financial workspace", () => {
       "Unknown net",
     );
     expect(metrics(after).exclusions.unknownNet).toContain(cost.id);
-    expect(metrics(after).costs.minor).toBe(128000);
+    expect(metrics(after).costs.minor).toBe(235000);
     const newest = applyCommand(
       after,
       command(after, [{ type: "delete_event", id: cost.id }], "command_latest"),

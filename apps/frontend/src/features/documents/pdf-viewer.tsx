@@ -7,7 +7,7 @@ import type {
   PDFPageProxy,
   RenderTask,
 } from "pdfjs-dist";
-import { PaperDialog } from "../../components/ui/paper-dialog";
+import { PaperDialog, type PaperOrigin } from "../../components/ui/paper-dialog";
 import {
   loadSampleBytes,
   PDF_DEADLINE_MS,
@@ -262,7 +262,7 @@ function PdfPage({ asset, target }: { asset: ViewerAsset; target: SourceReferenc
         <a href={asset.pdfPath} download={asset.name}>
           Download PDF ↗
         </a>
-        <a href={`${asset.pdfPath}#page=${pageNumber}`} target="_blank" rel="noopener noreferrer">
+        <a href={asset.pdfPath} target="_blank" rel="noopener noreferrer">
           Open original ↗
         </a>
       </div>
@@ -280,9 +280,11 @@ function PdfPage({ asset, target }: { asset: ViewerAsset; target: SourceReferenc
 export function PdfViewer({
   selection,
   onClose,
+  origin,
 }: {
   selection: { asset: ViewerAsset; target: SourceReference } | null;
   onClose(): void;
+  origin?: PaperOrigin | undefined;
 }) {
   return (
     <PaperDialog
@@ -295,6 +297,7 @@ export function PdfViewer({
           : "PDF"
       }
       size="paper"
+      origin={origin}
     >
       {selection && (
         <PdfPage

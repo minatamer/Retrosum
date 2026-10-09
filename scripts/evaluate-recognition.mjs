@@ -82,8 +82,8 @@ if (live) {
         asOf: manifest.asOf,
         document: item.doc,
         envelope: {
-          files: 8,
-          pages: 14,
+          files: originals.length,
+          pages: originals.reduce((sum, original) => sum + original.doc.pageCount, 0),
           bytes: originals.reduce((sum, original) => sum + original.bytes.byteLength, 0),
         },
       });

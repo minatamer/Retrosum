@@ -19,11 +19,13 @@ function showNormalized(field: SourceDocument["numericFields"][number]) {
 export function DocumentReview({
   doc,
   revision,
+  issueNotes = [],
   onClose,
   onSource,
 }: {
   doc: SourceDocument;
   revision: number;
+  issueNotes?: string[];
   onClose(): void;
   onSource(target: SourceReference): void;
 }) {
@@ -31,6 +33,7 @@ export function DocumentReview({
   const [page, setPage] = useState(1);
   const [checked, setChecked] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const notes = [...new Set([...doc.reviewNotes, ...issueNotes])];
   const duplicate = doc.reviewNotes.some((note) =>
     note.includes("repeats an existing economic event"),
   );
@@ -76,11 +79,7 @@ export function DocumentReview({
       open
       onClose={onClose}
       title="Check the source. Trust the story."
-      caption={
-        doc.recognitionMode === "fake"
-          ? "Simulation · Declared demo transcription"
-          : "Source review"
-      }
+      caption="Source review"
     >
       <p>
         {doc.name} · {doc.pageCount} {doc.pageCount === 1 ? "page" : "pages"}.{" "}
@@ -90,9 +89,9 @@ export function DocumentReview({
       {doc.provenance === "synthetic_handwriting" && (
         <p>Synthetic handwriting-style demonstration · Not human-written.</p>
       )}
-      {doc.reviewNotes.length > 0 && (
+      {notes.length > 0 && (
         <ul className={styles.notes}>
-          {[...new Set(doc.reviewNotes)].map((note) => (
+          {notes.map((note) => (
             <li key={note}>{note}</li>
           ))}
         </ul>

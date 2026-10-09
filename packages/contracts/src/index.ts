@@ -9,3 +9,5 @@ export * from "./retro.js";
 export * from "./retro-change.js";
 export * from "./export.js";
 export * from "./admission.js";
+export * from "./dashboard.js";
+export * from "./retro-workspace.js";

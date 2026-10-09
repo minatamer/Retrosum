@@ -16,8 +16,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     void controller.initialize();
     const timer = window.setInterval(() => {
       const session = controller.getSnapshot().session;
-      if (session && session.workspace.expiresAt <= Date.now())
-        void controller.reset("Your two-hour session expired. A fresh browser session started.");
+      if (session && session.workspace.expiresAt <= Date.now()) void controller.reset(null);
     }, 1000);
     const sweep = window.setInterval(() => void controller.sweepExpired(), 60000);
     const onPageHide = () => controller.dispose();

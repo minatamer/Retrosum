@@ -1,5 +1,6 @@
 import {
   RETRO_LIMITS,
+  retroTopicSchema,
   type RetroDecision,
   type RetroRequest,
   type RetroResponse,
@@ -24,6 +25,7 @@ export type InvestigationContext = {
   facts: ReturnType<typeof briefFact>[];
   simulationDecision: RetroDecision;
   changeContext?: RetroRequest["changeContext"];
+  uiContext?: RetroRequest["uiContext"];
 };
 export type ToolResult = { call: ToolCall; result: unknown };
 export interface RecordInvestigator {
@@ -41,23 +43,10 @@ export async function investigate(
 ): Promise<RetroResponse> {
   const request = validateRetroInput(input);
   const catalogue = buildDashboard(request.workspace, request.scope);
-  const topics = (
-    [
-      "summary",
-      "income",
-      "costs",
-      "profit",
-      "margin",
-      "cash",
-      "open",
-      "rent",
-      "largest_cost",
-      "customer",
-      "vendor",
-      "comparison",
-      "coverage",
-    ] as const
-  ).map((topic) => ({ topic, factIds: topicFacts(topic, catalogue) }));
+  const topics = retroTopicSchema.options.map((topic) => ({
+    topic,
+    factIds: topicFacts(topic, catalogue),
+  }));
   const ids = [...new Set(topics.flatMap((topic) => topic.factIds))];
   const context: InvestigationContext = {
     prompt: request.prompt,
@@ -72,6 +61,7 @@ export async function investigate(
       request.changeContext,
     ),
     ...(request.changeContext ? { changeContext: request.changeContext } : {}),
+    ...(request.uiContext ? { uiContext: request.uiContext } : {}),
   };
   const history: ToolResult[] = [];
   const bounded = AbortSignal.any([signal, AbortSignal.timeout(RETRO_LIMITS.deadlineMs)]);

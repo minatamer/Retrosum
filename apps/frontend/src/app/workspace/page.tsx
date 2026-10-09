@@ -1,4 +1,4 @@
-import { WorkspacePreview } from "../../features/workspace/workspace-preview";
+import { redirect } from "next/navigation";
 export default function WorkspacePage() {
-  return <WorkspacePreview />;
+  redirect("/demo");
 }

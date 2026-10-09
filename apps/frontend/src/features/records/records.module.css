@@ -4,6 +4,7 @@
   border: 1px solid var(--rs-line);
   border-radius: 1.8rem;
   background: var(--rs-panel);
+  color: var(--rs-ivory);
   min-width: 0;
 }
 .heading,
@@ -247,13 +248,146 @@
   border-bottom: 1px solid var(--rs-paper-line);
 }
 .review {
-  margin-top: 1rem;
-  padding: 1rem;
-  border-radius: 1rem;
-  border: 1px solid #d9b68a;
+  margin-top: 1.5rem;
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+  border-radius: 1.25rem;
+  border: 1px solid var(--rs-paper-line);
+  background: var(--rs-ivory);
+  color: var(--rs-ink);
+  box-shadow: 0 12px 36px rgb(8 26 20 / 8%);
 }
-.review > div {
-  margin-block: 0.5rem 1rem;
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+}
+.reviewHeader > div {
+  min-width: 0;
+}
+.reviewHeader :global(.rs-eyebrow) {
+  color: var(--rs-brand-orange);
+}
+.reviewHeader h3 {
+  margin: 0.55rem 0;
+  font-size: clamp(1.45rem, 2.2vw, 1.85rem);
+  line-height: 1.15;
+}
+.reviewHeader p {
+  margin: 0;
+  color: var(--rs-muted-ink);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+.reviewCount {
+  flex-shrink: 0;
+  border: 1px solid var(--rs-paper-line);
+  border-radius: 2rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+.reviewList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.reviewRow {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 1.15rem;
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--rs-paper-line);
+  animation: record-arrive 450ms var(--rs-ease) both;
+}
+.reviewRow:last-child {
+  padding-bottom: 0;
+}
+.reviewGlyph {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3.5rem;
+  border-radius: 0.65rem;
+  background: #e5eddf;
+  color: var(--rs-forest);
+}
+.reviewGlyph[data-duplicate="true"] {
+  background: #f2e3d5;
+  color: var(--rs-brand-orange);
+}
+.reviewGlyph svg {
+  width: 1.45rem;
+  height: 1.7rem;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.reviewContent {
+  min-width: 0;
+}
+.reviewMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.65rem;
+  font-size: 0.72rem;
+}
+.reviewMeta > span {
+  padding: 0.3rem 0.6rem;
+  border-radius: 2rem;
+  background: #e5eddf;
+  color: var(--rs-forest);
+}
+.reviewMeta > span[data-duplicate="true"] {
+  background: #f2e3d5;
+  color: var(--rs-brand-orange);
+}
+.reviewMeta small {
+  font-size: inherit;
+  color: var(--rs-muted-ink);
+}
+.reviewContent h4 {
+  margin: 0.65rem 0 0.35rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.reviewContent p {
+  margin: 0;
+  color: var(--rs-muted-ink);
+  font-size: 0.84rem;
+  line-height: 1.65;
+}
+.reviewActions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.3rem;
+  padding-top: 0.25rem;
+}
+.reviewActions > button {
+  font-size: 0.8rem;
+}
+.reviewActions > button:first-child {
+  gap: 0.85rem;
+  padding-inline: 1rem;
+}
+.reviewSource {
+  border: 0;
+  background: transparent;
+  color: var(--rs-muted-ink);
+  cursor: pointer;
+  min-height: 44px;
+  padding: 0.5rem;
+  transition: color var(--rs-motion-hover);
+}
+.reviewSource:hover {
+  color: var(--rs-brand-orange);
 }
 @keyframes record-arrive {
   from {
@@ -268,6 +402,16 @@
 @media (max-width: 62rem) {
   .metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .reviewRow {
+    grid-template-columns: 3rem minmax(0, 1fr);
+  }
+  .reviewActions {
+    grid-column: 2;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0;
   }
 }
 @media (max-width: 35rem) {
@@ -293,6 +437,33 @@
   .tabs button {
     padding-inline: 0.65rem;
     font-size: 0.78rem;
+  }
+  .reviewHeader {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .reviewRow {
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: 0.8rem;
+    padding-block: 1.25rem;
+  }
+  .reviewGlyph {
+    width: 2.25rem;
+    height: 2.75rem;
+  }
+  .reviewActions {
+    grid-column: 1 / -1;
+  }
+  .reviewActions > button:first-child {
+    flex: 1 1 auto;
+  }
+}
+@media (max-width: 25rem) {
+  .reviewRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .reviewGlyph {
+    display: none;
   }
 }
 @media (max-width: 20rem) {

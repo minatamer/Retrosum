@@ -5,6 +5,7 @@ const config: NextConfig = {
   outputFileTracingRoot: resolve(__dirname, "../.."),
   transpilePackages: ["@retrosum/contracts", "@retrosum/money"],
   poweredByHeader: false,
+  devIndicators: false,
   async headers() {
     return [
       {

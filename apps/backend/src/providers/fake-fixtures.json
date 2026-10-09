@@ -1772,5 +1772,357 @@
     ],
     "payments": [],
     "warnings": []
+  },
+  "03d9c65259c00adf5219b63b718b0bf0b0d18aa75d507282f883eda4ac9ba002": {
+    "version": "recognition-v1",
+    "kind": "receipt",
+    "currency": "USD",
+    "business": "Harbor Studio",
+    "asOfField": null,
+    "fields": [
+      {
+        "key": "p1_0",
+        "page": 1,
+        "block": "receipt",
+        "raw": "NS-092",
+        "occurrences": 1,
+        "normalized": "NS-092",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_1",
+        "page": 1,
+        "block": "receipt",
+        "raw": "2026-09-08",
+        "occurrences": 1,
+        "normalized": "2026-09-08",
+        "scale": "ISO_date",
+        "treatment": "paid_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_2",
+        "page": 1,
+        "block": "receipt",
+        "raw": "8",
+        "occurrences": 1,
+        "normalized": "8",
+        "scale": "units",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_3",
+        "page": 1,
+        "block": "receipt",
+        "raw": "30.00",
+        "occurrences": 1,
+        "normalized": "3000",
+        "scale": "USD_cents",
+        "treatment": "unit_price",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_4",
+        "page": 1,
+        "block": "receipt",
+        "raw": "240.00",
+        "occurrences": 3,
+        "normalized": "24000",
+        "scale": "USD_cents",
+        "treatment": "line_subtotal_and_total",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_5",
+        "page": 1,
+        "block": "receipt",
+        "raw": "0.00",
+        "occurrences": 1,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "separate_tax",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_0",
+        "page": 2,
+        "block": "receipt",
+        "raw": "ST-092",
+        "occurrences": 1,
+        "normalized": "ST-092",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_1",
+        "page": 2,
+        "block": "receipt",
+        "raw": "2026-09-03",
+        "occurrences": 1,
+        "normalized": "2026-09-03",
+        "scale": "ISO_date",
+        "treatment": "paid_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_2",
+        "page": 2,
+        "block": "receipt",
+        "raw": "1",
+        "occurrences": 1,
+        "normalized": "1",
+        "scale": "units",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_3",
+        "page": 2,
+        "block": "receipt",
+        "raw": "200.00",
+        "occurrences": 4,
+        "normalized": "20000",
+        "scale": "USD_cents",
+        "treatment": "unit_price_line_subtotal_and_total",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_4",
+        "page": 2,
+        "block": "receipt",
+        "raw": "0.00",
+        "occurrences": 1,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "separate_tax",
+        "ambiguous": false
+      }
+    ],
+    "events": [
+      {
+        "party": "Northstar Supplies",
+        "businessRole": "recipient",
+        "description": "NS-092",
+        "category": "Materials",
+        "dateField": "p1_1",
+        "dueField": null,
+        "referenceField": "p1_0",
+        "grossField": "p1_4",
+        "netField": "p1_4",
+        "taxField": "p1_5",
+        "balanceState": "paid",
+        "lines": [
+          {
+            "description": "NS-092 service / item",
+            "quantity": "p1_2",
+            "unitPrice": "p1_3",
+            "total": "p1_4"
+          }
+        ]
+      },
+      {
+        "party": "Cove Spaces",
+        "businessRole": "recipient",
+        "description": "ST-092",
+        "category": "Rent",
+        "dateField": "p2_1",
+        "dueField": null,
+        "referenceField": "p2_0",
+        "grossField": "p2_3",
+        "netField": "p2_3",
+        "taxField": "p2_4",
+        "balanceState": "paid",
+        "lines": [
+          {
+            "description": "ST-092 service / item",
+            "quantity": "p2_2",
+            "unitPrice": "p2_3",
+            "total": "p2_3"
+          }
+        ]
+      }
+    ],
+    "payments": [],
+    "warnings": []
+  },
+  "cb0e0de57c66b5c6494550f749e2eab5e539cf685234e9eb2d2d5a9b32dbb1b3": {
+    "version": "recognition-v1",
+    "kind": "receipt",
+    "currency": "USD",
+    "business": "Harbor Studio",
+    "asOfField": null,
+    "fields": [
+      {
+        "key": "p1_0",
+        "page": 1,
+        "block": "receipt",
+        "raw": "FC-091",
+        "occurrences": 1,
+        "normalized": "FC-091",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_1",
+        "page": 1,
+        "block": "receipt",
+        "raw": "2026-09-15",
+        "occurrences": 1,
+        "normalized": "2026-09-15",
+        "scale": "ISO_date",
+        "treatment": "paid_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_2",
+        "page": 1,
+        "block": "receipt",
+        "raw": "3",
+        "occurrences": 1,
+        "normalized": "3",
+        "scale": "units",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_3",
+        "page": 1,
+        "block": "receipt",
+        "raw": "150.00",
+        "occurrences": 1,
+        "normalized": "15000",
+        "scale": "USD_cents",
+        "treatment": "unit_price",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_4",
+        "page": 1,
+        "block": "receipt",
+        "raw": "450.00",
+        "occurrences": 3,
+        "normalized": "45000",
+        "scale": "USD_cents",
+        "treatment": "line_subtotal_and_total",
+        "ambiguous": false
+      },
+      {
+        "key": "p1_5",
+        "page": 1,
+        "block": "receipt",
+        "raw": "0.00",
+        "occurrences": 1,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "separate_tax",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_0",
+        "page": 2,
+        "block": "receipt",
+        "raw": "BM-091",
+        "occurrences": 1,
+        "normalized": "BM-091",
+        "scale": "identifier",
+        "treatment": "event_reference",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_1",
+        "page": 2,
+        "block": "receipt",
+        "raw": "2026-09-22",
+        "occurrences": 1,
+        "normalized": "2026-09-22",
+        "scale": "ISO_date",
+        "treatment": "paid_date",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_2",
+        "page": 2,
+        "block": "receipt",
+        "raw": "1",
+        "occurrences": 1,
+        "normalized": "1",
+        "scale": "units",
+        "treatment": "line_quantity",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_3",
+        "page": 2,
+        "block": "receipt",
+        "raw": "180.00",
+        "occurrences": 4,
+        "normalized": "18000",
+        "scale": "USD_cents",
+        "treatment": "unit_price_line_subtotal_and_total",
+        "ambiguous": false
+      },
+      {
+        "key": "p2_4",
+        "page": 2,
+        "block": "receipt",
+        "raw": "0.00",
+        "occurrences": 1,
+        "normalized": "0",
+        "scale": "USD_cents",
+        "treatment": "separate_tax",
+        "ambiguous": false
+      }
+    ],
+    "events": [
+      {
+        "party": "Framecraft",
+        "businessRole": "recipient",
+        "description": "FC-091",
+        "category": "Services",
+        "dateField": "p1_1",
+        "dueField": null,
+        "referenceField": "p1_0",
+        "grossField": "p1_4",
+        "netField": "p1_4",
+        "taxField": "p1_5",
+        "balanceState": "paid",
+        "lines": [
+          {
+            "description": "FC-091 service / item",
+            "quantity": "p1_2",
+            "unitPrice": "p1_3",
+            "total": "p1_4"
+          }
+        ]
+      },
+      {
+        "party": "Beacon Media",
+        "businessRole": "recipient",
+        "description": "BM-091",
+        "category": "Marketing",
+        "dateField": "p2_1",
+        "dueField": null,
+        "referenceField": "p2_0",
+        "grossField": "p2_3",
+        "netField": "p2_3",
+        "taxField": "p2_4",
+        "balanceState": "paid",
+        "lines": [
+          {
+            "description": "BM-091 service / item",
+            "quantity": "p2_2",
+            "unitPrice": "p2_3",
+            "total": "p2_3"
+          }
+        ]
+      }
+    ],
+    "payments": [],
+    "warnings": []
   }
 }

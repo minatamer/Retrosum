@@ -45,7 +45,7 @@ describe("Retro answers have one current fact authority", () => {
     );
     expect(
       renderRetroResponse(result, catalogue).facts.find((fact) => fact.id === "profit").value,
-    ).toBe(352000);
+    ).toBe(245000);
     snapshot.workspace.events.push({
       ...snapshot.workspace.events.find((event) => event.kind === "cost"),
       id: "event_manualqa",
@@ -71,7 +71,7 @@ describe("Retro answers have one current fact authority", () => {
     );
     expect(
       renderRetroResponse(result, catalogue).facts.find((fact) => fact.id === "costs").value,
-    ).toBe(148000);
+    ).toBe(255000);
   });
   it("rent facts open the exact D04 source and sources cannot be substituted", () => {
     const snapshot = input("Explain rent");
@@ -81,7 +81,7 @@ describe("Retro answers have one current fact authority", () => {
       fakeRetroDecision(snapshot.prompt, catalogue),
       "fake",
     );
-    expect(renderRetroResponse(result, catalogue).facts[0].value).toBe(80000);
+    expect(renderRetroResponse(result, catalogue).facts[0].value).toBe(100000);
     expect(result.sources.some((source) => source.documentId.includes("D04"))).toBe(true);
     expect(() => renderRetroResponse({ ...result, sources: [] }, catalogue)).toThrow(
       "ungrounded_sources",
@@ -296,7 +296,7 @@ describe("bounded investigator dispatch", () => {
     expect(body.store).toBe(false);
     expect(body.max_output_tokens).toBe(1500);
     expect(body.parallel_tool_calls).toBe(false);
-    expect(body.tools).toHaveLength(11);
+    expect(body.tools).toHaveLength(retroToolSchema.options.length);
     expect(body.tools.find((tool) => tool.name === "prepare_session_change").strict).toBe(true);
     expect(body.input[0].content[0].text).not.toContain("simulationDecision");
     const bad = vi.fn(async () => Response.json({ status: "incomplete", output: [] }));

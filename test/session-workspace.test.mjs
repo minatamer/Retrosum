@@ -74,6 +74,127 @@ function harness(storage = new MemoryStorage(), cache = new MemoryCache(), owned
   };
 }
 describe("bounded browser refresh and lifecycle", () => {
+  it.each([
+    ["sample", "fake"],
+    ["sample", "live"],
+    ["upload", "fake"],
+    ["upload", "live"],
+  ])(
+    "claims first dashboard tour once for %s/%s, across refresh and further processing",
+    async (entry, mode) => {
+      const h = harness(),
+        saved = harborSession();
+      saved.experience = { ...saved.experience, entry, stage: "dashboard", view: "overview" };
+      saved.workspace.documents = saved.workspace.documents.map((doc) => ({
+        ...doc,
+        recognitionMode: mode,
+        provenance: entry === "upload" ? "visitor_upload" : doc.provenance,
+      }));
+      writeProjection(h.storage, saved);
+      await h.controller.initialize();
+      const before = h.controller.getSnapshot().session;
+      expect(h.controller.claimDashboardTour()).toBe(true);
+      expect(h.controller.claimDashboardTour()).toBe(false);
+      expect(h.controller.getSnapshot().session.workspace).toEqual(before.workspace);
+      h.controller.dispose();
+      await h.controller.initialize();
+      expect(h.controller.claimDashboardTour()).toBe(false);
+      const current = h.controller.getSnapshot().session;
+      h.controller.setExperience({ ...current.experience, stage: "documents" });
+      expect(h.controller.claimDashboardTour()).toBe(false);
+      h.controller.setExperience({ ...current.experience, stage: "dashboard" });
+      expect(h.controller.claimDashboardTour()).toBe(false);
+      await h.controller.reset();
+      expect(h.controller.getSnapshot().session.experience.dashboardTourSeen).toBe(false);
+      h.controller.dispose();
+    },
+  );
+  it("does not claim onboarding before processed dashboard entry and defaults old projections safely", async () => {
+    const h = harness();
+    await h.controller.initialize();
+    expect(h.controller.claimDashboardTour()).toBe(false);
+    const current = h.controller.getSnapshot().session;
+    h.controller.setExperience({ ...current.experience, stage: "dashboard" });
+    expect(h.controller.claimDashboardTour()).toBe(false);
+    h.controller.dispose();
+    const legacy = harborSession();
+    delete legacy.experience.dashboardTourSeen;
+    const restored = decodeProjection(JSON.stringify(legacy), 2000);
+    expect(restored.experience.dashboardTourSeen).toBe(false);
+    h.storage.setItem(PROJECTION_KEY, JSON.stringify(legacy));
+    await h.controller.initialize();
+    const loaded = h.controller.getSnapshot().session;
+    h.controller.setExperience({ ...loaded.experience, stage: "processing" });
+    expect(h.controller.claimDashboardTour()).toBe(false);
+    h.controller.setExperience({ ...loaded.experience, stage: "dashboard", view: "records" });
+    expect(h.controller.claimDashboardTour()).toBe(false);
+    h.controller.setExperience({ ...loaded.experience, stage: "dashboard", view: "overview" });
+    h.clock(legacy.workspace.expiresAt);
+    expect(h.controller.claimDashboardTour()).toBe(false);
+    h.controller.dispose();
+  });
+  it("restores demo preferences and keeps layout Undo separate from profile/currency and financial revision", async () => {
+    const h = harness();
+    await h.controller.initialize();
+    const before = h.controller.getSnapshot().session;
+    h.controller.setExperience({ ...before.experience, stage: "dashboard", view: "records" });
+    h.controller.setDashboard({
+      ...before.dashboard,
+      widgets: before.dashboard.widgets.slice(0, 4),
+      appliedProposalIds: ["retro_chart"],
+    });
+    const edited = h.controller.getSnapshot().session;
+    h.controller.setDashboard(
+      {
+        ...edited.dashboard,
+        profileName: "My studio",
+        currency: "EUR",
+        eurRateMicros: 900000,
+        eurRateDate: "2026-10-09",
+      },
+      false,
+    );
+    h.controller.dispose();
+    await h.controller.initialize();
+    expect(h.controller.getSnapshot().session.experience).toMatchObject({
+      stage: "dashboard",
+      view: "records",
+    });
+    expect(h.controller.getSnapshot().session.dashboard.appliedProposalIds).toEqual([
+      "retro_chart",
+    ]);
+    h.controller.undoDashboard();
+    const restored = h.controller.getSnapshot().session;
+    expect(restored.dashboard.widgets).toHaveLength(before.dashboard.widgets.length);
+    expect(restored.dashboard).toMatchObject({
+      profileName: "My studio",
+      currency: "EUR",
+      eurRateMicros: 900000,
+      eurRateDate: "2026-10-09",
+      appliedProposalIds: [],
+    });
+    expect(restored.workspace.revision).toBe(before.workspace.revision);
+    h.controller.dispose();
+  });
+  it("refresh returns interrupted processing to document selection without restarting extraction", async () => {
+    const h = harness(),
+      saved = harborSession();
+    saved.experience = {
+      ...saved.experience,
+      stage: "processing",
+      entry: "sample",
+      selectedDocumentIds: saved.workspace.documents.map((d) => d.id),
+    };
+    saved.workspace.documents[0].state = "reading";
+    writeProjection(h.storage, saved);
+    await h.controller.initialize();
+    expect(h.controller.getSnapshot().session.experience.stage).toBe("documents");
+    expect(h.controller.getSnapshot().session.experience.selectedDocumentIds).toEqual(
+      saved.experience.selectedDocumentIds,
+    );
+    expect(h.controller.getSnapshot().session.workspace.documents[0].state).toBe("cancelled");
+    h.controller.dispose();
+  });
   it("local reset completes despite server/storage cleanup failure, isolates late work and retains fixed expiry", async () => {
     const h = harness();
     h.environment.revoke = async () => false;
@@ -303,6 +424,7 @@ describe("bounded browser refresh and lifecycle", () => {
     const reload = new SessionController(h.environment);
     await reload.initialize();
     expect(reload.getSnapshot().session.workspace.events).toEqual([]);
+    expect(reload.getSnapshot().notice).toBeNull();
     expect(h.cache.removed).toContain(session.workspace.id);
     expect(reload.getSnapshot().session.workspace.expiresAt).toBe(
       fixedExpiry + SESSION_LIFETIME_MS,

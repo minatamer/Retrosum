@@ -21,6 +21,10 @@ export function cancelInterruptedWork(session: MoneySession): MoneySession {
   });
   return {
     ...session,
+    experience: {
+      ...session.experience,
+      stage: session.experience.stage === "processing" ? "documents" : session.experience.stage,
+    },
     workspace: cancel(session.workspace),
     undo: session.undo ? { ...session.undo, before: cancel(session.undo.before) } : null,
   };

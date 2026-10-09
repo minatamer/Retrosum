@@ -1,6 +1,12 @@
 import "server-only";
 type PrivatePath =
-  "/v1/config" | "/v1/extract" | "/v1/chat" | "/v1/insights" | "/v1/session" | "/v1/grants";
+  | "/v1/config"
+  | "/v1/extract"
+  | "/v1/chat"
+  | "/v1/insights"
+  | "/v1/session"
+  | "/v1/grants"
+  | "/v1/exchange-rate";
 const paths = new Set<PrivatePath>([
   "/v1/config",
   "/v1/extract",
@@ -8,6 +14,7 @@ const paths = new Set<PrivatePath>([
   "/v1/insights",
   "/v1/session",
   "/v1/grants",
+  "/v1/exchange-rate",
 ]);
 // TLS/port termination changes Next's internal URL. Only the configured public
 // origin is authoritative; forwarded Host/Proto headers never supply authority.

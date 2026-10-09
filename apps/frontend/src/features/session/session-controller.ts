@@ -4,6 +4,10 @@ import {
   sessionSchema,
   workspaceIdSchema,
   SESSION_LIFETIME_MS,
+  dashboardPreferencesSchema,
+  demoExperienceSchema,
+  type DashboardPreferences,
+  type DemoExperience,
   type MoneySession,
   type OperationToken,
   type SessionAction,
@@ -22,6 +26,7 @@ import {
 } from "./projection";
 import { acquireSessionOwnership, type SessionLease } from "./ownership";
 import { PdfBlobCache, validatePdfBlob } from "./blob-cache";
+import { withSampleContactEmails } from "../documents/sample-contacts";
 
 type Cache = Pick<PdfBlobCache, "get" | "put" | "removeWorkspace" | "sweepExpired">;
 export type SessionEnvironment = {
@@ -185,13 +190,32 @@ export class SessionController {
             /* Corrupt data never selects a cleanup target. */
           }
           session = createEmptySession(this.environment.identity(), this.environment.now());
-          notice =
-            "The previous workspace expired or could not be safely restored. A fresh browser session started.";
         }
       } else session = createEmptySession(this.environment.identity(), this.environment.now());
     } catch {
       session = createEmptySession(this.environment.identity(), this.environment.now());
       notice = "Browser storage is unavailable. Refresh recovery may not work.";
+    }
+    if (!session.experience.sampleContactEmailsInitialized) {
+      const updated = withSampleContactEmails(session.workspace);
+      const actions: SessionAction[] = updated.contacts
+        .filter((contact, index) => contact.email !== session.workspace.contacts[index]?.email)
+        .map((record) => ({ type: "update_contact", record }));
+      if (actions.length)
+        session = applyCommand(
+          session,
+          {
+            id: commandIdSchema.parse("command_sample_contact_emails_v1"),
+            workspaceId: session.workspace.id,
+            basedOnRevision: session.workspace.revision,
+            actions,
+          },
+          "Add fictional demo contact emails",
+        );
+      session = validateSession({
+        ...session,
+        experience: { ...session.experience, sampleContactEmailsInitialized: true },
+      });
     }
     let lease = await this.environment.lease(session.workspace.id);
     if (!lease.acquired) {
@@ -298,6 +322,56 @@ export class SessionController {
     const next = validateSession({ ...this.current(), messages });
     this.publish({ ...this.snapshot, session: next, ...this.persist(next) });
   }
+  setExperience(input: DemoExperience) {
+    const next = validateSession({
+      ...this.current(),
+      experience: demoExperienceSchema.parse(input),
+    });
+    this.publish({ ...this.snapshot, session: next, ...this.persist(next) });
+  }
+  claimDashboardTour() {
+    const current = this.snapshot.session;
+    if (
+      !this.snapshot.ready ||
+      !current ||
+      current.workspace.expiresAt <= this.environment.now() ||
+      current.experience.stage !== "dashboard" ||
+      current.experience.view !== "overview" ||
+      current.experience.dashboardTourSeen ||
+      !current.workspace.documents.some((doc) => ["ready", "needs_review"].includes(doc.state))
+    )
+      return false;
+    this.setExperience({ ...current.experience, dashboardTourSeen: true });
+    return true;
+  }
+  setDashboard(input: DashboardPreferences, undoable = true) {
+    const current = this.current();
+    const dashboard = dashboardPreferencesSchema.parse({
+      ...input,
+      revision: current.dashboard.revision + 1,
+    });
+    const next = validateSession({
+      ...current,
+      dashboard,
+      dashboardUndo: undoable ? current.dashboard : current.dashboardUndo,
+    });
+    this.publish({ ...this.snapshot, session: next, ...this.persist(next) });
+  }
+  undoDashboard() {
+    const current = this.current();
+    if (!current.dashboardUndo) return;
+    const next = validateSession({
+      ...current,
+      dashboard: {
+        ...current.dashboard,
+        widgets: current.dashboardUndo.widgets,
+        appliedProposalIds: current.dashboardUndo.appliedProposalIds,
+        revision: current.dashboard.revision + 1,
+      },
+      dashboardUndo: null,
+    });
+    this.publish({ ...this.snapshot, session: next, ...this.persist(next) });
+  }
   token(operationId: string): OperationToken {
     const session = this.current();
     return {
@@ -335,7 +409,11 @@ export class SessionController {
       throw new RangeError(
         "Document review cannot replace the session identity, expiry or revision.",
       );
-    const next = validateSession({ ...session, workspace: graph, undo: null });
+    const workspace = withSampleContactEmails(
+      graph,
+      new Set(session.workspace.contacts.map((contact) => contact.id)),
+    );
+    const next = validateSession({ ...session, workspace, undo: null });
     this.publish({ ...this.snapshot, session: next, ...this.persist(next) });
   }
   async cachePdf(token: OperationToken, doc: SourceDocument, blob: Blob) {
@@ -379,7 +457,7 @@ export class SessionController {
       (await this.environment.cache().get(token.workspaceId, doc));
     return this.isCurrent(token) ? blob : null;
   }
-  async reset(message = "A fresh browser session started.") {
+  async reset(message: string | null = "A fresh browser session started.") {
     const old = this.snapshot.session?.workspace.id;
     const ownedLease = this.lease;
     this.lease = null;
@@ -420,7 +498,7 @@ export class SessionController {
       ready: true,
       persistence: "loading",
       notice: incompleteCleanup
-        ? `${message} Some browser storage could not be removed; expired leftovers will be retried when Retrosum runs again.`
+        ? `${message ? `${message} ` : ""}Some browser storage could not be removed; expired leftovers will be retried when Retrosum runs again.`
         : message,
       missingDocumentIds: [],
     });
@@ -430,7 +508,10 @@ export class SessionController {
       if (generation === this.snapshot.generation && this.snapshot.ready)
         this.publish({
           ...this.snapshot,
-          notice: `${this.snapshot.notice ?? message} ${confirmed ? "Remote cancellation was requested." : "Remote cancellation could not be confirmed; local reset still completed."} Prior downloads and provider-controlled copies cannot be recalled.`,
+          notice:
+            message || this.snapshot.notice || !confirmed
+              ? `${this.snapshot.notice ?? message ?? ""} ${confirmed ? "Remote cancellation was requested." : "Remote cancellation could not be confirmed; local reset still completed."} Prior downloads and provider-controlled copies cannot be recalled.`.trim()
+              : null,
         });
     }
   }

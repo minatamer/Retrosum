@@ -20,9 +20,9 @@ describe("dashboard fact authority", () => {
     );
     expect(values).toMatchObject({
       income: 480000,
-      costs: 128000,
-      profit: 352000,
-      margin: 733,
+      costs: 235000,
+      profit: 245000,
+      margin: 510,
       cash_in: 300000,
       cash_out: 92000,
       cash_net: 208000,
@@ -33,13 +33,13 @@ describe("dashboard fact authority", () => {
       supplier_soon: 39600,
       tax: 3600,
     });
-    expect(result.changes.map((row) => row.changeTenths)).toEqual([200, 164, 214]);
+    expect(result.changes.map((row) => row.changeTenths)).toEqual([200, 1136, -155]);
     expect(result.categories.find((row) => row.label === "Rent")).toMatchObject({
-      value: 80000,
-      shareTenths: 625,
+      value: 100000,
+      shareTenths: 426,
     });
     const rent = result.facts["category:Rent"];
-    expect(rent.contributors).toHaveLength(1);
+    expect(rent.contributors).toHaveLength(2);
     expect(rent.sources[0].page).toBe(1);
     expect(
       harborSession().workspace.documents.find((doc) => doc.id === rent.sources[0].documentId).name,
@@ -58,7 +58,7 @@ describe("dashboard fact authority", () => {
           "history",
       ),
     ).toBe(true);
-    expect(result.coverage.reduce((sum, row) => sum + row.value, 0)).toBe(8);
+    expect(result.coverage.reduce((sum, row) => sum + row.value, 0)).toBe(10);
   });
   it("refreshes all selected contribution facts on CRUD and Undo", () => {
     const session = harborSession();
@@ -84,20 +84,20 @@ describe("dashboard fact authority", () => {
       "Add cost",
     );
     const changed = catalogue(next);
-    expect(changed.facts.costs.value).toBe(148000);
-    expect(changed.facts.profit.value).toBe(332000);
-    expect(changed.facts["category:Rent"].contributors).toHaveLength(2);
+    expect(changed.facts.costs.value).toBe(255000);
+    expect(changed.facts.profit.value).toBe(225000);
+    expect(changed.facts["category:Rent"].contributors).toHaveLength(3);
     expect(
       Object.values(changed.facts).every((fact) => fact.scope.revision === next.workspace.revision),
     ).toBe(true);
     const undone = undoLatest(next, next.workspace.revision, next.undo.commandId);
-    expect(catalogue(undone).facts.costs.value).toBe(128000);
-    expect(catalogue(undone).facts["category:Rent"].contributors).toHaveLength(1);
+    expect(catalogue(undone).facts.costs.value).toBe(235000);
+    expect(catalogue(undone).facts["category:Rent"].contributors).toHaveLength(2);
   });
   it("uses the same category/party/date authority and never attributes whole cash to a category", () => {
     const session = harborSession();
     const filtered = catalogue(session, { ...session.filters, category: "Rent" });
-    expect(filtered.facts.costs.value).toBe(80000);
+    expect(filtered.facts.costs.value).toBe(100000);
     expect(filtered.facts.cash_net.value).toBeNull();
     expect(filtered.facts.cash_net.excluded.some((row) => row.reason.includes("category"))).toBe(
       true,
@@ -148,7 +148,7 @@ describe("dashboard fact authority", () => {
     const loss = catalogue(onlyCosts);
     expect(loss.facts.margin.value).toBeNull();
     expect(loss.facts.income.value).toBeNull();
-    expect(loss.facts.profit.value).toBe(-128000);
+    expect(loss.facts.profit.value).toBe(-235000);
     const empty = structuredClone(session);
     empty.workspace.events = [];
     empty.workspace.payments = [];
@@ -160,11 +160,11 @@ describe("dashboard fact authority", () => {
     const session = harborSession();
     session.workspace.events.find((row) => row.reference === "A-77").netMinor = undefined;
     const result = catalogue(session);
-    expect(result.facts.costs.value).toBe(92000);
+    expect(result.facts.costs.value).toBe(199000);
     expect(result.facts.costs.excluded.some((row) => row.reason.includes("net"))).toBe(true);
     expect(result.changes.every((row) => row.changeTenths === null)).toBe(true);
     session.workspace.documents.find((doc) => doc.name.includes("rent")).disposition = "held";
-    expect(catalogue(session).facts.costs.value).toBe(12000);
+    expect(catalogue(session).facts.costs.value).toBe(119000);
   });
   it("uses whole calendar months or an equal-length preceding custom range", () => {
     expect(comparisonRange({ from: "2026-09-01", to: "2026-09-30" })).toEqual({
@@ -238,7 +238,7 @@ describe("dashboard fact authority", () => {
       if (doc.name === "harbor-HS-101.pdf" || doc.name === "harbor-HS-102.pdf")
         doc.disposition = "held";
     const result = catalogue(session);
-    expect(result.facts.profit.value).toBe(-128000);
+    expect(result.facts.profit.value).toBe(-235000);
     expect(result.facts["prior:profit"].value).toBe(290000);
     expect(result.facts["prior:profit"].basis).toContain("2 income and 3 cost records");
     expect(result.facts["prior:profit"].basis).not.toContain("no eligible income was supplied");

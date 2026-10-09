@@ -22,6 +22,7 @@ apps/frontend/public/**
 !apps/frontend/public/images
 apps/frontend/public/images/**
 !apps/frontend/public/images/office.webp
+!apps/frontend/public/images/office-paperwork.webp
 !apps/frontend/public/samples
 apps/frontend/public/samples/**
 !apps/frontend/public/samples/harbor-v1
@@ -35,6 +36,8 @@ apps/frontend/public/samples/harbor-v1/**
 !apps/frontend/public/samples/harbor-v1/northstar-A-77-second-copy.pdf
 !apps/frontend/public/samples/harbor-v1/harbor-payments-September.pdf
 !apps/frontend/public/samples/harbor-v1/harbor-August-records.pdf
+!apps/frontend/public/samples/harbor-v1/harbor-September-operations.pdf
+!apps/frontend/public/samples/harbor-v1/harbor-September-services.pdf
 !apps/backend
 apps/backend/**
 !apps/backend/package.json

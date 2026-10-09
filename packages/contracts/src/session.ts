@@ -4,6 +4,7 @@ import { undoReceiptSchema, workspaceSchema } from "./commands.js";
 import { sessionFilterSchema } from "./filters.js";
 import { retroResponseSchema } from "./retro.js";
 import { retroChangeResultSchema } from "./retro-change.js";
+import { dashboardPreferencesSchema, demoExperienceSchema } from "./dashboard.js";
 export { sessionFilterSchema } from "./filters.js";
 
 export const SESSION_LIFETIME_MS = 2 * 60 * 60 * 1000;
@@ -22,6 +23,9 @@ export const sessionSchema = z.strictObject({
   undo: undoReceiptSchema.nullable(),
   filters: sessionFilterSchema,
   messages: z.array(finalizedMessageSchema).max(40),
+  experience: demoExperienceSchema.default(() => demoExperienceSchema.parse({})),
+  dashboard: dashboardPreferencesSchema.default(() => dashboardPreferencesSchema.parse({})),
+  dashboardUndo: dashboardPreferencesSchema.nullable().default(null),
 });
 export const operationTokenSchema = z.strictObject({
   workspaceId: workspaceIdSchema,

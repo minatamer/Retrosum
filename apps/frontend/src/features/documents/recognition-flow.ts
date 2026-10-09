@@ -161,9 +161,7 @@ export async function processDocuments(
     const session = controller.getSnapshot().session!;
     const docs = session.workspace.documents;
     try {
-      progress(
-        `${capabilities.mode === "fake" ? "Simulated scanning" : "Reading"} · ${n + 1} of ${items.length} · ${item.doc.name}`,
-      );
+      progress(`Reading · ${n + 1} of ${items.length} · ${item.doc.name}`);
       if (capabilities.mode === "fake") await pause(signal);
       if (!controller.isCurrent(token))
         throw new RangeError("The workspace changed before submission.");
@@ -249,6 +247,6 @@ export async function processDocuments(
   const failed = finished.filter((doc) => doc.state === "error").length;
   const held = finished.filter((doc) => doc.state === "needs_review").length;
   progress(
-    `${capabilities.mode === "fake" ? "Simulation" : "Reading"} finished · ${finished.length - failed} interpreted · ${held} need review · ${failed} failed. Originals remain available.`,
+    `Processing finished · ${finished.length - failed} interpreted · ${held} need review · ${failed} failed. Originals remain available.`,
   );
 }

@@ -4,6 +4,8 @@ import { revisionSchema, workspaceIdSchema } from "./ids.js";
 import { sessionFilterSchema } from "./filters.js";
 import { sourceReferenceSchema } from "./source.js";
 import { retroChangeIntentSchema, retroChangePreparationSchema } from "./retro-change.js";
+import { dashboardRequestSchema } from "./dashboard.js";
+import { retroWorkspaceRequestSchema, retroUiContextSchema } from "./retro-workspace.js";
 
 export const RETRO_LIMITS = Object.freeze({
   turns: 8,
@@ -42,8 +44,15 @@ export const retroTopicSchema = z.enum([
   "vendor",
   "comparison",
   "coverage",
+  "due_soon",
+  "tax",
+  "categories",
+  "customers",
+  "vendors",
 ]);
 export const retroDecisionSchema = z.discriminatedUnion("kind", [
+  dashboardRequestSchema,
+  retroWorkspaceRequestSchema,
   z.strictObject({ kind: z.literal("change_request"), intent: retroChangeIntentSchema }),
   z.strictObject({
     kind: z.literal("explanation"),
@@ -80,6 +89,7 @@ export const retroResponseSchema = z.strictObject({
   revision: revisionSchema,
   scope: retroScopeSchema,
   mode: z.enum(["fake", "live", "local"]),
+  uiRevision: revisionSchema.optional(),
   decision: retroDecisionSchema,
   sources: z.array(sourceReferenceSchema).max(100),
   steps: z
@@ -94,6 +104,7 @@ export const retroRequestSchema = z
     scope: retroScopeSchema,
     prompt: z.string().trim().min(1).max(1000),
     changeContext: retroChangeIntentSchema.optional(),
+    uiContext: retroUiContextSchema.optional(),
     recent: z
       .array(z.strictObject({ role: z.enum(["user", "retro"]), text: z.string().max(2000) }))
       .max(8),
@@ -120,6 +131,14 @@ export const retroToolSchema = z.discriminatedUnion("name", [
     args: z.strictObject({ offset: z.number().int().min(0).max(1000) }),
   }),
   z.strictObject({ name: z.literal("list_review_issues"), args: z.strictObject({}) }),
+  z.strictObject({ name: z.literal("get_ui_context"), args: z.strictObject({}) }),
+  z.strictObject({
+    name: z.literal("list_documents"),
+    args: z.strictObject({
+      query: z.string().max(160),
+      offset: z.number().int().min(0).max(1000),
+    }),
+  }),
   z.strictObject({
     name: z.literal("list_contacts"),
     args: z.strictObject({ query: z.string().max(80) }),

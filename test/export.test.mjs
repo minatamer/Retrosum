@@ -42,8 +42,8 @@ describe("revision-bound local export", () => {
     const bundle = buildExportBundle(session, defaults, at),
       data = JSON.parse(bundle.files["workspace.json"]);
     expect(data.financialFacts.income.value).toBe("4800.00");
-    expect(data.financialFacts.costs.value).toBe("1280.00");
-    expect(data.financialFacts.profit.value).toBe("3520.00");
+    expect(data.financialFacts.costs.value).toBe("2350.00");
+    expect(data.financialFacts.profit.value).toBe("2450.00");
     expect(data.workspace.events[0].occurredOn).toBe(session.workspace.events[0].occurredOn);
     expect(data.workspace.events[0].amountUsd).toMatch(/^\d+\.\d{2}$/);
     expect(bundle.manifest.revision).toBe(session.workspace.revision);
@@ -114,6 +114,8 @@ describe("revision-bound local export", () => {
         D06: "northstar-A-77-second-copy.pdf",
         D07: "harbor-payments-September.pdf",
         D08: "harbor-August-records.pdf",
+        D09: "harbor-September-operations.pdf",
+        D10: "harbor-September-services.pdf",
       }[doc.id.replace(/^document_/, "")];
       if (path)
         files.set(

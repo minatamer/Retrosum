@@ -13,6 +13,12 @@ The first build should feel like a complete product in a short visit. A visitor 
 
 ## Contents
 
+**Owner sample amendment — 10 October 2026:** The expanded Harbor sample now has ten visible PDFs/eighteen pages. Two new native receipt packs add Materials, archive-storage Rent, Services and Marketing; together with Software the initial eligible donut has five positive categories totaling USD 1,190. Original scan/handwriting/duplicate holds remain; reviewed costs are USD 2,350. Original cash/history evidence and all eight original bytes stay unchanged. Sections 7 and 8 supersede earlier corpus counts/results; live accuracy/spend and new release packaging verification remain pending.
+
+**Owner Retro amendment — 9 October 2026:** [Capability map and provider parity](design/RET-011-RETRO-CAPABILITIES.md) extends section 11 and the demo redesign. Strict `workspace_request` intents connect editable filters, original PDF selection/review, register navigation, settings/export/reset/intake panels, sidebar control, income targets, layout restoration, independent Undo and confirmed conversation clearing. Exact topics include due-soon/tax/categories/customers/vendors; those amounts remain engine-owned. Supported KPI metrics include explicit tax and known customer/supplier due-soon. The browser supplies bounded current widget context to the API and validates layout revision separately. Fake phrases and the actual Responses adapter with injected HTTP responses share the same controls; true live language accuracy, numeric extraction and spend remain unverified without a funded key and testing budget. The built-in capability guide requires no model call.
+
+**Owner journey/dashboard amendment — 9 October 2026:** [RET-011 demo redesign](design/RET-011-DEMO-REDESIGN.md) governs the new canonical `/demo` single-page experience and replaces the prior query-based workspace entry/fixed dashboard. Choose upload or fictional sample; inspect/select mini PDFs with expanding source dialogs; process selected documents with actual completed/total progress; enter the full-screen dashboard automatically. Retro appears only at the dashboard. The responsive collapsible sidebar provides Dashboard, Documents, Records, profile/settings and Reset. Bounded session preferences support charts, KPIs, manual income targets, reordering, restoring defaults and separate layout Undo. Retro offers illustrated/typed chart choices and confirms bounded chart/KPI/restyle/remove/move proposals; all numbers still come from the canonical money engine and visible sources. Source records/forms remain USD; EUR dashboard display automatically loads a dated ECB reference rate through the backend's fixed Frankfurter lookup, with exact shared cent rounding and a visible rate/date label. No invented fallback rate, executable model chart code or invented quarterly history is allowed. Latest owner FX feedback supersedes the earlier visitor-entered-rate requirement. Earlier USD-only display and fixed-workspace wording is superseded by this amendment. External live/physical/owner/cloud acceptance remains pending.
+
 1. [Authority, evidence and decisions](#1-authority-evidence-and-decisions)
 2. [Product contract and audience](#2-product-contract-and-audience)
 3. [Scope and success](#3-scope-and-success)
@@ -201,28 +207,33 @@ The document establishes acceptance targets and dated, sourced adoption context.
 
 ### 4.1 Experience and hierarchy
 
-The landing is calm, professional and photographic. Its eye catcher is one beautifully composed high-resolution office image with floating, shadowed editorial text. It does not reuse ScreenPilot’s hovering hero cards or ClipBuilder’s motion-graphics hero. Retrosum’s own visual story is the contrast between a quiet financial workplace and the rich, responsive money dashboard below it.
+The landing is calm, professional and photographic. Its eye catcher is one beautifully composed high-resolution office image with floating, shadowed editorial text. It does not reuse ScreenPilot’s hovering hero cards or ClipBuilder’s motion-graphics hero. Retrosum’s visual story connects a quiet financial workplace, an industry-adoption section and the responsive money workspace opened through Explore demo.
 
 | Section | Content | Visitor purpose |
 | --- | --- | --- |
-| Navigation | Retrosum logo; How it works; The dashboard; Meet Retro; sample CTA | Understand the offer and begin easily. |
+| Navigation | Retrosum logo; How it works; Meet Retro; Explore demo CTA | Understand the offer and begin easily. |
 | Photographic hero | Wide office photo, dark forest-green overlay, off-white heading, orange detail, two clear CTAs | Feel the professional brand and understand the promise. |
-| Outcome preview | A clearly labelled synthetic dashboard excerpt with real sample figures | See what digitized paperwork becomes. |
 | Three core pillars | Exact document reading; interactive money picture; Retro helping explain and act | Establish steps 3, 4 and 5 as the product’s center. |
-| Sample document gallery | Eight viewable PDF originals: varied invoice/bill/receipt layouts, multipage payment/history records and one handwriting example with documented provenance | See variety before choosing a file. |
-| Finances are becoming digital | Two or three dated statistics with scope and source links; named AI examples | Place the product in a credible wider transition. |
+| Finances are becoming digital | Three dated statistics with scope/source links and named AI examples, in a rounded green panel on a dark forest section immediately after the pillars | Place the product in a credible wider transition. |
 | Meet Retro | Summary, tour, dashboard explanation and invoice/expense creation examples | Show an assistant that helps complete tasks. |
-| Traceability moment | Click a KPI → its contributing records → source amount | Establish that attractive charts remain checkable. |
 | Short trust and limits | Temporary guest session; tested formats; disclosure before live processing | Support the choice to use documents without a wall of technical copy. |
-| Final invitation and footer | Explore sample / Use my documents; handling and photo credit | Provide a clear next action. |
+| Final invitation and footer | Explore sample / Use my documents; temporary handling, brand and tagline | Provide a clear next action. |
 
 ### 4.2 Copy direction
 
-**Hero:** Paperwork in. Clarity out.
+**Owner navigation feedback, 9 October 2026:** The hero navigation keeps How it works and Meet Retro, removing the former dashboard/industry link. Both section buttons use ClipBuilder's directional underline: draw from the left, retract to the right, with Retrosum's orange accent and the same effect on keyboard focus. Scrolling remains smooth and hash-free.
+
+**Hero:** Your finances. In focus.
+
+**Owner main-headline feedback, 10 October 2026:** Replace the former paperwork/clarity slogan with “Your finances. In focus.”, the recommended concise professional option. Keep the existing two-line ivory/orange hierarchy, supporting copy and typed eyebrow. This describes the source-backed financial view without implying payments, banking or investment management. Alternatives considered were “Turn documents into insight.” and “See the story in your numbers.”
+
+**Owner slogan feedback, 9 October 2026:** The typed hero line is “A better way to handle your finances.” This replaces “A clearer way to work with money” with the owner's preferred professional language, retaining the typewriter and continuously blinking dot.
 
 **Explanation:** Turn invoices, receipts and payment records into a clear picture of your business. Explore your numbers, check their sources, and let Retro help with the next task.
 
-**Primary CTA:** Explore the sample business. **Secondary CTA:** Use my documents.
+**Primary CTA:** Explore demo. **Secondary CTA:** Use my documents.
+
+**Owner visual feedback, 9 October 2026:** The Harbor Studio introduction and original sample gallery belong inside the Explore demo entry, not on the landing. Introduce Harbor Studio explicitly as a fictional example with eight provided PDFs/fourteen pages, nothing to upload, clear processing/preview actions and a short guide to review, dashboard and Retro. The personal-document entry focuses on business details and uploads; switching entry intent preserves the existing session. Later feedback in the same review removes the landing dashboard preview entirely: the existing adoption statistics take its earlier position and forest-green styling, with one rounded green panel, ivory type, orange accents and retained dated source links. The previous ivory statistics section is removed rather than duplicated.
 
 **Supporting line:** No account needed. A temporary demo with realistic fictional documents.
 
@@ -238,7 +249,17 @@ For application implementation, keep the high-resolution master and generate res
 
 Hero entrance is a gentle one-time opacity/position transition, roughly 500–700 ms. The photo can remain still. Rich chart transitions carry the product motion. No endless background panning, flashing, hover-card swarm or theatrical processing simulation is required.
 
-**Explicit owner constraint:** do not add Render animations off, Disable animations, a static-dashboard setting or an equivalent control. Motion is a designed part of the demo. Keep movement restrained, short and readable; provide keyboard, touch and textual chart access without an animation-disable preference in the product.
+**Hero motion feedback, 9 October 2026:** The current line “A better way to handle your finances” types out letter by letter after the hero entrance, with a moving caret and a continuously blinking orange dot to its left. Reserve the finished text width and expose the complete phrase once to assistive technology. Keep the Next.js development badge disabled. App animations remain permanently enabled: do not add an animation-off setting, reduced-motion suppression or a conditional zero-duration path.
+
+**Typewriter completion repair, 9 October 2026:** Drive the letter reveal with one elapsed-time client timer, rather than independent CSS animations that left the later letters transparent in the local preview. Delayed callbacks catch up; after completion all letters stay visible. The initial server-rendered phrase is readable, and the owned timer is cleared on unmount. Preserve the same colors, reserved width, caret and continuously blinking dot.
+
+**Sheets of paper transitions, 9 October 2026:** Owner approved trying the paper proposal. The five surfaces after the photographic hero have rounded upper edges, shallow overlaps and soft shadows. A bounded lift follows normal scrolling and reverses when scrolling back; headings and the Retro preview/final actions follow slightly behind their surfaces. Use smaller travel/edges on phones and a quieter footer, whose transition range fits its short height. The hero remains a full first viewport. Measure stationary section wrappers so hash-free section destinations stay stable; render readable content before hydration and clean up the owned frame, listeners and resize observer on unmount. No orange connecting line was added in this trial. Owner aesthetic and physical-device review remain pending.
+
+**Visible transition follow-up, 9 October 2026:** The owner could not see the first trial's movement. Increase surface travel to 120 px on desktop / 56 px on phone and extend the entry progression across three quarters of the viewport, capped at 640 px and the section height. Use smooth progression and elapsed-frame settling so surfaces continue into place after scrolling stops, while their headings are visible. Preserve reverse motion, stable section targets and the quieter footer. Confirm actual intermediate and completed transforms with content on screen. Remove the requested footer language/currency/fictional-demo line; retain only the wordmark and tagline.
+
+**Hero photograph feedback, 9 October 2026:** Back up the original before image editing and add casually messy paper documents on the wooden desk at the right. The app now uses the AI-edited derivative, with the original photograph retained. Subsequent owner feedback removes the optional photographer/AI-edit footer credit: the [Pexels license](https://www.pexels.com/license/), rechecked 9 October 2026, does not require attribution. See [backup, final prompt and retained asset provenance](design/HERO-PHOTO-EDIT.md). The historical HTML companion still embeds the original photograph and its credit.
+
+**Permanent owner constraint:** intended animations must always run. Never reintroduce Render animations off, Disable animations, a static-dashboard setting or an equivalent control; do not suppress intended motion through reduced-motion/OS preferences, paused/zero-duration overrides or conditional gates. Motion is a designed part of the demo. Verify visible movement while the animated element is on screen and verify completion; static rounded edges or configured animation names alone are insufficient evidence. Keep movement short and readable, with normal keyboard, touch and textual chart access. This rule is also recorded in root [AGENTS.md](../AGENTS.md).
 
 ### 4.4 Dated adoption evidence and company examples
 
@@ -282,11 +303,11 @@ Keep a source registry containing claim text, denominator, geography, observatio
 
 ### 5.2 Live sample entry and development fakes
 
-The visitor selects **Explore sample documents**, sees all originals, opens any PDF, then chooses **Process these documents**. Public live mode reads those actual bytes through the same inspection, admission, OpenAI interpretation, review and calculation path as visitor PDFs. Show genuine per-document stages and explain ambiguous numbers rather than substituting stored answers.
+The visitor selects **Explore demo**, sees the fictional Harbor Studio introduction and supplied originals, opens any PDF, then chooses **Process sample documents**. Navigation alone does not process documents or create records. Public live mode reads those actual bytes through the same inspection, admission, OpenAI interpretation, review and calculation path as visitor PDFs. Show genuine per-document stages and explain ambiguous numbers rather than substituting stored answers.
 
 There is no hidden starting ledger, no invisible comparison-month dataset and no public “instant prepared sample” shortcut. Every sample event, payment, category and comparison value must resolve to a visible PDF/page/field. The fixture manifest lists assets and evaluation expectations, but live recognition must not read the expected-result JSON or seed the live graph with it.
 
-In explicit **development fake mode**, the same original gallery and progress UI use production-shaped fixture outputs with deterministic delays, failures and generic supported Retro responses. A visible **Development fake mode — no AI request** label stays throughout the workspace and export. This is the place for instantly prepared/resettable data during local iteration; it is not a second public product path.
+In explicit **development fake mode**, the same original gallery and progress UI use production-shaped fixture outputs with deterministic delays, failures and generic supported Retro responses. Per the owner's 9 October visual-feedback instruction, the website omits development/simulation banners and technical mode copy; internal provenance, exported evidence and paid/live accuracy gates remain intact. This is the place for resettable data during local iteration; it is not a second public product path.
 
 On a live outage or exhausted allowance, retain PDF viewing, existing records, manual forms, local tour, calculations and export. Explain that AI is unavailable and offer a deliberate retry when allowed. Never silently turn failed live processing into fake success. Refresh restores completed records without automatically reprocessing or rebilling the files.
 
@@ -322,11 +343,15 @@ The visitor reviews a compact invoice preview and clicks **Create draft**. The i
 
 The initial app has a landing and one connected workspace. The workspace has four primary areas: **Overview**, **Documents**, **Records**, and **Retro**. Contacts, invoices, expenses/bills and payments are tabs within Records. **Review** is a focused view of issues within Documents/Records. **Export** is a workspace action and review sheet rather than an unrelated product area.
 
-Proposed routes are `/`, `/workspace`, `/workspace/documents`, `/workspace/records`, `/workspace/copilot`, and `/workspace/review`. They compose the same client session. Route navigation must not create separate ledgers, reset filters unexpectedly, or dispatch inference. Direct navigation with no session leads to a friendly sample/start state.
+The implemented routes are `/` and `/demo`. Legacy `/workspace` entries redirect to `/demo`. Choose, Documents, Process and the dashboard areas are stages/views in the same two-hour per-tab session; selection/view recovery uses bounded browser persistence rather than URL queries/fragments. Both landing entry actions lead to the first two-choice screen. Navigation, preview, layout and currency controls do not create separate ledgers or dispatch inference. Direct navigation with no session opens Choose; interrupted processing returns to Documents for deliberate retry.
+
+**Hash-free navigation feedback, 9 October 2026:** Do not generate fragment URLs. Same-page section CTAs are accessible buttons that scroll to their targets with a 640 ms eased animation while retaining the current URL. Keep Skip to content focus transfer and cancel superseded/user-interrupted motion. The latest `/demo` amendment persists in-page stages/views in the bounded tab session; they do not create URL/history entries. Historical `/workspace` URLs redirect to `/demo`; recognized landing fragments are replaced with clean URLs while retaining their section destination. Original-PDF external links have no page fragment; relevant pages remain directly viewable inside the app.
 
 ### 6.2 Global shell
 
-The shell displays the Retrosum brand, current business, sample/live mode, selected period and currency, a review-count indicator, Export and Clear session. Keep the document basis visible near financial content. Put detailed coverage and exclusions in an expandable explanation.
+Before processing, use a minimal brand header, short step indicator and one primary action. The full dashboard shell displays business/profile, selected period/display currency and review/failure counts, with a collapsible forest sidebar for Dashboard, Documents, Records, Settings and Reset. Expanded navigation is 284 px wide on laptops, 240 px on tablets, and a viewport-bounded 284 px phone drawer. Main navigation uses 16 px text and 22 px icons, with larger profile/supporting labels; the compact icon rail retains its existing width. Retro appears only here. Phones use a focus-contained drawer and keyboard-aware composer; short screens scroll naturally. Source basis stays visible near figures; detailed contributors, coverage and exclusions open in focused dialogs.
+
+**Owner sidebar-branding feedback, 10 October 2026:** Expanded navigation, including the full phone drawer, shows only the serif Retrosum wordmark. Show the canonical browser icon alone in the collapsed desktop/tablet rail. Keep the same accessible home link and sidebar animation; this presentation choice does not change branding in landing, intake or processing.
 
 Desktop uses a compact navigation rail/sidebar, the active workspace and the persistent floating Retro pill with messages above it. Tablet uses a reduced rail. Phone uses natural vertical flow, centered responsive source dialogs and an expandable conversation sheet; reserve composer and keyboard safe-area space.
 
@@ -365,14 +390,24 @@ Research basis: Intuit documents profitability, cash-flow, receivable/payable an
 
 #### 6.5.1 Context and headline figures
 
+**Owner KPI typography feedback, 10 October 2026:** Keep the existing numerical font and all responsive number-size rules. Enlarge card labels to 14 px and supporting/comparison copy to 12 px on laptops; phones use 12.8/11.2 px with readable line heights. At the existing 500 px phone breakpoint, stack cards in one column so unchanged numeric sizes fit without splitting the sample amounts. Chart/target spans stay within that column. Preserve amounts, colors, source actions and motion.
+
+**Owner header feedback, 10 October 2026:** Remove “A little clarity. A bigger picture.” Retain “Your financial picture” as a small semantic page heading. Combine the period/currency/source caption with Period & scope, document coverage/review and conditional layout Undo, with Customize dashboard aligned right on the same laptop toolbar. Wrap at constrained widths while preserving touch targets, filter/customization behavior and the overview/period/customize tour anchors.
+
+**Automatic EUR display, latest owner decision — 9 October 2026:** Selecting EUR or opening EUR settings loads the latest published ECB USD→EUR reference quote from Frankfurter through the same-origin API and backend-only adapter. Show the rate/source/publication date with loading and Retry states; no manual rate field. Prevent applying EUR until a quote is available. The adapter uses a fixed anonymous request, a five-second fetch/body deadline, 4 KiB body bound, strict currency/rate/date validation and one-hour in-memory cache of one public quote. Reject quotes over seven calendar days old or in the future; weekend/holiday reference dates remain visible. No fallback is fabricated on failure. Only the quote's bounded integer-micro rate/date enters the two-hour browser preferences. All money conversion and symmetric half-up cent rounding remain in the shared engine, and original records/details/forms stay USD. A saved dashboard uses that rate snapshot through refresh; opening settings retrieves the latest quote again. FX works with fake, paid-off and live AI configuration, without an OpenAI key/call. No business/document/amount/cookie/key goes to the rate source, and Retro can only open settings, never supply or fetch a rate itself. See [Frankfurter's official JavaScript/provider documentation](https://frankfurter.dev/javascript/).
+
+**Owner palette feedback, 9 October 2026:** Use more of the Profit preview forest green across income/profit/cash-in/net KPI surfaces, the built-in trend chart and targets, with ivory content and mint/orange chart marks. Retain contrasting ivory costs, margin, open balances and composition surfaces. Color does not change eligibility, financial meaning or source interactions.
+
+**Owner chart feedback, 9 October 2026:** Default dashboard charts have no chart-style dropdown. Visitor-added charts retain their style controls. Identify built-in charts by canonical widget identity, preserving current styles, source interactions and Retro customization.
+
 Show business, currency, reporting period, basis, fixed sample as-of date, supplied-record coverage, pending-review count and most recent local edit. Separate **Document view** from **Recorded cash** through clear labels. A selected currency applies to every visible metric. Never sum USD and EUR.
 
 | KPI | Question it answers | Formula/meaning | Harbor reviewed sample | Click target |
 | --- | --- | --- | --- | --- |
 | Invoiced income | What work did the supplied issued invoices record? | Eligible sale amounts on the documented basis, excluding drafts/reference/duplicate sources | USD 4,800 | Included invoices and their source amount fields |
-| Documented costs | What costs are in the supplied documents? | Eligible costs, net when separately stated tax exists; basis disclosed | USD 1,280 | Cost records with category and source |
-| Profit / loss preview | What remains after those costs? | Document income − documented costs | USD 3,520 | Income/cost bridge, contributors and exclusions |
-| Margin preview | What share of income remains? | Profit preview ÷ income × 100; unavailable at zero income | 73.3% | Formula, basis and contributing totals |
+| Documented costs | What costs are in the supplied documents? | Eligible costs, net when separately stated tax exists; basis disclosed | USD 2,350 | Cost records with category and source |
+| Profit / loss preview | What remains after those costs? | Document income − documented costs | USD 2,450 | Income/cost bridge, contributors and exclusions |
+| Margin preview | What share of income remains? | Profit preview ÷ income × 100; unavailable at zero income | 51.0% | Formula, basis and contributing totals |
 | Recorded operating cash in | What incoming payment movements were supplied? | Included operating inbound movement evidence | USD 3,000 | D07 payment row; distinguish matches from unmatched |
 | Recorded operating cash out | What outgoing operating movements were supplied? | Included operating outbound movements; internal transfer excluded | USD 920 | Rent/software payment rows |
 | Recorded net cash movement | How did supplied operating movements change cash? | Operating cash in − operating cash out | USD 2,080 | Cash movement breakdown; not account balance |
@@ -381,22 +416,22 @@ Show business, currency, reporting period, basis, fixed sample as-of date, suppl
 | Overdue known open | What known open items passed their due date? | Positive known open, due date earlier than as-of; unknown due dates separated | USD 0 on 3 October 2026 | Empty overdue list plus next due items |
 | Due soon | What is due in the next 7 days? | Known open due from as-of through as-of + 7 days inclusive | Customer 1,800 due 8 October; supplier 396 due 10 October | Receivable/payable groups, never one combined balance |
 | Review coverage | How much of the collection is usable? | Eligible/review/failed/excluded source counts and reasons; no invented AI confidence | Exact active variant counts | Review queue and excluded source list |
-| Prior-period change | What changed in the supplied comparison? | (Current − prior) ÷ positive prior; same period span/currency/basis | Income +20%; costs +16.4%; profit +21.4% vs August | Both period sets and absolute differences |
+| Prior-period change | What changed in the supplied comparison? | (Current − prior) ÷ positive prior; same period span/currency/basis | Income +20%; costs +113.6%; profit −15.5% vs August | Both period sets and absolute differences |
 
-Headline row uses the first four. Secondary bands carry cash and open amounts. Support zero, negative, missing and incompatible states intentionally: missing is **Unavailable from supplied records**, never a fabricated zero. The dashboard describes the provided slice, not complete business accounts.
+The table uses the fully reviewed ten-PDF sample. Before accepting the held scan/studio-rent/duplicate sources, eligible costs are USD 1,190, profit USD 3,610 and margin 75.2%; supplier open is zero from eligible records. These variants must never be mixed. Headline row uses the first four. Secondary bands carry cash and open amounts. Support zero, negative, missing and incompatible states intentionally: missing is **Unavailable from supplied records**, never a fabricated zero. The dashboard describes the provided slice, not complete business accounts.
 
 #### 6.5.2 Charts and exact interaction behavior
 
 | View | Chart | Values and data rules | Hover/focus | Click/tap |
 | --- | --- | --- | --- | --- |
-| Income vs costs over time | Paired bars for sparse periods; line/area only with sufficiently populated real dated buckets | August 4,000/1,100; September 4,800/1,280 when D08 exists; no interpolated invented months | Period, exact totals, changes and coverage | Open those period contributors |
-| Profit / loss trend | Discrete period bars or actual-point line | August 2,900; September 3,520; losses cross a visible zero axis | Exact value, income/cost basis | Profit bridge for selected period |
-| Cost composition | One labelled donut, with an adjacent ranked list | Rent 800 (62.5%); supplies 360 (28.1%); software 120 (9.4%); sum 1,280 | Category amount, share and count | Filter Costs by category and list source records |
+| Income vs costs over time | Paired bars for sparse periods; line/area only with sufficiently populated real dated buckets | August 4,000/1,100; reviewed September 4,800/2,350 when D08 exists; no interpolated invented months | Period, exact totals, changes and coverage | Open those period contributors |
+| Profit / loss trend | Discrete period bars or actual-point line | August 2,900; reviewed September 2,450; losses cross a visible zero axis | Exact value, income/cost basis | Profit bridge for selected period |
+| Cost composition | One labelled donut, with an adjacent ranked list | Reviewed Rent 1,000 (42.6%); Materials 600 (25.5%); Services 450 (19.1%); Marketing 180 (7.7%); Software 120 (5.1%); sum 2,350 | Category amount, share and count | Filter Costs by category and list source records |
 | Top vendors | Horizontal bars | Same cost amounts/basis; long labels readable; Other bucket reveals all members | Vendor, amount, share and source count | Vendor’s records and source evidence |
 | Top customers | Horizontal bars | Issued sale amounts; missing customer uses Unknown; avoid falsely distinct aliases | Customer, income and invoice count | Customer profile and invoices |
 | Cash movement | Paired inflow/outflow bars by actual movement date/bucket | In 3,000; out 920; net 2,080; transfer 200 separately disclosed | Date, movement direction, amount and linkage | Payment drawer with matched/unmatched records |
 | Open receivables/payables | Two status lists with compact ageing bars | Current; 1–30, 31–60, 61+ days overdue; unknown due date separate; counts plus gross amounts | Bucket, age rule, amount and items | Exact open-invoice/bill list |
-| Profit bridge | Compact waterfall or aligned reconciliation bars | Income 4,800 − rent 800 − supplies 360 − software 120 = 3,520 | Each component, contribution and running result | Cost category or income contributors |
+| Profit bridge | Compact waterfall or aligned reconciliation bars | Reviewed income 4,800 − Rent 1,000 − Materials 600 − Services 450 − Marketing 180 − Software 120 = 2,450 | Each component, contribution and running result | Cost category or income contributors |
 | Coverage | Compact segmented count bar and review list | Distinguish source documents from economic-event counts | Count plus reason | Relevant documents/review queue |
 
 Use a donut only for non-negative parts of one whole. A negative/refund category switches to ranked bars or an explicit adjustment view. Do not add three redundant pie charts or a 3D/exploded pie. A waterfall can be a deeper detail rather than crowding the default screen.
@@ -404,6 +439,10 @@ Use a donut only for non-negative parts of one whole. A negative/refund category
 The small initial fixture has sparse dated events. Do not draw a smooth invented daily revenue line just to fill space. The application can add a second richer synthetic **dashboard showcase** fixture with real authored dated invoices/expenses/payment rows and exact ground truth. That fixture must be independently reconciled; its values cannot be mixed into Harbor’s published example. A visually smooth interpolation is acceptable only as drawing style between genuine points with no invented observation labels; linear/monotone presentation must not imply extra recorded data.
 
 #### 6.5.3 Common interaction contract
+
+**Implemented owner detail-dialog feedback, 10 October 2026:** All metric/chart source drill-downs use a wider paper dialog with a forest summary separating the exact source amount/unit, reporting period and inclusion/exclusion counts. Calculation, amount basis and date/filter coverage have distinct panels; the profit equation displays existing income, cost and profit facts from the same scoped engine catalogue. Each contributor has its own card with a signed contribution, labeled counterparty/date/category/basis/gross/tax fields, unchanged record notes and readable original-PDF/page actions. Warm exclusion cards and grouped review notes remain separate from included records. Zero and unavailable meanings are retained, and source amounts remain explicitly USD when dashboard display uses EUR. The title and 44 px close remain sticky, source actions are at least 48 px, and narrow layouts stack without horizontal overflow. Preserve native modal focus/Escape, source-viewer return and the always-running paper entrance; no financial or review decision follows from opening a source.
+
+**Implemented owner chart feedback, 9 October 2026:** The default trend accepts pointer movement across the plot, selects the nearest actual dated bucket and shows a vertical guide with both series' emphasized marks. Its readout displays exact engine income/cost amounts and contributor counts, with separate source-record buttons. It never invents interpolated observations. Focus on either series produces the same readout; background tap/click inspects, while a data mark opens its contributors. The readout sits opposite the selected endpoint on laptops and below the plot on narrow phones. The donut and its source table include only positive eligible contributors, preserving each category's original palette index. Hover/focus emphasizes the slice and legend and updates the center to category amount, exact-engine percentage and contributor count. Zero/unavailable categories do not clutter the legend. Held source figures remain excluded until reviewed, with a Review held figures action to Documents; no automatic acceptance or replacement with fabricated zero occurs. The default charts retain their fixed styles.
 
 - Hover and keyboard focus show the same tooltip: label/date, currency, exact amount, basis, count, optional valid comparison and **View records** affordance.
 - Click/tap/Enter opens a contributor drawer, or filters Records with a visible filter chip and Back to Overview action. Every KPI and meaningful chart data mark has a destination; decorative grid lines do not.
@@ -437,25 +476,31 @@ Row details expose line items, amount checks, related documents, payments, dupli
 
 ### 6.7 Review view
 
+The Records review queue uses one ivory panel with an actual unresolved-document count and one row per source. Separate filenames, scan/handwriting/duplicate context and page counts from aligned primary review and secondary PDF actions. Keep the default explanation concise; the existing source-review dialog exposes all source and grouped issue notes, numeric inventory, engine-derived impact, explicit confirmation and Keep held. Duplicate actions open this checked review rather than immediately changing the document. Phone rows wrap, retain 44 px minimum actions and give filenames the full width on the smallest screens. Original PDF viewing returns to the same review; never stack the two dialogs.
+
 Review groups issues by the decision required, not by internal parser errors. Examples: **Which business is yours?**, **Are these the same bill?**, **Does this payment settle this invoice?**, **Which date does the source mean?**
 
 Each issue shows the relevant sources, current proposal, reason, effect on the overview and clear actions. **Keep unresolved** remains available. If a decision affects totals, show a before/after preview computed by code before the guest confirms.
 
 ### 6.8 Retro view
 
-Retro is a persistent **floating pill composer** near the lower center of the workspace, with a compact expandable floating conversation above it. It is visible from the start; there is no round bottom-right launcher. The workspace reserves enough bottom space so the pill does not cover a chart label, table action, source link or form submit button. On narrow screens the conversation becomes a restrained full-width sheet with the same pill identity; handle the software keyboard and safe-area inset.
+Retro is a persistent **floating pill composer** near the lower center of the workspace, mounted only after dashboard entry, with a compact expandable floating conversation above it. When collapsed, show only the input and a small centered up-arrow control: no Retro header, Show chat copy or shortcuts. Per the owner's 10 October revision, remove the raised shoulder/vector mask and circular toggle. Use a regular rounded forest-glass box with a 44 px top row for a plain arrow in both collapsed and expanded states; retain its transparent 44 px keyboard/touch hit area without consuming input space. The form fills the dock width and the actual full box contributes to measured dock height. Expanding restores the conversation/actions/shortcuts, with the arrow rotating down to collapse; draft text remains and sending from the collapsed input opens the answer. Explicit collapse dismisses an active tour. The workspace reserves enough bottom space so the dock does not cover a chart label, table action, source link or form submit button. On narrow screens the conversation becomes a restrained full-width sheet with the same identity; handle the software keyboard and safe-area inset.
 
 User turns sit in right-aligned bubbles. Retro replies use clean unboxed text, an optional small Retro label, source links and action rows. The conversation/composer can use a forest-tinted glass backdrop, soft shadow, fine border and controlled sheen. Adapt ClipBuilder's `--cb-glass-*` tokens (`blur(18px) saturate(175%) contrast(108%)`, translucent surface, inset edge shadow, layered sheen); choose Retrosum colors and maintain legibility. Adapt ScreenPilot's `live-captions.tsx` / `sp-live-captions__message[data-speaker="candidate"]` distinction rather than copying its interview product.
 
 Entry shortcuts: **Summarize this period**, **Explain this dashboard**, **Show me around**, **Create an invoice**, **Add an expense**. Follow-up chips are contextual predicted answers, such as **Yes, create draft**, **No, edit details**, **Use November 30**, **Show sources** and **Undo**. A chip dispatches a typed local action or an explicit user turn; it never grants a model extra authority. Yes/No callbacks are bound to the exact proposal ID and expected revision. Disable obsolete controls when the graph or proposal changes.
 
-Retro can navigate to a stable app-owned section, smoothly scroll it into view, draw a temporary focus rectangle, point to a field and explain the exact current figure. Tours have Next/Back/Finish; no model-supplied CSS selector or arbitrary script is executable. Stop an obsolete tour/highlight when its target disappears, a dialog takes focus, the visitor scrolls away or the workspace resets.
+Retro can navigate to a stable app-owned section, smoothly scroll it into view, draw a temporary focus rectangle, point to a field and explain the exact current figure. On the first dashboard arrival after completed sample/upload processing, automatically start a 12-step tour of the default KPIs, trend/composition charts, cash/open cards, scope, customization and Retro chat. This frontend tour is identical in fake and live mode and makes no provider request. Persist its seen marker inside the bounded tab session; refresh, skipping and further intake do not replay it, while Reset clears it. The tour uses a floating guide beside the spotlight, with a darker blurred surround; it does not render in chat. Reflow above/below on phones and constrain tall targets to their visible portion so the guide and rectangle do not overlap. Guide copy may scroll while Back/Next/Finish remain visible. Finish tour or Escape skips immediately, and Show me around replays it. No model-supplied CSS selector or arbitrary script is executable. Stop an obsolete tour/highlight when a dialog takes focus, the visitor navigates or scrolls away, or the workspace resets; remeasure on resize and skip unavailable default targets during manual replay.
+
+**Owner tour timing repair, 10 October 2026:** Render the rectangle, cutout, pointer and guide only after the existing smooth-scroll controller completes and the actual target/companion/viewport geometry stays within 0.25 px for 100 ms. A scoped animation-frame watcher also catches transform/layout movement that scroll/resize events miss, publishes only stable changes and cleans up when guidance ends. No-op scrolling follows the same stability check without waiting for a scrollend event. On a changed or replaced target, withdraw stale geometry and reanchor after settling; resize restarts the owned scroll and missing targets retain bounded skip behavior. All overlay pieces fade together for 260 ms at exact measured coordinates; independent top/left/size interpolation must not make the rectangle lag its cutout. Wheel, touch, keyboard scroll interruption, Escape, dialogs, navigation, pagehide and effect cleanup stop obsolete work. Smooth scrolling and intended entrance animations remain enabled. This uses the app's own completion callback and the live-measurement pattern documented by [Floating UI](https://floating-ui.com/docs/autoupdate); [MDN scrollend](https://developer.mozilla.org/en-US/docs/Web/API/Document/scrollend_event) describes completion semantics and the no-scroll exception. No new dependency or guessed scroll-duration timeout is required.
 
 For CRUD, animate filling a real editable form after a structured proposal has been validated. Reveal fields in sequence, briefly outline the active field and show an honest **Preparing your draft** state. This animation represents applying a validated proposal to a form, not keystrokes coming directly from the model and not a committed ledger change. The visitor can edit, cancel or interrupt filling; only the final validated preview can be confirmed. Calculate the resulting dashboard effect locally. Show the result link and a small **Undo** inline with the success reply.
 
 Use typed states: idle, explaining, clarifying, preparing, filling preview, awaiting confirmation, applying, completed, stale, cancelled and failed. Monetary answers become authoritative only after grounding validation; staging text may stream. Fake mode exercises the same states, scroll/highlight choreography, form filling, shortcuts and Undo. Unsupported fake prompts receive an honest bounded generic response, not invented ledger facts.
 
 ### 6.9 Export review
+
+Current owner scope removes workspace export and generated-invoice export controls. Original PDF downloads remain in the source viewer. The following export design is historical RET-009 context; retained contracts/internal tests support safe legacy recovery, without a current export action.
 
 The export sheet states the revision, currency/period scope, included records, unresolved issues and processing modes. Default exports include structured data and an overview. Originals and sensitive source fields are separate explicit options with accurate wording about their unredacted contents.
 
@@ -481,7 +526,7 @@ Exports remain available when live processing or chat is disabled. If nothing is
 
 Use **Harbor Studio**, an English-speaking small service business. All source and created record amounts are USD. September 2026 is the main selected period; the fixture has an explicit fixed as-of date of 3 October 2026. August is a comparison period only because its records are printed in D08. These dates are synthetic demo context; do not mix them with the visitor's real current date.
 
-The initial corpus has **eight PDFs and approximately 12–16 pages**, never more than the 20-page processing envelope. Aim for four distinct printed layout families plus one handwriting example with documented provenance. Multipage PDFs provide meaningful line items and a modest history/payment register without dozens of independent uploads. One handwritten original is mandatory; a second is optional only if it adds a distinct useful case and passes exact-number evaluation.
+Per the owner's 10 October cost-category expansion, the corpus has **ten PDFs and eighteen pages**, within the existing 10-file/20-page processing envelope. Keep the original eight PDFs unchanged and add two native two-page receipt packs for four separate purchases, giving five initially eligible cost categories. Multipage PDFs provide meaningful line items and a modest history/payment register without dozens of independent uploads. One handwritten original is mandatory; a second is optional only if it adds a distinct useful case and passes exact-number evaluation.
 
 ### 7.2 Original files
 
@@ -495,10 +540,14 @@ The initial corpus has **eight PDFs and approximately 12–16 pages**, never mor
 | D06 | `northstar-A-77-second-copy.pdf` | Same economic bill as D03, visibly a second scan/rendition | Duplicate review; one bill counted once |
 | D07 | `harbor-payments-September.pdf` | Readable statement-style payment register: +3,000 Cedar; −800 rent; −120 PaperCloud; −200 transfer between Harbor-owned accounts; explicit dates/references | Multipage readable payment evidence; movement matching; transfer excluded from costs |
 | D08 | `harbor-August-records.pdf` | Viewable historical record pack: sales 2,500 + 1,500; costs 800 + 200 + 100; dates, counterparties, roles, identifiers and line details printed beside each record | Multipage authored records provide the complete August comparison; no invisible JSON history |
+| D09 | `harbor-September-operations.pdf` | Northstar NS-092 materials receipt: 8 packs × USD 30 = 240, paid 8 September; Cove ST-092 archive-storage rental USD 200, paid 3 September; each on its own page, no separate tax | Native Materials/Rent evidence; storage purchase is separate from the held handwritten studio rent |
+| D10 | `harbor-September-services.pdf` | Framecraft FC-091 image retouching: 3 hours × USD 150 = 450, paid 15 September; Beacon BM-091 launch promotion USD 180, paid 22 September; separate pages, no separate tax | Native Services/Marketing evidence with readable original receipts |
 
-No private-data-looking random noise is needed. Additional dated rows may subdivide the stated totals, but they must have real visible entries and update all ground-truth locators consistently. Do not add extra sales or costs merely to make a chart taller. Two periods and real dated records support honest comparisons and daily/cumulative views; longer histories remain unavailable until authored PDFs actually supply them.
+The owner authorized D09/D10 to enrich the sample chart with realistic categories. Every added amount must come from its own visible PDF entry with updated ground truth and exact source links; never place decorative financial values in chart code or accept held figures automatically. Initial eligible September costs are USD 1,190: Materials 240, Rent 200, Services 450, Marketing 180 and Software 120. The original scan/rent/duplicate remain held for review. The new receipts state paid but supply no payment-register movements, so recorded cash remains based on D07 alone. Two periods and real dated records support honest comparisons and daily/cumulative views; longer histories remain unavailable until authored PDFs actually supply them.
 
 ### 7.3 Original visual identities and viewing
+
+Owner-authored editable demo contact profiles use `cedar.works@retrosum.com`, `maple.retail@retrosum.com`, `northstar.supplies@retrosum.com`, `cove.spaces@retrosum.com`, `papercloud@retrosum.com`, `framecraft@retrosum.com` and `beacon.media@retrosum.com`. These fictional addresses are profile metadata, not PDF transcription or real mailboxes. Apply defaults only to contacts created from the declared synthetic sample document IDs/hashes, preserve existing custom emails and later edits/clears, and initialize older sample sessions once through the normal undoable contact command. Do not enrich arbitrary uploads or manually created namesakes. Source-field evidence and review holds remain unchanged.
 
 Draw original synthetic layouts informed by FreshBooks/Vertex42/common service invoice and receipt patterns. Do not copy a provider's branding or customer information. All files carry fictional business/contact information and a discrete synthetic-demo notice. For D04 the owner permits research/fetching or recreation; an owner-provided pen/stylus specimen is not required. Prefer recreating the controlled Cove Spaces receipt so its September rent, USD 800 and paid status remain visible and consistent with Harbor. A licensed handwriting font such as Caveat can produce a readable raster page, packaged as an image-only PDF without an invisible answer-supplying text layer. Preserve authorship/license and independently verify every numeric field. Call a recreated example **Synthetic handwriting-style receipt**; call it human-written only with authentic provenance. Local fake recognition is simulation; later live evaluation measures reading the actual raster PDF, and a recreated font specimen alone cannot establish arbitrary real-handwriting accuracy.
 
@@ -513,20 +562,20 @@ Do not expose expected-output JSON as financial evidence. Evaluation fixtures ar
 | Metric | Value | Derivation |
 | --- | --- | --- |
 | September invoiced income | USD 4,800 | D01 3,000 + D02 1,800 |
-| September documented costs on sample basis | USD 1,280 | D03 net 360 + D04 800 + D05 120 |
-| Profit preview | USD 3,520 | 4,800 − 1,280 |
-| Preview margin | 73.3% | 3,520 ÷ 4,800 × 100, one decimal |
+| September documented costs on sample basis | USD 2,350 | D03 net 360 + D04 800 + D05 120 + D09 240/200 + D10 450/180 |
+| Profit preview | USD 2,450 | 4,800 − 2,350 |
+| Preview margin | 51.0% | 2,450 ÷ 4,800 × 100, one decimal |
 | Recorded operating cash in | USD 3,000 | D07 incoming HS-101 row |
 | Recorded operating cash out | USD 920 | D07 rent 800 + software 120 |
 | Net recorded operating movement | USD 2,080 | 3,000 − 920 |
 | Internal transfer excluded | USD 200 | D07 owned-account transfer |
 | Known customer amount open | USD 1,800 | D02 explicit source state |
 | Known supplier amount open | USD 396 | D03 gross open amount including stated tax |
-| Rent share of included costs | 62.5% | 800 ÷ 1,280 × 100 |
+| Rent share of included costs | 42.6% | (800 studio + 200 archive storage) ÷ 2,350 × 100 |
 | August income / costs / profit preview | USD 4,000 / 1,100 / 2,900 | D08 source rows |
 | Recorded income change versus August | +20.0% | (4,800 − 4,000) ÷ 4,000 |
-| Recorded cost change versus August | +16.4% | (1,280 − 1,100) ÷ 1,100, one decimal |
-| Profit-preview change versus August | +21.4% | (3,520 − 2,900) ÷ 2,900, one decimal |
+| Recorded cost change versus August | +113.6% | (2,350 − 1,100) ÷ 1,100, one decimal |
+| Profit-preview change versus August | −15.5% | (2,450 − 2,900) ÷ 2,900, one decimal |
 
 These are fixture expectations, not measurements of a real business. They must be generated from canonical records rather than copied as UI constants.
 
@@ -573,7 +622,7 @@ OpenAI's Responses API supports inline Base64 PDF `input_file` content and suppl
 | Recorded payment evidence | 250 movements/claims combined | Reject excess before acceptance |
 | Contacts | 50 | Reuse an existing contact or reject excess |
 | Pending Retro proposal | 1, at most 5 related commands | Explicitly replace previous pending proposal |
-| PDF originals per workspace | 10; curated corpus initially 8 | Reject extra selection before processing |
+| PDF originals per workspace | 10; curated corpus now 10 | Reject extra selection before processing |
 | Raw file size | 5 MiB each | Inspect locally and on server |
 | Combined original bytes | 20 MiB | Reject before any paid operation |
 | PDF pages | 20 combined | Inspect all files before paid dispatch |
@@ -837,7 +886,7 @@ Retro cannot transfer real money, email customers, fetch websites, connect a ban
 
 Keep at most four concise insight cards, each carrying ID, revision, scope, fact IDs, source references, coverage caveat and allowed navigation. Prioritize material coverage issues, known open amounts, composition and compatible historical changes. A summary can combine these facts into short prose, but cannot add unsupported causes or comparisons.
 
-Good Harbor observations: rent is 800, 62.5% of document costs; HS-102 has 1,800 explicitly open due 8 October; A-77 occurs in two files; supplied September income is 20% above August. These facts do not imply a recommendation to cut rent, a due item is not overdue on 3 October, and candidate matches remain candidates until confirmed.
+Good reviewed Harbor observations: Rent is 1,000, 42.6% of document costs, including separate studio/archive-storage sources; HS-102 has 1,800 explicitly open due 8 October; A-77 occurs in two files; supplied September income is 20% above August. Before review, only the separate USD 200 storage rent is eligible. These facts do not imply a recommendation to cut rent, a due item is not overdue on 3 October, and candidate matches remain candidates until confirmed.
 
 Development fake/local fallback summaries use exact current-graph templates and clear mode labels. Live summaries/insights are deliberate admitted operations. Loading a dashboard, filtering or editing does not regenerate paid text silently.
 
@@ -891,7 +940,7 @@ Money and percentages render from computed fact objects. Reject unsupported nume
 
 **Explanation:** “Your supplied September records show USD 4,800 invoiced income and USD 3,000 operating cash received. HS-101 is linked to the 3,000 payment; HS-102 states 1,800 open. Document view measures recorded work; cash view measures supplied movements.” Sources D01, D02 and D07. Before allocation confirmation, describe the match as proposed.
 
-**Summary:** “September’s document view shows 4,800 income, 1,280 costs and a 3,520 profit preview, with a 73.3% margin. Rent contributes 800 of costs. Known customer open is 1,800; known supplier open is 396. These figures describe the supplied USD records.” Each amount resolves a fact ID.
+**Reviewed-sample summary:** “September’s document view shows 4,800 income, 2,350 costs and a 2,450 profit preview, with a 51.0% margin. Rent contributes 1,000 of costs. Known customer open is 1,800; known supplier open is 396. These figures describe the supplied USD records.” Each amount resolves a fact ID; the initial held-source variant uses its own eligible facts.
 
 **Tour:** welcome → business/period/currency → headline metric meaning → hover a real chart point → click contributors → source preview → Records create/edit → Retro and export. Keep each step one or two sentences, allow Back/Next/Finish, skip unavailable targets, return focus appropriately. A tour is an explanation, never a fake live extraction demonstration.
 
@@ -967,6 +1016,8 @@ Start at revision 1 after a valid initialized workspace. Increment once per succ
 `expectedRevision` mismatch returns a conflict. A stale provider answer cannot overwrite newer records. Duplicate command IDs are rejected or recognized as already applied within the current browser command history.
 
 ### 12.6 Persistence choice
+
+**Owner visual feedback, 9 October 2026:** Routine expiry/unrestorable-session recovery starts fresh without a banner. Keep the fixed two-hour lifetime, owned cleanup and actionable storage/cleanup errors. Workspace export has been removed from the product, including sidebar and Retro actions; original PDF downloads remain available. This supersedes earlier workspace ZIP/export UI requirements and copy below. Legacy export intents remain decodable solely to preserve existing session messages, without an actionable control.
 
 **Owner decision:** refresh preserves the workspace. Use a bounded allow-listed browser projection and temporary browser Blob storage; do not serialize the whole reducer. The proposed absolute session lifetime is **two hours from creation**, without refresh or chat renewing it. Reset clears sooner. There is no server database, document bucket or account library.
 
@@ -1778,6 +1829,8 @@ Record exact image digests, revisions, safe configuration categories, IAM checks
 
 ### 23.1 Design thesis
 
+**Permanent owner logo decision, 9 October 2026:** The browser's existing icon is the canonical Retrosum logo: ivory geometric R, warm orange dot and rounded forest square. Its single source is `apps/frontend/public/favicon.svg`. Shared `BrandMark` and `Wordmark` components reuse that exact SVG for the landing/header/footer, demo entry, expanded/collapsed dashboard navigation and processing paper. Compact branding uses the icon alone; full branding pairs it with the existing serif product name. Do not restore a text-only R, introduce a competing icon or independently duplicate its geometry/colors. Ordinary written mentions of Retrosum remain text.
+
 The attached Retrosum wordmark sets the identity: deep green “Retro”, burnt orange “sum.”, a cream ground and a vintage serif. Preserve the wordmark’s character. The application uses dark forest-green surfaces with white/off-white text, cream editorial areas and restrained orange emphasis. The professional tone is calm; the dashboard supplies the impressive interactive detail.
 
 Avoid distressed fonts, tiny ledger text, neon gradients, uncontrolled perpetual motion and generic banking-blue branding. Premium means clear hierarchy, precise alignment, generous space, useful detail and smooth feedback, not a dense grid of decorative charts.
@@ -1882,7 +1935,7 @@ Required cases include:
 - Manual entry and category/date/currency correction.
 - Source removal with related events/allocations and no dangling references.
 
-Assert exact decimal values and contributor IDs. A visually correct USD 3,520 card is insufficient if the graph double-counts sources and happens to offset the error.
+Assert exact decimal values and contributor IDs. A visually correct USD 2,450 reviewed-profit card is insufficient if the graph double-counts sources and happens to offset the error.
 
 ### 24.3 Input and source fixtures
 
@@ -1916,7 +1969,7 @@ Assert exact dispatch counts at metered boundaries. Double click, retry, reset, 
 
 | Scenario | Acceptance |
 | --- | --- |
-| Sample entry | All eight PDFs viewable; actual bytes processed live; fake-only fixture path visibly labelled. |
+| Sample entry | All ten PDFs/eighteen pages viewable; actual bytes processed in live mode; fake fixtures retain internal provenance without development banners per owner feedback. |
 | Guided match | Sources visible; confirm changes settlement/review state and preserves income/cash. |
 | Duplicate review | Both sources preserved; one cost; clear unresolved behavior. |
 | Manual USD 200 cost | All dependent metrics/charts/export update; old narratives stale. |
@@ -2051,7 +2104,7 @@ No ticket is completed by this plan, and no paid/cloud/Git action follows from a
 
 ### 28.1 Confirmed decisions and remaining release inputs
 
-The planning questions are answered. English/USD; eight visible PDF originals with one handwritten core specimen; live sample processing; OpenAI; development fakes; refresh recovery with bounded browser retention; floating pill Retro with user bubbles/unboxed responses; summaries/tours/highlights/form filling; compact confirmation plus latest-action Undo; initial approximately USD 5 credit top-up; and 12 cohesive tickets are recorded as the current baseline.
+The planning questions are answered. English/USD; ten visible PDF originals/eighteen pages with one handwritten core specimen and five initial cost categories; live sample processing; OpenAI; development fakes; refresh recovery with bounded browser retention; floating pill Retro with user bubbles/unboxed responses; summaries/tours/highlights/form filling; compact confirmation plus latest-action Undo; initial approximately USD 5 credit top-up; and 12 cohesive tickets are recorded as the current baseline.
 
 Do not ask the owner to choose Gemini, accept hidden comparison data, accept refresh loss or disable motion. Those alternatives contradict the current instructions. Keep typography, brand palette and calm photographic hero direction from the existing brief.
 
@@ -2300,11 +2353,11 @@ A USD 100 sale credit linked to a USD 1,000 sale changes document income to USD 
 
 ### B.4 Loss preview
 
-If the September sample adds a manual USD 4,000 cost on the same basis, costs become USD 5,280 and the result becomes a USD 480 loss preview. The display labels the loss and preserves source/manual provenance. It does not recommend business decisions from that preview.
+If the fully reviewed September sample adds a manual USD 4,000 cost on the same basis, costs become USD 6,350 and the result becomes a USD 1,550 loss preview. The display labels the loss and preserves source/manual provenance. It does not recommend business decisions from that preview.
 
 ### B.5 Missing history
 
-Removing D08 removes the valid August comparison. September remains USD 4,800 income, USD 1,280 costs and USD 3,520 profit preview. The copilot can explain September composition but cannot state a month-over-month growth percentage.
+Removing D08 removes the valid August comparison. Fully reviewed September remains USD 4,800 income, USD 2,350 costs and USD 2,450 profit preview. The copilot can explain September composition but cannot state a month-over-month growth percentage.
 
 ### B.6 Core invariant set
 

@@ -68,7 +68,7 @@ export const defaultDashboardWidgets = () =>
       id: "widget_trend",
       kind: "chart",
       spec: {
-        title: "Income & costs",
+        title: "Income and costs",
         metric: "income",
         comparison: "costs",
         style: "curve",

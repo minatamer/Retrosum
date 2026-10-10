@@ -37,9 +37,9 @@ export function Landing() {
             <HeroTypewriter />
           </p>
           <h1 id="hero-title">
-            Your finances.
+            Know your numbers.
             <br />
-            <span>In focus.</span>
+            <span>Understand your business.</span>
           </h1>
           <p className={styles.heroLead}>
             Your documents hold the story.

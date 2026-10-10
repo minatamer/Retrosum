@@ -1,11 +1,6 @@
 "use client";
 import { useState } from "react";
-import type {
-  SessionAction,
-  SessionFilter,
-  SourceDocument,
-  SourceReference,
-} from "@retrosum/contracts";
+import type { SessionAction, SessionFilter, SourceReference } from "@retrosum/contracts";
 import { buildDashboard, formatAmount, invoiceAmounts } from "@retrosum/money";
 import { factValue } from "../dashboard/format";
 import { Button } from "../../components/ui/button";
@@ -13,7 +8,12 @@ import { PaperDialog } from "../../components/ui/paper-dialog";
 import { useSession } from "../session/session-provider";
 import { OriginalViewer } from "../documents/original-viewer";
 import { DocumentReview } from "../documents/document-review";
+import {
+  DocumentReviewQueue,
+  type DocumentReviewSelection,
+} from "../documents/document-review-queue";
 import { RecordForm, type RecordSelection } from "./record-forms";
+import { recordsInPeriod } from "./record-register";
 import styles from "./records.module.css";
 
 const names: Record<SessionFilter["register"], string> = {
@@ -23,7 +23,7 @@ const names: Record<SessionFilter["register"], string> = {
   contacts: "Contacts",
 };
 export function RecordsWorkspace() {
-  const { controller, session, ready, persistence, notice, missingDocumentIds } = useSession();
+  const { controller, session, ready, notice, missingDocumentIds, recordsDateRange } = useSession();
   const [selection, setSelection] = useState<{ value: RecordSelection; revision: number } | null>(
     null,
   );
@@ -34,31 +34,28 @@ export function RecordsWorkspace() {
     revision: number;
   } | null>(null);
   const [source, setSource] = useState<SourceReference | null>(null);
-  const [review, setReview] = useState<{
-    doc: SourceDocument;
-    revision: number;
-    issueNotes: string[];
-  } | null>(null);
-  const [resetOpen, setResetOpen] = useState(false);
+  const [review, setReview] = useState<DocumentReviewSelection | null>(null);
   const [error, setError] = useState<string | null>(null);
-  if (!ready || !session)
+  if (!ready || !session || !recordsDateRange)
     return (
       <section className={styles.section} aria-busy="true">
         <p role="status">Opening your private browser workspace…</p>
       </section>
     );
   const workspace = session.workspace;
-  const catalogue = buildDashboard(workspace, session.filters);
+  const filters = { ...session.filters, ...recordsDateRange };
+  const catalogue = buildDashboard(workspace, filters);
   const result = catalogue.metrics;
   const family = session.filters.register;
-  const reviewDocuments = workspace.documents
-    .map((doc) => ({
-      doc,
-      issues: workspace.issues.filter(
-        (issue) => !issue.resolved && issue.documentIds.includes(doc.id),
-      ),
-    }))
-    .filter(({ issues }) => issues.length > 0);
+  const register = recordsInPeriod(workspace, filters);
+  const totalRecords =
+    family === "contacts"
+      ? workspace.contacts.length
+      : family === "invoices"
+        ? workspace.invoices.length
+        : family === "costs"
+          ? workspace.events.filter((record) => record.kind === "cost").length
+          : workspace.payments.length;
   const act = (operation: () => void) => {
     setError(null);
     try {
@@ -92,12 +89,8 @@ export function RecordsWorkspace() {
     <section className={styles.section} id="records" aria-labelledby="records-heading">
       <div className={styles.heading}>
         <div>
-          <span className="rs-eyebrow rs-muted">{workspace.business.name}</span>
           <h2 id="records-heading">A clear view of your records.</h2>
         </div>
-        <span className={styles.sessionBadge}>
-          {persistence === "ready" ? "Refresh recovery ready" : "Memory only"}
-        </span>
       </div>
       <p className={styles.intro}>
         Create something, change it, and try Undo. Every imported figure traces to a visible PDF;
@@ -121,22 +114,21 @@ export function RecordsWorkspace() {
           event.preventDefault();
           const data = new FormData(event.currentTarget);
           act(() =>
-            controller.setFilters({
-              ...session.filters,
+            controller.setRecordsDateRange({
               from: String(data.get("from")),
               to: String(data.get("to")),
             }),
           );
         }}
-        key={`${session.filters.from}-${session.filters.to}`}
+        key={`${filters.from}-${filters.to}`}
       >
         <label className="rs-form-field">
           <span>From</span>
-          <input name="from" type="date" required defaultValue={session.filters.from} />
+          <input name="from" type="date" required defaultValue={filters.from} />
         </label>
         <label className="rs-form-field">
           <span>To</span>
-          <input name="to" type="date" required defaultValue={session.filters.to} />
+          <input name="to" type="date" required defaultValue={filters.to} />
         </label>
         <Button type="submit" variant="ghost">
           Apply dates
@@ -207,21 +199,33 @@ export function RecordsWorkspace() {
             </button>
           ))}
         </nav>
-        <Button variant="warm" onClick={() => edit({ family })}>
-          New{" "}
-          {family === "invoices"
-            ? "invoice"
-            : family === "costs"
-              ? "cost"
-              : family === "payments"
-                ? "payment"
-                : "contact"}{" "}
-          <span aria-hidden="true">＋</span>
-        </Button>
+        <div className={styles.recordActions}>
+          {session.undo && (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                act(() => controller.undo(session.undo!.commandId, workspace.revision))
+              }
+            >
+              Undo · {session.undo.label}
+            </Button>
+          )}
+          <Button variant="warm" onClick={() => edit({ family })}>
+            New{" "}
+            {family === "invoices"
+              ? "invoice"
+              : family === "costs"
+                ? "cost"
+                : family === "payments"
+                  ? "payment"
+                  : "contact"}{" "}
+            <span aria-hidden="true">＋</span>
+          </Button>
+        </div>
       </div>
       <div className={styles.register} aria-label={`${names[family]} register`}>
         {family === "contacts" &&
-          workspace.contacts.map((record) => (
+          register.contacts.map((record) => (
             <article id={`record-${record.id}`} className={styles.record} key={record.id}>
               <div>
                 <span className={styles.recordBadge}>{record.role}</span>
@@ -250,7 +254,7 @@ export function RecordsWorkspace() {
             </article>
           ))}
         {family === "invoices" &&
-          workspace.invoices.map((record) => (
+          register.invoices.map((record) => (
             <article id={`record-${record.id}`} className={styles.record} key={record.id}>
               <div>
                 <span className={styles.recordBadge}>{record.status}</span>
@@ -296,65 +300,58 @@ export function RecordsWorkspace() {
             </article>
           ))}
         {family === "costs" &&
-          workspace.events
-            .filter((record) => record.kind === "cost")
-            .map((record) => (
-              <article id={`record-${record.id}`} className={styles.record} key={record.id}>
-                <div>
-                  <span className={styles.recordBadge}>
-                    {record.status} · {record.balanceState}
-                  </span>
-                  <h3>{record.description}</h3>
-                  <p>
-                    {
-                      workspace.contacts.find((contact) => contact.id === record.counterpartyId)
-                        ?.name
-                    }{" "}
-                    · {record.occurredOn}
-                  </p>
-                  <small>
-                    {record.category} ·{" "}
-                    {record.origin === "document" ? "PDF source" : "Created in session"}
-                    {record.editedAtRevision ? " · Edited" : ""}
-                  </small>
-                  <div>{sources(record.sources)}</div>
+          register.costs.map((record) => (
+            <article id={`record-${record.id}`} className={styles.record} key={record.id}>
+              <div>
+                <span className={styles.recordBadge}>
+                  {record.status} · {record.balanceState}
+                </span>
+                <h3>{record.description}</h3>
+                <p>
+                  {workspace.contacts.find((contact) => contact.id === record.counterpartyId)?.name}{" "}
+                  · {record.occurredOn}
+                </p>
+                <small>
+                  {record.category} ·{" "}
+                  {record.origin === "document" ? "PDF source" : "Created in session"}
+                  {record.editedAtRevision ? " · Edited" : ""}
+                </small>
+                <div>{sources(record.sources)}</div>
+              </div>
+              <div className={styles.recordRight}>
+                <strong>{formatAmount(record.amountMinor)}</strong>
+                <small>
+                  Gross ·{" "}
+                  {record.netMinor === undefined
+                    ? "Net unknown"
+                    : `${formatAmount(record.netMinor)} net`}
+                </small>
+                <div className={styles.actions}>
+                  <Button variant="ghost" onClick={() => edit({ family, record })}>
+                    Edit {record.description}
+                  </Button>
+                  <button
+                    type="button"
+                    className={styles.textButton}
+                    onClick={() => {
+                      const count = workspace.payments.filter((payment) =>
+                        payment.allocations.some((allocation) => allocation.eventId === record.id),
+                      ).length;
+                      remove(
+                        { type: "delete_event", id: record.id },
+                        "Delete cost",
+                        `${count} payment matches will be removed. Actual payment movements remain. Latest Undo restores this cost and its matches together.`,
+                      );
+                    }}
+                  >
+                    Delete {record.description}
+                  </button>
                 </div>
-                <div className={styles.recordRight}>
-                  <strong>{formatAmount(record.amountMinor)}</strong>
-                  <small>
-                    Gross ·{" "}
-                    {record.netMinor === undefined
-                      ? "Net unknown"
-                      : `${formatAmount(record.netMinor)} net`}
-                  </small>
-                  <div className={styles.actions}>
-                    <Button variant="ghost" onClick={() => edit({ family, record })}>
-                      Edit {record.description}
-                    </Button>
-                    <button
-                      type="button"
-                      className={styles.textButton}
-                      onClick={() => {
-                        const count = workspace.payments.filter((payment) =>
-                          payment.allocations.some(
-                            (allocation) => allocation.eventId === record.id,
-                          ),
-                        ).length;
-                        remove(
-                          { type: "delete_event", id: record.id },
-                          "Delete cost",
-                          `${count} payment matches will be removed. Actual payment movements remain. Latest Undo restores this cost and its matches together.`,
-                        );
-                      }}
-                    >
-                      Delete {record.description}
-                    </button>
-                  </div>
-                </div>
-              </article>
-            ))}
+              </div>
+            </article>
+          ))}
         {family === "payments" &&
-          workspace.payments.map((record) => (
+          register.payments.map((record) => (
             <article id={`record-${record.id}`} className={styles.record} key={record.id}>
               <div>
                 <span className={styles.recordBadge}>
@@ -401,26 +398,24 @@ export function RecordsWorkspace() {
               </div>
             </article>
           ))}
-        {(family === "contacts"
-          ? workspace.contacts.length
-          : family === "invoices"
-            ? workspace.invoices.length
-            : family === "costs"
-              ? workspace.events.filter((record) => record.kind === "cost").length
-              : workspace.payments.length) === 0 && (
+        {register[family].length === 0 && (
           <div className={styles.empty}>
             <span aria-hidden="true">✦</span>
             <h3>
               {family === "contacts"
                 ? "Start with a customer or vendor."
-                : `Your ${names[family].toLowerCase()} will appear here.`}
+                : totalRecords > 0
+                  ? `No ${names[family].toLowerCase()} in this date range.`
+                  : `Your ${names[family].toLowerCase()} will appear here.`}
             </h3>
             <p>
               {family === "contacts"
                 ? "A name and role are enough to get started."
-                : "Create a contact first, then add your records. There are no hidden sample figures in this session."}
+                : totalRecords > 0
+                  ? "Change From and To above, then apply dates to see other records."
+                  : "Create a contact first, then add your records. There are no hidden sample figures in this session."}
             </p>
-            {family !== "contacts" && (
+            {family !== "contacts" && totalRecords === 0 && (
               <Button
                 variant="ghost"
                 onClick={() =>
@@ -433,114 +428,12 @@ export function RecordsWorkspace() {
           </div>
         )}
       </div>
-      {reviewDocuments.length > 0 && (
-        <aside className={styles.review} aria-labelledby="records-review-heading">
-          <header className={styles.reviewHeader}>
-            <div>
-              <span className="rs-eyebrow">A final check</span>
-              <h3 id="records-review-heading">A few details need your eye.</h3>
-              <p>Check the originals before including held figures in your totals.</p>
-            </div>
-            <span className={styles.reviewCount}>
-              {reviewDocuments.length} {reviewDocuments.length === 1 ? "document" : "documents"}
-            </span>
-          </header>
-          <ul className={styles.reviewList}>
-            {reviewDocuments.map(({ doc, issues }) => {
-              const duplicate = issues.some((issue) => issue.code === "duplicate");
-              const handwritten = doc.provenance === "synthetic_handwriting";
-              const scanned = doc.reviewNotes.some((note) => note.includes("is image-only"));
-              const label = duplicate
-                ? "Duplicate check"
-                : handwritten
-                  ? "Handwriting review"
-                  : scanned
-                    ? "Scan review"
-                    : "Source review";
-              const description = doc.reviewBlocked
-                ? "Some figures need correcting before this source can be accepted."
-                : duplicate
-                  ? "Check whether this repeats a transaction already recorded."
-                  : handwritten
-                    ? "Compare the handwritten amounts with the original."
-                    : scanned
-                      ? "Compare the extracted figures with the scanned original."
-                      : issues[0]!.message;
-              const actionLabel = duplicate ? "Review duplicate" : "Review figures";
-              return (
-                <li key={doc.id} className={styles.reviewRow}>
-                  <span
-                    className={styles.reviewGlyph}
-                    aria-hidden="true"
-                    data-duplicate={duplicate}
-                  >
-                    <svg viewBox="0 0 24 28" fill="none">
-                      <path d="M3 1.5h11l7 7v18H3zM14 1.5v7h7M7 14h10M7 18h10M7 22h6" />
-                    </svg>
-                  </span>
-                  <div className={styles.reviewContent}>
-                    <div className={styles.reviewMeta}>
-                      <span data-duplicate={duplicate}>{label}</span>
-                      <small>
-                        {doc.pageCount} {doc.pageCount === 1 ? "page" : "pages"}
-                      </small>
-                    </div>
-                    <h4>{doc.name}</h4>
-                    <p>{description}</p>
-                  </div>
-                  <div className={styles.reviewActions}>
-                    <Button
-                      aria-label={`${actionLabel} in ${doc.name}`}
-                      onClick={() =>
-                        setReview({
-                          doc,
-                          revision: workspace.revision,
-                          issueNotes: issues.map((issue) => issue.message),
-                        })
-                      }
-                    >
-                      {actionLabel} <span aria-hidden="true">→</span>
-                    </Button>
-                    <button
-                      type="button"
-                      className={styles.reviewSource}
-                      aria-label={`View PDF ${doc.name}`}
-                      onClick={() => setSource({ documentId: doc.id, page: 1 })}
-                    >
-                      View PDF <span aria-hidden="true">↗</span>
-                    </button>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </aside>
-      )}
-      <div className={styles.sessionActions}>
-        <p>
-          Expires{" "}
-          {new Date(workspace.expiresAt).toLocaleTimeString("en-US", {
-            hour: "numeric",
-            minute: "2-digit",
-          })}{" "}
-          · Fixed two-hour session.
-        </p>
-        <div>
-          {session.undo && (
-            <Button
-              variant="ghost"
-              onClick={() =>
-                act(() => controller.undo(session.undo!.commandId, workspace.revision))
-              }
-            >
-              Undo · {session.undo.label}
-            </Button>
-          )}
-          <button className={styles.textButton} type="button" onClick={() => setResetOpen(true)}>
-            Clear this session
-          </button>
-        </div>
-      </div>
+      <DocumentReviewQueue
+        workspace={workspace}
+        headingId="records-review-heading"
+        onReview={setReview}
+        onSource={setSource}
+      />
       {error && (
         <p className={styles.warning} role="alert">
           {error}
@@ -589,34 +482,6 @@ export function RecordsWorkspace() {
           )}
         </PaperDialog>
       )}
-      <PaperDialog
-        open={resetOpen}
-        title="Start fresh?"
-        caption="Clear this browser session"
-        onClose={() => setResetOpen(false)}
-      >
-        <p>
-          Your current records, Undo and this session’s cached originals will be cleared. A fresh
-          empty session starts with its own two-hour expiry. This cannot be undone.
-        </p>
-        <p>
-          Closing or crashing the browser cannot erase storage immediately; expired leftovers are
-          removed when Retrosum runs again. Reset cannot remove files already downloaded or recall
-          copies held by a processing service.
-        </p>
-        <Button
-          variant="warm"
-          onClick={() => {
-            setResetOpen(false);
-            setSelection(null);
-            setDeletion(null);
-            setReview(null);
-            void controller.reset();
-          }}
-        >
-          Clear & start fresh
-        </Button>
-      </PaperDialog>
       {source && <OriginalViewer target={source} onClose={() => setSource(null)} />}
       {review && !source && (
         <DocumentReview

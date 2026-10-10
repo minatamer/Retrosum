@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   chartSpecSchema,
   defaultDashboardWidgets,
@@ -37,6 +37,17 @@ export function ConfigurableDashboard({ onDocuments }: { onDocuments(): void }) 
   const [detail, setDetail] = useState<DashboardFact | null>(null);
   const [source, setSource] = useState<SourceReference | null>(null);
   const [scopeError, setScopeError] = useState<string | null>(null);
+  const scopeRef = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const dismissOutsideScope = (event: PointerEvent) => {
+      const scope = scopeRef.current;
+      if (scope?.open && event.target instanceof Node && !scope.contains(event.target)) {
+        scope.open = false;
+      }
+    };
+    document.addEventListener("pointerdown", dismissOutsideScope);
+    return () => document.removeEventListener("pointerdown", dismissOutsideScope);
+  }, []);
   const catalogue = useMemo(
     () => (session ? buildDashboard(session.workspace, session.filters) : null),
     [session],
@@ -67,7 +78,17 @@ export function ConfigurableDashboard({ onDocuments }: { onDocuments(): void }) 
         <h1 id="dashboard-heading">Your financial picture</h1>
         <div className={styles.toolbar}>
           <div className={styles.scopeBar}>
-            <details id="retro-period">
+            <details
+              id="retro-period"
+              ref={scopeRef}
+              onKeyDown={(event) => {
+                if (event.key === "Escape" && event.currentTarget.open) {
+                  event.currentTarget.open = false;
+                  event.currentTarget.querySelector("summary")?.focus();
+                  event.stopPropagation();
+                }
+              }}
+            >
               <summary>
                 Period & scope <span>⌄</span>
               </summary>
@@ -123,7 +144,7 @@ export function ConfigurableDashboard({ onDocuments }: { onDocuments(): void }) 
                       ))}
                   </select>
                 </label>
-                <label>
+                <label className={styles.fullScopeField}>
                   Counterparty
                   <select name="counterparty" defaultValue={filters.counterpartyId ?? ""}>
                     <option value="">All counterparties</option>
@@ -265,7 +286,11 @@ export function ConfigurableDashboard({ onDocuments }: { onDocuments(): void }) 
             )}
             {widget.kind === "chart" && (
               <ChartWidget
-                spec={widget.spec}
+                spec={
+                  widget.id === "widget_trend" && widget.spec.title === "Income & costs"
+                    ? { ...widget.spec, title: "Income and costs" }
+                    : widget.spec
+                }
                 allowStyleChange={!defaultChartIds.has(widget.id)}
                 onChange={(spec) =>
                   update(

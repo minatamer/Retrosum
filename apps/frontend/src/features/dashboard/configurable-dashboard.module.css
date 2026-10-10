@@ -47,6 +47,9 @@
   flex-shrink: 0;
 }
 .scopeBar {
+  position: relative;
+  z-index: 6;
+  container-type: inline-size;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -80,13 +83,15 @@
 }
 .scopeBar form {
   position: absolute;
+  left: 0;
   top: calc(100% + 0.5rem);
   z-index: 5;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.8rem;
   padding: 1.2rem;
-  min-width: 320px;
+  width: min(36rem, 100cqw);
+  min-width: 0;
   background: #fffdf7;
   box-shadow: 0 16px 40px #173d3026;
   border: 1px solid #173d3020;
@@ -95,6 +100,10 @@
 .scopeBar label {
   display: grid;
   gap: 0.4rem;
+}
+.fullScopeField,
+.scopeBar form > p {
+  grid-column: 1 / -1;
 }
 .scopeBar input,
 .scopeBar select {
@@ -162,6 +171,13 @@
   grid-column: span 2;
   padding: 1.6rem;
 }
+.widget[data-kind="chart"] {
+  display: flex;
+  flex-direction: column;
+}
+.widget[data-kind="chart"] > :not(.plot) {
+  flex-shrink: 0;
+}
 .kpi {
   width: 100%;
   height: 100%;
@@ -180,6 +196,7 @@
   justify-content: space-between;
   gap: 0.3rem;
   font-size: 0.875rem;
+  font-weight: 600;
   line-height: 1.5;
   color: #173d30a6;
 }
@@ -287,13 +304,23 @@
 }
 .plot {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-top: 1.5rem;
+}
+.plotCanvas {
+  position: relative;
+  flex: 1;
+  min-height: 220px;
 }
 .trend {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
+  height: 100%;
   overflow: visible;
   display: block;
-  margin-top: 1.5rem;
   cursor: crosshair;
   touch-action: pan-y;
 }
@@ -491,6 +518,7 @@
   cursor: default;
 }
 .reviewHint {
+  align-self: flex-start;
   color: var(--rs-brand-orange);
   font-size: 0.75rem;
   background: transparent;
@@ -803,9 +831,6 @@
     font-size: 0.7rem;
   }
   .scopeBar form {
-    min-width: 0;
-    width: 280px;
-    max-width: calc(100vw - 2rem);
     grid-template-columns: 1fr;
   }
   .dataTable th,

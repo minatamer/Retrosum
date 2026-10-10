@@ -1,16 +1,20 @@
 "use client";
 import { useState } from "react";
-import type { SourceDocument, SourceReference } from "@retrosum/contracts";
+import type { SourceReference } from "@retrosum/contracts";
 import { useSession } from "../session/session-provider";
 import { OriginalViewer } from "../documents/original-viewer";
 import { DocumentReview } from "../documents/document-review";
+import {
+  DocumentReviewQueue,
+  type DocumentReviewSelection,
+} from "../documents/document-review-queue";
 import { sampleAssets } from "../documents/sample-assets";
 import styles from "./dashboard-shell.module.css";
 
 export function DocumentLibrary({ onAddDocuments }: { onAddDocuments(): void }) {
   const { session } = useSession();
   const [source, setSource] = useState<SourceReference | null>(null);
-  const [review, setReview] = useState<{ doc: SourceDocument; revision: number } | null>(null);
+  const [review, setReview] = useState<DocumentReviewSelection | null>(null);
   if (!session) return null;
   return (
     <section id="retro-documents" className={styles.library}>
@@ -24,6 +28,13 @@ export function DocumentLibrary({ onAddDocuments }: { onAddDocuments(): void }) 
           Add / select documents ↗
         </button>
       </header>
+      <DocumentReviewQueue
+        workspace={session.workspace}
+        theme="green"
+        headingId="documents-review-heading"
+        onReview={setReview}
+        onSource={setSource}
+      />
       <div className={styles.documentRows}>
         {session.workspace.documents.map((doc) => (
           <article key={doc.id}>

@@ -74,6 +74,145 @@ function harness(storage = new MemoryStorage(), cache = new MemoryCache(), owned
   };
 }
 describe("bounded browser refresh and lifecycle", () => {
+  it.each(["sample", "upload"])("initializes both date ranges when choosing %s", async (entry) => {
+    const h = harness();
+    h.clock(Date.parse("2026-10-10T12:00:00Z"));
+    await h.controller.initialize();
+    const current = h.controller.getSnapshot().session;
+    h.controller.setExperience({ ...current.experience, entry, stage: "documents" });
+    const dates =
+      entry === "sample"
+        ? { from: "2026-09-01", to: "2026-09-30" }
+        : { from: "2026-10-01", to: "2026-10-31" };
+    expect(h.controller.getSnapshot().recordsDateRange).toEqual(dates);
+    expect(h.controller.getSnapshot().session.filters).toMatchObject(dates);
+    h.controller.dispose();
+  });
+  it("keeps Records dates independent of Dashboard dates across view navigation", async () => {
+    const h = harness();
+    writeProjection(h.storage, harborSession());
+    await h.controller.initialize();
+    const before = h.controller.getSnapshot().session;
+    const stored = h.storage.getItem(PROJECTION_KEY);
+    h.controller.setRecordsDateRange({ from: "2026-09-15", to: "2026-09-30" });
+    expect(h.controller.getSnapshot().session).toBe(before);
+    expect(h.storage.getItem(PROJECTION_KEY)).toBe(stored);
+    h.controller.setFilters({ ...before.filters, from: "2026-09-01", to: "2026-09-10" });
+    for (const view of ["overview", "documents", "records"]) {
+      h.controller.setExperience({ ...h.controller.getSnapshot().session.experience, view });
+      expect(h.controller.getSnapshot().recordsDateRange).toEqual({
+        from: "2026-09-15",
+        to: "2026-09-30",
+      });
+      expect(h.controller.getSnapshot().session.filters).toMatchObject({
+        from: "2026-09-01",
+        to: "2026-09-10",
+      });
+    }
+    h.controller.setRecordsDateRange({ from: "2026-09-24", to: "2026-09-24" });
+    expect(h.controller.getSnapshot().session.filters).toMatchObject({
+      from: "2026-09-01",
+      to: "2026-09-10",
+    });
+    expect(h.controller.getSnapshot().session.workspace).toEqual(before.workspace);
+    h.controller.dispose();
+  });
+  it("rejects invalid, reversed and expired Records ranges without changing either view", async () => {
+    const h = harness();
+    await h.controller.initialize();
+    const before = h.controller.getSnapshot();
+    for (const dates of [
+      { from: "2026-02-29", to: "2026-03-01" },
+      { from: "2026-09-30", to: "2026-09-01" },
+    ]) {
+      expect(() => h.controller.setRecordsDateRange(dates)).toThrow();
+      expect(h.controller.getSnapshot()).toBe(before);
+    }
+    h.clock(before.session.workspace.expiresAt);
+    expect(() =>
+      h.controller.setRecordsDateRange({ from: "2026-09-01", to: "2026-09-30" }),
+    ).toThrow(/expired/);
+    expect(h.controller.getSnapshot()).toBe(before);
+    h.controller.dispose();
+  });
+  it.each(["sample", "upload"])(
+    "refresh resets both %s ranges while preserving records, preferences, other filters and Undo",
+    async (entry) => {
+      const h = harness();
+      const saved = harborSession();
+      // Cross midnight/month end during the same absolute two-hour workspace lifetime.
+      const createdAt = Date.parse("2024-02-29T23:59:00Z");
+      h.clock(createdAt + 1000);
+      saved.workspace.createdAt = createdAt;
+      saved.workspace.expiresAt = createdAt + SESSION_LIFETIME_MS;
+      saved.workspace.documents = saved.workspace.documents.map((doc) => ({
+        ...doc,
+        provenance: entry === "upload" ? "visitor_upload" : doc.provenance,
+      }));
+      saved.experience = { ...saved.experience, entry, stage: "dashboard", view: "records" };
+      writeProjection(h.storage, saved);
+      await h.controller.initialize();
+      h.controller.apply(
+        [
+          {
+            type: "create_contact",
+            record: { id: "contact_scope_test", name: "Scope test", role: "customer" },
+          },
+        ],
+        "Create Scope test",
+      );
+      const current = h.controller.getSnapshot().session;
+      h.controller.setDashboard(
+        { ...current.dashboard, profileName: "Date scopes", collapsed: true },
+        false,
+      );
+      h.controller.setMessages([
+        {
+          id: "scope_message",
+          role: "user",
+          text: "My saved question",
+          revision: current.workspace.revision,
+        },
+      ]);
+      h.controller.setFilters({
+        ...current.filters,
+        from: "2026-09-02",
+        to: "2026-09-10",
+        register: "costs",
+        category: "Software",
+        asOf: "2026-10-03",
+      });
+      h.controller.setRecordsDateRange({ from: "2026-09-15", to: "2026-09-30" });
+      const before = h.controller.getSnapshot().session;
+      h.controller.dispose();
+      h.clock(Date.parse("2024-03-01T00:01:00Z"));
+      const reload = new SessionController(h.environment);
+      await reload.initialize();
+      const dates =
+        entry === "sample"
+          ? { from: "2026-09-01", to: "2026-09-30" }
+          : { from: "2024-02-01", to: "2024-02-29" };
+      expect(reload.getSnapshot().session).toEqual({
+        ...before,
+        filters: { ...before.filters, ...dates },
+      });
+      expect(reload.getSnapshot().recordsDateRange).toEqual(dates);
+      reload.undo(before.undo.commandId, before.workspace.revision);
+      expect(reload.getSnapshot().session.workspace.contacts).not.toContainEqual(
+        expect.objectContaining({ id: "contact_scope_test" }),
+      );
+      expect(reload.getSnapshot().session.workspace.expiresAt).toBe(before.workspace.expiresAt);
+      await reload.reset();
+      expect(reload.getSnapshot().recordsDateRange).toEqual({
+        from: "2024-03-01",
+        to: "2024-03-31",
+      });
+      expect(reload.getSnapshot().session.filters).toMatchObject(
+        reload.getSnapshot().recordsDateRange,
+      );
+      reload.dispose();
+    },
+  );
   it.each([
     ["sample", "fake"],
     ["sample", "live"],

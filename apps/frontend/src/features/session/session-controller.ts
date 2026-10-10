@@ -27,6 +27,7 @@ import {
 import { acquireSessionOwnership, type SessionLease } from "./ownership";
 import { PdfBlobCache, validatePdfBlob } from "./blob-cache";
 import { withSampleContactEmails } from "../documents/sample-contacts";
+import { defaultDateRange, monthDateRange, type DateRange } from "./reporting-period";
 
 type Cache = Pick<PdfBlobCache, "get" | "put" | "removeWorkspace" | "sweepExpired">;
 export type SessionEnvironment = {
@@ -44,6 +45,7 @@ export type SessionSnapshot = {
   persistence: "loading" | "ready" | "memory";
   notice: string | null;
   missingDocumentIds: string[];
+  recordsDateRange: DateRange | null;
 };
 export const EMPTY_SNAPSHOT: SessionSnapshot = {
   session: null,
@@ -52,13 +54,10 @@ export const EMPTY_SNAPSHOT: SessionSnapshot = {
   persistence: "loading",
   notice: null,
   missingDocumentIds: [],
+  recordsDateRange: null,
 };
 export function createEmptySession(identity: string, now: number): MoneySession {
   const date = new Date(now).toISOString().slice(0, 10);
-  const month = date.slice(0, 7);
-  const end = new Date(Date.UTC(Number(date.slice(0, 4)), Number(date.slice(5, 7)), 0))
-    .toISOString()
-    .slice(0, 10);
   return sessionSchema.parse({
     workspace: {
       id: workspaceIdSchema.parse(`workspace_${identity}`),
@@ -81,7 +80,7 @@ export function createEmptySession(identity: string, now: number): MoneySession 
     },
     appliedCommandIds: [],
     undo: null,
-    filters: { from: `${month}-01`, to: end, register: "invoices" },
+    filters: { ...monthDateRange(date.slice(0, 7)), register: "invoices" },
     messages: [],
   });
 }
@@ -196,6 +195,8 @@ export class SessionController {
       session = createEmptySession(this.environment.identity(), this.environment.now());
       notice = "Browser storage is unavailable. Refresh recovery may not work.";
     }
+    const dates = defaultDateRange(session);
+    session = validateSession({ ...session, filters: { ...session.filters, ...dates } });
     if (!session.experience.sampleContactEmailsInitialized) {
       const updated = withSampleContactEmails(session.workspace);
       const actions: SessionAction[] = updated.contacts
@@ -249,6 +250,7 @@ export class SessionController {
       persistence: "loading",
       notice,
       missingDocumentIds: [],
+      recordsDateRange: dates,
     });
     this.publish({ ...this.snapshot, ...this.persist(session) });
     if (expiredId) {
@@ -318,16 +320,35 @@ export class SessionController {
     const next = validateSession({ ...this.current(), filters });
     this.publish({ ...this.snapshot, session: next, ...this.persist(next) });
   }
+  setRecordsDateRange(input: DateRange) {
+    this.current();
+    const dates = sessionFilterSchema.pick({ from: true, to: true }).parse(input);
+    if (dates.from > dates.to) throw new RangeError("End date must be on or after the start date.");
+    this.publish({ ...this.snapshot, recordsDateRange: dates });
+  }
   setMessages(messages: FinalizedMessage[]) {
     const next = validateSession({ ...this.current(), messages });
     this.publish({ ...this.snapshot, session: next, ...this.persist(next) });
   }
   setExperience(input: DemoExperience) {
+    const current = this.current();
+    const experience = demoExperienceSchema.parse(input);
+    const dates =
+      experience.entry !== current.experience.entry ||
+      (current.experience.stage === "choose" && experience.stage !== "choose")
+        ? defaultDateRange({ workspace: current.workspace, experience })
+        : null;
     const next = validateSession({
-      ...this.current(),
-      experience: demoExperienceSchema.parse(input),
+      ...current,
+      experience,
+      filters: { ...current.filters, ...dates },
     });
-    this.publish({ ...this.snapshot, session: next, ...this.persist(next) });
+    this.publish({
+      ...this.snapshot,
+      session: next,
+      recordsDateRange: dates ?? this.snapshot.recordsDateRange,
+      ...this.persist(next),
+    });
   }
   claimDashboardTour() {
     const current = this.snapshot.session;
@@ -501,6 +522,7 @@ export class SessionController {
         ? `${message ? `${message} ` : ""}Some browser storage could not be removed; expired leftovers will be retried when Retrosum runs again.`
         : message,
       missingDocumentIds: [],
+      recordsDateRange: defaultDateRange(session),
     });
     this.publish({ ...this.snapshot, ...this.persist(session) });
     if (remote) {

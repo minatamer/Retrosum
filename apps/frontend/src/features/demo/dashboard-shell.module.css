@@ -33,9 +33,6 @@
   margin: 0.2rem 0 2rem;
   min-height: 35px;
 }
-.sidebarBrand > a:not(.miniBrand) :global(.rs-brand-mark) {
-  display: none;
-}
 .miniBrand {
   display: none;
   width: 100%;
@@ -282,6 +279,11 @@
   backdrop-filter: none;
   box-shadow: none;
 }
+.composer:has([data-expanded="true"][data-roomy="true"]) {
+  width: min(1100px, max(760px, 64vw), calc(100% - var(--sidebar-width) - 3rem));
+  height: min(75dvh, calc(var(--rs-visual-height, 100dvh) * 0.75));
+  max-height: calc(var(--rs-visual-height, 100dvh) - 2.5rem);
+}
 .scrim {
   display: none;
 }
@@ -369,7 +371,7 @@
 }
 .settings > button,
 .dialogActions > button,
-.library header > button {
+.library > header > button {
   min-height: 46px;
   padding: 0.75rem 1.2rem;
   border: 0;
@@ -382,7 +384,7 @@
   grid-template-columns: 1fr 1fr;
   margin-top: 1.5rem;
 }
-.library header {
+.library > header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -397,7 +399,7 @@
   margin: 0.8rem 0;
   letter-spacing: -0.04em;
 }
-.library header p {
+.library > header p {
   font-size: 0.82rem;
   color: #173d3099;
   max-width: 520px;
@@ -511,6 +513,9 @@
     bottom: calc(max(0.75rem, env(safe-area-inset-bottom)) + var(--rs-keyboard-offset, 0px));
     width: calc(100% - 1.3rem);
   }
+  .composer:has([data-expanded="true"][data-roomy="true"]) {
+    width: calc(100% - 1.3rem);
+  }
   .scrim {
     display: block;
     position: fixed;
@@ -524,7 +529,7 @@
   .sidebarBottom > .collapse {
     display: none;
   }
-  .library header {
+  .library > header {
     align-items: flex-start;
     flex-direction: column;
   }

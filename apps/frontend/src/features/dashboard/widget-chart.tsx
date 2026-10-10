@@ -1,5 +1,5 @@
 "use client";
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { ChartStyle, DashboardPreferences } from "@retrosum/contracts";
 import {
   formatDisplayAmount,
@@ -64,6 +64,8 @@ export function WidgetChart({
   total: number;
 }) {
   const [active, setActive] = useState<number | null>(null);
+  const canvas = useRef<HTMLDivElement>(null);
+  const [plotHeight, setPlotHeight] = useState(256);
   const gradient = useId().replaceAll(":", "");
   const slices = points
     .map((point, index) => ({ point, index }))
@@ -76,6 +78,22 @@ export function WidgetChart({
   const values = points
     .flatMap((p) => [p.fact.value, p.comparison?.value])
     .filter((v): v is number => typeof v === "number");
+  const outsideDisplayLimit =
+    preferences.currency === "EUR" &&
+    [total, ...values].some((v) => formatDisplayAmount(v, preferences) === "Outside display limit");
+  const visiblePlot =
+    style !== "pie" && !pieUnavailable && values.length > 0 && !outsideDisplayLimit;
+  useEffect(() => {
+    const node = canvas.current;
+    if (!node || !visiblePlot) return;
+    const observer = new ResizeObserver(([entry]) => {
+      if (!entry || entry.contentRect.width <= 0 || entry.contentRect.height <= 0) return;
+      const height = (entry.contentRect.height / entry.contentRect.width) * 640;
+      setPlotHeight((current) => (Math.abs(current - height) < 0.5 ? current : height));
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [visiblePlot]);
   if (!values.length)
     return (
       <div className={styles.emptyChart}>
@@ -96,7 +114,9 @@ export function WidgetChart({
     );
   const max = Math.max(1, ...values, 0),
     min = Math.min(0, ...values);
-  const y = (v: number) => 204 - ((v - min) / (max - min)) * 176;
+  const axisHeight = plotHeight - 80;
+  const plotBottom = plotHeight - 52;
+  const y = (v: number) => plotBottom - ((v - min) / (max - min)) * axisHeight;
   const x = (i: number) => (points.length === 1 ? 320 : 48 + (i / (points.length - 1)) * 546);
   const inspectPlot = (
     event: React.PointerEvent<SVGSVGElement> | React.MouseEvent<SVGSVGElement>,
@@ -104,8 +124,8 @@ export function WidgetChart({
     if ("pointerType" in event && event.pointerType === "touch") return;
     const bounds = event.currentTarget.getBoundingClientRect();
     const localX = ((event.clientX - bounds.left) / bounds.width) * 640;
-    const localY = ((event.clientY - bounds.top) / bounds.height) * 256;
-    if (localX < 28 || localX > 614 || localY < 12 || localY > 218) {
+    const localY = ((event.clientY - bounds.top) / bounds.height) * plotHeight;
+    if (localX < 28 || localX > 614 || localY < 12 || localY > plotBottom + 14) {
       return;
     }
     setActive(
@@ -141,10 +161,7 @@ export function WidgetChart({
       onSelect(fact);
     }
   };
-  if (
-    preferences.currency === "EUR" &&
-    [total, ...values].some((v) => formatDisplayAmount(v, preferences) === "Outside display limit")
-  )
+  if (outsideDisplayLimit)
     return (
       <div className={styles.emptyChart}>
         Converted figures exceed the display limit. Switch to USD in Settings.
@@ -220,194 +237,209 @@ export function WidgetChart({
             </g>
           </svg>
         ) : (
-          <svg
-            viewBox="0 0 640 256"
-            className={styles.trend}
-            aria-label="Financial trend chart"
-            onPointerMove={inspectPlot}
-            onClick={(event) => {
-              if (!(event.target as Element).closest('[role="button"]')) inspectPlot(event);
-            }}
-          >
-            <defs>
-              <linearGradient id={gradient} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--chart-fill, #8bbe98)" stopOpacity=".32" />
-                <stop offset="100%" stopColor="var(--chart-fill, #8bbe98)" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <rect x="28" y="12" width="586" height="206" fill="transparent" />
-            {[0, 0.25, 0.5, 0.75, 1].map((fraction) => (
-              <g key={fraction}>
-                <path d={`M48 ${28 + fraction * 176}H610`} stroke="var(--chart-grid, #173d3010)" />
-                <text x="2" y={32 + fraction * 176} className={styles.axis}>
-                  {new Intl.NumberFormat("en-US", {
-                    notation: "compact",
-                    maximumFractionDigits: 1,
-                  }).format(
-                    (preferences.currency === "EUR"
-                      ? convertDisplayAmount(
-                          Math.round(max - fraction * (max - min)),
-                          preferences.eurRateMicros!,
-                        )
-                      : max - fraction * (max - min)) / 100,
-                  )}
-                </text>
-              </g>
-            ))}
-            {min < 0 && <path d={`M48 ${y(0)}H610`} stroke="var(--chart-zero, #173d3060)" />}
-            {selected && active !== null && (
-              <g className={styles.hoverGuide} aria-hidden="true">
-                <rect x={x(active) - 16} y="18" width="32" height="190" rx="8" />
-                <line x1={x(active)} x2={x(active)} y1="18" y2="212" />
-              </g>
-            )}
-            {style !== "bar" && (
-              <>
-                {points.length > 1 && !points.some((p) => p.fact.value === null) && (
+          <div className={styles.plotCanvas} ref={canvas}>
+            <svg
+              viewBox={`0 0 640 ${plotHeight}`}
+              className={styles.trend}
+              aria-label="Financial trend chart"
+              onPointerMove={inspectPlot}
+              onClick={(event) => {
+                if (!(event.target as Element).closest('[role="button"]')) inspectPlot(event);
+              }}
+            >
+              <defs>
+                <linearGradient id={gradient} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--chart-fill, #8bbe98)" stopOpacity=".32" />
+                  <stop offset="100%" stopColor="var(--chart-fill, #8bbe98)" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <rect x="28" y="12" width="586" height={plotHeight - 50} fill="transparent" />
+              {[0, 0.25, 0.5, 0.75, 1].map((fraction) => (
+                <g key={fraction}>
                   <path
-                    d={`${path()} L${x(points.length - 1)},${y(0)} L${x(0)},${y(0)} Z`}
-                    fill={`url(#${gradient})`}
+                    d={`M48 ${28 + fraction * axisHeight}H610`}
+                    stroke="var(--chart-grid, #173d3010)"
                   />
-                )}
-                <path
-                  d={path()}
-                  fill="none"
-                  stroke="var(--chart-income, #235a45)"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  pathLength="1"
-                  className={styles.drawLine}
-                />
-                <path
-                  d={path(true)}
-                  fill="none"
-                  stroke="var(--chart-cost, #bc7356)"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeDasharray="6 5"
-                />
-              </>
-            )}
-            {points.map((point, index) => (
-              <g key={point.label}>
-                {point.fact.value !== null && (
-                  <g
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`${point.label}: ${formatDisplayAmount(point.fact.value, preferences)}, view source records`}
-                    onPointerEnter={() => setActive(index)}
-                    onFocus={() => setActive(index)}
-                    onClick={() => onSelect(point.fact)}
-                    onKeyDown={(e) => key(e, point.fact)}
-                    className={styles.chartMark}
-                    data-active={active === index}
-                  >
-                    {style === "bar" ? (
-                      <rect
-                        x={x(index) - Math.min(32, 220 / points.length)}
-                        y={Math.min(y(point.fact.value), y(0))}
-                        width={Math.min(58, 390 / points.length)}
-                        height={Math.max(2, Math.abs(y(point.fact.value) - y(0)))}
-                        rx="6"
-                        fill="#83ae90"
-                        className={styles.growBar}
-                      />
-                    ) : (
-                      <>
-                        <circle cx={x(index)} cy={y(point.fact.value)} r="18" fill="transparent" />
-                        {active === index && (
+                  <text x="2" y={32 + fraction * axisHeight} className={styles.axis}>
+                    {new Intl.NumberFormat("en-US", {
+                      notation: "compact",
+                      maximumFractionDigits: 1,
+                    }).format(
+                      (preferences.currency === "EUR"
+                        ? convertDisplayAmount(
+                            Math.round(max - fraction * (max - min)),
+                            preferences.eurRateMicros!,
+                          )
+                        : max - fraction * (max - min)) / 100,
+                    )}
+                  </text>
+                </g>
+              ))}
+              {min < 0 && <path d={`M48 ${y(0)}H610`} stroke="var(--chart-zero, #173d3060)" />}
+              {selected && active !== null && (
+                <g className={styles.hoverGuide} aria-hidden="true">
+                  <rect x={x(active) - 16} y="18" width="32" height={plotHeight - 66} rx="8" />
+                  <line x1={x(active)} x2={x(active)} y1="18" y2={plotHeight - 44} />
+                </g>
+              )}
+              {style !== "bar" && (
+                <>
+                  {points.length > 1 && !points.some((p) => p.fact.value === null) && (
+                    <path
+                      d={`${path()} L${x(points.length - 1)},${y(0)} L${x(0)},${y(0)} Z`}
+                      fill={`url(#${gradient})`}
+                    />
+                  )}
+                  <path
+                    d={path()}
+                    fill="none"
+                    stroke="var(--chart-income, #235a45)"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    pathLength="1"
+                    className={styles.drawLine}
+                  />
+                  <path
+                    d={path(true)}
+                    fill="none"
+                    stroke="var(--chart-cost, #bc7356)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeDasharray="6 5"
+                  />
+                </>
+              )}
+              {points.map((point, index) => (
+                <g key={point.label}>
+                  {point.fact.value !== null && (
+                    <g
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${point.label}: ${formatDisplayAmount(point.fact.value, preferences)}, view source records`}
+                      onPointerEnter={() => setActive(index)}
+                      onFocus={() => setActive(index)}
+                      onClick={() => onSelect(point.fact)}
+                      onKeyDown={(e) => key(e, point.fact)}
+                      className={styles.chartMark}
+                      data-active={active === index}
+                    >
+                      {style === "bar" ? (
+                        <rect
+                          x={x(index) - Math.min(32, 220 / points.length)}
+                          y={Math.min(y(point.fact.value), y(0))}
+                          width={Math.min(58, 390 / points.length)}
+                          height={Math.max(2, Math.abs(y(point.fact.value) - y(0)))}
+                          rx="6"
+                          fill="#83ae90"
+                          className={styles.growBar}
+                        />
+                      ) : (
+                        <>
                           <circle
                             cx={x(index)}
                             cy={y(point.fact.value)}
-                            r="14"
+                            r="18"
+                            fill="transparent"
+                          />
+                          {active === index && (
+                            <circle
+                              cx={x(index)}
+                              cy={y(point.fact.value)}
+                              r="14"
+                              fill="var(--chart-income, #235a45)"
+                              opacity=".2"
+                            />
+                          )}
+                          <circle
+                            cx={x(index)}
+                            cy={y(point.fact.value)}
+                            r={active === index ? 7 : 5}
                             fill="var(--chart-income, #235a45)"
+                            stroke="var(--chart-edge, #fffdf7)"
+                            strokeWidth="3"
+                          />
+                        </>
+                      )}
+                    </g>
+                  )}
+                  {style === "bar" &&
+                    point.comparison?.value !== null &&
+                    point.comparison?.value !== undefined && (
+                      <rect
+                        x={x(index) + 3}
+                        y={Math.min(y(point.comparison.value), y(0))}
+                        width={Math.min(26, 160 / points.length)}
+                        height={Math.max(2, Math.abs(y(point.comparison.value) - y(0)))}
+                        rx="4"
+                        fill="#dcab86"
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`${point.label} comparison: ${formatDisplayAmount(point.comparison.value, preferences)}`}
+                        className={styles.chartMark}
+                        data-active={active === index}
+                        data-series="comparison"
+                        onPointerEnter={() => setActive(index)}
+                        onFocus={() => setActive(index)}
+                        onClick={() => onSelect(point.comparison!)}
+                        onKeyDown={(e) => key(e, point.comparison!)}
+                      />
+                    )}
+                  {style !== "bar" &&
+                    point.comparison?.value !== null &&
+                    point.comparison?.value !== undefined && (
+                      <g
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`${point.label} ${point.comparison.label}: ${formatDisplayAmount(point.comparison.value, preferences)}, view source records`}
+                        className={styles.chartMark}
+                        data-active={active === index}
+                        data-series="comparison"
+                        onPointerEnter={() => setActive(index)}
+                        onFocus={() => setActive(index)}
+                        onClick={() => onSelect(point.comparison!)}
+                        onKeyDown={(e) => key(e, point.comparison!)}
+                      >
+                        <circle
+                          cx={x(index)}
+                          cy={y(point.comparison.value)}
+                          r="18"
+                          fill="transparent"
+                        />
+                        {active === index && (
+                          <circle
+                            cx={x(index)}
+                            cy={y(point.comparison.value)}
+                            r="12"
+                            fill="var(--chart-cost, #bc7356)"
                             opacity=".2"
                           />
                         )}
                         <circle
                           cx={x(index)}
-                          cy={y(point.fact.value)}
-                          r={active === index ? 7 : 5}
-                          fill="var(--chart-income, #235a45)"
-                          stroke="var(--chart-edge, #fffdf7)"
-                          strokeWidth="3"
-                        />
-                      </>
-                    )}
-                  </g>
-                )}
-                {style === "bar" &&
-                  point.comparison?.value !== null &&
-                  point.comparison?.value !== undefined && (
-                    <rect
-                      x={x(index) + 3}
-                      y={Math.min(y(point.comparison.value), y(0))}
-                      width={Math.min(26, 160 / points.length)}
-                      height={Math.max(2, Math.abs(y(point.comparison.value) - y(0)))}
-                      rx="4"
-                      fill="#dcab86"
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`${point.label} comparison: ${formatDisplayAmount(point.comparison.value, preferences)}`}
-                      className={styles.chartMark}
-                      data-active={active === index}
-                      data-series="comparison"
-                      onPointerEnter={() => setActive(index)}
-                      onFocus={() => setActive(index)}
-                      onClick={() => onSelect(point.comparison!)}
-                      onKeyDown={(e) => key(e, point.comparison!)}
-                    />
-                  )}
-                {style !== "bar" &&
-                  point.comparison?.value !== null &&
-                  point.comparison?.value !== undefined && (
-                    <g
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`${point.label} ${point.comparison.label}: ${formatDisplayAmount(point.comparison.value, preferences)}, view source records`}
-                      className={styles.chartMark}
-                      data-active={active === index}
-                      data-series="comparison"
-                      onPointerEnter={() => setActive(index)}
-                      onFocus={() => setActive(index)}
-                      onClick={() => onSelect(point.comparison!)}
-                      onKeyDown={(e) => key(e, point.comparison!)}
-                    >
-                      <circle
-                        cx={x(index)}
-                        cy={y(point.comparison.value)}
-                        r="18"
-                        fill="transparent"
-                      />
-                      {active === index && (
-                        <circle
-                          cx={x(index)}
                           cy={y(point.comparison.value)}
-                          r="12"
+                          r={active === index ? 6 : 4}
                           fill="var(--chart-cost, #bc7356)"
-                          opacity=".2"
+                          stroke="var(--chart-edge, #fffdf7)"
+                          strokeWidth="2"
                         />
-                      )}
-                      <circle
-                        cx={x(index)}
-                        cy={y(point.comparison.value)}
-                        r={active === index ? 6 : 4}
-                        fill="var(--chart-cost, #bc7356)"
-                        stroke="var(--chart-edge, #fffdf7)"
-                        strokeWidth="2"
-                      />
-                    </g>
+                      </g>
+                    )}
+                  {(points.length <= 8 ||
+                    index % Math.ceil(points.length / 6) === 0 ||
+                    index === points.length - 1) && (
+                    <text
+                      x={x(index)}
+                      y={plotHeight - 17}
+                      textAnchor="middle"
+                      className={styles.axis}
+                    >
+                      {point.label}
+                    </text>
                   )}
-                {(points.length <= 8 ||
-                  index % Math.ceil(points.length / 6) === 0 ||
-                  index === points.length - 1) && (
-                  <text x={x(index)} y="239" textAnchor="middle" className={styles.axis}>
-                    {point.label}
-                  </text>
-                )}
-              </g>
-            ))}
-          </svg>
+                </g>
+              ))}
+            </svg>
+          </div>
         )}
         {style === "pie" && (
           <div className={styles.legend}>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { documentSchema, type SourceDocument, type SourceReference } from "@retrosum/contracts";
 import { BrandMark, Wordmark } from "../../components/ui/wordmark";
 import { SessionProvider, useSession } from "../session/session-provider";
+import { monthDateRange } from "../session/reporting-period";
 import { ProcessingProvider, usePaidProcessing } from "../processing/processing-provider";
 import { sampleAssets, sampleManifest } from "../documents/sample-assets";
 import {
@@ -186,8 +187,7 @@ function DemoFlow() {
         });
         controller.setFilters({
           ...current.filters,
-          from: "2026-09-01",
-          to: "2026-09-30",
+          ...monthDateRange(sampleManifest.period),
           asOf: sampleManifest.asOf,
         });
       } else {

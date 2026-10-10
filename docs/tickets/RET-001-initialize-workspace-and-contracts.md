@@ -1,7 +1,9 @@
 # RET-001 — Initialize the workspace, contracts and safe runtime
 
+**Current acceptance — 10 October 2026:** Local implementation is complete. The current sample contains ten PDFs/eighteen pages; two independent live numeric/record passes, seventeen live Retro cases and real localhost Turnstile/browser checks passed. The owner confirms the configured USD 5 OpenAI spending limit. Owner/physical/assistive/general-upload/manual account checks and hosted acceptance remain separate. See [current status](../CURRENT-STATUS.md) and [RET-011 evidence](../validation/RET-011.md).
+
 Status: **Complete — verified local foundation**  
-Last synchronized: **8 October 2026**  
+Last synchronized: **10 October 2026**<br>
 Depends on: None  
 Blocks: RET-002, RET-004  
 Suggested commit: `RET-001: initialize the workspace, contracts and safe runtime`  
@@ -18,7 +20,7 @@ Keep money/source/payment/review contracts explicit from the beginning. The 136-
 
 ## Dependency evidence and ownership
 
-Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded live/cloud release gates remain pending.
+Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded manual/hosted release gates remain pending; current local paid acceptance is already recorded in RET-011.
 
 Areas owned by this packet:
 
@@ -69,6 +71,10 @@ No cloud or paid acceptance is required for this packet. Record installed versio
 Keep this packet one coherent outcome: necessary UI, contracts, backend/local effects, recovery and focused verification belong together. Do not create extra tickets for individual buttons, charts, fields or endpoints. Follow the blueprint's English/USD, PDF evidence, live-public/fake-development, no-server-database, temporary browser storage and motion decisions.
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
+
+## Historical local execution snapshot
+
+The following original results retain their dated corpus and acceptance boundaries; use the current status above for outstanding work.
 
 **Execution record, 8 October 2026:** implemented strict Node 24.19.0/pnpm 11.25.0 workspace, Next 16.4.0/React 19.3.0 frontend, Express 5.2.1 backend, Zod 4.6.5 contracts and exact BigInt-backed cents helpers. TypeScript 6.0.3 was selected for supported lint peer compatibility. App factories are import-safe; startup alone loads ignored configuration/starts listeners. Public capabilities use a bounded server-only bridge; live prerequisites fail closed. No provider SDK/client or paid dispatch exists in this packet.
 

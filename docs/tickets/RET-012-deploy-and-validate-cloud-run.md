@@ -1,7 +1,9 @@
 # RET-012 — Deploy manually, validate live behavior and record rollback
 
+**Current deployment status — 10 October 2026:** Local paid corpus/Retro/Turnstile acceptance passed. The owner confirms the configured USD 5 OpenAI spending limit. The eight-PDF Linux pair below is historical; rebuild/reverify the current ten-PDF/eighteen-page accepted source as deployment preparation. All actual hosted/deployment acceptance remains pending. See [current status](../CURRENT-STATUS.md).
+
 Status: **Local preparation complete — deployment pending**<br>
-Last synchronized: **8 October 2026**  
+Last synchronized: **10 October 2026**<br>
 Depends on: [RET-011](RET-011-verify-product-and-audit-release.md)  
 Blocks: Final packet  
 Suggested commits: see [file-level commit plan](../commit-plans/RET-012.md)<br>
@@ -18,7 +20,7 @@ Perform concrete packaging/setup planning before any approval checkpoint. This d
 
 ## Dependency evidence and ownership
 
-Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded live/cloud release gates remain pending.
+Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded manual/hosted release gates remain pending; current local paid acceptance is already recorded in RET-011.
 
 Areas owned by this packet:
 
@@ -36,9 +38,9 @@ Areas owned by this packet:
 5. Start conservatively with min 0/max 1 each, measured CPU/memory/concurrency/timeouts and one expensive backend operation lease. Budget alerts/quotas/emergency switches are operational controls with documented scope, not guaranteed USD 5 total app spending.
 6. Deploy backend privately first, verify authenticated no-cost health/config/paid-off rejection, then frontend. Anonymous private API probes must fail. Confirm browser bundle/public config lack keys/private identities and forwarded streams remain bounded.
 7. Configure owned domain/HTTPS/Cloudflare DNS only after ownership is verified. Set canonical origins/CSP/challenge policies to actual deployed values and test public landing/PDF viewer before paid availability.
-8. Perform an explicitly bounded owner-authorized live sample walkthrough using actual eight PDFs and a small Retro interaction set. Verify numeric/source accuracy, live progress, charts, animated CRUD/Undo, refresh recovery/export/expiry and measured OpenAI units/cost. Stop on a material money/privacy/admission issue.
+8. Perform an explicitly bounded owner-authorized live sample walkthrough using actual ten PDFs/eighteen pages and a small Retro interaction set. Verify numeric/source accuracy, live progress, charts, animated CRUD/Undo, refresh recovery/original downloads/expiry and measured OpenAI units/cost. Stop on a material money/privacy/admission issue.
 9. Record cold-start/deadline/container resource behavior, provider/key correspondence, content-free logs, local Blob cleanup limitations and actual paid-off behavior. A successful deployment command alone does not establish these facts.
-10. Record rollback to previous immutable revision, compatibility handling for browser projection/schema/sample version and emergency closure of paid actions while preserving viewing/manual/export. Probe rollback/disabled states with no-cost requests where possible.
+10. Record rollback to previous immutable revision, compatibility handling for browser projection/schema/sample version and emergency closure of paid actions while preserving viewing/manual/original downloads. Probe rollback/disabled states with no-cost requests where possible.
 11. Update release/operations evidence and ticket status with deployed revision, region/date, actual walkthrough result, budget/capacity settings and limitations. Keep fake preview availability explicit if retained separately.
 
 ## Acceptance criteria
@@ -46,8 +48,8 @@ Areas owned by this packet:
 - [ ] Exact accepted images/revisions are deployed with documented ownership and configuration.
 - [ ] Frontend is public, backend is private and service-to-service invocation is verified.
 - [ ] Secrets/provider grants stay private; origin/challenge/replay/limits work in the deployed topology.
-- [ ] All eight originals remain viewable and the public sample actually processes live.
-- [ ] Deployed numeric/Retro/CRUD/refresh/export behavior has bounded actual evidence.
+- [ ] All ten originals remain viewable and the public sample actually processes live.
+- [ ] Deployed numeric/Retro/CRUD/refresh/original-download behavior has bounded actual evidence.
 - [ ] Actual provider/cloud usage is monitored; operator paid-off and remaining quota limitations are clear.
 - [ ] Rollback procedure identifies immutable targets and browser schema compatibility.
 - [ ] Public claims and release record match what was actually measured.
@@ -59,7 +61,7 @@ Areas owned by this packet:
 | Anonymous private API vs frontend identity    | Rejection vs accepted no-cost probe                  |
 | Public client assets/config                   | No provider secrets/private resource leakage         |
 | Paid-off before enable/after emergency switch | Zero dispatch and usable local features              |
-| Bounded live eight-PDF sample                 | Exact results/source evidence and actual usage       |
+| Bounded live ten-PDF sample                   | Exact results/source evidence and actual usage       |
 | Refresh and stale grant                       | No automatic rebilling or restored secret capability |
 | Deployed timeout/partial failure              | Honest recovery and no hidden fake substitution      |
 | Rollback and old browser projection           | Safe compatibility or explicit clean restart         |
@@ -71,6 +73,10 @@ Record only verified cloud facts and actual owner-run paid evidence. If authoriz
 Keep this packet one coherent outcome: necessary UI, contracts, backend/local effects, recovery and focused verification belong together. Do not create extra tickets for individual buttons, charts, fields or endpoints. Follow the blueprint's English/USD, PDF evidence, live-public/fake-development, no-server-database, temporary browser storage and motion decisions.
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
+
+## Historical local execution snapshot
+
+The following original results retain their dated corpus and acceptance boundaries; use the current status above for outstanding work.
 
 **Execution record, 8 October 2026:** authorized local preparation is complete. Both pinned, frozen-lockfile, nonroot Linux images were built and verified on the available Docker engine. Standalone dependencies/static assets/fonts/eight originals/PDF worker and the backend's compiled worker/shared packages are present. The final image pair passed actual fourteen-page inspection, a fresh eight-PDF simulated browser flow, original-page rendering, refresh recovery and all four fake/unavailable free probe sets. Canonical public-origin validation across TLS/port termination was fixed with meaningful regressions; forwarded headers cannot supply origin authority. Final settled root checks passed: **192 tests in 25 files, 105 boundary checks, formatting/lint/types and both production builds**. No paid provider request, image push, cloud mutation, domain change or deployment was performed.
 

@@ -1,7 +1,13 @@
 # RET-009 — Complete exports and whole-session reset, expiry and recovery
 
+**Current scope — 10 October 2026:** Session reset/expiry/cancellation/recovery is implemented. Workspace ZIP/generated-invoice export controls were removed by owner instruction; original PDF downloads remain. Local paid documents/Retro/Turnstile passed. The original export implementation/criteria below are historical and are not active product requirements. Physical/owner/manual and hosted acceptance remain separate. See [current status](../CURRENT-STATUS.md).
+
+## Historical original scope and execution
+
+The requirements, completed export criteria and status below belong to the original RET-009 snapshot. Current lifecycle behavior and removed-export scope are stated above; old export criteria do not remain release gates.
+
 Status: **Implemented locally — deferred acceptance pending**<br>
-Last synchronized: **8 October 2026**  
+Last synchronized: **8 October 2026**<br>
 Depends on: [RET-008](RET-008-deliver-retro-animated-crud.md)  
 Blocks: RET-010  
 Suggested commit: `RET-009: complete exports and whole-session reset, expiry and recovery`  
@@ -68,5 +74,9 @@ Open exported artifacts for visual/data inspection and compare them with the cap
 Keep this packet one coherent outcome: necessary UI, contracts, backend/local effects, recovery and focused verification belong together. Do not create extra tickets for individual buttons, charts, fields or endpoints. Follow the blueprint's English/USD, PDF evidence, live-public/fake-development, no-server-database, temporary browser storage and motion decisions.
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
+
+## Historical local execution snapshot
+
+The following original results retain their dated corpus and acceptance boundaries; use the current status above for outstanding work.
 
 **Execution record, 8 October 2026:** implemented the twelve-file default ZIP, optional conversation/exact originals, independent full identifiers, exact USD/date/provenance exports and local created-invoice PDF; reviewed native paper sheet and bounded lazy packaging; owned deadline/URL cancellation; fixed content-free private revoke; whole-session cleanup and truthful limits. Final settled `pnpm check` passed formatting, lint, strict types, 92 source boundaries, 162 tests in 20 files and both production builds. Ten browser sizes, actual default/full ZIP downloads, exact originals, invoice rendering, focus, refresh and reset passed locally. Read-only validation Pass A found no actionable findings on the combined worktree. See [engineering decisions](../engineering/EXPORTS-LIFECYCLE.md), [full evidence](../validation/RET-009.md) and [file-level plan](../commit-plans/RET-009.md). No paid call, push or deployment. RET-010 is eligible for local execution; external gates remain deferred and public live capability stays closed.

@@ -1,5 +1,7 @@
 # Harbor Studio visible PDF corpus
 
+Current corpus/acceptance synchronized **10 October 2026**. The original eight PDFs retain their bytes; D09/D10 add four pages and four separate costs. The manifest remains the metadata/byte authority.
+
 RET-003 · fixture version `harbor-v1` · research and authoring checked 8 October 2026. Original fictional layouts and records; English/USD. September is the main period, August the comparison, and the visible D07 snapshot date is 3 October 2026.
 
 ## Research and authorship
@@ -8,24 +10,26 @@ RET-003 · fixture version `harbor-v1` · research and authoring checked 8 Octob
 
 The [Burr Printing House historical receipt](https://commons.wikimedia.org/wiki/File:Burr_printing_house_receipt.jpg) was inspected as a reusable archival reference; Commons marks the original public domain. It is not Harbor's modern rent evidence and was not added as a ninth document.
 
-D04 is an original fictional Cove Spaces receipt rendered with [Caveat](https://github.com/google/fonts/blob/main/ofl/caveat/DESCRIPTION.en_us.html), a handwriting family by Pablo Impallari. The [SIL OFL](https://raw.githubusercontent.com/google/fonts/main/ofl/caveat/OFL.txt) and official font are bundled in `scripts/fixtures/assets/`. Caveat SHA-256: `0bdb6b660482d31531b3945849fba5916b3ef8695da7024a9e6b9ee3c4157988`. The raster is created with Pillow, then embedded as a full-page image with ReportLab. There is no invisible answer-supplying text layer. Both the document and gallery label it **Synthetic handwriting-style**, not human-written. No OpenAI reading or arbitrary-handwriting accuracy is claimed.
+D04 is an original fictional Cove Spaces receipt rendered with [Caveat](https://github.com/google/fonts/blob/main/ofl/caveat/DESCRIPTION.en_us.html), a handwriting family by Pablo Impallari. The [SIL OFL](https://raw.githubusercontent.com/google/fonts/main/ofl/caveat/OFL.txt) and official font are bundled in `scripts/fixtures/assets/`. Caveat SHA-256: `0bdb6b660482d31531b3945849fba5916b3ef8695da7024a9e6b9ee3c4157988`. The raster is created with Pillow, then embedded as a full-page image with ReportLab. There is no invisible answer-supplying text layer. Both the document and gallery label it **Synthetic handwriting-style**, not human-written. The synthetic image-only specimen passed the bounded live corpus checks; real human/arbitrary-handwriting accuracy is not established.
 
 The two Northstar files are different grayscale raster renditions of the same original bill. The second is slightly rotated and visibly marked “SECOND COPY - SAME BILL A-77”. Their byte hashes differ, but the independent truth contains one economic event with both sources.
 
 ## Visible collection
 
-| ID  | File                             | Pages | Layout / source purpose                                              |
-| --- | -------------------------------- | ----- | -------------------------------------------------------------------- |
-| D01 | `harbor-HS-101.pdf`              | 2     | Editorial service invoice and matching scope; Cedar income USD 3,000 |
-| D02 | `harbor-HS-102.pdf`              | 1     | Grid invoice; Maple income and explicit open total USD 1,800         |
-| D03 | `northstar-A-77-scan.pdf`        | 1     | Scanned monospace bill; USD 360 net, 36 tax, 396 gross open          |
-| D04 | `rent-R-091-handwritten.pdf`     | 1     | Image-only synthetic handwriting; USD 800 paid rent                  |
-| D05 | `papercloud-September.pdf`       | 2     | Compact subscription receipt and same-purchase notes; USD 120 paid   |
-| D06 | `northstar-A-77-second-copy.pdf` | 1     | Second raster rendition of D03, same economic bill                   |
-| D07 | `harbor-payments-September.pdf`  | 2     | Statement-style movement rows, references and fixed snapshot date    |
-| D08 | `harbor-August-records.pdf`      | 4     | Summary plus all five detailed August income/cost records            |
+| ID  | File                              | Pages | Layout / source purpose                                                 |
+| --- | --------------------------------- | ----- | ----------------------------------------------------------------------- |
+| D01 | `harbor-HS-101.pdf`               | 2     | Editorial service invoice and matching scope; Cedar income USD 3,000    |
+| D02 | `harbor-HS-102.pdf`               | 1     | Grid invoice; Maple income and explicit open total USD 1,800            |
+| D03 | `northstar-A-77-scan.pdf`         | 1     | Scanned monospace bill; USD 360 net, 36 tax, 396 gross open             |
+| D04 | `rent-R-091-handwritten.pdf`      | 1     | Image-only synthetic handwriting; USD 800 paid rent                     |
+| D05 | `papercloud-September.pdf`        | 2     | Compact subscription receipt and same-purchase notes; USD 120 paid      |
+| D06 | `northstar-A-77-second-copy.pdf`  | 1     | Second raster rendition of D03, same economic bill                      |
+| D07 | `harbor-payments-September.pdf`   | 2     | Statement-style movement rows, references and fixed snapshot date       |
+| D08 | `harbor-August-records.pdf`       | 4     | Summary plus all five detailed August income/cost records               |
+| D09 | `harbor-September-operations.pdf` | 2     | Native receipt pack: Materials USD 240 and archive-storage Rent USD 200 |
+| D10 | `harbor-September-services.pdf`   | 2     | Native receipt pack: Services USD 450 and Marketing USD 180             |
 
-Eight PDFs, fourteen pages, 412,981 bytes after the snapshot-date addition (the generated manifest is the byte authority; verification reports actual totals). Six printed layout families and one synthetic handwriting family. All files are below the 5 MiB per-file and 20 MiB/20-page combined bounds. Actual first-page WebP thumbnails are generated from these PDF pages, not substitute financial evidence.
+Ten PDFs, eighteen pages, 420,309 bytes after the cost-category expansion (the generated manifest is the byte authority; verification reports actual totals). Seven printed/scanned layout families and one synthetic handwriting family; the two new packs share the paired-cost-receipts family. All files are below the 5 MiB per-file and 20 MiB/20-page combined bounds. Actual first-page WebP thumbnails are generated from these PDF pages, not substitute financial evidence.
 
 ## Authoring and independent truth
 
@@ -35,7 +39,7 @@ Eight PDFs, fourteen pages, 412,981 bytes after the snapshot-date addition (the 
 
 `node scripts/verify-harbor.mjs` checks actual bytes, hashes, pages, thumbnails, all printed numeric occurrences, normalization and the expected ledger/payment relationships. Raster numeric correctness requires visual inspection; this verifier does not pretend empty embedded text proves OCR accuracy. RET-005 owns live recognition evaluation. Changes to visible financial evidence require a new fixture version and synchronized manifest, inventory and expectations.
 
-All fourteen rendered pages were inspected at readable scale. Printed-page numeric multisets are checked independently against the PDFs; raster dates, references, quantity/rate/net/tax/gross and the rent amount were checked visually. D08 contains all USD 4,000 income / 1,100 costs; D07 contains +3,000, −800, −120 and the excluded −200 owned-account transfer. Its operating net is 2,080; all supplied rows net to 1,880. No bank balance or hidden extra month is supplied.
+All eighteen rendered pages were inspected at readable scale across the original authoring and two-pack expansion. Both independent actual-byte live numeric/record passes also passed on 10 October 2026. Printed-page numeric multisets are checked independently against the PDFs; raster dates, references, quantity/rate/net/tax/gross and the rent amount were checked visually. D08 contains all USD 4,000 income / 1,100 costs; D07 contains +3,000, −800, −120 and the excluded −200 owned-account transfer. Its operating net is 2,080; all supplied rows net to 1,880. No bank balance or hidden extra month is supplied.
 
 ## Viewer behavior and security
 
@@ -45,4 +49,4 @@ Original bytes are fetched only from validated same-origin corpus paths, with no
 
 Per-file viewer errors preserve the card and download fallback. Thumbnail failures visibly offer the original. Native dialog focus includes the scrollable page and text disclosure; sticky close controls remain visible. Page changes hide the previous canvas/transcription until the requested original finishes, preventing stale source content from appearing under a new page label.
 
-Local fake-first progress, owner aesthetic feedback and later live OCR acceptance remain distinct. No PDF was sent to a provider, stored on a server or deployed in this ticket.
+The original RET-003 authoring used no provider. The expanded ten-PDF corpus subsequently passed two actual-byte live numeric/record audits in RET-011, without retained server files. Owner/manual/physical, broader uploads and actual deployment remain separate; see [current status](../CURRENT-STATUS.md).

@@ -1,11 +1,19 @@
 # RET-011 — Verify responsive product quality and audit the release candidate
 
+**Owner documentation checkpoint — 10 October 2026:** The configured OpenAI spending limit is **USD 5**, already set, as confirmed by the owner. Local paid corpus/Retro/localhost Turnstile checks are complete. Current Linux-image refresh belongs to deployment preparation; manual/hosted acceptance remains separate. Reconcile all documentation with these facts and the implemented product, preserving dated evidence. See [current status](../CURRENT-STATUS.md) and [file-level allocation](../commit-plans/RET-011.md). This is documentation work; no provider/account/cloud action or deployment.
+
+**Documentation verification:** All 69 existing Markdown/HTML documents reviewed, with a new current-status page and updated active guides/ticket criteria/visual brief. All 337 local links, ten PDF covers/eighteen pages, brief script syntax and sample arithmetic passed static checks; full root gates passed with 386 tests/39 files, 130 boundary source files and both builds. Focused read-only validation found no actionable issues. Local-file browser preview was policy-blocked and is not claimed; manual/hosted gates remain separate. Final evidence and explicit staging/commit allocation are in the linked validation/plan.
+
 **Latest owner live acceptance — 10 October 2026:** Both actual-byte numeric passes and independent record audits passed on the ten-PDF/eighteen-page corpus. All seventeen live Retro intents/grounding cases passed. Exact OpenAI token preflight, standard-tier/cache-write reservation, receipt/transfer guards, normal paid composition and bounded connected deadlines are implemented. Real localhost disclosure, Turnstile, one-use grant, PDF extraction and Retro checks passed. Full settled checks and final validation are recorded in [RET-011 validation](../validation/RET-011.md). Hosted/owner/physical and general handwriting acceptance remain pending; no push/deployment.
 
 **Settled local paid candidate:** `bd9af4b` — `RET-011: verify and connect local paid document and Retro processing` (34 allocated source/test/evaluation/plan paths). Final root checks passed with 386 tests in 39 files, 130 boundary source files and both builds. Actual CUA checks cover two paid PDFs, grounded Retro/source links and deliberate recovery after backend restart; focused read-only validation found no actionable issues within this authorized local scope. The eleven evidence documents form the accompanying commit; private keys/configuration and generated outputs remain excluded.
 
 Status: **Implemented locally — deferred acceptance pending**<br>
 Last synchronized: **10 October 2026**
+
+## Historical owner-feedback checkpoints
+
+These entries preserve dated scope, test counts and unstaged/pending state. They are superseded for current completion by the checkpoint and accepted evidence above.
 
 **Latest owner provider-selector simplification:** Removed the unused provider setting from configuration, examples, Docker/Cloud Run source defaults, injected tests and the ignored local backend environment. Startup and provider matching already select their path using `FAKE_MODE`; `PAID_DEMO_ENABLED` remains the one paid switch for documents and Retro. Existing fake/paid-off defaults and credential/admission/live-acceptance checks remain authoritative. The existing fake-composition test now covers both capabilities under paid/inherited-key settings without dispatch. Focused checks passed 37 tests; all required root gates passed with 129 boundary source files, 360 tests in 36 files and both builds. The [plan](../commit-plans/RET-011.md) allocates 15 explicit paths; actual free readiness, verification and review are recorded in [validation](../validation/RET-011.md). No paid request or external account change.
 
@@ -101,6 +109,8 @@ Last synchronized: **10 October 2026**
 
 Local fake-mode evidence covers selection/all/none/partial, actual handwriting PDF, actual upload preview/download, 1-of-2 progress, full sample processing, held-figure/duplicate review, exact quarterly sources, typed Bar and illustrated Line choices, editable invoice preparation/cancel, target/KPI/reorder/Undo, EUR refresh recovery, Reset, actual ZIP download and legacy redirect. Six dashboard viewport sizes (320×640 through 1920×1080) had no horizontal document overflow. Full root gates pass with **114 boundary source files, 204 tests across 26 files and both production builds**. Detailed evidence/limits are in [validation](../validation/RET-011.md). The app stays running outside the sandbox in fake/paid-off mode; work remains unstaged for ongoing visual feedback. Live accuracy/spend, physical-device input, owner aesthetic acceptance and deployment remain pending.
 
+## Active ticket requirements
+
 Depends on: [RET-010](RET-010-harden-privacy-admission-and-spend.md)  
 Blocks: RET-012  
 Suggested commit: `RET-011: verify responsive product quality and audit the release candidate`  
@@ -115,7 +125,7 @@ This packet combines the product-quality pass and release audit for a bounded de
 
 ## Dependency evidence and ownership
 
-Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded live/cloud release gates remain pending.
+Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded manual/hosted release gates remain pending; current local paid acceptance is already recorded in RET-011.
 
 Areas owned by this packet:
 
@@ -126,21 +136,21 @@ Areas owned by this packet:
 
 ## Implementation plan
 
-1. Walk landing → view every sample PDF → live process (or labelled fake local test) → resolve duplicate/payment review → dashboard drill-down → Retro explanation/tour → animated invoice/expense → confirm/Undo → export → refresh/reset/expiry.
+1. Walk landing → view every sample PDF → live process (or labelled fake local test) → resolve duplicate/payment review → dashboard drill-down → Retro explanation/tour → animated invoice/expense → confirm/Undo → download originals → refresh/reset/expiry.
 2. Verify all claimed live numeric fields against the complete ground truth for two independent runs, including handwriting/multipage. Record missing/incorrect/invented fields separately. Any incorrect accepted numeric field blocks that layout's public support; no reassuring grand-total-only result.
 3. Test phone/tablet/laptop/wide composition, software keyboard, safe areas, touch chart interaction, fixed pill overlays, long text and multipage paper dialog. Polish chart animations, typography/number alignment, glass contrast and form fill using real source-backed data.
 4. Verify semantic headings/buttons/dialog focus, keyboard chart/detail/source actions, View data tables, screen-reader announcements, target highlighting/tour focus and error recovery. Preserve requested motion; there is no product animation-off switch. Avoid flashing and make controls/values accessible through their normal states.
 5. Measure bundle/first-content/gallery/PDF render memory, chart update smoothness, bounded page caches and lifecycle leaks on target browser/devices. Establish performance targets from measurement rather than claim invented response times. No provider calls triggered by hover/filter/navigation.
-6. Audit dependency/contract boundaries, duplicate financial logic, stale TODO/mock leakage, active/fake mode imports, secret/client exposure, unsupported format claims, dangerous logs and oversized parser/export resources. Run settled root quality/test/build gates once final fixes settle.
+6. Audit dependency/contract boundaries, duplicate financial logic, stale TODO/mock leakage, active/fake mode imports, secret/client exposure, unsupported format claims, dangerous logs and oversized parser/response resources. Run settled root quality/test/build gates once final fixes settle.
 7. Inspect local production build output and asset/font/PDF worker packaging. No temp scripts, private inputs, `.env`, sibling project identifiers or live expected-result imports belong in release. Docker image contents/Linux startup verification belongs to deferred RET-012 and is not required to finish this local pass.
 8. Capture exact commit/worktree digest/candidate versions and evidence. Track fake/injected, local browser, owner-run live and cloud evidence separately. A ticket-named commit or passing test count does not prove the product flow.
-9. Update active docs and HTML to final behavior; ticket status reflects actual completion with remaining live/cloud prerequisites explicitly pending. Do not publish “zero mistakes on every document” or pretend broad finance compliance.
+9. Update active docs and HTML to final behavior; ticket status reflects actual completion with remaining manual/hosted prerequisites explicitly pending. Do not publish “zero mistakes on every document” or pretend broad finance compliance.
 10. Prepare a concise release readiness/rollback handoff for RET-012 with actual provider spend, configured limits, domain/IAM/operator inputs and unresolved blockers. Resolve material local issues in this packet rather than making deployment repair them silently.
 
 ## Acceptance criteria
 
 - [ ] Complete flow works coherently and all three pillars meet intended visual/functional quality.
-- [ ] Source-backed metrics, live numeric acceptance and CRUD/Undo/export checks have exact evidence.
+- [x] Source-backed metrics, live numeric acceptance and CRUD/Undo/original-download checks have exact evidence.
 - [ ] Phone/keyboard/touch/source/dialog/composer interactions are usable and unobstructed.
 - [x] Smooth signature animations remain enabled with accessible normal controls (local browser evidence; physical/owner review pending).
 - [ ] Performance/resource behavior is measured and no material leak/overrun remains.
@@ -148,7 +158,7 @@ Areas owned by this packet:
 - [x] Privacy/support/performance claims match observed behavior and evidence class.
 - [x] Material release blockers are resolved or explicitly keep public launch unavailable.
 
-The combined flow/visual, live numeric, physical input and full profiling criteria remain unchecked above. Locally verified portions: all eight PDFs/fourteen pages, source review/duplicate handling, exact dashboard drill-down, eight-step tour, animated editable invoice/cost/issue/Undo, actual ZIP download, refresh/reset/fresh scan; ten hero and eight dashboard viewport sizes; keyboard focus/table access; actual asset/inspection/RSS/warm-HTTP measurements. Physical/assistive/browser profiling and live numeric/spend remain unperformed.
+The combined flow/owner visual, physical/assistive input and full profiling criteria remain pending. The current ten-PDF/eighteen-page corpus passed two live numeric/record passes, seventeen Retro cases and real localhost Turnstile/paid-document/chat/restart checks. Earlier ZIP/eight-PDF checks are historical; workspace export controls are removed. Current numerical/source/CRUD/Undo evidence is covered, without claiming physical/human-handwriting/general-upload or hosted acceptance.
 
 ## Verification and evidence
 
@@ -166,11 +176,15 @@ Broaden tests only for new fixes or unresolved concerns. Record what was actuall
 
 ## Scope limits and completion record
 
-For the current owner-authorized execution scope, live numeric/spend measurements, owner aesthetic feedback and actual cloud deployment happen later. A completed local fake-mode walkthrough and local quality review may be recorded as **Implemented locally — deferred acceptance pending**, retaining each unperformed check explicitly. Proceed to RET-012 local packaging/preparation after clean local validation; do not ask for cloud credentials during the local loop.
+The current owner-authorized local live numeric/record/Retro/Turnstile checks are complete. Owner/manual/physical and actual hosted acceptance remain pending; current Linux image refresh belongs to deployment preparation. A completed local fake-mode walkthrough and local quality review may be recorded as **Implemented locally — deferred acceptance pending**, retaining each unperformed check explicitly. Proceed to RET-012 local packaging/preparation after clean local validation; do not ask for cloud credentials during the local loop.
 
 Keep this packet one coherent outcome: necessary UI, contracts, backend/local effects, recovery and focused verification belong together. Do not create extra tickets for individual buttons, charts, fields or endpoints. Follow the blueprint's English/USD, PDF evidence, live-public/fake-development, no-server-database, temporary browser storage and motion decisions.
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
+
+## Historical execution and feedback — 8–9 October 2026
+
+The results below preserve the original candidate, old export UI, eight-document journey and queued-feedback state; use the current acceptance above for remaining work.
 
 **Execution record:** [Product acceptance and exact candidate](../engineering/PRODUCT-ACCEPTANCE.md), [read-only validation/evidence](../validation/RET-011.md) and [file-level commit plan](../commit-plans/RET-011.md). Fixed observed English date preparation and narrow-phone target size. Final root gates passed: 105 boundaries, 190 tests in 25 files and both production builds; read-only Pass A has no actionable findings. No provider, container/cloud or deployment action occurred. RET-012 local preparation is eligible; public live capability remains closed.
 

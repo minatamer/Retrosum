@@ -1,7 +1,9 @@
 # RET-008 — Deliver Retro animated forms, confirmation and inline Undo
 
-Status: **Implemented and verified locally — live/owner acceptance pending**<br>
-Last synchronized: **8 October 2026**  
+**Current acceptance — 10 October 2026:** Local implementation is complete. The current sample contains ten PDFs/eighteen pages; two independent live numeric/record passes, seventeen live Retro cases and real localhost Turnstile/browser checks passed. The owner confirms the configured USD 5 OpenAI spending limit. Owner/physical/assistive/general-upload/manual account checks and hosted acceptance remain separate. See [current status](../CURRENT-STATUS.md) and [RET-011 evidence](../validation/RET-011.md).
+
+Status: **Implemented and live-verified locally — manual/hosted acceptance pending**<br>
+Last synchronized: **10 October 2026**<br>
 Depends on: [RET-007](RET-007-build-retro-conversation-and-guidance.md)  
 Blocks: RET-009  
 Suggested commit: `RET-008: deliver Retro animated forms, confirmation and inline Undo`  
@@ -16,7 +18,7 @@ The language model prepares intent and fields. Shared deterministic commands own
 
 ## Dependency evidence and ownership
 
-Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded live/cloud release gates remain pending.
+Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded manual/hosted release gates remain pending; current local paid acceptance is already recorded in RET-011.
 
 Areas owned by this packet:
 
@@ -33,19 +35,19 @@ Areas owned by this packet:
 4. Create draft invoices by default. Explicit issue/payment operations preserve their separate financial effects; never equate “bill this customer” with payment received. Show exact before/after effect for changes affecting totals or relations.
 5. Validate the proposal against current revision and field schemas before animating. Fill a real editable form field by field with focus-outline/pointer choreography; reserve normal interaction and permit edit/cancel while filling. A user-edited field is not overwritten by later animation steps.
 6. Show one inline confirmation/action row in chat/form preview, with Yes/Confirm and No/Edit/Cancel as useful shortcuts. Bind callbacks to proposal ID/revision; no stacked modal approvals. Confirmation makes zero model calls and atomically commits at most five related commands.
-7. On success, link to the created/updated record and display small **Undo** in the Retro reply. It invokes the latest eligible shared receipt; metrics/charts/register/export update together. A newer manual or Retro mutation disables old message Undo buttons. Valid latest Undo can restore across refresh.
+7. On success, link to the created/updated record and display small **Undo** in the Retro reply. It invokes the latest eligible shared receipt; metrics/charts/register update together. A newer manual or Retro mutation disables old message Undo buttons. Valid latest Undo can restore across refresh.
 8. Delete proposals explain affected record/relationships and financial effect before confirmation. Removing a source/event must preserve provenance/tombstone rules and never delete unrelated records. Undo restores the complete eligible command group, not just its label.
 9. A graph edit, changed target, duplicate confirmation, expired session or late proposal cannot apply stale data. Cancel/reset/expiry interrupts filling, clears outline timers and invalidates pending actions without leaking into a new session.
 10. Exercise all animations/controls in fake mode with generic example intents and production-shaped proposals. Fake language support is bounded, but resulting local CRUD is real validated behavior. Do not replace actual forms with pre-rendered typing screenshots.
 
 ## Acceptance criteria
 
-- [x] Natural-language core CRUD prepares real editable forms for all four object families — bounded generic fake mode and injected contracts verified; actual live language acceptance pending.
+- [x] Natural-language core CRUD prepares real editable forms for all four object families — bounded generic fake mode and injected contracts verified; bounded local live intent/preparation acceptance passed in RET-011; unrestricted language understanding is not claimed.
 - [x] Form-fill animation is interruptible and never overwrites visitor edits — actual browser verified; owner polish/physical-device acceptance pending.
 - [x] Missing/ambiguous core fields are clarified with useful shortcuts.
 - [x] One inline confirmation applies validated commands locally with zero extra inference.
 - [x] Draft/issued/payment distinctions and before/after effects are accurate.
-- [x] Latest Undo is small, discoverable, revision-safe and coherent across current derived views; exports follow in RET-009.
+- [x] Latest Undo is small, discoverable, revision-safe and coherent across current derived views; original PDF downloads remain; later owner scope removes workspace/generated-invoice export controls.
 - [x] Duplicate/stale/expired proposal actions cannot mutate records.
 - [x] Fake mode shows the same form/action choreography without claims of arbitrary live understanding.
 
@@ -70,5 +72,9 @@ Verify command integration with tests and actual browser choreography on phone/d
 Keep this packet one coherent outcome: necessary UI, contracts, backend/local effects, recovery and focused verification belong together. Do not create extra tickets for individual buttons, charts, fields or endpoints. Follow the blueprint's English/USD, PDF evidence, live-public/fake-development, no-server-database, temporary browser storage and motion decisions.
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
+
+## Historical local execution snapshot
+
+The following original results retain their dated corpus and acceptance boundaries; use the current status above for outstanding work.
 
 **Execution record — 8 October 2026:** Reused the RET-004 command/inverse engine and RET-007 bounded conversation. Delivered bounded shared preparation and pure real-form conversion; exact company/date/amount clarification; deterministic edited-form previews; all four animated editable form families; one zero-inference confirmation; record navigation and refresh-safe latest Undo. Explicit issue, payment match/edit/remove, relational invoice deletion/full inverse, visitor edits, cancellation, source provenance and pending-preview refresh were checked in the actual browser. Ten viewports from 280×480 through 1440×900 had no horizontal page overflow. Final `pnpm check` passed formatting, lint, strict types, 84 boundaries, 151 tests in 18 files and both production builds. Read-only validation Pass A: no actionable findings. See [engineering decisions](../engineering/RETRO.md), [actual evidence and deferred gates](../validation/RET-008.md) and [file allocation](../commit-plans/RET-008.md). No paid request, push or deployment. RET-009 is the next eligible local packet.

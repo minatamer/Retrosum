@@ -1,7 +1,9 @@
 # RET-006 — Build the beautiful interactive dashboard and source drill-down
 
+**Current acceptance — 10 October 2026:** Local implementation is complete. The current sample contains ten PDFs/eighteen pages; two independent live numeric/record passes, seventeen live Retro cases and real localhost Turnstile/browser checks passed. The owner confirms the configured USD 5 OpenAI spending limit. Owner/physical/assistive/general-upload/manual account checks and hosted acceptance remain separate. See [current status](../CURRENT-STATUS.md) and [RET-011 evidence](../validation/RET-011.md).
+
 Status: **Implemented and verified locally — owner visual acceptance pending**
-Last synchronized: **8 October 2026**  
+Last synchronized: **10 October 2026**<br>
 Depends on: [RET-004](RET-004-build-money-state-crud-and-refresh.md), [RET-005](RET-005-deliver-live-pdf-recognition-and-review.md)  
 Blocks: RET-007  
 Suggested commit: `RET-006: build the beautiful interactive dashboard and source drill-down`  
@@ -16,7 +18,7 @@ Use primary patterns from the blueprint's QuickBooks, Mercury and Ramp research 
 
 ## Dependency evidence and ownership
 
-Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded live/cloud release gates remain pending.
+Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded manual/hosted release gates remain pending; current local paid acceptance is already recorded in RET-011.
 
 Areas owned by this packet:
 
@@ -70,6 +72,10 @@ Run focused selector/integration tests and settled root gates. Manual visual acc
 Keep this packet one coherent outcome: necessary UI, contracts, backend/local effects, recovery and focused verification belong together. Do not create extra tickets for individual buttons, charts, fields or endpoints. Follow the blueprint's English/USD, PDF evidence, live-public/fake-development, no-server-database, temporary browser storage and motion decisions.
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
+
+## Historical local execution snapshot
+
+The following original results retain their dated corpus and acceptance boundaries; use the current status above for outstanding work.
 
 **Execution record:** Implemented the shared typed fact/series catalogue, period/as-of/category/counterparty scope, exact availability/exclusions, prior comparisons and due/ageing semantics; responsive custom SVG/native-control charts, equivalent tables, profit reconciliation and current-revision contributor/original dialogs. One browser session connects Overview/Documents/Records; explicit intake continues while Overview is viewed. Narrow existing-flow integration shares availability with Records, suppresses inactive overlays and restores source-dialog focus. No chart dependency, hidden dataset, model-plotted amount or animation-off control was added.
 

@@ -29,7 +29,7 @@ Two independent live corpus passes and record audits passed on 10 October 2026. 
 
 ## Evaluation
 
-Build first, then run `node scripts/evaluate-recognition.mjs` for actual-file inspection with zero provider dispatch. Its ignored report records ten hashes/eighteen pages and leaves numeric/live acceptance pending.
+Build first, then run `node scripts/evaluate-recognition.mjs` for actual-file inspection with zero provider dispatch. A fresh inspection-only report records ten hashes/eighteen pages with no live verdict; it does not overwrite the already recorded two-pass paid acceptance evidence. Preserve reports separately when running a new candidate.
 
 Only an owner-authorized paid run uses `--live --confirm-paid` plus private `OPENAI_API_KEY` and `PAID_DEMO_ENABLED=true`. The runner dispatches two independent passes over actual originals, loads independent truth only afterward, compares the complete numeric multiset including units/normalized values/counts, and records model/prompt/schema/hashes/usage/spend. It reserves the full per-request token ceiling against a $2.50 evaluation bound at the conservative $2.50/M cache-write input ceiling and $10/M output; it stops on failure rather than silently rebilling. Verify pricing before each new paid acceptance run. Numeric corpus success alone cannot open public support.
 

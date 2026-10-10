@@ -1,5 +1,7 @@
 # Retrosum unstaged-work commit decision
 
+> **Historical RET-000 planning checkpoint.** The twelve tickets have since been implemented locally or prepared for deployment. The proposal/state below belongs to 8 October, not the current index. See [current status](CURRENT-STATUS.md) and the current [RET-011 allocation](commit-plans/RET-011.md).
+
 Prepared **8 October 2026** against `83c2642` (`RET-000: Add initial product and architecture documentation`).
 
 **Decision: one commit containing all 21 existing changed/new files and this plan — 22 files total.** The staged index was empty when inspected. This document proposes the grouping; no staging or commit has been performed.

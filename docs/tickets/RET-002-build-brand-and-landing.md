@@ -1,7 +1,9 @@
 # RET-002 — Build the brand system and calm sourced landing
 
+**Current acceptance — 10 October 2026:** Local implementation is complete. The current sample contains ten PDFs/eighteen pages; two independent live numeric/record passes, seventeen live Retro cases and real localhost Turnstile/browser checks passed. The owner confirms the configured USD 5 OpenAI spending limit. Owner/physical/assistive/general-upload/manual account checks and hosted acceptance remain separate. See [current status](../CURRENT-STATUS.md) and [RET-011 evidence](../validation/RET-011.md).
+
 Status: **Implemented locally — owner visual acceptance pending**<br>
-Last synchronized: **8 October 2026**  
+Last synchronized: **10 October 2026**<br>
 Depends on: [RET-001](RET-001-initialize-workspace-and-contracts.md)  
 Blocks: RET-003  
 Suggested commit: `RET-002: build the brand system and calm sourced landing`  
@@ -16,7 +18,7 @@ This packet also owns the visual shells later reused by the dashboard, floating 
 
 ## Dependency evidence and ownership
 
-Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded live/cloud release gates remain pending.
+Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded manual/hosted release gates remain pending; current local paid acceptance is already recorded in RET-011.
 
 Areas owned by this packet:
 
@@ -67,6 +69,10 @@ Run settled frontend quality/build gates and focused visual/manual checks. Do no
 Keep this packet one coherent outcome: necessary UI, contracts, backend/local effects, recovery and focused verification belong together. Do not create extra tickets for individual buttons, charts, fields or endpoints. Follow the blueprint's English/USD, PDF evidence, live-public/fake-development, no-server-database, temporary browser storage and motion decisions.
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
+
+## Historical local execution snapshot
+
+The following original results retain their dated corpus and acceptance boundaries; use the current status above for outstanding work.
 
 **Execution record — 8 October 2026:** Implemented the real Next.js photographic landing, local Fraunces/IBM Plex Sans fonts, brand tokens, sourced adoption evidence and reusable button/glass/paper-dialog/composer/workspace primitives. Sample/upload CTAs enter the real workspace route with explicit preview states. PDF intake, real chart state and full Retro interaction remain owned by subsequent packets.
 

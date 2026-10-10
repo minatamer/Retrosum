@@ -1,6 +1,6 @@
 # Retrosum implementation ticket queue
 
-Updated **8 October 2026**. The owner authorized the full local fake-mode execute/validate loop and per-ticket commits. **RET-001 is Complete; RET-002 through RET-011 are implemented and verified locally with their deferred acceptance gates pending; RET-012 local preparation is complete; deployment remains pending.** The [source of truth](../RETROSUM_DEMO_SOURCE_OF_TRUTH.md) owns product/architecture behavior; the [HTML brief](../RETROSUM_OVERVIEW.html) summarizes it. Actual live accuracy/spend, owner visual feedback and cloud deployment remain pending. Public live capability stays closed.
+Updated **10 October 2026**. All twelve packets have completed local implementation or deployment-preparation outcomes. The ten-PDF/eighteen-page corpus passed two independent actual-byte numeric/record passes, seventeen live Retro cases and real localhost Turnstile/browser checks. The owner confirms the configured OpenAI spending limit is **USD 5**. No additional local feature packet is eligible. Remaining work is deployment preparation/hosted acceptance and manual testing/owner acceptance. See [current status](../CURRENT-STATUS.md).
 
 ## Why twelve packets
 
@@ -10,36 +10,38 @@ RET-001 establishes safe boundaries. RET-002/003 make the brand and visible evid
 
 ## Canonical queue and dependencies
 
-| Ticket                                                        | Complete outcome                                                         | Dependencies     | Status                    |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------- | ------------------------- |
-| [RET-001](RET-001-initialize-workspace-and-contracts.md)      | Initialize the workspace, contracts and safe runtime                     | None             | Complete                  |
-| [RET-002](RET-002-build-brand-and-landing.md)                 | Build the brand system and calm sourced landing                          | RET-001          | Local; visual pending     |
-| [RET-003](RET-003-author-sample-pdfs-and-viewer.md)           | Author the visible PDF corpus and floating paper viewer                  | RET-002          | Local; visual pending     |
-| [RET-004](RET-004-build-money-state-crud-and-refresh.md)      | Build the canonical money workspace, CRUD, Undo and refresh recovery     | RET-001, RET-003 | Local; visual pending     |
-| [RET-005](RET-005-deliver-live-pdf-recognition-and-review.md) | Deliver live OpenAI PDF recognition, review and exact-number evaluation  | RET-004          | Local; live pending       |
-| [RET-006](RET-006-build-interactive-money-dashboard.md)       | Build the beautiful interactive dashboard and source drill-down          | RET-004, RET-005 | Local; visual pending     |
-| [RET-007](RET-007-build-retro-conversation-and-guidance.md)   | Build Retro conversation, grounded explanations and interactive guidance | RET-006          | Local; live pending       |
-| [RET-008](RET-008-deliver-retro-animated-crud.md)             | Deliver Retro animated forms, confirmation and inline Undo               | RET-007          | Local; live pending       |
-| [RET-009](RET-009-complete-exports-and-session-lifecycle.md)  | Complete exports and whole-session reset, expiry and recovery            | RET-008          | Local; visual pending     |
-| [RET-010](RET-010-harden-privacy-admission-and-spend.md)      | Harden privacy, private transport, abuse controls and spend readiness    | RET-005, RET-009 | Local; live/cloud pending |
-| [RET-011](RET-011-verify-product-and-audit-release.md)        | Verify responsive product quality and audit the release candidate        | RET-010          | Local; deferred pending   |
-| [RET-012](RET-012-deploy-and-validate-cloud-run.md)           | Deploy manually, validate live behavior and record rollback              | RET-011          | Local prep; cloud pending |
+| Ticket                                                        | Complete outcome                                                         | Dependencies     | Status                                  |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------- | --------------------------------------- |
+| [RET-001](RET-001-initialize-workspace-and-contracts.md)      | Initialize the workspace, contracts and safe runtime                     | None             | Complete                                |
+| [RET-002](RET-002-build-brand-and-landing.md)                 | Build the brand system and calm sourced landing                          | RET-001          | Local; visual pending                   |
+| [RET-003](RET-003-author-sample-pdfs-and-viewer.md)           | Author the visible PDF corpus and floating paper viewer                  | RET-002          | Local; visual pending                   |
+| [RET-004](RET-004-build-money-state-crud-and-refresh.md)      | Build the canonical money workspace, CRUD, Undo and refresh recovery     | RET-001, RET-003 | Local; visual pending                   |
+| [RET-005](RET-005-deliver-live-pdf-recognition-and-review.md) | Deliver live OpenAI PDF recognition, review and exact-number evaluation  | RET-004          | Local paid passed; manual pending       |
+| [RET-006](RET-006-build-interactive-money-dashboard.md)       | Build the beautiful interactive dashboard and source drill-down          | RET-004, RET-005 | Local; visual pending                   |
+| [RET-007](RET-007-build-retro-conversation-and-guidance.md)   | Build Retro conversation, grounded explanations and interactive guidance | RET-006          | Local paid passed; manual pending       |
+| [RET-008](RET-008-deliver-retro-animated-crud.md)             | Deliver Retro animated forms, confirmation and inline Undo               | RET-007          | Local paid passed; manual pending       |
+| [RET-009](RET-009-complete-exports-and-session-lifecycle.md)  | Whole-session reset, expiry and recovery; export UI removed              | RET-008          | Local; visual pending                   |
+| [RET-010](RET-010-harden-privacy-admission-and-spend.md)      | Harden privacy, private transport, abuse controls and spend readiness    | RET-005, RET-009 | Local paid passed; manual/cloud pending |
+| [RET-011](RET-011-verify-product-and-audit-release.md)        | Verify responsive product quality and audit the release candidate        | RET-010          | Local; deferred pending                 |
+| [RET-012](RET-012-deploy-and-validate-cloud-run.md)           | Deploy manually, validate live behavior and record rollback              | RET-011          | Local prep; cloud pending               |
 
-**No local packet remains eligible:** all twelve authorized local outcomes are implemented and validated. RET-012's Linux packaging/preparation is complete; its original deployed/live acceptance remains pending. See [final local evidence](../validation/RET-012.md) and [manual release/rollback](../operations/MANUAL-DEPLOYMENT.md). The canonical order above is sufficient; do not infer parallel agent authorization from the dependency graph. Start a packet only when the user requests implementation and its required local dependency evidence exists.
+**No local packet remains eligible:** all twelve authorized local outcomes are implemented and validated. RET-012's earlier Linux packaging is complete; refreshing those images for today's ten-PDF source belongs to deployment preparation. Actual hosted acceptance remains pending. See [final local evidence](../validation/RET-012.md) and [manual release/rollback](../operations/MANUAL-DEPLOYMENT.md). The canonical order above is sufficient; do not infer parallel agent authorization from the dependency graph. Start a packet only when the user requests implementation and its required local dependency evidence exists.
 
 ## Non-negotiable product decisions
 
-- English and USD; one fictional Harbor Studio business.
-- Eight modest sample PDFs, some multipage, one handwriting example fetched from a reusable source or recreated with documented provenance, and every financial/comparison figure visible in the originals. A recreated handwriting-style receipt is permitted; do not label it human-authored without evidence.
-- Public sample processes those actual bytes live with OpenAI. No hidden prepared public dataset. Development fake mode has generic supported Retro examples and the same interaction behavior, clearly labelled and no-key/no-network.
+- English and exact source USD, with automatic dated ECB EUR dashboard display; one fictional Harbor Studio business.
+- Ten modest sample PDFs/eighteen pages, some multipage, one handwriting example fetched from a reusable source or recreated with documented provenance, and every financial/comparison figure visible in the originals. A recreated handwriting-style receipt is permitted; do not label it human-authored without evidence.
+- Public sample processes those actual bytes live with OpenAI. No hidden prepared public dataset. Development fake mode has generic supported Retro examples and the same interaction behavior, with internal provenance and no-key/no-provider-network behavior; owner instructions remove technical simulation banners.
 - Exact numeric transcription is the main release gate: complete required numeric field comparison on two independently dispatched live runs per published fixture; uncertainty is held. No guarantee about every arbitrary upload.
 - Beautiful smooth interactive source-linked charts, forest/orange/ivory, professional vintage typography and calm photo hero. No animation-off product setting.
 - Retro is a floating glass pill composer with floating messages, user bubbles and unboxed Retro replies; summaries, explanations, tours, scroll/highlights, contextual shortcuts and animated editable forms.
 - Real local CRUD for invoices, costs/bills, payments and contacts through one command engine; compact inline confirmation and small latest-action Undo.
-- Refresh preserves records/original previews. Bounded per-tab browser projection plus temporary browser-only Blob storage; proposed fixed two-hour expiry, Reset and accurate lazy-cleanup wording. No server database or upload bucket.
-- OpenAI selected, initial evaluated candidate `gpt-6.1-sol`; approximately USD 5 initial credits, actual usage measured. No Gemini comparison prerequisite or automatic provider fallback.
+- Refresh preserves records/original previews. Bounded per-tab browser projection plus temporary browser-only Blob storage; fixed two-hour expiry, Reset and accurate lazy-cleanup wording. No server database or upload bucket.
+- OpenAI selected, initial evaluated candidate `gpt-6.1-sol`; owner-confirmed USD 5 OpenAI spending limit, actual usage measured; balance/enforcement is not inferred. No Gemini comparison prerequisite or automatic provider fallback.
 
-## Execution and completion policy
+## Historical execution authorization and current completion policy
+
+The 8 October fake-first directions below preserve the original local loop. The 10 October authorized paid corpus/Retro/localhost checks supersede its live deferrals; cloud/physical/manual acceptance is still separate. Workspace ZIP/generated-invoice export requirements are superseded by removal. No runtime feature is pending because an older packet says live-pending.
 
 **Owner authorization, 8 October 2026:** execute/validate every packet, including RET-012 local packaging/preparation. Research/acquire or recreate the handwriting PDF without making an owner-provided scan a prerequisite. OpenAI accuracy/spend measurements, owner visual feedback and actual cloud deployment happen later. Local development and verification use pnpm/Node; a running Docker engine, OpenAI key, cloud credentials and an approved visual design are not prerequisites for local progress. Keep any unavailable container verification explicitly pending.
 

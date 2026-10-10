@@ -1,5 +1,7 @@
 # Retrosum backend
 
+Current completion and operator setup: [current status](../../docs/CURRENT-STATUS.md). The owner confirms a configured USD 5 OpenAI spending limit; it is separate from the USD 2.50 process-local allowance. No account inspection/change or hosted acceptance is implied.
+
 Root pnpm dev:backend builds shared contracts/money and starts the explicit tsx watcher on 127.0.0.1:4000. Production: pnpm build then pnpm start:backend. Copy .env.example to ignored .env.local only when needed; process values take precedence and tests never load local files.
 
 GET /v1/health is no-cost liveness; GET /v1/ready reflects usable runtime composition; GET /v1/config returns only public validated capabilities. Fake/paid-off is the default. Live prerequisites yield unavailable status, never fake output. The app factory has no listener or provider side effects.

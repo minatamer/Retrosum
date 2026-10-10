@@ -1,5 +1,13 @@
 # Browser exports and session lifecycle (RET-009)
 
+## Current product scope — 10 October 2026
+
+Workspace ZIP and generated-invoice export controls are removed from sidebar, Records, Retro and Reset wording. Original PDF previews/downloads remain. Legacy saved export intents decode as inert history without offering an action, preserving session recovery. Reset, fixed two-hour expiry, bounded originals, owned cancellation and the private revoke route remain implemented. Local paid documents/Retro/Turnstile passed; see [current status](../CURRENT-STATUS.md).
+
+## Historical RET-009 export implementation
+
+The export design, dependency/resource measurements and browser evidence below describe the 8 October scope. They do not advertise a current export feature or a remaining implementation task. The lifecycle paragraphs still describe the retained controller behavior.
+
 The workspace navigation opens a native paper review dialog in a body portal. It captures a detached validated graph, scope, revision and export timestamp. Record counts, file names, basis, as-of date and processing modes are reviewable before preparation. A changed graph hides the old download and offers deliberate capture of the current revision. No file mixes revisions. ZIP/PDF modules load only when their explicit preparation button is used.
 
 ## Structured bundle and privacy

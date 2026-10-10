@@ -1,7 +1,9 @@
 # RET-004 — Build the canonical money workspace, CRUD, Undo and refresh recovery
 
+**Current acceptance — 10 October 2026:** Local implementation is complete. The current sample contains ten PDFs/eighteen pages; two independent live numeric/record passes, seventeen live Retro cases and real localhost Turnstile/browser checks passed. The owner confirms the configured USD 5 OpenAI spending limit. Owner/physical/assistive/general-upload/manual account checks and hosted acceptance remain separate. See [current status](../CURRENT-STATUS.md) and [RET-011 evidence](../validation/RET-011.md).
+
 Status: **Implemented locally — owner visual acceptance pending**<br>
-Last synchronized: **8 October 2026**  
+Last synchronized: **10 October 2026**<br>
 Depends on: [RET-001](RET-001-initialize-workspace-and-contracts.md), [RET-003](RET-003-author-sample-pdfs-and-viewer.md)  
 Blocks: RET-005, RET-006  
 Suggested commit: `RET-004: build the canonical money workspace, CRUD, Undo and refresh recovery`  
@@ -16,7 +18,7 @@ This packet deliberately keeps money, command behavior and persistence together:
 
 ## Dependency evidence and ownership
 
-Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded live/cloud release gates remain pending.
+Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded manual/hosted release gates remain pending; current local paid acceptance is already recorded in RET-011.
 
 Areas owned by this packet:
 
@@ -33,7 +35,7 @@ Areas owned by this packet:
 4. Implement minimal forms: invoice customer, number, issue/due dates, USD, service description/quantity/unit price/optional explicit tax and draft/issued state; cost vendor, date, description/category/net/tax/gross/payment claim; payment amount/date/direction/reference/optional relation; contact name/role/optional contact fields. Do not require all research extension fields.
 5. New invoices start as drafts, outside income/open totals until explicitly issued. Recording payment is separate. Editing a linked event or deleting a payment recomputes balances and review issues; reject impossible relationship updates or preview the exact dependent changes before applying.
 6. Build shared typed commands with command ID/expected revision and at most five related operations applied atomically. Validate first, increment once, recalculate once, invalidate stale explanations/proposals and persist a coherent projection. Duplicate IDs/confirmation cannot create duplicate records.
-7. Produce an inverse/receipt for the latest reversible command group. Undo validates revision, restores affected records/relations atomically and clears its receipt. A later mutation invalidates older chat Undo controls. Reset/export/provider calls are not undoable. Manual forms and future Retro use the same command APIs.
+7. Produce an inverse/receipt for the latest reversible command group. Undo validates revision, restores affected records/relations atomically and clears its receipt. A later mutation invalidates older chat Undo controls. Reset/export/provider calls are not undoable. Manual forms and Retro use the same command APIs.
 8. Persist a strict ≤2 MiB projection with graph, source metadata, revision, fixed two-hour timestamps, filters, bounded finalized chat and latest Undo. Put actual PDF Blobs in browser-only IndexedDB under per-session document/hash keys within the 20 MiB cap. Never persist Base64/raster copies, pending requests/controllers/object URLs or challenge secrets.
 9. Restore after schema/size/expiry and graph validation, then reconcile Blobs. Do not automatically redo interrupted paid work. Pending proposals restore stale/cancelled; missing originals preserve honestly labelled valid records but require re-selection for reprocessing.
 10. Handle blocked/full storage without silently announcing a save. Protect the previous valid projection during failure; show refresh recovery unavailable when falling back to in-memory use. Expiry is absolute and refresh cannot renew it.
@@ -55,7 +57,7 @@ Areas owned by this packet:
 
 | Case | Evidence |
 | --- | --- |
-| Baseline / add 200 cost / Undo | Costs 1,280 → 1,480 → 1,280; profit 3,520 → 3,320 → 3,520 |
+| Baseline / add 200 cost / Undo | Reviewed costs 2,350 → 2,550 → 2,350; profit 2,450 → 2,250 → 2,450 |
 | Draft invoice / issue / payment | No draft financial effect; correct distinct event/cash/open effects |
 | Duplicate / partial payment / transfer | One event, correct remaining balance, no transfer income/cost |
 | Atomic failure / duplicate command / stale revision | No partial changes or repeated record |
@@ -70,6 +72,10 @@ Use meaningful pure financial and adversarial restore tests, not tests mirroring
 Keep this packet one coherent outcome: necessary UI, contracts, backend/local effects, recovery and focused verification belong together. Do not create extra tickets for individual buttons, charts, fields or endpoints. Follow the blueprint's English/USD, PDF evidence, live-public/fake-development, no-server-database, temporary browser storage and motion decisions.
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
+
+## Historical local execution snapshot
+
+The following original results retain their dated corpus and acceptance boundaries; use the current status above for outstanding work.
 
 **Execution record — 8 October 2026:** Implemented the strict exact-money graph, invoice arithmetic, contributor/exclusion selectors, atomic revisioned command batches, replay protection and latest Undo. Browser forms/registers support invoices, costs/bills, payments and contacts through this sole authority. Fixed two-hour per-tab projection, exclusive ownership/fork policy, bounded native PDF Blob adapter, missing-original reconciliation and reset/expiry generation guards are connected through the session controller. The UI starts empty; no Harbor financial dataset is silently loaded. RET-005 owns intake/recognition and uses these APIs.
 

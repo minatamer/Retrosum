@@ -1,7 +1,9 @@
 # RET-003 — Author the visible PDF corpus and floating paper viewer
 
+**Current acceptance — 10 October 2026:** Local implementation is complete. The current sample contains ten PDFs/eighteen pages; two independent live numeric/record passes, seventeen live Retro cases and real localhost Turnstile/browser checks passed. The owner confirms the configured USD 5 OpenAI spending limit. Owner/physical/assistive/general-upload/manual account checks and hosted acceptance remain separate. See [current status](../CURRENT-STATUS.md) and [RET-011 evidence](../validation/RET-011.md).
+
 Status: **Implemented locally — owner visual acceptance pending**<br>
-Last synchronized: **8 October 2026**  
+Last synchronized: **10 October 2026**<br>
 Depends on: [RET-002](RET-002-build-brand-and-landing.md)  
 Blocks: RET-004  
 Suggested commit: `RET-003: author the visible PDF corpus and floating paper viewer`  
@@ -10,13 +12,13 @@ Queue: [Ticket index](README.md)
 
 ## Outcome and standalone context
 
-Deliver the modest eight-PDF Harbor Studio sample and an actual professional viewing experience. Every sample dashboard figure, comparison, payment and source claim must be inspectable in these files. Public live processing later consumes the same bytes; fake/evaluation expected results are internal truth, not a hidden financial dataset.
+Deliver the modest ten-PDF Harbor Studio sample and an actual professional viewing experience. Every sample dashboard figure, comparison, payment and source claim must be inspectable in these files. Public live processing later consumes the same bytes; fake/evaluation expected results are internal truth, not a hidden financial dataset.
 
-The initial target is approximately 12–16 pages across eight files, with a hard 20-page combined envelope. At least four distinct printed layout families and one handwriting example demonstrate variety. The owner permits fetching a reusable specimen or recreating one; an owner-provided human scan is not a dependency. A second handwritten document is optional only if it improves the story and stays within the bounds.
+The initial target is eighteen pages across ten files, with a hard 20-page combined envelope. At least four distinct printed layout families and one handwriting example demonstrate variety. The owner permits fetching a reusable specimen or recreating one; an owner-provided human scan is not a dependency. A second handwritten document is optional only if it improves the story and stays within the bounds.
 
 ## Dependency evidence and ownership
 
-Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded live/cloud release gates remain pending.
+Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded manual/hosted release gates remain pending; current local paid acceptance is already recorded in RET-011.
 
 Areas owned by this packet:
 
@@ -54,7 +56,7 @@ Areas owned by this packet:
 | Case                    | Evidence                                                                                                                      |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | All PDF pages           | Rendered inspection at readable scale and independent numeric check                                                           |
-| Main ledger             | 4,800 income / 1,280 costs / 3,520 profit / 73.3% margin                                                                      |
+| Main ledger             | 4,800 income / 2,350 reviewed costs / 2,450 reviewed profit / 51.0% margin; initially eligible costs/profit 1,190 / 3,610     |
 | Cash/open               | 3,000 in / 920 out / 1,800 customer open / 396 supplier open                                                                  |
 | Comparison evidence     | All 4,000/1,100 August source entries viewable                                                                                |
 | Viewer                  | First/last page, zoom, keyboard, focus return, phone sizing, fallback                                                         |
@@ -70,6 +72,10 @@ Research checked 8 October 2026: the [Grolier Club Burr Printing House invoice](
 Keep this packet one coherent outcome: necessary UI, contracts, backend/local effects, recovery and focused verification belong together. Do not create extra tickets for individual buttons, charts, fields or endpoints. Follow the blueprint's English/USD, PDF evidence, live-public/fake-development, no-server-database, temporary browser storage and motion decisions.
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
+
+## Historical local execution snapshot
+
+The following original results retain their dated corpus and acceptance boundaries; use the current status above for outstanding work.
 
 **Execution record — 8 October 2026:** Authored eight original Harbor PDFs (fourteen pages, 412,981 bytes), actual page thumbnails, a hashed source manifest and independent field/event/payment truth. All fourteen page renders were inspected. The verifier checks 128 numeric field groups / 146 occurrences: printed numeric multisets are checked against extracted original text; the three image-only pages were checked visually and confirmed to have no hidden text. D03/D06 count once; D07 includes the excluded transfer and visible fixed snapshot date; D08 supplies every August comparison record.
 

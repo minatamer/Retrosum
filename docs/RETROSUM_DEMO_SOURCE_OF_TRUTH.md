@@ -1,15 +1,17 @@
 # Retrosum — Product, Architecture and Delivery Blueprint
 
-**Latest owner-authorized local live work — 10 October 2026:** Two independently generated numeric/record passes over the ten visible PDFs/eighteen pages and seventeen live Retro intent cases passed. Accepted normal startup now enables both live features with fake off, the single paid switch on and complete key/challenge/grant prerequisites. Exact full-input token preflight replaces unproven image-token estimates; missing/excess counts stop generation. Receipt paid claims never invent cash, missing printed net stays absent and owned transfers never allocate to invoices. Real localhost disclosure, Turnstile, one-use grant, PDF extraction and Retro checks passed. Current checks and spend/failure evidence are in [RET-011 validation](validation/RET-011.md); earlier closed/fake-only implementation snapshots below are historical. Owner/physical/general handwriting and hosted domain/IAM/retention/account/deployment acceptance remain pending.
+**Current owner checkpoint — 10 October 2026:** The configured OpenAI spending limit is **USD 5**, already set, as confirmed by the owner. Local paid acceptance passed. Linux image refresh belongs to deployment preparation; remaining manual/hosted checks are listed in [current status](CURRENT-STATUS.md). Older implementation snapshots retain their original results and dates.
+
+**Latest owner-authorized local live work — 10 October 2026:** Two independently generated numeric/record passes over the ten visible PDFs/eighteen pages and seventeen live Retro intent cases passed. Accepted normal startup now enables both live features with fake off, the single paid switch on and complete key/challenge/grant prerequisites. Exact full-input token preflight replaces unproven image-token estimates; missing/excess counts stop generation. Receipt paid claims never invent cash, missing printed net stays absent and owned transfers never allocate to invoices. Real localhost disclosure, Turnstile, one-use grant, PDF extraction and Retro checks passed. Current checks and spend/failure evidence are in [RET-011 validation](validation/RET-011.md); earlier closed/fake-only implementation snapshots below are historical. Owner/physical/general handwriting and hosted domain/IAM/retention/deployment acceptance remain pending. The configured USD 5 spending limit is owner-confirmed; account enforcement/permissions/expiry are manual verification.
 
 **Status:** active implementation source of truth; external acceptance remains pending.
-**Prepared:** 7 October 2026. **Updated:** 8 October 2026 with the owner’s core-flow, design, accuracy and Retro requirements.<br>
+**Prepared:** 7 October 2026. **Updated:** 10 October 2026 with accepted local paid evidence, the owner-confirmed spending limit and current product scope.<br>
 **Product:** a public, disposable business money workspace demonstrating useful AI.  
 **Companion:** [Retrosum product overview](RETROSUM_OVERVIEW.html).  
 **Earlier fake/packaging implementation snapshot — 8 October 2026:** RET-001 through RET-011 are verified locally: foundation, brand/landing, visible sample PDFs/viewer, exact money/manual CRUD/Undo/recovery, simulated actual-byte recognition/review, source-backed interactive dashboard and floating Retro conversation/guidance. Typed simulations ground current figures and sources; local shortcuts, registered tour/highlights and inline Undo remain usable without AI. RET-008 animated editable CRUD proposals, clarification, one confirmation and latest Undo are verified locally. RET-009 reviewed revision-bound ZIP exports, local created-invoice PDFs and whole-session cleanup are verified locally. RET-010 local privacy/admission/spend hardening is verified: scoped one-use grants, retained conservative reservations, private identity transport, bounded resources, nonce security policy and explicit processing disclosure. Actual live/IAM/challenge/spend gates stay closed; RET-011 connected product verification is complete locally, including actual ZIP download, ten hero/eight dashboard sizes and 190 settled tests. Physical/assistive performance and live acceptance remain pending. RET-012 local preparation is complete: both nonroot Linux images, packaged originals/fonts/workers, canonical proxy origins and free fake/unavailable probes are verified. The settled final gates passed 192 tests and 105 boundary checks. Manual deployment/rollback guides and unresolved Cloud Run templates are ready; no images were pushed and nothing was deployed. Owner aesthetics/physical-device feedback, live accuracy/spend and cloud deployment remain pending; public live capability stays closed. See each ticket's evidence, [money/session decisions](engineering/MONEY-SESSIONS.md), [recognition decisions](engineering/RECOGNITION.md), [dashboard decisions](engineering/DASHBOARD.md) and [Retro decisions](engineering/RETRO.md).<br>
-**Execution status:** the owner authorized the [12-ticket queue](tickets/README.md) in a local fake-mode execute/validate loop, including RET-012 local preparation and per-ticket commits after clean validation. Actual paid tests, owner visual feedback and cloud deployment happen later.
+**Execution status:** All local implementation packets and earlier RET-012 preparation have evidence. Two ten-PDF actual-byte passes and seventeen live Retro cases passed; real localhost paid/Turnstile checks passed. Refreshing current Linux images is deployment preparation. Manual/owner/hosted acceptance remains pending; per-ticket commits are authorized, with no push/deployment.
 
-Retrosum turns a small collection of business documents into understandable money records, a traceable overview, and an AI assistant named **Retro** that explains the dashboard, summarizes supplied records, guides the visitor and helps create, edit and remove session records. The visitor can inspect the evidence, correct an interpretation, review a duplicate or payment relationship, and export the result.
+Retrosum turns a small collection of business documents into understandable money records, a traceable overview, and an AI assistant named **Retro** that explains the dashboard, summarizes supplied records, guides the visitor and helps create, edit and remove session records. The visitor can inspect the evidence, correct an interpretation, review a duplicate or payment relationship, and download original PDFs.
 
 The first build should feel like a complete product in a short visit. A visitor previews believable documents, starts without labelling their types, sees them become connected records, understands the difference between invoiced work and cash received, and checks one explanation against its sources, then asks Retro to prepare a new invoice or expense and sees the confirmed change update the workspace.
 
@@ -17,7 +19,7 @@ The first build should feel like a complete product in a short visit. A visitor 
 
 **Owner sample amendment — 10 October 2026:** The expanded Harbor sample now has ten visible PDFs/eighteen pages. Two new native receipt packs add Materials, archive-storage Rent, Services and Marketing; together with Software the initial eligible donut has five positive categories totaling USD 1,190. Original scan/handwriting/duplicate holds remain; reviewed costs are USD 2,350. Original cash/history evidence and all eight original bytes stay unchanged. Sections 7 and 8 supersede earlier corpus counts/results; live accuracy/spend and new release packaging verification remain pending.
 
-**Owner Retro amendment — 9 October 2026:** [Capability map and provider parity](design/RET-011-RETRO-CAPABILITIES.md) extends section 11 and the demo redesign. Strict `workspace_request` intents connect editable filters, original PDF selection/review, register navigation, settings/export/reset/intake panels, sidebar control, income targets, layout restoration, independent Undo and confirmed conversation clearing. Exact topics include due-soon/tax/categories/customers/vendors; those amounts remain engine-owned. Supported KPI metrics include explicit tax and known customer/supplier due-soon. The browser supplies bounded current widget context to the API and validates layout revision separately. Fake phrases and the actual Responses adapter with injected HTTP responses share the same controls; true live language accuracy, numeric extraction and spend remain unverified without a funded key and testing budget. The built-in capability guide requires no model call.
+**Owner Retro amendment — 9 October 2026:** [Capability map and provider parity](design/RET-011-RETRO-CAPABILITIES.md) extends section 11 and the demo redesign. Strict `workspace_request` intents connect editable filters, original PDF selection/review, register navigation, settings/reset/intake panels, sidebar control, income targets, layout restoration, independent Undo and confirmed conversation clearing. Exact topics include due-soon/tax/categories/customers/vendors; those amounts remain engine-owned. Supported KPI metrics include explicit tax and known customer/supplier due-soon. The browser supplies bounded current widget context to the API and validates layout revision separately. Fake phrases and the actual Responses adapter with injected HTTP responses share the same controls; true live language accuracy, numeric extraction and spend remain unverified without a funded key and testing budget. The built-in capability guide requires no model call.
 
 **Owner journey/dashboard amendment — 9 October 2026:** [RET-011 demo redesign](design/RET-011-DEMO-REDESIGN.md) governs the new canonical `/demo` single-page experience and replaces the prior query-based workspace entry/fixed dashboard. Choose upload or fictional sample; inspect/select mini PDFs with expanding source dialogs; process selected documents with actual completed/total progress; enter the full-screen dashboard automatically. Retro appears only at the dashboard. The responsive collapsible sidebar provides Dashboard, Documents, Records, profile/settings and Reset. Bounded session preferences support charts, KPIs, manual income targets, reordering, restoring defaults and separate layout Undo. Retro offers illustrated/typed chart choices and confirms bounded chart/KPI/restyle/remove/move proposals; all numbers still come from the canonical money engine and visible sources. Source records/forms remain USD; EUR dashboard display automatically loads a dated ECB reference rate through the backend's fixed Frankfurter lookup, with exact shared cent rounding and a visible rate/date label. No invented fallback rate, executable model chart code or invented quarterly history is allowed. Latest owner FX feedback supersedes the earlier visitor-entered-rate requirement. Earlier USD-only display and fixed-workspace wording is superseded by this amendment. External live/physical/owner/cloud acceptance remains pending.
 
@@ -33,7 +35,7 @@ The first build should feel like a complete product in a short visit. A visitor 
 10. [Review, corrections and session CRUD](#10-review-corrections-and-session-crud)
 11. [Insights and Retro](#11-insights-and-retro)
 12. [State, revisions and persistence](#12-state-revisions-and-persistence)
-13. [Exports and session reset](#13-exports-and-session-reset)
+13. [Original downloads and session reset](#13-original-downloads-and-session-reset)
 14. [Framework and architecture](#14-framework-and-architecture)
 15. [Repository structure and ownership](#15-repository-structure-and-ownership)
 16. [Domain and shared contracts](#16-domain-and-shared-contracts)
@@ -83,7 +85,7 @@ The sibling repositories live at `../ClipBuilder` and `../screen-pilot`. They we
 | Area | Shared backbone | Retrosum adaptation |
 | --- | --- | --- |
 | Application layout | `apps/frontend`, `apps/backend`, `packages/contracts` | Document and money features replace video or interview features. |
-| Browser framework | Next.js App Router, React, TypeScript | Landing, document collection, overview, records, copilot and export. |
+| Browser framework | Next.js App Router, React, TypeScript | Landing, document collection, dashboard, records, Retro and original downloads. |
 | Server framework | Express, explicit composition, validated HTTP edges | Request-scoped document interpretation and deterministic money calculations. |
 | Shared schemas | Browser-safe Zod contracts | Money values, source references, review commands, metrics and AI outputs. |
 | Workflow | One reducer with explicit asynchronous states | File-level partial results and a versioned workspace graph. |
@@ -106,7 +108,7 @@ ClipBuilder's Remotion composition, FFmpeg pipeline, renderer and media storage 
 | --- | --- | --- |
 | Language and money | English interface and documents; USD; one fictional service business | Owner confirmed |
 | Core pillars | Exact document recognition → beautiful interactive dashboard → Retro helping explain and act | Owner requirement |
-| Sample evidence | Eight viewable PDFs, several multipage; one core handwritten PDF; no hidden financial dataset | Owner requirement; eight is the bounded planning choice |
+| Sample evidence | Ten viewable PDFs/eighteen pages; a documented synthetic handwriting-style PDF; no hidden financial dataset | Owner expansion, 10 October 2026 |
 | Public sample processing | Process the actual displayed sample PDFs live through OpenAI | Owner confirmed |
 | Development behavior | Explicit fake mode supports fixture recognition, generic supported prompts and every major UI state without an API | Owner confirmed; never disguise it as live processing |
 | Provider | OpenAI; initial evaluated candidate `gpt-6.1-sol`, Responses API | Owner selected OpenAI; model researched 8 October 2026 |
@@ -118,10 +120,10 @@ ClipBuilder's Remotion composition, FFmpeg pipeline, renderer and media storage 
 | Upload ownership | Originals retained only in temporary browser storage; request-scoped forwarding to OpenAI when processing is requested | Owner requirement interpreted as no retained server upload library |
 | Database | No server/application database, account store or upload bucket; browser-only IndexedDB holds temporary PDF Blobs | Browser storage is required for refresh-safe PDFs; explicitly a local storage mechanism |
 | Brand and motion | Logo green/orange, ivory, professional vintage typography, calm photo hero, smooth charts; no animation-off product setting | Owner requirement |
-| Initial AI funding | Approximately USD 5 of OpenAI credits for initial testing; meter actual consumption | Owner preference; no assertion that it covers all tests or public traffic |
+| Initial AI funding | Configured USD 5 OpenAI spending limit; meter actual consumption | Owner-confirmed 10 October 2026; dashboard scope/period/enforcement not independently inspected |
 | Delivery plan | Twelve cohesive packets with outcome, ownership, dependencies and focused verification | Owner now authorized tickets; adopt ClipBuilder consolidation |
 | Handwriting authoring | Research/fetch a reusable specimen or recreate a fictional handwriting-style receipt; record human/synthetic provenance accurately | Owner clarification, 8 October 2026; no owner-provided scan prerequisite |
-| Current execution phase | Authorized local fake-mode execute/validate loop across all tickets; RET-012 local packaging/preparation included; live accuracy/spend, owner visual feedback and actual cloud deployment later | Owner authorization, 8 October 2026; no cloud changes or paid calls during this loop |
+| Current execution phase | Local implementation and paid corpus/Retro/Turnstile checks passed; Linux refresh is deployment preparation; manual/hosted acceptance pending | Current owner instructions and RET-011 evidence, 10 October 2026 |
 
 Published performance remains unproved until implemented and measured. `gpt-6.1-sol` currently supports image input, structured outputs and function calling; its official standard short-context rates are USD 2 input / USD 10 output per million tokens. Recheck availability and rates at setup. [OpenAI model reference](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
 
@@ -149,7 +151,7 @@ The primary visitor is a freelancer, studio owner or service-business operator w
 
 The visitor should not need an account, a provider API key, an administrator, a bank login or knowledge of document classification. A single business-identity clarification is acceptable because direction depends on whether the business issued or received the invoice.
 
-A useful visit ends with an understandable overview, organized records, visible unresolved issues and an export. Retro is a core product interaction; summaries, tours, chart explanations and confirmed CRUD demonstrate its value. The workspace also remains useful through manual forms and source inspection when live language processing is unavailable.
+A useful visit ends with an understandable overview, organized records, visible unresolved issues and original PDF downloads. Retro is a core product interaction; summaries, tours, chart explanations and confirmed CRUD demonstrate its value. The workspace also remains useful through manual forms and source inspection when live language processing is unavailable.
 
 ### 2.4 Ten-second comprehension
 
@@ -179,7 +181,7 @@ Avoid leading with technology names, a blank chat box, a sign-up wall or a long 
 | Retro | Grounded questions and summaries; guided tours; dashboard explanations; bounded confirmed session CRUD. |
 | Review tools | Correct key fields/categories; confirm or reject duplicate/payment candidates; see resulting changes. |
 | Session record management | Create/read/update/delete draft invoices, expenses/bills, payment records and customers/vendors through simple forms or Retro; shared commands and provenance. |
-| Export and reset | Download a coherent revision, optionally include originals, and clear the session. |
+| Original downloads and reset | Preview/download actual original PDFs and explicitly clear the temporary session. |
 | Failure recovery | Preserve completed work; isolate failed files; offer deliberate bounded retries and manual fallback. |
 
 ### 3.2 First-build exclusions
@@ -199,7 +201,7 @@ No vector database, general background queue, MCP server, unconfirmed autonomous
 
 ### 3.4 Observable success
 
-An evaluator can complete a guided sample visit in roughly five minutes, a target to measure after implementation. They can inspect a genuine sample PDF, reach the overview, ask why invoiced income differs from recorded cash, inspect the cited sources, resolve a relationship, and export.
+An evaluator can complete a guided sample visit in roughly five minutes, a target to measure after implementation. They can inspect a genuine sample PDF, reach the overview, ask why invoiced income differs from recorded cash, inspect the cited sources, resolve a relationship, and inspect/download its original.
 
 Success also requires correct calculations and honest limits. Unsupported uploads cannot receive unrelated fixture output. Mixed currencies cannot become a single unlabeled total. A document stating *paid* cannot create an extra bank movement when the same payment already appears elsewhere.
 
@@ -235,7 +237,7 @@ The landing is calm, professional and photographic. Its eye catcher is one beaut
 
 **Primary CTA:** Explore demo. **Secondary CTA:** Use my documents.
 
-**Owner visual feedback, 9 October 2026:** The Harbor Studio introduction and original sample gallery belong inside the Explore demo entry, not on the landing. Introduce Harbor Studio explicitly as a fictional example with eight provided PDFs/fourteen pages, nothing to upload, clear processing/preview actions and a short guide to review, dashboard and Retro. The personal-document entry focuses on business details and uploads; switching entry intent preserves the existing session. Later feedback in the same review removes the landing dashboard preview entirely: the existing adoption statistics take its earlier position and forest-green styling, with one rounded green panel, ivory type, orange accents and retained dated source links. The previous ivory statistics section is removed rather than duplicated.
+**Owner visual feedback, 9 October 2026:** The Harbor Studio introduction and original sample gallery belong inside the Explore demo entry, not on the landing. Introduce Harbor Studio explicitly as a fictional example with ten provided PDFs/eighteen pages, nothing to upload, clear processing/preview actions and a short guide to review, dashboard and Retro. The personal-document entry focuses on business details and uploads; switching entry intent preserves the existing session. Later feedback in the same review removes the landing dashboard preview entirely: the existing adoption statistics take its earlier position and forest-green styling, with one rounded green panel, ivory type, orange accents and retained dated source links. The previous ivory statistics section is removed rather than duplicated.
 
 **Supporting line:** No account needed. A temporary demo with realistic fictional documents.
 
@@ -300,18 +302,18 @@ Keep a source registry containing claim text, denominator, geography, observatio
 | 4. Understand — core | Open Overview; hover or click a figure | Animate validated KPIs/charts; expose values, comparisons and contributors | A beautiful money picture that can be explored and checked. |
 | 5. Work with Retro — core | Ask for a summary, tour, explanation or new invoice | Return grounded explanations or a structured change preview; apply confirmed session commands | Retro helps understand the site and manage the session. |
 | 6. Review | Confirm the HS-101 match or A-77 duplicate | Validate command; update one workspace revision; recompute dependent views | Relationships change without double counting. |
-| 7. Take away | Export the current workspace | Download the same revision with scope, basis, evidence and unresolved issues | Result remains useful outside the site. |
+| 7. Inspect originals | Preview or download the source PDFs | Retain the actual original bytes and page-specific evidence | The visitor can verify the records against their sources. |
 | 8. Reset | Clear and start again | Cancel owned work, release previews, discard session data | A new workspace starts cleanly. |
 
 ### 5.2 Live sample entry and development fakes
 
 The visitor selects **Explore demo**, sees the fictional Harbor Studio introduction and supplied originals, opens any PDF, then chooses **Process sample documents**. Navigation alone does not process documents or create records. Public live mode reads those actual bytes through the same inspection, admission, OpenAI interpretation, review and calculation path as visitor PDFs. Show genuine per-document stages and explain ambiguous numbers rather than substituting stored answers.
 
-There is no hidden starting ledger, no invisible comparison-month dataset and no public “instant prepared sample” shortcut. Every sample event, payment, category and comparison value must resolve to a visible PDF/page/field. The fixture manifest lists assets and evaluation expectations, but live recognition must not read the expected-result JSON or seed the live graph with it.
+There is no hidden starting ledger, no invisible comparison-month dataset and no public “instant prepared sample” shortcut. Every sample event, payment, category and comparison value must resolve to a visible PDF/page/field. The frontend manifest lists only public asset metadata; independent evaluation expectations stay in test fixtures outside live model input and never seed the live graph.
 
-In explicit **development fake mode**, the same original gallery and progress UI use production-shaped fixture outputs with deterministic delays, failures and generic supported Retro responses. Per the owner's 9 October visual-feedback instruction, the website omits development/simulation banners and technical mode copy; internal provenance, exported evidence and paid/live accuracy gates remain intact. This is the place for resettable data during local iteration; it is not a second public product path.
+In explicit **development fake mode**, the same original gallery and progress UI use production-shaped fixture outputs with deterministic delays, failures and generic supported Retro responses. Per the owner's 9 October visual-feedback instruction, the website omits development/simulation banners and technical mode copy; internal provenance and paid/live acceptance protections remain intact. This is the place for resettable data during local iteration; it is not a second public product path.
 
-On a live outage or exhausted allowance, retain PDF viewing, existing records, manual forms, local tour, calculations and export. Explain that AI is unavailable and offer a deliberate retry when allowed. Never silently turn failed live processing into fake success. Refresh restores completed records without automatically reprocessing or rebilling the files.
+On a live outage or exhausted allowance, retain PDF viewing, existing records, manual forms, local tour, calculations and original PDF downloads. Explain that AI is unavailable and offer a deliberate retry when allowed. Never silently turn failed live processing into fake success. Refresh restores completed records without automatically reprocessing or rebilling the files.
 
 ### 5.3 Own-document entry
 
@@ -323,7 +325,7 @@ On a live outage or exhausted allowance, retain PDF viewing, existing records, m
 6. Keep uncertain direction, incompatible currencies, questionable amounts and duplicate candidates in the review queue.
 7. Open the overview from the successful subset with explicit coverage and pending exclusions.
 
-A failure in one document must not discard other successful records. The visitor can finish a useful session through preview, review, manual entry and export even when a live AI operation fails.
+A failure in one document must not discard other successful records. The visitor can finish a useful session through preview, review, manual entry and original downloads even when a live AI operation fails.
 
 ### 5.4 The memorable interaction
 
@@ -343,7 +345,7 @@ The visitor reviews a compact invoice preview and clicks **Create draft**. The i
 
 ### 6.1 Information architecture
 
-The initial app has a landing and one connected workspace. The workspace has four primary areas: **Overview**, **Documents**, **Records**, and **Retro**. Contacts, invoices, expenses/bills and payments are tabs within Records. **Review** is a focused view of issues within Documents/Records. **Export** is a workspace action and review sheet rather than an unrelated product area.
+The initial app has a landing and one connected workspace. The workspace has three navigation areas: **Dashboard**, **Documents** and **Records**; **Retro** floats across them after dashboard entry. Contacts, invoices, expenses/bills and payments are tabs within Records. **Review** is a focused view of issues within Documents/Records. Original downloads are source actions; workspace ZIP/generated-invoice export controls are removed.
 
 The implemented routes are `/` and `/demo`. Legacy `/workspace` entries redirect to `/demo`. Choose, Documents, Process and the dashboard areas are stages/views in the same two-hour per-tab session; selection/view recovery uses bounded browser persistence rather than URL queries/fragments. Both landing entry actions lead to the first two-choice screen. Navigation, preview, layout and currency controls do not create separate ledgers or dispatch inference. Direct navigation with no session opens Choose; interrupted processing returns to Documents for deliberate retry.
 
@@ -536,13 +538,9 @@ For CRUD, animate filling a real editable form after a structured proposal has b
 
 Use typed states: idle, explaining, clarifying, preparing, filling preview, awaiting confirmation, applying, completed, stale, cancelled and failed. Monetary answers become authoritative only after grounding validation; staging text may stream. Fake mode exercises the same states, scroll/highlight choreography, form filling, shortcuts and Undo. Unsupported fake prompts receive an honest bounded generic response, not invented ledger facts.
 
-### 6.9 Export review
+### 6.9 Original downloads and legacy export history
 
-Current owner scope removes workspace export and generated-invoice export controls. Original PDF downloads remain in the source viewer. The following export design is historical RET-009 context; retained contracts/internal tests support safe legacy recovery, without a current export action.
-
-The export sheet states the revision, currency/period scope, included records, unresolved issues and processing modes. Default exports include structured data and an overview. Originals and sensitive source fields are separate explicit options with accurate wording about their unredacted contents.
-
-Exports remain available when live processing or chat is disabled. If nothing is eligible for financial totals, export the inspected documents and review issues with an empty overview rather than blocking the result.
+Workspace ZIP and generated-invoice export controls are removed. Source viewers retain actual original PDF preview/downloads. Legacy saved export intents decode as inert history without actions, preserving session recovery. The earlier export implementation and bounds remain documented as historical context in [RET-009 lifecycle](engineering/EXPORTS-LIFECYCLE.md); they are not active UI or unfinished scope.
 
 ### 6.10 Empty, pending and unavailable states
 
@@ -721,7 +719,7 @@ Never silently replace a printed total with a calculated total. Show **Source sa
 
 ### 8.7 Zero-error numeric transcription acceptance
 
-The owner’s numeric requirement is a primary release gate. Define the scope precisely: **zero incorrect numeric transcriptions in the published, evaluated demo corpus**, including the documented handwriting sample, across the recorded live acceptance runs. This is a target until measured. Vision models can misread text, rotation and small details; no provider’s schema mode guarantees field truth. [OpenAI vision limitations](https://developers.openai.com/api/docs/guides/images-vision).
+The owner’s numeric requirement is a primary release gate. Define the scope precisely: **zero incorrect numeric transcriptions in the published, evaluated demo corpus**, including the documented handwriting sample, across the recorded live acceptance runs. The ten published originals passed two independent actual-byte numeric passes on 10 October 2026; this does not establish general/human-handwriting accuracy. Vision models can misread text, rotation and small details; no provider’s schema mode guarantees field truth. [OpenAI vision limitations](https://developers.openai.com/api/docs/guides/images-vision).
 
 1. Preserve each source number string and its page/row/cell/block reference before normalization. Monetary values use exact decimal strings or minor-unit integers; never binary-floating arithmetic for money.
 2. Prefer native PDF text/cell/structured parsing when it faithfully represents the source. Use vision for scanned/handwritten material and a bounded readable representation. Native text is also checked; OCR text is not independently authoritative.
@@ -899,7 +897,7 @@ Retro mutations use one editable preview and compact inline confirmation, not su
 
 Every successful reversible local mutation provides a small **Undo** in the Retro result/action row and a corresponding register control. Undo restores the most recent eligible command group (maximum five related commands) atomically, including relationships and derived metrics, against the exact expected revision. Do not use a stored copy of displayed totals as the inverse. Record a typed receipt/inverse in the shared command engine. A newer mutation replaces the one-step Undo; old chat buttons become unavailable. Reset, expiry, provider requests, source submission, exports and external retention are not undoable. Undo itself is deterministic and makes zero model requests.
 
-Manual forms and Retro use the same validation, proposal effect calculation and command reducer. Fake mode can fill supported example forms, confirm, update the graph and undo for real; its language interpretation remains visibly simulated. No hidden provider call is needed to apply, undo, filter, calculate, export or reset.
+Manual forms and Retro use the same validation, proposal effect calculation and command reducer. Fake mode can fill supported example forms, confirm, update the graph and undo for real; its language interpretation retains internal fake provenance; owner instructions remove technical simulation banners. No hidden provider call is needed to apply, undo, filter, calculate, download originals or reset.
 
 ## 11. Insights and Retro
 
@@ -980,7 +978,7 @@ Money and percentages render from computed fact objects. Reject unsupported nume
 
 **Reviewed-sample summary:** “September’s document view shows 4,800 income, 2,350 costs and a 2,450 profit preview, with a 51.0% margin. Rent contributes 1,000 of costs. Known customer open is 1,800; known supplier open is 396. These figures describe the supplied USD records.” Each amount resolves a fact ID; the initial held-source variant uses its own eligible facts.
 
-**Tour:** welcome → business/period/currency → headline metric meaning → hover a real chart point → click contributors → source preview → Records create/edit → Retro and export. Keep each step one or two sentences, allow Back/Next/Finish, skip unavailable targets, return focus appropriately. A tour is an explanation, never a fake live extraction demonstration.
+**Tour:** welcome → business/period/currency → headline metric meaning → hover a real chart point → click contributors → source preview → Records create/edit → Retro and original inspection. Keep each step one or two sentences, allow Back/Next/Finish, skip unavailable targets, return focus appropriately. A tour is an explanation, never a fake live extraction demonstration.
 
 **Create:** “Create an invoice for Cedar Labs for USD 2,000, due 30 November 2026, for website design.” Draft preview shows customer, one quantity-1 service line, explicit issue date, currency, tax basis, due date and generated number. Confirm creates a draft; invoice/cash totals unchanged.
 
@@ -998,7 +996,7 @@ Tour, summary and CRUD interfaces must feel helpful rather than being dominated 
 
 Responses and proposals bind to the revision and scope that generated them. Source removal, CRUD, reset or incompatible filter changes mark affected results stale and invalidate their apply controls. An explicit live refresh consumes a turn/generation; no automatic paid refresh follows edits. A late provider result cannot overwrite current state.
 
-If live Retro is disabled or exhausted, retain the built-in tour, deterministic chart explanations, sample-compatible summaries, forms, source previews and export. Clearly distinguish those local/development-fake capabilities from live language understanding. Arbitrary natural-language CRUD cannot be claimed to work in fake mode merely because a fixed example button does.
+If live Retro is disabled or exhausted, retain the built-in tour, deterministic chart explanations, sample-compatible summaries, forms, source previews and original downloads. Clearly distinguish those local/development-fake capabilities from live language understanding. Arbitrary natural-language CRUD cannot be claimed to work in fake mode merely because a fixed example button does.
 
 ## 12. State, revisions and persistence
 
@@ -1023,7 +1021,6 @@ empty
 processing -> workspace_ready_with_issues
 processing -> processing_failed
 workspace_ready <-> reviewing
-workspace_ready -> exporting -> workspace_ready
 any populated state -> clearing -> empty
 ```
 
@@ -1071,53 +1068,27 @@ Per-tab identity is not a login. Browser duplication can copy `sessionStorage`; 
 
 On Reset/expiry, remove only this session's projection and Blob entries, invalidate operations and clear graph/chat/Undo. Attempt tab-close cleanup where reliable, but reload must not trigger destructive cleanup. Closing the tab removes normal `sessionStorage` access; Blob leftovers can remain until next startup/lazy sweep. Mark every Blob with absolute expiry and purge expired entries on startup and while active. A crashed/closed app cannot execute a two-hour timer, so say **expires after two hours; local leftovers are removed when Retrosum runs again**, not guaranteed physical deletion while the browser is closed. Browser restore behavior also means tab close is not a guaranteed secure-erasure boundary.
 
-If browser storage is blocked/full, explain that refresh recovery is unavailable, offer export/retry, retain the current safe in-memory graph, and do not falsely mark changes saved. Complete a source-cache transaction before announcing upload persistence. Preserve existing content until a new save succeeds; document any storage fallback visibly.
+If browser storage is blocked/full, explain that refresh recovery is unavailable, offer original downloads/retry, retain the current safe in-memory graph, and do not falsely mark changes saved. Complete a source-cache transaction before announcing upload persistence. Preserve existing content until a new save succeeds; document any storage fallback visibly.
 
 ### 12.7 Cleanup ownership
 
 Each feature owns and cancels its requests, timers, listeners, workers, object URLs and decoded previews. Maintain an explicit cleanup registry or feature cleanup functions; avoid one global routine that guesses which resources another feature created.
 
-Export captures an immutable revision. Clear waits for local cleanup completion, invalidates all operation generations and then resets the graph. Browser abort is best effort; backend/provider deadlines and cleanup remain necessary even after a tab closes.
+Clear waits for local cleanup completion, invalidates all operation generations and then resets the graph. Browser abort is best effort; backend/provider deadlines and cleanup remain necessary even after a tab closes.
 
-## 13. Exports and session reset
+## 13. Original downloads and session reset
 
-**RET-009 local implementation:** the paper review captures one revision/scope. Twelve default structured files are packaged locally; conversation and exact unredacted originals are independent explicit choices. Default identifiers/source narrative copies are omitted or masked. Session-created invoice PDFs use the existing licensed local font with exact shared calculations, draft/issued labels and bounded output. Owned URLs expire after one minute; reset/expiry cancels work and clears the owned graph/chat/Undo/originals without claiming recall of downloads/provider copies. See [export/lifecycle decisions](engineering/EXPORTS-LIFECYCLE.md) and [verification](validation/RET-009.md). Public live capabilities remain closed.
+### 13.1 Current download scope
 
-### 13.1 Default bundle
+Visitors can preview/download actual original PDFs through source controls. No workspace ZIP, CSV/JSON bundle or generated-invoice export control is offered. Removing exports does not discard saved workspaces; legacy export messages render as inert history. See [historical RET-009 implementation](engineering/EXPORTS-LIFECYCLE.md) for the prior design and retained helper tests.
 
-| File | Contents |
-| --- | --- |
-| `overview.md` | Business label, period/currency/basis, computed totals, coverage, revision and limitations. |
-| `financial-events.csv` | Canonical sale/cost/adjustment rows, amount basis, category and inclusion status. |
-| `invoices.csv` | Draft/issued invoice headers, dates, customer references and exact totals; drafts remain separate from eligible sales. |
-| `invoice-lines.csv` | Stable invoice/line IDs, description, quantity, unit amount and deterministic line totals. |
-| `contacts.csv` | Session customer/vendor names and roles; optional contact extensions redacted by default. |
-| `documents.csv` | Source IDs, safe display names, format, interpretation/review states and rendition relationships. |
-| `payments.csv` | Recorded movements and separate source payment claims, clearly typed. |
-| `matches.csv` | Confirmed/candidate allocations and duplicate relationships with evidence IDs. |
-| `issues.csv` | Unresolved issues, source/record links and effects on eligibility. |
-| `insights.md` | Current and optionally retained stale observations with explicit revision labels. |
-| `conversation.md` | Optional cited answers; stale responses clearly identified. |
-| `workspace.json` | Versioned structured snapshot with exact decimal strings and source references. |
-| `manifest.json` | Bundle version, export revision/scope, processing modes, included files and redaction policy. |
+### 13.2 Source integrity
 
-Package into one bounded ZIP using a reviewed browser-compatible library. ZIP export is an output capability; ZIP upload remains unsupported. Optional originals are byte-preserved and labelled unredacted. Renditions and thumbnails are separate preview assets, not financial originals.
+Original downloads retain validated PDF metadata/hash and exact bytes. Page-specific inspection remains in the original viewer; thumbnails are previews, never financial evidence or substitutes for originals. Downloading/viewing does not invoke inference.
 
-### 13.2 Export integrity
+### 13.3 Handling and cleanup
 
-Use one immutable snapshot captured at export start. If the workspace changes while ZIP generation runs, either finish the captured revision with its label or cancel and offer a new export; never combine files from different revisions.
-
-Created invoice PDF output is an optional explicit export for session-created invoices, with exact validated core fields and draft/issued status. It does not send an invoice, certify legal compliance or imply payment. Keep this rendering browser-local and document its font/resource bounds.
-
-CSV quotes and separators must be valid. Defend against spreadsheet formula injection for untrusted text beginning with `=`, `+`, `-`, `@` or relevant control characters. Controlled numeric columns retain real numeric signs. JSON stores inert source values and never becomes executable instructions.
-
-Safe filenames remove traversal/path separators, control characters and reserved device names; resolve collisions deterministically. Preserve the human original name as a safely encoded field. Do not use file content, business names or original filenames in download URLs.
-
-### 13.3 Sensitive fields
-
-Default exports mask bank/payment identifiers and unnecessary contact extensions. Redaction must also apply to `raw_values`, excerpts, custom fields and narrative text that could repeat those identifiers; hiding the formatted field alone is insufficient.
-
-An explicit **Include original documents** option warns that originals retain their original contents. An independent **Include full source financial identifiers** option may be offered only after its redaction/consent behavior is implemented and tested. No implicit redaction claim can cover a byte-preserved original.
+An original retains its printed content; no redaction promise is made for downloaded PDFs. Owned preview/download URLs and workers are released by their controller on close/reset/expiry. Reset cannot recall files already downloaded or provider-controlled copies.
 
 ### 13.4 Reset semantics
 
@@ -1240,7 +1211,7 @@ Retrosum/
 │  │     │  ├─ records/                # Register, invoice/expense/payment/contact CRUD UI
 │  │     │  ├─ review/                 # Decisions and correction forms
 │  │     │  ├─ copilot/                # Retro explanations, tours and confirmed session CRUD
-│  │     │  ├─ export/                 # Snapshot export and optional originals
+│  │     │  ├─ export/                 # Retained legacy helpers; no current export controls
 │  │     │  ├─ session/                # Reducer, effect ownership, preferences
 │  │     │  └─ privacy/                # Current handling disclosure
 │  │     ├─ server/                    # Server-only proxy and IAM transport
@@ -1403,7 +1374,7 @@ Proposed codes include `UNSUPPORTED_FORMAT`, `INPUT_LIMIT_EXCEEDED`, `SOURCE_UNR
 
 ### 16.6 Contract versioning
 
-Snapshots, manifests, extraction schema, prompt policy and exports carry explicit versions. Reject incompatible major versions with a readable restart/export instruction. Migrate only small preference projections through an allow-listed transformation; do not coerce malformed financial graphs into a ready workspace.
+Snapshots, manifests, extraction schema, prompt policy and exports carry explicit versions. Reject incompatible major versions with a readable restart/recovery instruction. Migrate only small preference projections through an allow-listed transformation; do not coerce malformed financial graphs into a ready workspace.
 
 ## 17. HTTP API and private transport
 
@@ -1417,17 +1388,18 @@ Local service-to-service transport uses the documented loopback API. Hosted tran
 
 | Private route | Purpose | Paid boundary |
 | --- | --- | --- |
-| `GET /v1/health` | Content-free liveness/readiness category | Never |
+| `GET /v1/health` | Content-free liveness | Never |
 | `GET /v1/config` | Public capabilities, formats, limits and disclosure version | Never |
-| `GET /v1/samples/manifest` | Versioned public synthetic PDF asset manifest; no live interpretation truth | Never |
+| `GET /v1/ready` | Composition readiness | Never |
+| `GET /v1/exchange-rate` | Fixed anonymous dated ECB/Frankfurter quote, no visitor data | Never |
 | `POST /v1/session` | Create short-lived content-free admission identity | Never |
 | `POST /v1/grants` | Validate challenge/scope and issue one action-bound grant | Never invokes AI |
-| `POST /v1/money/extract` | One bounded multipart original plus business/preparation context | Only if a live interpretation/mapping dispatch is required |
-| `POST /v1/money/insights` | Validated current snapshot, computed facts, bounded investigation | Live mode only |
-| `POST /v1/money/chat` | One bounded Retro intent/message and validated snapshot; grounded response or change proposal | Live mode only |
+| `POST /v1/extract` | One bounded multipart original plus business/preparation context | Only if a live interpretation/mapping dispatch is required |
+| `POST /v1/insights` | Validated current snapshot, computed facts, bounded investigation | Live mode only |
+| `POST /v1/chat` | One bounded Retro intent/message and validated snapshot; grounded response or change proposal | Live mode only |
 | `DELETE /v1/session` | Revoke current admission state and request cleanup of owned in-flight work | Never |
 
-Local review, filtering, arithmetic and export use `packages/money` and browser-owned state. A separate record CRUD/review API is unnecessary in the first design because there is no server-stored ledger to mutate. The backend independently validates the same snapshot before AI operations and returns validated change proposals through the chat response; the browser confirms and applies them locally. This refines the earlier draft's proposed `/money/review` route into one shared command engine rather than two competing state authorities.
+Local review, filtering and arithmetic use `packages/money` and browser-owned state. A separate record CRUD/review API is unnecessary in the first design because there is no server-stored ledger to mutate. The backend independently validates the same snapshot before AI operations and returns validated change proposals through the chat response; the browser confirms and applies them locally. This refines the earlier draft's proposed `/money/review` route into one shared command engine rather than two competing state authorities.
 
 ### 17.3 Configuration response
 
@@ -1509,7 +1481,7 @@ Fake mode exists for **local development, CI and explicitly labelled preview bui
 
 Fake document recognition accepts only declared asset hashes/fixture cases. Fake arbitrary visitor uploads receive **Live interpretation unavailable**, preserving their preview/manual form path. Fake Retro supports deterministic generic examples (summary, tour, chart explanation, invoice/expense create/edit/delete intent), contextual Yes/No chips and deliberate failure/stale/ambiguity cases. Generate numeric text from the current graph, so a manual edit changes the fake summary. Unsupported free text receives a clear limitation and supported shortcuts.
 
-Use the same command validation, tour target registry, floating conversation UI, form-fill choreography, source citations, local confirmation and Undo in fake and live modes. Fakes simulate language/provider responses, never substitute a second ledger or bypass business rules. Count calls, prove zero paid dispatch, and label fake provenance in exports. Live failure never becomes an unlabelled fixture result.
+Use the same command validation, tour target registry, floating conversation UI, form-fill choreography, source citations, local confirmation and Undo in fake and live modes. Fakes simulate language/provider responses, never substitute a second ledger or bypass business rules. Count calls, prove zero paid dispatch, and retain internal fake provenance without product simulation banners. Live failure never becomes an unlabelled fixture result.
 
 ### 18.6 Prompt policy
 
@@ -1552,7 +1524,7 @@ Retro/insight failure consumes any already-dispatched usage; a deliberate resubm
 | Live insight generation | At most 2 generations per workspace; each ≤3 model requests and ≤4 total tool calls |
 | Live Retro turn: question, summary, clarification or CRUD intent | At most 8 turns per workspace; each ≤3 model requests and ≤4 total tool calls |
 | Built-in tour, manual CRUD, confirm/apply/undo | 0 |
-| Filter, review, arithmetic, export, reset | 0 |
+| Filter, review, arithmetic, original downloads, reset | 0 |
 
 With all 10 originals requiring interpretation, one extraction retry and the maximum ten investigation actions, the structural ceiling is **41 model requests**: 10 + 1 + (2 + 8) × 3. Most visits should use fewer. This is an operation ceiling, not a currency-denominated cost guarantee.
 
@@ -1621,9 +1593,9 @@ one run cost = admitted input units × current model input rates
              + application compute, network, build, registry, secrets and logging
 ```
 
-The owner normally starts with approximately **USD 5 of OpenAI credits**. Treat this as an initial testing balance, not a monthly subscription, a guaranteed sufficient budget or authorization for unbounded traffic. No paid evaluation ran during this planning pass. Use actual measured usage and let the owner top up or reduce public availability when needed.
+The owner confirms the configured OpenAI spending limit is **USD 5**, already set. Its dashboard scope/period/enforcement has not been independently inspected; no balance or guaranteed global hard cap is inferred. Meter actual requests and retain the separate process-local reservation and emergency paid-off procedure.
 
-As checked on 8 October 2026, `gpt-6.1-sol` standard short-context input/output rates are USD 2 / USD 10 per million tokens. At the current 624,000 input / 111,000 output structural envelope, token-only usage would be about **USD 2.36** for a maximal run if all PDF image/text and reasoning units fit those bounds/rates. Typical measured runs may be smaller; long-context, premium tiers and separate hosting costs are not included. A USD 5 balance therefore cannot be advertised as covering many maximal sessions. [Official model pricing](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
+The reviewed standard short-context input/output reference is USD 2 / USD 10 per million tokens. Runtime reservations use the conservative USD 2.50/M cache-write input ceiling and USD 10/M output. At 624,000 input / 111,000 output, all 41 structural generations reserve USD 2.67; therefore the USD 2.50 process-local ledger can stop before every allowed action is exhausted. Both actual input counts and returned usage/tier are checked. These are conservative application envelopes, not an inspected account invoice. [Pricing reference](https://developers.openai.com/api/docs/models/gpt-6.1-sol), [current evidence](validation/RET-011.md).
 
 Propose an initial **USD 2.50 token reservation ceiling per admission run**, alongside file/turn/request limits and current price policy. Charge/reserve attempted and unknown-outcome dispatches; never refund uncertain usage merely because the browser lost a response. This ceiling is process-local and cannot enforce the entire owner's account balance after anonymous resets or service restarts. Use provider account controls, monitored balance and emergency paid-off as complementary operator controls. A cloud budget notification is not a hard cap.
 
@@ -1631,13 +1603,13 @@ Recheck rates/model availability before live setup and record date/model, units,
 
 ### 19.8 Paid-off behavior
 
-`PAID_DEMO_ENABLED` is the single paid switch for both live documents and Retro. With `FAKE_MODE=false`, setting it to `true` requests both live capabilities together, subject to configured credentials, admission and verified live acceptance. Separate document/copilot enablement flags are removed by the owner's 10 October 2026 decision. Setting it to `false` stops all paid dispatch. PDF gallery/viewing, already recognized records, manual forms, local tour, arithmetic, review, export, reset, health and configuration remain usable. Labelled fixture recognition/chat stays available only in configured development fake mode. Paid-off must reject before any provider request, even when credentials are inherited from the shell.
+`PAID_DEMO_ENABLED` is the single paid switch for both live documents and Retro. With `FAKE_MODE=false`, setting it to `true` requests both live capabilities together, subject to configured credentials, admission and verified live acceptance. Separate document/copilot enablement flags are removed by the owner's 10 October 2026 decision. Setting it to `false` stops all paid dispatch. PDF gallery/viewing/downloads, already recognized records, manual forms, local tour, arithmetic, review, reset, health and configuration remain usable. Labelled fixture recognition/chat stays available only in configured development fake mode. Paid-off must reject before any provider request, even when credentials are inherited from the shell.
 
 ### 19.9 RET-010 local implementation
 
 The local hardening now binds one-use grants to boot/run/workspace/action/operation/parsed input and original hash, verifies managed challenges through a fixed adapter, checks headers before large parsers and consumes/reserves atomically before provider dispatch. It enforces ten original hashes/one retry/eight chat turns/two insight generations, one active operation and fixed process-local rate/spend limits. Refresh/reset preserve consumed allowance; late challenge results after reset cannot mint a grant. Immediate socket hashing supplies a conservative aggregate source limit, not a verified person/IP cap.
 
-The browser uses explicit per-action processing disclosure before live consent/admission, with the managed widget loaded only for an available allowed live action. Fake development never loads it or calls a provider. The fixed server-only Cloud Run audience bridge, bounded abort-aware readers, nonce CSP and content-free route/status/duration diagnostics are locally verified. Live composition remains closed, including when keys/flags exist. See [implementation and limitations](engineering/SECURITY-ADMISSION.md), [verification](validation/RET-010.md) and [operator gates](engineering/RELEASE-READINESS.md). Real numeric/image-token/spend, challenge/domain/IAM/retention, physical/owner and hosted evidence remain pending.
+The browser uses explicit per-action processing disclosure before live consent/admission, with the managed widget loaded only for an available allowed live action. Fake development never loads it or calls a provider. The fixed server-only Cloud Run audience bridge, bounded abort-aware readers, nonce CSP and content-free route/status/duration diagnostics are locally verified. Accepted normal local live composition is connected after the two corpus passes, grounded Retro checks and exact token-envelope verification. Real localhost managed challenge/admission passed. Hosted IAM/domain/retention/overlap and manual/physical/general-upload checks remain separate. See [current security controls](engineering/SECURITY-ADMISSION.md), [acceptance](validation/RET-011.md) and [operator gates](engineering/RELEASE-READINESS.md).
 
 ## 20. Privacy, security and cleanup
 
@@ -1723,7 +1695,7 @@ Backend `server.ts` may load its ignored app-local `.env.local` during an explic
 
 Numerical resource limits, operation budgets, retry policy and tested model IDs live in a versioned reviewed server policy module. Environment variables select operating mode and private connection/secret values; avoid making every domain rule an unvalidated environment override.
 
-### 21.2 Proposed settings
+### 21.2 Implemented settings
 
 | Setting | Owner | Committed example/default |
 | --- | --- | --- |
@@ -1737,38 +1709,39 @@ Numerical resource limits, operation budgets, retry policy and tested model IDs 
 | `FRONTEND_ORIGIN` | Backend | Documented local origin; hosted exact origin supplied at release |
 | `BACKEND_ORIGIN` | Frontend server-only | Documented local private address; hosted private service URL |
 | `BACKEND_AUDIENCE` | Frontend server-only | Blank hosted identity audience until release |
-| `TURNSTILE_SITE_KEY` | Public frontend configuration projection | Blank until configured; safe public key only |
+| `TURNSTILE_SITE_KEY` | Backend-owned; projected public site key | Blank until configured; safe public key only |
 | `PUBLIC_SITE_ORIGIN` | Frontend | Local origin/example; approved hosted canonical origin |
 
 Use a single backend capability response for fake/live availability. Do not add a second browser toggle that can disagree with backend mode. Live configuration errors return safe fixed prerequisite codes, never environment values.
 
-The owner's 10 October 2026 simplification removes the unused separate provider selector. `FAKE_MODE` alone selects the operating mode; `PAID_DEMO_ENABLED` controls both paid operations together. OpenAI is the only live provider supported by the current adapters. Removing a redundant setting does not open pending live acceptance.
+The owner's 10 October 2026 simplification removes the unused separate provider selector. `FAKE_MODE` alone selects the operating mode; `PAID_DEMO_ENABLED` controls both paid operations together. OpenAI is the only live provider supported by the current adapters. Accepted local live composition still requires all private/admission prerequisites; hosted acceptance remains separate.
 
 Blank examples must not contain sibling-project keys, account IDs, buckets, private origins or real domains treated as owned. Keep owner identifiers in deployment configuration outside Git. Secret Manager stores hosted secrets; no service-account JSON belongs in the repository.
 
-### 21.3 Proposed local commands
+### 21.3 Available local commands
 
-These are target scripts to establish at bootstrap, not commands available in the current documentation-only checkout:
+Use the pinned pnpm 11.25.0 manager and Node 24.19.0. These scripts are implemented in the repository:
 
 ```text
-corepack pnpm install --frozen-lockfile
-corepack pnpm build:contracts
-corepack pnpm build:money
-corepack pnpm dev:backend
-corepack pnpm dev:frontend
+pnpm install --frozen-lockfile
+pnpm build:contracts
+pnpm build:money
+pnpm dev:backend
+pnpm dev:frontend
 
-corepack pnpm format:check
-corepack pnpm lint
-corepack pnpm typecheck
-corepack pnpm test:unit
-corepack pnpm build
+pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm check:boundaries
+pnpm test:unit
+pnpm build
 ```
 
 Use the pinned manager's documented invocation if its distribution differs; do not rely on a globally mismatched pnpm. Root scripts delegate to named packages and preserve dependency order.
 
 ### 21.4 Local origins and readiness
 
-Proposed baseline: backend listens on `127.0.0.1:4000`; frontend on `127.0.0.1:3000`; browser uses `http://localhost:3000`. Keep one documented canonical origin so cookies, challenge hostnames and origin checks agree.
+Implemented local baseline: backend listens on `127.0.0.1:4000`; frontend on `127.0.0.1:3000`; browser uses `http://localhost:3000`. Keep one documented canonical origin so cookies, challenge hostnames and origin checks agree.
 
 Start backend first and check `/v1/health`, then start frontend and check `/` and `/api/retrosum/v1/config`. Readiness probes must be free of provider calls. A returned launcher PID or available page does not prove live AI quality.
 
@@ -1784,7 +1757,7 @@ Requested local startup uses normal configured behavior; automated tests use iso
 
 ## 22. Cloud infrastructure and deployment
 
-**Local preparation complete — owner authorization, 8 October 2026.** RET-012 now supplies pinned, frozen-lockfile Dockerfiles, verified nonroot Linux images, bounded free probes, unresolved Cloud Run templates and manual deployment/rollback guidance. Actual original-PDF inspection/viewing and fake/unavailable modes pass in the final images. See [RET-012 evidence](validation/RET-012.md) and [manual release guide](operations/MANUAL-DEPLOYMENT.md). No image push, cloud resource, identity/domain change or deployment occurred. Local development still runs directly with pnpm/Node and does not require Docker. Live accuracy/spend, physical/owner acceptance and actual cloud work remain later gates.
+**Local preparation complete — owner authorization, 8 October 2026.** RET-012 now supplies pinned, frozen-lockfile Dockerfiles, verified nonroot Linux images, bounded free probes, unresolved Cloud Run templates and manual deployment/rollback guidance. Actual original-PDF inspection/viewing and fake/unavailable modes pass in the final images. See [RET-012 evidence](validation/RET-012.md) and [manual release guide](operations/MANUAL-DEPLOYMENT.md). No image push, cloud resource, identity/domain change or deployment occurred. Local development still runs directly with pnpm/Node and does not require Docker. The current ten-PDF local live checks passed. Rebuilding/rechecking updated Linux images is deployment preparation; physical/owner/manual and actual hosted acceptance remain later gates.
 
 ### 22.1 Same deployment tool family
 
@@ -1845,7 +1818,7 @@ No runtime npm install, browser/tool download or arbitrary document-conversion e
 7. Verify free health/configuration, sample assets, same-origin private transport and IAM denial for direct unauthenticated backend access.
 8. Configure approved challenge/provider prerequisites and exact origin/hostname policy.
 9. Enable live flags only for the agreed bounded owner walkthrough.
-10. Record live extraction, explanation, export, failure/cleanup and observed usage evidence.
+10. Record hosted live extraction, explanation, original downloads, failure/cleanup and observed usage evidence.
 11. Open the agreed public mode only after material release blockers are closed.
 
 Deploying application services and enabling public paid processing are distinct actions. The documentation task authorizes neither. Future implementation can complete all code, runbooks and free verification before presenting concrete deployment choices.
@@ -1860,7 +1833,7 @@ Do not copy ClipBuilder DNS targets, IAM subjects or private service origins. Ve
 
 Retain the last known-good frontend/backend image and matching configuration. A rollback restores a tested compatible pair; do not point an old frontend at a new incompatible contract version.
 
-Emergency paid-off disables new provider dispatch while retaining sample, review, export and cleanup. Pending request outcomes are handled according to actual dispatch state. Revision changes/restarts can invalidate content-free grants; explain re-admission instead of automatically replaying work.
+Emergency paid-off disables new provider dispatch while retaining sample originals, review/manual records and cleanup. Pending request outcomes are handled according to actual dispatch state. Revision changes/restarts can invalidate content-free grants; explain re-admission instead of automatically replaying work.
 
 Record exact image digests, revisions, safe configuration categories, IAM checks, deadlines/caps, usage counts and remaining manual states. Exclude secrets and source content from the release record.
 
@@ -1900,7 +1873,7 @@ Complementary chart colors distinguish series without overpowering green/orange.
 
 ### 23.3 Researched typography
 
-**Proposed pair: Fraunces for the wordmark/editorial headings, IBM Plex Sans for the interface and financial data.** Fraunces supplies a recognizable old-style character; Plex is designed for UI readability. Use moderate Fraunces weight (500–650), optical sizing, low softness and normalized character styling for a professional result. Keep ornate display behavior away from tables and dense labels. This is an aesthetic recommendation; neither family is claimed to be a universal fintech standard. [Google Design on Fraunces](https://design.google/library/a-new-take-on-old-style-typeface), [Fraunces source and OFL](https://github.com/googlefonts/fraunces), [IBM Plex source and OFL](https://github.com/IBM/plex).
+**Implemented pair: Fraunces for the wordmark/editorial headings, IBM Plex Sans for the interface and financial data.** Fraunces supplies a recognizable old-style character; Plex is designed for UI readability. Use moderate Fraunces weight (500–650), optical sizing, low softness and normalized character styling for a professional result. Keep ornate display behavior away from tables and dense labels. This is an aesthetic recommendation; neither family is claimed to be a universal fintech standard. [Google Design on Fraunces](https://design.google/library/a-new-take-on-old-style-typeface), [Fraunces source and OFL](https://github.com/googlefonts/fraunces), [IBM Plex source and OFL](https://github.com/IBM/plex).
 
 | Candidate | Role and assessment | Decision |
 | --- | --- | --- |
@@ -2000,7 +1973,7 @@ Visual acceptance includes desktop/phone chart interaction, hover/focus/tap equi
 
 ### 24.6 Automated isolation
 
-Before any app modules load, set test/fake mode, paid-off and all live flags false. Remove inherited credential variables, disable env-file loading and intercept unexpected external network. Tests must not attach to an already-running live app or read local secret files.
+Before any app modules load, set test/fake mode, paid-off with `FAKE_MODE=true` and `PAID_DEMO_ENABLED=false`; there are no separate per-feature live flags. Remove inherited credential variables, disable env-file loading and intercept unexpected external network. Tests must not attach to an already-running live app or read local secret files.
 
 Assert exact dispatch counts at metered boundaries. Double click, retry, reset, reload-like stale action and malicious grant reuse must not dispatch extra model calls. Contract/money packages compile without ambient Node globals; executable negative import fixtures prove cross-app/platform imports fail.
 
@@ -2011,7 +1984,7 @@ Assert exact dispatch counts at metered boundaries. Double click, retry, reset, 
 | Sample entry | All ten PDFs/eighteen pages viewable; actual bytes processed in live mode; fake fixtures retain internal provenance without development banners per owner feedback. |
 | Guided match | Sources visible; confirm changes settlement/review state and preserves income/cash. |
 | Duplicate review | Both sources preserved; one cost; clear unresolved behavior. |
-| Manual USD 200 cost | All dependent metrics/charts/export update; old narratives stale. |
+| Manual USD 200 cost | All dependent metrics/charts update; old narratives stale. |
 | Retro invoice CRUD | Clarify missing essentials; preview/confirm once; draft excluded; issue affects its own period; payment distinct. |
 | Retro delete/update | Exact target and effect preview; revision-safe application; allocations protected; local Undo. |
 | Retro summary/tour | Current fact sources; registered targets; useful phone/keyboard navigation; no hidden calls. |
@@ -2020,11 +1993,11 @@ Assert exact dispatch counts at metered boundaries. Double click, retry, reset, 
 | Own supported files | Actual recognition, evidence and partial failure behavior. |
 | Missing prior period | No invented comparison; helpful request for supplied data. |
 | Advice question | Useful factual alternative with no recommendation. |
-| Provider disabled/failure | Completed work, native/manual path and export preserved. |
+| Provider disabled/failure | Completed work, native/manual path and original downloads preserved. |
 | Lost response | Unknown outcome explained; no automatic redispatch. |
 | Clear during processing | Local resources released; late result discarded. |
 | Phone/keyboard | Complete meaningful journey and source access. |
-| Export | Current immutable revision, exact fields, safe CSV and accurate original/redaction options. |
+| Original downloads | Actual source PDFs/pages; workspace ZIP/generated-invoice controls absent. |
 | Hosted composition | Same-origin bridge, private IAM, actual parser image, challenge/origin configuration. |
 
 ### 24.8 Verification gates
@@ -2046,15 +2019,15 @@ Keep ordinary user content out of telemetry. A support report can identify a gen
 | Failure | Preserve | Next action |
 | --- | --- | --- |
 | Unsupported original | Local source/preview where safe, existing workspace | Remove/replace or enter a manual record. |
-| One file unreadable | Other files and recognized records | Retry readable copy; keep issue/export. |
+| One file unreadable | Other files and recognized records | Retry readable copy; keep issues and original downloads. |
 | Uncertain business side | Source and field proposal | One identity clarification. |
 | Arithmetic discrepancy | Source and separate calculated check | Review values; do not overwrite source. |
 | Provider refusal/output invalid | Source and prior results | Explain limitation; deliberate retry if available. |
 | Deadline after dispatch | Prior workspace and operation identity | Show consumed/unknown outcome; no automatic replay. |
 | Capacity busy | Current workspace | Retry later by deliberate action; no hidden polling dispatch. |
 | Revision conflict | Latest valid graph | Refresh local scope/command and review again. |
-| Export failure | Captured source revision and graph | Retry local export; no AI operation. |
-| Backend unavailable | Local records/metrics/previews | Continue local review/export; sample remains accessible. |
+| Original download failure | Records and original metadata | Deliberate local retry; no AI operation. |
+| Backend unavailable | Local records/metrics/previews | Continue local review/manual records; sample remains accessible. |
 | Reset/tab loss | Only user-downloaded output persists | Start again; no promised restoration. |
 
 ### 25.3 Performance priorities
@@ -2088,11 +2061,11 @@ A later packet cannot silently change privacy, financial semantics, public claim
 | Root README | Short product story, current status and repository/documentation links. |
 | This blueprint | Product, financial behavior, architecture, constraints and first-build scope. |
 | HTML overview | Concise owner-facing product summary. |
-| Future AGENTS | Agent operating rules, commands, process hygiene, permission boundaries and verification expectations. |
+| AGENTS | Agent operating rules, commands, process hygiene, permission boundaries and verification expectations. |
 | App/package README | Focused responsibilities, setup, configuration, commands and checks. |
 | Future ADR | One material architecture tradeoff and accepted consequence. |
-| Future operations guide | Provider setup, data handling, costs, release, rollback and evidence. |
-| Ticket packet/index | One coherent implementation scope, dependencies, acceptance and actual completion evidence; all initially Planned. |
+| Operations guides | Provider setup, data handling, costs, release, rollback and evidence. |
+| Ticket packet/index | One coherent implementation scope, dependencies, acceptance and actual completion evidence; current status lives in the ticket index and acceptance records. |
 
 Keep detailed commands in the owning service guide, not repeatedly in the public README. Avoid duplicated canonical limits, schemas or financial definitions across unrelated documents.
 
@@ -2114,7 +2087,7 @@ When authorized, group changes coherently and describe the resulting behavior, v
 
 Report what changed, why, meaningful checks, actual manual/live states and remaining limitations. Distinguish planned behavior, implemented behavior and observed behavior. Do not turn an unchecked owner-only step into a pass to close a packet.
 
-This planning task updates the Markdown/HTML authorities and creates detailed ticket packets. Application code, credentials, external resources and commits remain outside this pass.
+The documentation authorities and tickets describe implemented local behavior and measured acceptance. Documentation synchronization does not authorize a new paid call, account/cloud change, push or deployment.
 
 ## 27. Delivery sequence and ticket ownership
 
@@ -2124,30 +2097,30 @@ The [canonical ticket index](tickets/README.md) owns dependencies, status and ex
 | --- | --- | --- |
 | RET-001 | Strict workspace, shared contracts, money package boundaries, safe fake/live composition and quality commands | None |
 | RET-002 | Responsive brand system, calm sourced landing and reusable glass/paper/Retro visual shells | RET-001 |
-| RET-003 | Eight authored PDFs, ground truth, gallery and actual floating PDF viewer | RET-002 |
+| RET-003 | Ten authored PDFs/eighteen pages, ground truth, gallery and actual floating PDF viewer | RET-002 |
 | RET-004 | Canonical money graph, manual CRUD, review commands, latest Undo and refresh-safe browser storage | RET-001, RET-003 |
 | RET-005 | Real OpenAI PDF recognition/review vertical slice with exact-field evaluation | RET-004 |
 | RET-006 | Smooth dashboard, all specified KPIs/charts, filters and source drill-down | RET-004, RET-005 |
 | RET-007 | Floating Retro conversation, grounded explanations, summaries, tours and answer shortcuts | RET-006 |
 | RET-008 | Retro's animated editable CRUD forms, inline confirmation and Undo integrated end to end | RET-007 |
-| RET-009 | Revision-consistent exports, reset/expiry/cancel and whole-session recovery | RET-008 |
+| RET-009 | Reset/expiry/cancel and whole-session recovery; export UI superseded | RET-008 |
 | RET-010 | Integrated privacy, private transport, abuse/admission and measured spend readiness | RET-005, RET-009 |
 | RET-011 | Responsive/accessibility/performance pass and exact release-candidate acceptance audit | RET-010 |
 | RET-012 | Manual Cloud Run deployment, actual private/public probes, bounded live walkthrough and rollback record | RET-011 |
 
-Guardrails start at RET-001/005; RET-010 hardens working boundaries rather than delaying basic validation and cost protection. Deterministic fixture/evaluation truth is available early for development, while the public sample remains live. RET-005 can complete local code with synthetic/injected evidence and a clearly pending owner-run live acceptance record; its public AI capability must remain disabled until that record passes. Later local UI work may proceed against the verified contracts without pretending the live release gate passed.
+Guardrails start at RET-001/005; RET-010 hardens working boundaries rather than delaying basic validation and cost protection. Deterministic fixture/evaluation truth is available early for development, while the public sample remains live. RET-005's current two-pass actual-byte numeric/source/record gate passed in RET-011. New model/prompt/schema/source changes require their own bounded re-evaluation; fake/injected success cannot substitute for that evidence. Accepted local paid composition does not establish hosted public acceptance.
 
-No ticket is completed by this plan, and no paid/cloud/Git action follows from a ticket's existence. Implement only when separately requested. Record actual evidence in the owning packet; split a packet later only for a demonstrated independent risk or outcome, not one ticket per chart, form field, endpoint or CSS treatment.
+All twelve local outcomes now have evidence; a ticket's existence does not itself authorize paid/cloud/Git action. Implement only when separately requested. Record actual evidence in the owning packet; split a packet later only for a demonstrated independent risk or outcome, not one ticket per chart, form field, endpoint or CSS treatment.
 
 ## 28. Open decisions and release acceptance
 
 ### 28.1 Confirmed decisions and remaining release inputs
 
-The planning questions are answered. English/USD; ten visible PDF originals/eighteen pages with one handwritten core specimen and five initial cost categories; live sample processing; OpenAI; development fakes; refresh recovery with bounded browser retention; floating pill Retro with user bubbles/unboxed responses; summaries/tours/highlights/form filling; compact confirmation plus latest-action Undo; initial approximately USD 5 credit top-up; and 12 cohesive tickets are recorded as the current baseline.
+The planning questions are answered. English/USD; ten visible PDF originals/eighteen pages with one honestly synthetic handwriting-style specimen and five initial cost categories; live sample processing; OpenAI; development fakes; refresh recovery with bounded browser retention; floating pill Retro with user bubbles/unboxed responses; summaries/tours/highlights/form filling; compact confirmation plus latest-action Undo; owner-confirmed configured USD 5 OpenAI spending limit; and 12 cohesive tickets are recorded as the current baseline.
 
 Do not ask the owner to choose Gemini, accept hidden comparison data, accept refresh loss or disable motion. Those alternatives contradict the current instructions. Keep typography, brand palette and calm photographic hero direction from the existing brief.
 
-Remaining release inputs are operational: actual OpenAI account/model access, measured numeric/handwriting accuracy and usage, cloud project/region, domain ownership/routing, operator log retention, real device behavior, and actual public availability/capacity. They are verified in their dependent tickets rather than blocking documentation or fake-mode foundation work. The two-hour browser expiry, 12-ticket grouping, PDF-only first-release uploads and model candidate are explicit bounded implementation choices, not claims that the owner specified every numeric limit.
+Remaining release work is deployment preparation/hosted acceptance and manual testing/owner acceptance: current Linux packages/images, cloud project/region/domain/runtime identities, hosted admission/IAM/retention/capacity/rollback, physical/assistive/performance feedback, broader real human-handwriting/upload accuracy, and manual account permissions/expiry/billing-enforcement verification. Actual local model access and corpus/Retro usage are already established; the configured USD 5 spending limit is owner-confirmed.
 
 ### 28.2 Release acceptance
 
@@ -2161,9 +2134,9 @@ Remaining release inputs are operational: actual OpenAI account/model access, me
 - Known open, unknown settlement, invoice income and recorded cash remain distinct.
 - Real session CRUD works through forms and Retro’s confirmed proposals; draft/issued/payment effects are explicit.
 - Retro answers, summarizes, explains, tours and prepares changes with bounded tools; document instructions never authorize actions.
-- CRUD updates dependent metrics/charts/export together, and stale responses/proposals cannot affect the new revision.
+- CRUD updates dependent metrics/charts together, and stale responses/proposals cannot affect the new revision.
 - No animation-off product setting exists. Motion remains calm and values/controls remain accessible.
-- Export binds one revision and preserves draft/contact/payment provenance and sensitive-data options accurately.
+- Original PDF downloads preserve actual bytes; removed workspace ZIP/generated-invoice controls are not release requirements.
 - Reset/cancellation release resources and invalidate all prior operation/proposal ownership.
 - Fake tests prove zero network/credentials and exact dispatch counts; live accuracy evidence is separate.
 - Hosted Linux images, private IAM, origins/challenge and paid-off controls are verified before public release.
@@ -2413,7 +2386,7 @@ incompatible currencies/bases are never silently combined
 model prose never establishes authoritative arithmetic
 review changes are atomic and revisioned
 stale outputs never overwrite current records
-preview/filter/review/export never trigger hidden AI dispatch
+preview/filter/review/original downloads never trigger hidden AI dispatch
 reset invalidates all obsolete operation ownership
 ```
 
@@ -2449,7 +2422,7 @@ Provider/platform guidance was checked on 7 October 2026. Recheck it when select
 - [Google Cloud service-to-service authentication](https://docs.cloud.google.com/run/docs/authenticating/service-to-service): private runtime-identity transport.
 - [Google Cloud maximum instances](https://docs.cloud.google.com/run/docs/configuring/max-instances): scaling cap and its limitations.
 
-### C.4 What is established at handoff
+### C.4 Historical planning handoff
 
 The product, architecture, sample expectations and operating policies above are documented proposals grounded in the received materials and both actual sibling projects. The new HTML is a concise reading companion. Application code, sample bytes, format evaluation, provider budgets, cloud resources, domain ownership and live release acceptance remain future work. The twelve planned tickets are included in this handoff; no implementation evidence is implied.
 
@@ -2481,11 +2454,11 @@ Research checked **8 October 2026**. References support the listed observations;
 
 ### D.2 HTML companion and asset handling
 
-The HTML embeds the selected compressed 3840-pixel-wide office photo as a data URI so the brief remains a single portable file with no third-party image request. The photo credit and license link are visible. It previews green/orange/ivory surfaces, vintage typography through a local fallback, animated sample charts and sample-only contributor detail. A documentation preview does not establish the final font, chart library or live application behavior.
+The HTML brief references the current edited project photograph and canonical favicon, with relative links to the actual public source PDFs. Keep it with the repository assets; it is no longer a standalone embedded-image file and sends no third-party image request. The photo credit and license link are visible. It previews green/orange/ivory surfaces, vintage typography through a local fallback, animated sample charts and sample-only contributor detail. A documentation preview does not establish the final font, chart library or live application behavior.
 
-No original template files, sample PDF binaries, external historic documents or font binaries are redistributed by this documentation update. Fixture authoring, font bundling and live evaluation remain implementation work. The external historical original was fetched to a temporary local file and visually inspected, alongside its source metadata and public-domain notice; it has not passed an AI transcription evaluation. The synthetic handwritten D04 is the planned core specimen. The historical source remains a research-only link outside the first-release sample.
+Original synthetic PDFs, licensed local fonts and photo assets are implemented in their owning directories; external downloaded templates and the archival handwriting candidate are not part of the Harbor corpus. Fixture authoring and bounded live corpus evaluation are complete. The external historical original was fetched to a temporary local file and visually inspected, alongside its source metadata and public-domain notice; it has not passed an AI transcription evaluation. The honestly synthetic handwriting-style D04 is the implemented core specimen and passed the two corpus checks. The historical source remains a research-only link outside the first-release sample.
 
-### D.3 Planning boundary
+### D.3 Historical planning boundary
 
 This update incorporates the owner's answered decisions throughout the active blueprint and HTML brief and creates the authorized [12-ticket queue](tickets/README.md). Historical original drafts remain clearly labelled inputs; the two imported methodology files retain their historical content with Retrosum adoption notes. The root/documentation READMEs point at the current authorities.
 

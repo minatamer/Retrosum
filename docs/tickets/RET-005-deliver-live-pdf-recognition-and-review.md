@@ -1,7 +1,9 @@
 # RET-005 — Deliver live OpenAI PDF recognition, review and exact-number evaluation
 
-Status: **Implemented locally — live and owner visual acceptance pending**
-Last synchronized: **8 October 2026**  
+**Current acceptance — 10 October 2026:** Local implementation is complete. The current sample contains ten PDFs/eighteen pages; two independent live numeric/record passes, seventeen live Retro cases and real localhost Turnstile/browser checks passed. The owner confirms the configured USD 5 OpenAI spending limit. Owner/physical/assistive/general-upload/manual account checks and hosted acceptance remain separate. See [current status](../CURRENT-STATUS.md) and [RET-011 evidence](../validation/RET-011.md).
+
+Status: **Implemented and live-verified locally — manual/hosted acceptance pending**
+Last synchronized: **10 October 2026**<br>
 Depends on: [RET-004](RET-004-build-money-state-crud-and-refresh.md)  
 Blocks: RET-006, RET-010  
 Suggested commit: `RET-005: deliver live OpenAI PDF recognition, review and exact-number evaluation`  
@@ -16,7 +18,7 @@ The release gate is zero incorrect numeric transcriptions across the published l
 
 ## Dependency evidence and ownership
 
-Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded live/cloud release gates remain pending.
+Read the latest owner decisions and the dependency packets' actual completion records before implementing. A dependency's planned checkbox or ticket-named commit is not evidence. Reuse the owning schema/state/command surfaces; do not silently repair an incomplete dependency or duplicate its authority. Local follow-on work can use verified fake/injected contracts while separately recorded manual/hosted release gates remain pending; current local paid acceptance is already recorded in RET-011.
 
 Areas owned by this packet:
 
@@ -36,19 +38,19 @@ Areas owned by this packet:
 7. Resolve business roles against Harbor/visitor-confirmed identity. Separate income/cost/payment/reference, net/tax/gross, source paid claim and actual movement. Missing tax is not invented zero tax; incomplete payment evidence is not automatically paid/open.
 8. Show genuine stages (inspecting/submitting/reading/validating/needs review/ready/failed), no invented percentages or fictitious streaming OCR text. Partial batch failure preserves successful sources and original previews. Review opens the exact original page, displays raw/normalized value and computes effect before acceptance.
 9. Integrate baseline paid-off, action admission, request count/token reservation/deadline and sanitized logging now; RET-010 will harden and measure the complete system. Reject before provider calls when disabled/over quota/unsupported. Outcome-unknown never silently retries or refunds metered work.
-10. Fake mode returns only declared fixture/case shapes, visibly simulated; arbitrary visitor PDF preview/manual entry remains available without fake recognition claims. Exercise exact same progress/review/UI contracts.
+10. Fake mode returns only declared fixture/case shapes, with internal fake provenance and ordinary product copy; arbitrary visitor PDF preview/manual entry remains available without fake recognition claims. Exercise exact same progress/review/UI contracts.
 11. Prepare a live evaluation runner/report that consumes actual PDFs and compares every numeric field afterward against independently authored truth. Owner-run paid acceptance is bounded and separately recorded: two independent dispatched runs per published layout/handwriting source, complete results, model/prompt/schema/version and token spend.
 
 ## Acceptance criteria
 
-- [x] Sample and visitor routes share bounded validation/provider contracts; live dispatch stays closed, and the browser has no prepared financial graph.
+- [x] Sample and visitor routes share bounded validation/provider contracts; accepted local live dispatch requires complete private/admission prerequisites, and the browser has no prepared financial graph.
 - [x] Actual inspected PDF bytes feed the request path and injected OpenAI adapter; credentials remain backend-only. No real paid request was made.
-- [x] Local accepted numeric fields retain exact page/raw/unit evidence and no invented confidence score; live transcription accuracy remains separately unverified.
+- [x] Local accepted numeric fields retain exact page/raw/unit evidence and no invented confidence score; two live numeric/source/record corpus passes are verified in RET-011; broader upload accuracy remains manual acceptance.
 - [x] Multipage statements/history preserve every eligible record and locator without truncation in the declared corpus.
 - [x] Ambiguous or inconsistent critical figures are held, not guessed into the money graph.
-- [x] Disabled/invalid/stale/replayed local/injected requests cause no extra automatic dispatch; live admission remains closed pending hardening/measurement.
+- [x] Disabled/invalid/stale/replayed local/injected requests cause no extra automatic dispatch; real localhost managed admission passed; hosted acceptance remains separate.
 - [x] Fake/error/abort/partial success paths preserve honest provenance and previews.
-- [ ] Public live support stays closed until two-run exact-field acceptance, including genuine handwriting, passes.
+- [x] Two independent numeric/source/record passes passed for the ten published PDFs, including the honestly synthetic image-only specimen. Local paid composition is accepted; hosted/general human-handwriting acceptance remains separate.
 
 ## Verification and evidence
 
@@ -62,13 +64,17 @@ Areas owned by this packet:
 | Bad MIME/encryption/page excess/disabled paid mode | Zero dispatch with readable failure |
 | Timeout/cancel/lost response/reload | No automatic rebilling or stale result application |
 
-Local implementation may close with fake/injected evidence while its **live acceptance remains Pending** and public capability remains unavailable. Later local UI tickets can proceed against the verified contract. A fake pass never becomes live OCR evidence; record paid measurements only after actually run and authorized.
+Local implementation and the published ten-PDF live numeric/source/record gate passed in RET-011. Hosted support, broader uploads/real human handwriting and owner/manual acceptance remain separate. Fake/injected tests remain evidence for their own class and never substitute for actual paid results.
 
 ## Scope limits and completion record
 
 Keep this packet one coherent outcome: necessary UI, contracts, backend/local effects, recovery and focused verification belong together. Do not create extra tickets for individual buttons, charts, fields or endpoints. Follow the blueprint's English/USD, PDF evidence, live-public/fake-development, no-server-database, temporary browser storage and motion decisions.
 
 Ticket planning is not implementation evidence or authorization for unrequested paid calls, cloud changes, deployment or commits. At execution use the user's current authorization; local reversible work normally proceeds without repeated permission. Record exact changes, settled checks, manual evidence, fake/live distinction and remaining prerequisites before updating status.
+
+## Historical local execution snapshot
+
+The following original results retain their dated corpus and acceptance boundaries; use the current status above for outstanding work.
 
 **Execution record, 8 October 2026:** Actual-byte sequential sample/visitor intake, browser and isolated server PDF inspection, bounded multipart/private bridge, strict versioned interpretation, full numeric inventory, deterministic grounding/arithmetic/role checks, review holds/duplicate confirmation, source-page preview, review effects/latest Undo, guarded OpenAI adapter and explicit fake composition are implemented. The declared eight-PDF simulation preserves 128 numeric groups / 146 occurrences and all ten events / four payments / four imported invoices. Accepted September totals are 4,800 income / 1,280 costs / 3,520 profit / 2,080 recorded operating cash, with 1,800 / 396 known open balances. Unfamiliar visitor PDFs remain previewable/manual-entry inputs without fabricated recognition. Completed sources survive refresh without automatic rebilling; a successful manual command cancels unfinished recognition while preserving its own Undo.
 

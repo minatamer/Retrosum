@@ -1,6 +1,6 @@
 # RET-011 — Single-page demo and configurable dashboard
 
-Owner direction: 9 October 2026. This plan supersedes the earlier `/workspace?entry=...` entry layout and fixed dashboard composition. Implementation stays local, fake-mode and paid-off. Live accuracy/spend, owner aesthetics, physical devices and deployment remain separate acceptance gates.
+Owner direction: 9 October 2026. This plan supersedes the earlier `/workspace?entry=...` entry layout and fixed dashboard composition. The local redesign is implemented in both modes. Two actual-byte numeric passes, seventeen live Retro cases and real localhost Turnstile/browser checks passed. Owner/manual/physical and hosted acceptance remain separate; see [current status](../CURRENT-STATUS.md).
 
 ## Journey and layout
 
@@ -26,7 +26,7 @@ Center an animated paper/spinner, meaningful stage text, current filename, compl
 
 Fill the browser. Desktop has an ivory workspace and forest sidebar; animate collapse to accessible icons. Tablet defaults to a compact rail; phones use a compact header and accessible navigation drawer. Reserve composer/keyboard/safe-area space; use natural scrolling on short screens. Verify 320×640, 390×844, 768×1024, 1280×720, 1366×768 and 1920×1080 with no horizontal overflow.
 
-Navigation: **Dashboard**, **Documents**, **Records**; bottom **Settings**, **Export**, **Reset**. Profile initials and business/display name appear at the top; this remains a guest session. Documents holds originals/review; Records retains real editable invoices, expenses, contacts and payments. Mount Retro only after dashboard entry; retain it across dashboard areas.
+Navigation: **Dashboard**, **Documents**, **Records**; bottom **Settings** and **Reset**; workspace ZIP/generated-invoice export controls are removed. Profile initials and business/display name appear at the top; this remains a guest session. Documents holds originals/review; Records retains real editable invoices, expenses, contacts and payments. Mount Retro only after dashboard entry; retain it across dashboard areas.
 
 Default widgets: income, costs, profit and margin KPIs; a wide income/cost trend with line/curve/bar styles; a cost-composition donut and labelled legend; cash and known-open cards. Animate real dated points, show exact hover/focus values and clickable source evidence, include data tables. Sparse history stays sparse; curves connect actual points rather than supply extra observed values. Missing history stays unavailable. Keep compact scope filters and review coverage.
 
@@ -68,4 +68,4 @@ Remove obsolete sample introduction, redundant intake copy and old workspace com
 6. CUA-check selection/all/none/partial, preview/download, processing, review/duplicate, dashboard, typed/visual chart choices, KPI/layout/target, currency, refresh/Reset and responsive sizes. Physical hardware remains an owner check.
 7. Add meaningful tests for grouped/quarterly data, unavailable/negative values, exact conversion, schema bounds, recovery and Retro decisions. Run settled root format/lint/types/boundaries/unit/build checks after implementation settles; do not repeat gates during active visual iteration.
 
-Completion requires cleaned implementation, actual local browser evidence and passing local gates. Record fake/local/live/cloud evidence separately. Owner aesthetic approval, physical keyboard/touch hardware, paid numeric accuracy/spend and deployment remain pending.
+Completion requires cleaned implementation, actual local browser evidence and passing local gates. Record fake/local/live/cloud evidence separately. Owner aesthetic approval, physical keyboard/touch hardware, broader upload/real human-handwriting accuracy and hosted acceptance remain pending. The configured USD 5 OpenAI limit is owner-confirmed; current corpus/local paid acceptance passed.

@@ -1,8 +1,14 @@
 # Local product acceptance and candidate handoff
 
+Current completion and outstanding work: [current status](../CURRENT-STATUS.md). The configured USD 5 OpenAI spending limit is owner-confirmed. Linux image refresh belongs to deployment preparation; physical/assistive/aesthetic/general-upload and manual account verification remain separate.
+
 ## Latest local paid candidate — 10 October 2026
 
 Two live passes over the expanded ten-PDF/eighteen-page corpus and seventeen live Retro intent cases passed numeric, source/role and grounding review. Connected local paid startup, exact token preflight and deterministic receipt/transfer guards are implemented. Real localhost disclosure, Turnstile, one-use grant, PDF extraction and Retro checks passed. The dated eight-document simulation below remains historical evidence. [Current paid evidence](../validation/RET-011.md) retains general handwriting, physical/owner and hosted limitations.
+
+## Historical candidate review — 8 October 2026
+
+This dated review retains the original eight-document numbers, exports, inventory and gates. Those are not today's current feature/status claims.
 
 Updated **8 October 2026**, RET-011. This is a local fake/injected release-candidate review, not approval to publish or enable AI. Public live capability remains closed. RET-012 prepares packaging; real provider, physical-device/owner and hosted acceptance are separate gates.
 
@@ -52,7 +58,7 @@ Node **24.19.0**, pnpm **11.25.0**, Next **16.4.0**, React **19.3.0**, Express *
 
 Source inspection found no stale TODO/debug console/sibling identity leak in app/shared production source. No private identity/metadata endpoint, OpenAI key or grant-secret config name appears in emitted client JS. The live path does not import expected-result/ground-truth files; the backend's declared fake-fixture import is isolated to the fake adapter. Public assets contain only the eight synthetic PDFs, thumbnails, photograph, favicon and generated pinned PDF runtime, with licenses retained in their owned asset records. Financial calculations remain in the money engine. Required assets exist locally; standalone/nonroot Linux image verification is RET-012 work.
 
-## Remaining release gates and handoff
+## Historical remaining gates at that snapshot
 
 - Two independent owner-authorized actual-byte numeric runs for every PDF, real model/account access and billed image/text/reasoning/spend limits. Live composition remains closed until these pass.
 - Owner visual approval, physical phone/tablet keyboard/touch/zoom, assistive-technology/forced-color and supported browser profiling. Geometry and keyboard DOM evidence do not replace these.

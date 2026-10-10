@@ -2,11 +2,22 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { documentSchema, type SourceDocument, type SourceReference } from "@retrosum/contracts";
+import {
+  documentSchema,
+  type RuntimeCapabilities,
+  type SourceDocument,
+  type SourceReference,
+} from "@retrosum/contracts";
 import { BrandMark, Wordmark } from "../../components/ui/wordmark";
 import { SessionProvider, useSession } from "../session/session-provider";
 import { monthDateRange } from "../session/reporting-period";
-import { ProcessingProvider, usePaidProcessing } from "../processing/processing-provider";
+import {
+  InlineProcessingReview,
+  ProcessingDetails,
+  ProcessingProvider,
+  usePaidProcessing,
+} from "../processing/processing-provider";
+import { recognitionCapabilities } from "../documents/recognition-client";
 import { sampleAssets, sampleManifest } from "../documents/sample-assets";
 import {
   prepareSamples,
@@ -41,6 +52,7 @@ function DemoFlow() {
   const [busy, setBusy] = useState(false);
   const [resetSetup, setResetSetup] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [capabilities, setCapabilities] = useState<RuntimeCapabilities | null>(null);
   const [progress, setProgress] = useState("Preparing your documents");
   const [preview, setPreview] = useState<{ target: SourceReference; origin: PaperOrigin } | null>(
     null,
@@ -57,6 +69,21 @@ function DemoFlow() {
     };
   }, []);
   const stage = session?.experience.stage ?? "choose";
+  useEffect(() => {
+    if (stage !== "documents") return;
+    const abort = new AbortController();
+    void recognitionCapabilities(abort.signal)
+      .then((value) => {
+        if (!abort.signal.aborted) setCapabilities(value);
+      })
+      .catch((cause: unknown) => {
+        if (!abort.signal.aborted) {
+          setCapabilities(null);
+          setError(cause instanceof Error ? cause.message : "Processing is unavailable.");
+        }
+      });
+    return () => abort.abort();
+  }, [stage]);
   useEffect(() => {
     heading.current?.focus({ preventScroll: true });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -206,7 +233,21 @@ function DemoFlow() {
       for (const retry of [false, true]) {
         const batch = pending.filter((i) => i.doc.recognitionAttempted === retry);
         if (batch.length)
-          await processDocuments(controller, batch, signal, setProgress, retry, authorize);
+          await processDocuments(
+            controller,
+            batch,
+            signal,
+            setProgress,
+            retry,
+            (identity, current, signal) => {
+              if (capabilities?.mode !== "live")
+                throw new Error(
+                  "Processing changed. Return to document selection to review it before submitting.",
+                );
+              // The visible selection disclosure and explicit Process click approve only this batch.
+              return authorize(identity, current, signal, "document-selection");
+            },
+          );
       }
       signal.throwIfAborted();
       const preferences = controller.getSnapshot().session!.dashboard;
@@ -465,11 +506,27 @@ function DemoFlow() {
               </p>
             )}
             <div className={styles.nextBar}>
-              <span>Only selected documents will be processed.</span>
+              <div className={styles.processingNote}>
+                <p>
+                  {capabilities?.mode === "live"
+                    ? "By choosing Process, you allow your selected PDFs and business context to be sent to OpenAI."
+                    : "Only selected documents will be processed."}
+                </p>
+                <ProcessingDetails live={capabilities?.mode === "live"} />
+                {!capabilities && <small role="status">Checking processing availability…</small>}
+                {capabilities && !capabilities.documents.available && (
+                  <small>Processing is unavailable. You can still explore the originals.</small>
+                )}
+              </div>
               <button
                 type="button"
                 className={styles.primary}
-                disabled={busy || !selected.size}
+                disabled={
+                  busy ||
+                  !selected.size ||
+                  !capabilities?.documents.available ||
+                  (capabilities.mode === "live" && !capabilities.processing?.admissionAvailable)
+                }
                 onClick={process}
               >
                 Process {selected.size || "selected"}{" "}
@@ -512,6 +569,7 @@ function DemoFlow() {
               <span className={styles.spinner} />
               {completed} of {selected.size} documents completed
             </div>
+            <InlineProcessingReview />
             <button
               type="button"
               className={styles.textButton}

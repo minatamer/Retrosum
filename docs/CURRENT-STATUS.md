@@ -11,6 +11,8 @@ Updated **10 October 2026**. This page summarizes current completion; the [bluep
 
 ## Owner-confirmed OpenAI setup
 
+Document selection now exposes **How processing works** as an optional details dialog. A concise OpenAI disclosure accompanies the explicit Process action; per-document admission/challenge runs inline without repeated extraction-review modals. Retro retains its per-turn review and all individual one-use grants remain required.
+
 The owner confirms the configured OpenAI spending limit is **USD 5** and is already set. Record this as owner-confirmed setup, not a pending request to configure it. Its dashboard scope/period and enforcement have not been independently inspected; no prepaid balance or guaranteed global application cap is inferred. The USD 2.50 process-local admission/evaluation allowance remains a separate application control.
 
 The owner selected **90-day API-key expiry**. Actual Responses generation/input-count access works; the final dashboard expiry timestamp and complete saved permissions have not been inspected. These are manual account-verification details, not missing application features. Secrets remain in ignored backend `.env.local`; no key/account value was copied into documentation.

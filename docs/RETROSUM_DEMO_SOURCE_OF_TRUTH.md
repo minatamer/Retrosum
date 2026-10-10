@@ -363,6 +363,8 @@ Do not keep two independently mounted workspaces for desktop and phone. Adapt on
 
 ### 6.3 Document collection
 
+**Owner processing-disclosure feedback, 10 October 2026:** Keep the full handling explanation behind a **How processing works** dialog CTA beside Process on document selection. Show the concise OpenAI disclosure there before a live batch; explicitly choosing Process approves only those selected PDFs and their business context. Do not automatically open an extraction-review modal for every PDF. Admission and the managed challenge appear within the processing page, retaining individual action-bound one-use grants and normal cancellation/expiry. Opening the details never grants consent or starts admission. Retro retains its separate per-turn review.
+
 | Element | Specification |
 | --- | --- |
 | Collection heading | Name the business and distinguish sample from visitor originals. |

@@ -7,6 +7,7 @@ export type AuthorizePaid = (
   identity: ProcessingIdentity,
   capabilities: RuntimeCapabilities,
   signal: AbortSignal,
+  presentation?: "document-selection",
 ) => Promise<string>;
 export async function hashRequest(input: unknown) {
   const bytes = new TextEncoder().encode(JSON.stringify(input));

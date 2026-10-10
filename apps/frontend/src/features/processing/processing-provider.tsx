@@ -19,12 +19,17 @@ import styles from "./processing.module.css";
 import type { AuthorizePaid, ProcessingIdentity } from "./processing-client";
 
 type Identity = ProcessingIdentity;
-const ProcessingContext = createContext<AuthorizePaid | null>(null);
+const ProcessingContext = createContext<{
+  authorize: AuthorizePaid;
+  pending: Pending | null;
+} | null>(null);
 type Pending = {
   identity: Identity;
+  presentation: "dialog" | "document-selection";
   siteKey: string;
   signal: AbortSignal;
   nonce: string;
+  admission: Promise<boolean> | null;
   finish(grant?: string): void;
 };
 type Turnstile = {
@@ -55,9 +60,17 @@ declare global {
 }
 
 export function usePaidProcessing() {
-  const authorize = use(ProcessingContext);
-  if (!authorize) throw new Error("Processing provider is required.");
-  return authorize;
+  const processing = use(ProcessingContext);
+  if (!processing) throw new Error("Processing provider is required.");
+  return processing.authorize;
+}
+export function InlineProcessingReview() {
+  const processing = use(ProcessingContext);
+  if (!processing) throw new Error("Processing provider is required.");
+  const pending = processing.pending;
+  return pending?.presentation === "document-selection" ? (
+    <LiveReview key={pending.identity.operationId} pending={pending} />
+  ) : null;
 }
 export function ProcessingProvider({ children }: { children: ReactNode }) {
   const { controller } = useSession();
@@ -65,7 +78,9 @@ export function ProcessingProvider({ children }: { children: ReactNode }) {
   const owned = useRef<Pending | null>(null);
   useEffect(() => () => owned.current?.finish(), []);
   const authorize = useCallback<AuthorizePaid>(
-    (identity, capabilities, signal) => {
+    (identity, capabilities, signal, presentation = undefined) => {
+      if (presentation === "document-selection" && identity.action !== "extract")
+        return Promise.reject(new Error("Document selection cannot authorize a Retro turn."));
       if (
         capabilities.mode !== "live" ||
         !capabilities.processing?.admissionAvailable ||
@@ -86,8 +101,10 @@ export function ProcessingProvider({ children }: { children: ReactNode }) {
         const cancel = () => value.finish();
         const value: Pending = {
           identity,
+          presentation: presentation ?? "dialog",
           siteKey: capabilities.processing!.siteKey,
           signal: bounded,
+          admission: null,
           nonce:
             document.querySelector<HTMLMetaElement>('meta[name="retrosum-csp-nonce"]')?.content ??
             "",
@@ -103,6 +120,7 @@ export function ProcessingProvider({ children }: { children: ReactNode }) {
           },
         };
         owned.current = value;
+        if (value.presentation === "document-selection") value.admission = startAdmission(value);
         bounded.addEventListener("abort", cancel, { once: true });
         setPending(value);
       });
@@ -110,9 +128,9 @@ export function ProcessingProvider({ children }: { children: ReactNode }) {
     [controller],
   );
   return (
-    <ProcessingContext value={authorize}>
+    <ProcessingContext value={{ authorize, pending }}>
       {children}
-      {pending &&
+      {pending?.presentation === "dialog" &&
         createPortal(
           <LiveReview key={pending.identity.operationId} pending={pending} />,
           document.body,
@@ -141,36 +159,47 @@ async function admit(
     );
   return value;
 }
+function startAdmission(pending: Pending) {
+  return admit(
+    "/api/retrosum/v1/session",
+    {
+      workspaceId: pending.identity.workspaceId,
+      disclosureVersion: PROCESSING_DISCLOSURE_VERSION,
+      consent: true,
+    },
+    pending.signal,
+  ).then(
+    () => true,
+    () => false,
+  );
+}
 function LiveReview({ pending }: { pending: Pending }) {
+  const inline = pending.presentation === "document-selection";
   const [accepted, setAccepted] = useState(false),
-    [busy, setBusy] = useState(false),
+    [busy, setBusy] = useState(inline),
     [error, setError] = useState<string | null>(null);
   const accepting = useRef(false),
     submitting = useRef(false);
+  const admissionError = inline
+    ? "Verification could not start. Cancel processing and try again deliberately; your originals remain available."
+    : "Admission could not start. Close this review; your originals and local controls remain available.";
+  useEffect(() => {
+    if (!pending.admission) return;
+    void pending.admission.then((success) => {
+      if (pending.signal.aborted) return;
+      setBusy(false);
+      if (success) setAccepted(true);
+      else setError(admissionError);
+    });
+  }, [pending, admissionError]);
   const begin = async () => {
-    if (accepting.current) return;
+    if (accepting.current || pending.signal.aborted) return;
     accepting.current = true;
-    setBusy(true);
-    try {
-      await admit(
-        "/api/retrosum/v1/session",
-        {
-          workspaceId: pending.identity.workspaceId,
-          disclosureVersion: PROCESSING_DISCLOSURE_VERSION,
-          consent: true,
-        },
-        pending.signal,
-      );
-      pending.signal.throwIfAborted();
-      setAccepted(true);
-    } catch {
-      if (!pending.signal.aborted)
-        setError(
-          "Admission could not start. Close this review; your originals and local controls remain available.",
-        );
-    } finally {
-      if (!pending.signal.aborted) setBusy(false);
-    }
+    const success = await startAdmission(pending);
+    if (pending.signal.aborted) return;
+    setBusy(false);
+    if (success) setAccepted(true);
+    else setError(admissionError);
   };
   const verified = async (challengeToken: string) => {
     if (submitting.current || pending.signal.aborted) return;
@@ -195,12 +224,41 @@ function LiveReview({ pending }: { pending: Pending }) {
     } catch {
       if (!pending.signal.aborted)
         setError(
-          "Verification could not finish. Close this review and retry deliberately; nothing was submitted for AI processing.",
+          inline
+            ? "Verification could not finish. Cancel processing and try again deliberately; this PDF was not submitted for AI processing."
+            : "Verification could not finish. Close this review and retry deliberately; nothing was submitted for AI processing.",
         );
     } finally {
       if (!pending.signal.aborted) setBusy(false);
     }
   };
+  const verification = (
+    <>
+      {accepted && !error && (
+        <Challenge
+          pending={pending}
+          verified={verified}
+          failed={() =>
+            setError(
+              inline
+                ? "Verification expired or could not load. Cancel processing and try again deliberately."
+                : "The challenge expired or could not load. Close this review and retry deliberately.",
+            )
+          }
+        />
+      )}
+      {!error && (busy || inline) && (
+        <p role="status">{busy ? "Checking admission…" : "Verifying this document…"}</p>
+      )}
+      {error && <p role="alert">{error}</p>}
+    </>
+  );
+  if (inline)
+    return (
+      <div className={styles.inlineReview} aria-busy={busy}>
+        {verification}
+      </div>
+    );
   return (
     <PaperDialog
       open
@@ -215,25 +273,20 @@ function LiveReview({ pending }: { pending: Pending }) {
           opaque request hash. A grant covers this exact action once; it does not authorize record
           changes.
         </p>
-        {accepted && !error && (
-          <Challenge
-            pending={pending}
-            verified={verified}
-            failed={() =>
-              setError(
-                "The challenge expired or could not load. Close this review and retry deliberately.",
-              )
-            }
-          />
-        )}
-        {busy && <p role="status">Checking admission…</p>}
-        {error && <p role="alert">{error}</p>}
+        {verification}
         <div className={styles.actions}>
           <Button variant="light" onClick={() => pending.finish()}>
             Cancel
           </Button>
           {!accepted && !error && (
-            <Button variant="warm" disabled={busy} onClick={() => void begin()}>
+            <Button
+              variant="warm"
+              disabled={busy}
+              onClick={() => {
+                setBusy(true);
+                void begin();
+              }}
+            >
               Allow this live action
             </Button>
           )}
@@ -306,16 +359,20 @@ function Challenge({
 function HandlingCopy({
   live = false,
   action = "extract",
+  selection = false,
 }: {
   live?: boolean;
   action?: Identity["action"];
+  selection?: boolean;
 }) {
   return (
     <>
       <p>
         {live
           ? action === "extract"
-            ? "This selected PDF and its core business context will pass through Retrosum’s temporary server processing to OpenAI for interpretation."
+            ? selection
+              ? "Your selected PDFs and their core business context will pass through Retrosum’s temporary server processing to OpenAI for interpretation when you choose Process."
+              : "This selected PDF and its core business context will pass through Retrosum’s temporary server processing to OpenAI for interpretation."
             : "Your question, recent conversation and current financial records will pass through Retrosum’s temporary server processing to OpenAI. Original PDFs are not attached to this Retro turn."
           : "Choose the documents you want to process, then review their details before adding them to your overview. You can inspect the originals and edit your records at any time."}
       </p>
@@ -342,13 +399,21 @@ function HandlingCopy({
     </>
   );
 }
-export function ProcessingDetails({ compact = false }: { compact?: boolean }) {
+export function ProcessingDetails({
+  compact = false,
+  live = false,
+}: {
+  compact?: boolean;
+  live?: boolean;
+}) {
   const [target, setTarget] = useState<HTMLElement | null>(null);
   return (
     <>
       <button
         type="button"
+        className={styles.detailsButton}
         aria-label="How processing works"
+        aria-haspopup="dialog"
         onClick={() => setTarget(document.body)}
       >
         {compact ? (
@@ -377,7 +442,13 @@ export function ProcessingDetails({ compact = false }: { compact?: boolean }) {
             caption="Privacy & processing"
           >
             <div className={styles.copy}>
-              <HandlingCopy />
+              <HandlingCopy live={live} selection />
+              {live && (
+                <p>
+                  Choosing Process allows interpretation of the selected documents. Cloudflare
+                  verifies each action before submission; opening these details sends no documents.
+                </p>
+              )}
             </div>
           </PaperDialog>,
           target,

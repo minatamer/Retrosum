@@ -41,10 +41,6 @@ spec:
               value: openai
             - name: PAID_DEMO_ENABLED
               value: "false"
-            - name: LIVE_DOCUMENTS_ENABLED
-              value: "false"
-            - name: LIVE_COPILOT_ENABLED
-              value: "false"
           resources:
             limits:
               cpu: "1"

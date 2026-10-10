@@ -1629,7 +1629,7 @@ Recheck rates/model availability before live setup and record date/model, units,
 
 ### 19.8 Paid-off behavior
 
-`PAID_DEMO_ENABLED=false` overrides all live operation flags. PDF gallery/viewing, already recognized records, manual forms, local tour, arithmetic, review, export, reset, health and configuration remain usable. Labelled fixture recognition/chat stays available only in configured development fake mode. Paid-off must reject before any provider request. Tests prove that behavior even if credentials or live flags are accidentally inherited from the shell.
+`PAID_DEMO_ENABLED` is the single paid switch for both live documents and Retro. With `FAKE_MODE=false`, setting it to `true` requests both live capabilities together, subject to configured credentials, admission and verified live acceptance. Separate document/copilot enablement flags are removed by the owner's 10 October 2026 decision. Setting it to `false` stops all paid dispatch. PDF gallery/viewing, already recognized records, manual forms, local tour, arithmetic, review, export, reset, health and configuration remain usable. Labelled fixture recognition/chat stays available only in configured development fake mode. Paid-off must reject before any provider request, even when credentials are inherited from the shell.
 
 ### 19.9 RET-010 local implementation
 
@@ -1728,9 +1728,7 @@ Numerical resource limits, operation budgets, retry policy and tested model IDs 
 | `NODE_ENV` | Each app | Standard dev/test/production value |
 | `PORT` | Runtime/service entry | Local backend 4000; hosted injected port |
 | `FAKE_MODE` | Backend | `true` |
-| `PAID_DEMO_ENABLED` | Backend | `false`, master override |
-| `LIVE_DOCUMENTS_ENABLED` | Backend | `false` |
-| `LIVE_COPILOT_ENABLED` | Backend | `false` |
+| `PAID_DEMO_ENABLED` | Backend | `false`; one paid switch for both live documents and Retro |
 | `AI_PROVIDER` | Backend | `fake`; approved live value `openai` |
 | `OPENAI_API_KEY` | Backend | Blank |
 | `TURNSTILE_SECRET_KEY` | Backend | Blank |

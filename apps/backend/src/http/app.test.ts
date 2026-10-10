@@ -82,8 +82,6 @@ describe("safe explicit HTTP composition", () => {
       makeApp({
         OPENAI_API_KEY: "secret",
         PAID_DEMO_ENABLED: "true",
-        LIVE_DOCUMENTS_ENABLED: "true",
-        LIVE_COPILOT_ENABLED: "true",
       }),
     )
       .get("/v1/config")

@@ -17,7 +17,7 @@ RUN pnpm build:shared \
 FROM ${NODE_IMAGE} AS runtime
 WORKDIR /app
 COPY --from=build --chown=node:node /runtime/backend ./
-ENV NODE_ENV=production PORT=8080 HOST=0.0.0.0 FAKE_MODE=true PAID_DEMO_ENABLED=false LIVE_DOCUMENTS_ENABLED=false LIVE_COPILOT_ENABLED=false AI_PROVIDER=fake
+ENV NODE_ENV=production PORT=8080 HOST=0.0.0.0 FAKE_MODE=true PAID_DEMO_ENABLED=false AI_PROVIDER=fake
 USER node
 EXPOSE 8080
 CMD ["node", "dist/server.js"]

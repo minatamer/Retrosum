@@ -12,8 +12,6 @@ beforeEach(() => {
   vi.stubEnv("NODE_ENV", "test");
   vi.stubEnv("FAKE_MODE", "true");
   vi.stubEnv("PAID_DEMO_ENABLED", "false");
-  vi.stubEnv("LIVE_DOCUMENTS_ENABLED", "false");
-  vi.stubEnv("LIVE_COPILOT_ENABLED", "false");
   vi.stubEnv("AI_PROVIDER", "fake");
   vi.stubEnv("OPENAI_API_KEY", "");
   vi.stubEnv("TURNSTILE_SECRET_KEY", "");

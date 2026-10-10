@@ -14,8 +14,6 @@ jobs:
     env:
       FAKE_MODE: "true"
       PAID_DEMO_ENABLED: "false"
-      LIVE_DOCUMENTS_ENABLED: "false"
-      LIVE_COPILOT_ENABLED: "false"
       OPENAI_API_KEY: ""
       NEXT_TELEMETRY_DISABLED: "1"
     steps:

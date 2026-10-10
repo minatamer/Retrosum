@@ -4,6 +4,34 @@ import { composeRuntime } from "./compose.js";
 import { systemClock } from "./clock.js";
 
 describe("provider composition stays explicit and side-effect free", () => {
+  it.each([
+    ["false", "paid_disabled"],
+    ["true", "acceptance_pending"],
+  ] as const)("the single paid=%s switch covers documents and Retro together", (paid, reason) => {
+    const interpretDocument = vi.fn();
+    const step = vi.fn();
+    const runtime = composeRuntime(
+      parseConfig({
+        FAKE_MODE: "false",
+        PAID_DEMO_ENABLED: paid,
+        AI_PROVIDER: "openai",
+        OPENAI_API_KEY: "injected-key",
+        TURNSTILE_SITE_KEY: "injected-site",
+        TURNSTILE_SECRET_KEY: "injected-challenge-secret",
+        GRANT_SIGNING_SECRET: "x".repeat(32),
+      }),
+      {
+        clock: systemClock,
+        createRequestId: () => "request_test",
+        provider: { kind: "openai", interpretDocument, investigator: { kind: "openai", step } },
+      },
+    );
+    expect(runtime.capabilities.documents).toEqual({ available: false, reason });
+    expect(runtime.capabilities.copilot).toEqual({ available: false, reason });
+    expect(runtime.capabilities.processing?.admissionAvailable).toBe(false);
+    expect(interpretDocument).not.toHaveBeenCalled();
+    expect(step).not.toHaveBeenCalled();
+  });
   it("uses only a matching fake adapter without dispatching during readiness", () => {
     const interpretDocument = vi.fn();
     const runtime = composeRuntime(parseConfig({ OPENAI_API_KEY: "inherited" }), {
@@ -25,13 +53,12 @@ describe("provider composition stays explicit and side-effect free", () => {
     expect(runtime.capabilities.copilot.available).toBe(false);
     expect(answer).not.toHaveBeenCalled();
   });
-  it("paid-off overrides present credentials, live flags and an injected live adapter", () => {
+  it("paid-off overrides present credentials and an injected live adapter", () => {
     const interpretDocument = vi.fn();
     const runtime = composeRuntime(
       parseConfig({
         FAKE_MODE: "false",
         AI_PROVIDER: "openai",
-        LIVE_DOCUMENTS_ENABLED: "true",
         OPENAI_API_KEY: "secret",
         TURNSTILE_SECRET_KEY: "secret",
         GRANT_SIGNING_SECRET: "x".repeat(32),

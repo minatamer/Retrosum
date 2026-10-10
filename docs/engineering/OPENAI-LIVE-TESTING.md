@@ -2,6 +2,8 @@
 
 Prepared 10 October 2026 under RET-011. No paid request or API key was used in this preparation pass. Public live dispatch remains closed by `LIVE_ACCEPTANCE_VERIFIED=false`; adding a key alone does not enable live processing or chat in `/demo`.
 
+`PAID_DEMO_ENABLED` is the only paid feature switch. With `FAKE_MODE=false`, `PAID_DEMO_ENABLED=true` requests live document processing and live Retro together; there are no separate document/copilot enablement settings. Credentials, admission and verified acceptance still apply. Keep committed examples fake and paid-off while those checks are pending.
+
 ## Current integration
 
 Both backend adapters use the fixed Responses endpoint, `gpt-6.1-sol`, `service_tier: "default"`, low reasoning, foreground requests and `store: false`. Keys stay in the backend/operator environment; never use a `NEXT_PUBLIC_` variable, commit a key or paste it into chat. Committed examples remain fake and paid-off. A private OpenAI project needs API billing/credits and access to the configured model before a live run; those account conditions have not been tested here.

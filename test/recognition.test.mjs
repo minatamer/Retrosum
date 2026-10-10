@@ -310,7 +310,6 @@ describe("bounded provider and request admission", () => {
           AI_PROVIDER: "openai",
           OPENAI_API_KEY: "present",
           PAID_DEMO_ENABLED: "true",
-          LIVE_DOCUMENTS_ENABLED: "true",
           TURNSTILE_SECRET_KEY: "present",
           GRANT_SIGNING_SECRET: "x".repeat(32),
         }),

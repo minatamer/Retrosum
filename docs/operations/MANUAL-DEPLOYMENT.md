@@ -6,7 +6,7 @@ Prepared **8 October 2026**, RET-012. Local files and Linux verification are aut
 
 - Root-context `apps/frontend/Dockerfile` and `apps/backend/Dockerfile`: Node 24.19.0 Debian slim, base digest `sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df`, pnpm 11.25.0, frozen dependency install, nonroot `node` runtime, no runtime download/install.
 - `infra/cloud-run/*.service.template.yaml`: unresolved Retrosum-owned placeholders; frontend 1 CPU/512 MiB/concurrency 8/150 seconds, backend 1 CPU/1 GiB/concurrency 4/120 seconds, service and revision minimum zero/maximum one. These are starting settings, not measured hosted capacity or global spend caps.
-- Docker backend defaults to explicitly labelled fake/paid-off. Cloud backend template overrides to **FAKE_MODE=false / AI_PROVIDER=openai / paid and live flags false**, reporting unavailable. This is a closed capability preview, not a live AI demo. A separately approved fake preview must remain visibly labelled.
+- Docker backend defaults to explicitly labelled fake/paid-off. Cloud backend template overrides to **FAKE_MODE=false / AI_PROVIDER=openai / PAID_DEMO_ENABLED=false**, reporting unavailable. The single paid switch covers both documents and Retro. This is a closed capability preview, not a live AI demo. A separately approved fake preview must remain visibly labelled.
 - `pnpm probe:release`: bounded free HTTP/assets/config probes. It accepts only explicit HTTPS or loopback origins, follows no redirects, reports no response content/secrets, and refuses action probes unless config first proves provider work unavailable. It cannot test a live mode or perform document inference.
 
 Cloud Run/Artifact Registry/Secret Manager/runtime IAM, manual immutable revisions and optional Cloudflare DNS/Turnstile match the siblings' tool family. ScreenPilot and ClipBuilder guides supplied structure only; their resource names, accounts, secrets, domains, approvals and measurements were not copied.
@@ -70,7 +70,7 @@ Retain the previous accepted **pair**: frontend/backend digest, revision, config
 
 ```powershell
 # Owner-authorized emergency closure creates a new backend revision:
-gcloud run services update $retrosumBackendService --project $retrosumProject --region $retrosumRegion --update-env-vars PAID_DEMO_ENABLED=false,LIVE_DOCUMENTS_ENABLED=false,LIVE_COPILOT_ENABLED=false
+gcloud run services update $retrosumBackendService --project $retrosumProject --region $retrosumRegion --update-env-vars PAID_DEMO_ENABLED=false
 # Route only to already-recorded compatible paid-off revisions:
 gcloud run services update-traffic $retrosumBackendService --project $retrosumProject --region $retrosumRegion --to-revisions "$retrosumGoodBackendRevision=100"
 gcloud run services update-traffic $retrosumFrontendService --project $retrosumProject --region $retrosumRegion --to-revisions "$retrosumGoodFrontendRevision=100"

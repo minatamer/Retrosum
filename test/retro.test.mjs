@@ -230,7 +230,6 @@ describe("bounded investigator dispatch", () => {
       parseConfig({
         FAKE_MODE: "false",
         OPENAI_API_KEY: "inherited",
-        LIVE_COPILOT_ENABLED: "true",
       }),
       {
         clock,

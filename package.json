@@ -20,6 +20,7 @@
     "release:frontend": "node scripts/package-frontend.mjs && node scripts/verify-release.mjs frontend artifacts/local/release/frontend",
     "release:backend": "pnpm --filter @retrosum/backend deploy --prod --offline --frozen-lockfile artifacts/local/release/backend && node scripts/verify-release.mjs backend artifacts/local/release/backend",
     "probe:release": "node scripts/probe-release.mjs",
+    "evaluate:retro": "node scripts/evaluate-retro.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings=0",

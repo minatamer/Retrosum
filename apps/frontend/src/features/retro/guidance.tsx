@@ -13,6 +13,7 @@ import { smoothScrollTo } from "../../components/ui/smooth-scroll";
 import { locateTarget, TARGETS, TOUR, type GuidanceTarget } from "./targets";
 import { placeTour, type TourRect, type TourViewport } from "./tour-layout";
 import { observeTourAnchor } from "./tour-anchor";
+import { observeGuidanceInput } from "./guidance-input";
 import styles from "./retro.module.css";
 
 export type Guidance = {
@@ -56,6 +57,7 @@ export function GuidanceOutline({
     serial: number;
     rect: TourRect;
     viewport: TourViewport;
+    settled: boolean;
   } | null>(null);
   useEffect(() => {
     if (!active) return;
@@ -119,7 +121,7 @@ export function GuidanceOutline({
           left = Math.min(...boxes.map((b) => b.left));
         const bottom = Math.max(...boxes.map((b) => b.bottom)),
           right = Math.max(...boxes.map((b) => b.right));
-        if (top >= viewport.height - 12 || bottom <= 12) return null;
+        if (active.step === null && (top >= viewport.height - 12 || bottom <= 12)) return null;
         return {
           target: node,
           rect: { top, left, width: right - left, height: bottom - top },
@@ -127,8 +129,12 @@ export function GuidanceOutline({
         };
       },
       (value) => {
-        setMeasured(
-          value ? { serial: active.serial, rect: value.rect, viewport: value.viewport } : null,
+        setMeasured((previous) =>
+          value
+            ? { serial: active.serial, rect: value.rect, viewport: value.viewport, settled: true }
+            : active.step !== null && previous?.serial === active.serial
+              ? { ...previous, settled: false }
+              : null,
         );
       },
     );
@@ -137,26 +143,19 @@ export function GuidanceOutline({
       scrolledTarget = null;
       anchor.beginScroll();
     };
-    const interrupted = (event: Event) => {
-      if ((event.target as Element | null)?.closest?.("#retro-tour-card")) return;
-      onStop();
-    };
-    const key = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onStop();
-      else if (
-        (scrollInFlight ||
-          (!(event.target as Element | null)?.closest?.("#retro-tour-card") &&
-            !["INPUT", "TEXTAREA", "SELECT"].includes((event.target as HTMLElement).tagName))) &&
-        ["ArrowUp", "ArrowDown", "PageDown", "PageUp", "Home", "End"].includes(event.key)
-      )
-        onStop();
-    };
+    const removeInput = observeGuidanceInput({
+      touring: active.step !== null,
+      isScrolling: () => scrollInFlight,
+      interruptScroll: () => {
+        if (!scrollInFlight) return;
+        cancelScroll?.();
+        scrollInFlight = false;
+        anchor.completeScroll();
+      },
+      stop: onStop,
+    });
     window.addEventListener("resize", resized);
     window.visualViewport?.addEventListener("resize", resized);
-    window.addEventListener("wheel", interrupted, { passive: true });
-    window.addEventListener("touchstart", interrupted, { passive: true });
-    window.addEventListener("touchmove", interrupted, { passive: true });
-    window.addEventListener("keydown", key);
     window.addEventListener("pagehide", onStop);
     const expiry = active.step === null ? window.setTimeout(onStop, 8000) : null;
     return () => {
@@ -166,10 +165,7 @@ export function GuidanceOutline({
       if (expiry !== null) window.clearTimeout(expiry);
       window.removeEventListener("resize", resized);
       window.visualViewport?.removeEventListener("resize", resized);
-      window.removeEventListener("wheel", interrupted);
-      window.removeEventListener("touchstart", interrupted);
-      window.removeEventListener("touchmove", interrupted);
-      window.removeEventListener("keydown", key);
+      removeInput();
       window.removeEventListener("pagehide", onStop);
     };
   }, [active, onStop, show]);
@@ -181,6 +177,7 @@ export function GuidanceOutline({
         active={active}
         rect={measured.rect}
         viewport={measured.viewport}
+        settled={measured.settled}
         show={show}
         stop={onStop}
       />,
@@ -206,12 +203,14 @@ function TourStep({
   active,
   rect,
   viewport,
+  settled,
   show,
   stop,
 }: {
   active: Guidance;
   rect: TourRect;
   viewport: TourViewport;
+  settled: boolean;
   show(target: GuidanceTarget, step?: number | null): void;
   stop(): void;
 }) {
@@ -240,6 +239,7 @@ function TourStep({
   const index = active.step!,
     target = TARGETS[active.target];
   const { spotlight, card, pointer } = placeTour(rect, viewport, cardHeight);
+  const highlighted = settled && rect.top < viewport.height - 12 && rect.top + rect.height > 12;
   const bottom = spotlight.top + spotlight.height,
     right = spotlight.left + spotlight.width;
   const masks = [
@@ -271,26 +271,32 @@ function TourStep({
         };
   return (
     <>
-      {masks.map((mask, index) => (
+      {highlighted &&
+        masks.map((mask, index) => (
+          <div
+            key={["top", "bottom", "left", "right"][index]}
+            className={styles.tourScrim}
+            style={mask}
+            aria-hidden="true"
+          />
+        ))}
+      {highlighted && (
         <div
-          key={["top", "bottom", "left", "right"][index]}
-          className={styles.tourScrim}
-          style={mask}
+          className={styles.outline + " " + styles.tourOutline}
+          style={spotlight}
           aria-hidden="true"
         />
-      ))}
-      <div
-        className={styles.outline + " " + styles.tourOutline}
-        style={spotlight}
-        aria-hidden="true"
-      />
-      <div className={styles.tourPointer} style={pointerStyle} aria-hidden="true" />
+      )}
+      {highlighted && (
+        <div className={styles.tourPointer} style={pointerStyle} aria-hidden="true" />
+      )}
       <div
         ref={cardRef}
         id="retro-tour-card"
         className={styles.tour}
         style={style}
         data-side={card.side}
+        data-highlighted={highlighted}
         role="dialog"
         aria-modal="true"
         aria-labelledby="retro-tour-title"
@@ -318,7 +324,7 @@ function TourStep({
           }
         }}
       >
-        <div className={styles.tourCopy}>
+        <div className={`${styles.tourCopy} rs-scrollbar`}>
           <span className={styles.meta}>
             Retro · {index + 1} of {TOUR.length}
           </span>

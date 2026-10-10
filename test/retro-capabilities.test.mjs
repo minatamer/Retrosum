@@ -264,6 +264,7 @@ describe("Retro workspace capabilities in both provider paths", () => {
       new AbortController().signal,
     );
     const body = JSON.parse(fetcher.mock.calls[0][1].body);
+    expect(body.service_tier).toBe("default");
     const walk = (schema) => {
       if (!schema || typeof schema !== "object") return;
       if (schema.type === "object") {

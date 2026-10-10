@@ -22,6 +22,7 @@ import {
   fakeRetroDecision,
   formatRetroFact,
   isRetroCurrent,
+  isRetroUiCurrent,
   renderRetroResponse,
   retroScopeKey,
   patchChangeIntent,
@@ -37,6 +38,8 @@ import styles from "./retro.module.css";
 import { ChangePreview } from "./change-preview";
 import { DashboardRequestPreview } from "./dashboard-request";
 import { WorkspaceRequestPreview } from "./workspace-request";
+import { ReplyText } from "./reply-text";
+import { retroShortcuts, resolveRetroReply, TOPIC_LABELS, type RetroShortcut } from "./shortcuts";
 import { navigateWorkspace } from "../workspace/navigation";
 import {
   cancelSmoothScroll,
@@ -52,14 +55,6 @@ type Pending = {
   stage: "submitting" | "staging" | "validated" | "stale" | "failed" | "cancelled";
   text: string;
 };
-const TOPIC_LABELS: Partial<Record<RetroTopic, string>> = {
-  summary: "Summarize this period",
-  profit: "Explain profit",
-  cash: "Explain cash",
-  rent: "Explain rent",
-  coverage: "Explain coverage",
-  comparison: "Compare periods",
-};
 export function Retro() {
   const { controller, session, generation, ready } = useSession();
   const authorize = usePaidProcessing();
@@ -68,6 +63,7 @@ export function Retro() {
   const [dismissedSuggestion, setDismissedSuggestion] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [expanded, setExpanded] = useState(false);
+  const [roomy, setRoomy] = useState(false);
   const [pending, setPending] = useState<Pending | null>(null);
   const [detail, setDetail] = useState<{ id: string; revision: number } | null>(null);
   const [source, setSource] = useState<SourceReference | null>(null);
@@ -183,13 +179,13 @@ export function Retro() {
       window.requestAnimationFrame(() => scrollToSection("retro-proposal"));
     }
   };
-  const local = (topic: RetroTopic) => {
+  const local = (topic: RetroTopic, prompt = TOPIC_LABELS[topic] ?? `Explain ${topic}`) => {
     if (busy) return;
     guidance.stop();
     setActiveChange(null);
     setNotice(null);
     finish(
-      TOPIC_LABELS[topic] ?? `Explain ${topic}`,
+      prompt,
       createRetroResponse(
         {
           operationId: "retro_local",
@@ -205,42 +201,9 @@ export function Retro() {
   };
   const send = async (prompt: string) => {
     if (busy || !prompt.trim() || prompt.length > 1000) return;
-    const previous = session.messages.at(-1)?.response;
-    const wordStyle = (
-      {
-        line: "line",
-        "line chart": "line",
-        curve: "curve",
-        curved: "curve",
-        "curved chart": "curve",
-        smooth: "curve",
-        bar: "bar",
-        "bar chart": "bar",
-        pie: "pie",
-        "pie chart": "pie",
-        donut: "pie",
-      } as const
-    )[prompt.trim().toLowerCase() as "line"];
-    if (
-      wordStyle &&
-      previous?.decision.kind === "dashboard_request" &&
-      isRetroCurrent(previous, workspace, actualScope)
-    ) {
-      finish(
-        prompt,
-        createRetroResponse(
-          {
-            operationId: `retro_${crypto.randomUUID()}`,
-            workspace,
-            scope: actualScope,
-            prompt,
-            recent: [],
-            uiContext: { dashboard: session.dashboard },
-          },
-          { ...previous.decision, style: wordStyle },
-          "local",
-        ),
-      );
+    const replyChoice = resolveRetroReply(prompt, shortcuts);
+    if (replyChoice) {
+      runShortcut(replyChoice, prompt);
       setInput("");
       return;
     }
@@ -392,6 +355,19 @@ export function Retro() {
   const lastMessage = [...session.messages].reverse().find((message) => message.role === "retro");
   const last = lastMessage?.response;
   const staleLast = last ? !isRetroCurrent(last, workspace, actualScope) : false;
+  const shortcuts = retroShortcuts({
+    empty: session.messages.length === 0,
+    response: last,
+    current:
+      !staleLast &&
+      (!last ||
+        last.decision.kind !== "dashboard_request" ||
+        isRetroUiCurrent(last, session.dashboard)),
+    dismissed: dismissedSuggestion === lastMessage?.id,
+    applied: !!lastMessage && session.dashboard.appliedProposalIds.includes(lastMessage.id),
+    busy,
+    failed: !!pending && !busy,
+  });
   const localChange = (intent: RetroChangeIntent, prompt: string) => {
     if (busy) return;
     guidance.stop();
@@ -446,17 +422,6 @@ export function Retro() {
     guidance.stop();
     setDetail({ id, revision: workspace.revision });
   };
-  const clear = () => {
-    if (!busy) {
-      controller.setMessages([]);
-      setActiveChange(null);
-      setPending(null);
-      guidance.stop();
-    }
-  };
-  const tour = () => {
-    startTour();
-  };
   const undo = () => {
     guidance.stop();
     try {
@@ -469,8 +434,69 @@ export function Retro() {
       setNotice("That action can no longer be undone. Inspect the current records.");
     }
   };
+  const runShortcut = (choice: RetroShortcut, prompt = choice.label) => {
+    if (busy) return;
+    if (choice.kind === "topic") return local(choice.topic, prompt);
+    if (choice.kind === "prompt") return void send(choice.prompt);
+    if (choice.kind === "change_choice") {
+      if (last?.change?.kind === "clarification" && !staleLast)
+        localChange(patchChangeIntent(last.change.intent, choice.choice), prompt);
+      return;
+    }
+    if (choice.kind === "highlight" || choice.kind === "decline") {
+      if (!last || staleLast) return;
+      const current = controller.getSnapshot().session;
+      if (!current) return;
+      controller.setMessages(
+        [
+          ...current.messages,
+          {
+            id: `user_${crypto.randomUUID()}`,
+            role: "user" as const,
+            text: prompt,
+            revision: workspace.revision,
+          },
+        ].slice(-40),
+      );
+      setDismissedSuggestion(lastMessage?.id ?? null);
+      if (choice.kind === "decline") setNotice("Okay. We can keep exploring here.");
+      else {
+        setNotice(null);
+        setExpanded(false);
+        guidance.show(choice.target);
+      }
+      return;
+    }
+    guidance.stop();
+    setActiveChange(null);
+    setNotice(null);
+    const decision =
+      choice.kind === "help"
+        ? { kind: "workspace_request" as const, intent: { action: "help" as const } }
+        : choice.kind === "tour"
+          ? { kind: "tour" as const, tourId: "workspace_intro" as const }
+          : last?.decision.kind === "dashboard_request"
+            ? { ...last.decision, style: choice.style }
+            : null;
+    if (!decision) return;
+    finish(
+      prompt,
+      createRetroResponse(
+        {
+          operationId: `retro_${crypto.randomUUID()}`,
+          workspace,
+          scope: actualScope,
+          prompt,
+          recent: [],
+          uiContext: { dashboard: session.dashboard },
+        },
+        decision,
+        "local",
+      ),
+    );
+  };
   return (
-    <div id="retro-composer" className={styles.retro} data-expanded={expanded}>
+    <div id="retro-composer" className={styles.retro} data-expanded={expanded} data-roomy={roomy}>
       {activeChange?.contextKey === contextKey &&
         activeChange.response.change?.kind === "ready" &&
         createPortal(
@@ -504,33 +530,52 @@ export function Retro() {
           />
         </svg>
       </button>
-      {expanded && (!capabilities?.copilot.available || busy || session.undo) && (
+      {expanded && !touring && (
         <div className={styles.topline}>
-          {!capabilities?.copilot.available && (
+          <span className={styles.meta}>Retro</span>
+          <div className={styles.headerActions}>
+            {!capabilities?.copilot.available && (
+              <button
+                type="button"
+                aria-label="Reconnect Retro"
+                onClick={() => setRuntimeRefresh((value) => value + 1)}
+              >
+                Reconnect
+              </button>
+            )}
+            {session.undo && (
+              <button type="button" onClick={undo}>
+                Undo
+              </button>
+            )}
             <button
               type="button"
-              aria-label="Reconnect Retro"
-              onClick={() => setRuntimeRefresh((value) => value + 1)}
+              className={styles.resizeChat}
+              aria-label={roomy ? "Restore chat size" : "Enlarge chat"}
+              aria-pressed={roomy}
+              onClick={() => setRoomy((value) => !value)}
             >
-              Reconnect
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d={
+                    roomy
+                      ? "M4 10h6V4M20 14h-6v6M10 10 4 4m10 10 6 6"
+                      : "M9 4H4v5M15 20h5v-5M4 4l6 6m10 10-6-6"
+                  }
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </button>
-          )}
-          {busy && (
-            <button type="button" onClick={() => request.current?.abort()}>
-              Cancel turn
-            </button>
-          )}
-          {session.undo && (
-            <button type="button" onClick={undo}>
-              Undo
-            </button>
-          )}
+          </div>
         </div>
       )}
       {expanded && !touring && (
         <div
           ref={messagesBox}
-          className={styles.messages}
+          className={`${styles.messages} rs-scrollbar`}
           role="region"
           aria-label="Retro conversation"
           tabIndex={0}
@@ -539,8 +584,7 @@ export function Retro() {
             <div className={styles.welcome}>
               <span className={styles.meta}>A little help, always close.</span>
               <p>
-                I’m Retro. Ask about your supplied figures, follow their paper trail, or let me show
-                you around.
+                <ReplyText text="I’m Retro. Ask about your supplied figures, follow their paper trail, or let me show you around." />
               </p>
             </div>
           )}
@@ -565,19 +609,21 @@ export function Retro() {
             }
             return (
               <article key={message.id} className={styles.answer}>
-                <span className={styles.meta}>Retro</span>
                 {stale ? (
                   <p className={styles.stale}>
-                    Your records or filters have changed since this answer. Refresh it to see the
-                    current figures.
+                    <ReplyText text="Your records or filters have changed since this answer. Refresh it to see the current figures." />
                   </p>
                 ) : (
                   <>
                     <p>
-                      {content?.intro ??
-                        (response
-                          ? "This answer could not be verified. Ask again for the current figures."
-                          : message.text)}
+                      <ReplyText
+                        text={
+                          content?.intro ??
+                          (response
+                            ? "This answer could not be verified. Ask again for the current figures."
+                            : message.text)
+                        }
+                      />
                     </p>
                     {response?.decision.kind === "dashboard_request" && content && (
                       <DashboardRequestPreview
@@ -614,19 +660,45 @@ export function Retro() {
                       </div>
                     )}
                     {response?.change?.kind === "clarification" && !stale && (
-                      <ul className={styles.missing}>
-                        {response.change.missing.map((text) => (
-                          <li key={text}>{text}</li>
-                        ))}
-                      </ul>
+                      <>
+                        <ul className={styles.missing}>
+                          {response.change.missing.map((text) => (
+                            <li key={text}>
+                              <ReplyText text={text} />
+                            </li>
+                          ))}
+                        </ul>
+                        {response.change.choices.length > 4 && (
+                          <details className={styles.sourceDisclosure}>
+                            <summary>More choices</summary>
+                            <div className={styles.sources}>
+                              {response.change.choices.slice(4).map((choice) => (
+                                <button
+                                  type="button"
+                                  key={JSON.stringify(choice)}
+                                  disabled={busy || message.id !== lastMessage?.id}
+                                  onClick={() =>
+                                    runShortcut({
+                                      kind: "change_choice",
+                                      label: choice.label,
+                                      choice,
+                                    })
+                                  }
+                                >
+                                  {choice.label}
+                                </button>
+                              ))}
+                            </div>
+                          </details>
+                        )}
+                      </>
                     )}
                     {response?.change?.kind === "ready" &&
                       !stale &&
                       (activeChange?.response.change?.kind !== "ready" ||
                         activeChange.response.change.command.id !== response.change.command.id) && (
                         <p className={styles.caption}>
-                          This saved preview is read-only. Prepare a fresh request to edit and
-                          confirm.
+                          <ReplyText text="This saved preview is read-only. Prepare a fresh request to edit and confirm." />
                         </p>
                       )}
                     {content && content.facts.length > 0 && (
@@ -644,30 +716,34 @@ export function Retro() {
                         ))}
                       </div>
                     )}
-                    {content?.closing && <p className={styles.caption}>{content.closing}</p>}
+                    {content?.closing && (
+                      <p className={styles.caption}>
+                        <ReplyText text={content.closing} />
+                      </p>
+                    )}
                     {response && content && response.sources.length > 0 && (
-                      <div className={styles.sources}>
-                        {response.sources.slice(0, 5).map((item) => (
-                          <button
-                            key={JSON.stringify(item)}
-                            type="button"
-                            onClick={() => {
-                              guidance.stop();
-                              setSource(item);
-                            }}
-                          >
-                            Original ·{" "}
-                            {workspace.documents.find((doc) => doc.id === item.documentId)?.name ??
-                              "Source"}{" "}
-                            · p{item.page}
-                          </button>
-                        ))}
-                        {response.sources.length > 5 && (
-                          <span className={styles.caption}>
-                            Open a figure to inspect all its sources.
-                          </span>
-                        )}
-                      </div>
+                      <details className={styles.sourceDisclosure}>
+                        <summary>
+                          Show sources <span>{response.sources.length}</span>
+                        </summary>
+                        <div className={styles.sources}>
+                          {response.sources.map((item) => (
+                            <button
+                              key={JSON.stringify(item)}
+                              type="button"
+                              onClick={() => {
+                                guidance.stop();
+                                setSource(item);
+                              }}
+                            >
+                              Original ·{" "}
+                              {workspace.documents.find((doc) => doc.id === item.documentId)
+                                ?.name ?? "Source"}{" "}
+                              · p{item.page}
+                            </button>
+                          ))}
+                        </div>
+                      </details>
                     )}
                   </>
                 )}
@@ -678,19 +754,14 @@ export function Retro() {
             <>
               <div className={styles.user}>{pending.prompt}</div>
               <p className={`${styles.stage} ${busy ? styles.working : ""}`} role="status">
-                {pending.text}
+                <ReplyText text={pending.text} />
               </p>
             </>
           )}
           {notice && (
             <p role="status" className={styles.stage}>
-              {notice}
+              <ReplyText text={notice} />
             </p>
-          )}
-          {session.messages.length > 0 && (
-            <button type="button" className={styles.clear} onClick={clear} disabled={busy}>
-              Clear conversation
-            </button>
           )}
         </div>
       )}
@@ -702,128 +773,18 @@ export function Retro() {
         }}
         disabled={busy}
         shortcuts={
-          !expanded || touring ? undefined : (
-            <>
-              <button type="button" disabled={busy} onClick={() => local("summary")}>
-                Summarize this period
-              </button>
-              <button type="button" disabled={busy} onClick={() => local("profit")}>
-                Explain this dashboard
-              </button>
-              <button type="button" disabled={busy} onClick={tour}>
-                Show me around
-              </button>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() =>
-                  finish(
-                    "What can Retro do?",
-                    createRetroResponse(
-                      {
-                        operationId: "retro_local_help",
-                        workspace,
-                        scope: actualScope,
-                        prompt: "Local capability help",
-                        recent: [],
-                        uiContext: { dashboard: session.dashboard },
-                      },
-                      { kind: "workspace_request", intent: { action: "help" } },
-                      "local",
-                    ),
-                  )
-                }
-              >
-                What can Retro do?
-              </button>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() =>
-                  localChange(
-                    { family: "invoices", operation: "create", query: null, fields: [] },
-                    "Create an invoice",
-                  )
-                }
-              >
-                Create invoice
-              </button>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() =>
-                  localChange(
-                    { family: "costs", operation: "create", query: null, fields: [] },
-                    "Add a cost",
-                  )
-                }
-              >
-                Add cost
-              </button>
-              {last?.change?.kind === "clarification" &&
-                !staleLast &&
-                last.change.choices.map((choice) => (
-                  <button
-                    type="button"
-                    key={JSON.stringify(choice)}
-                    disabled={busy}
-                    onClick={() =>
-                      last.change?.kind === "clarification" &&
-                      localChange(patchChangeIntent(last.change.intent, choice), choice.label)
-                    }
-                  >
-                    {choice.label}
-                  </button>
-                ))}
-              {last?.decision.kind === "clarification" &&
-                !staleLast &&
-                last.decision.choices.map((topic) => (
-                  <button key={topic} type="button" disabled={busy} onClick={() => local(topic)}>
-                    {TOPIC_LABELS[topic] ?? `Explain ${topic}`}
-                  </button>
-                ))}
-              {last?.decision.kind === "explanation" && !staleLast && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      last.decision.kind === "explanation" &&
-                      last.decision.factIds[0] &&
-                      openFact(last.decision.factIds[0])
-                    }
-                  >
-                    Show sources
-                  </button>
-                  {last.decision.target && dismissedSuggestion !== lastMessage?.id && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (last.decision.kind === "explanation" && last.decision.target) {
-                            setExpanded(false);
-                            guidance.show(last.decision.target);
-                          }
-                        }}
-                      >
-                        Yes, show on dashboard
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setDismissedSuggestion(lastMessage?.id ?? null)}
-                      >
-                        No, thanks
-                      </button>
-                    </>
-                  )}
-                </>
-              )}
-              {staleLast && (
-                <button type="button" disabled={busy} onClick={() => local("summary")}>
-                  Refresh locally
+          !expanded || touring || shortcuts.length === 0
+            ? undefined
+            : shortcuts.map((choice) => (
+                <button
+                  type="button"
+                  key={choice.label}
+                  disabled={busy}
+                  onClick={() => runShortcut(choice)}
+                >
+                  {choice.label}
                 </button>
-              )}
-            </>
-          )
+              ))
         }
       />
       {detail &&

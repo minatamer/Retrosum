@@ -13,7 +13,7 @@ export function fakeWorkspaceIntent(prompt: string): RetroWorkspaceIntent | null
   const text = prompt.trim().toLowerCase();
   const parse = (intent: RetroWorkspaceIntent) => retroWorkspaceIntentSchema.parse(intent);
   if (/\bexport\b/u.test(text)) return null;
-  if (/what can you do|help me use|capabilities|^help[?.!]*$/u.test(text))
+  if (/what can (you|retro) do|help me use|capabilities|^help[?.!]*$/u.test(text))
     return parse({ action: "help" });
   if (/clear.*(conversation|chat)/u.test(text)) return parse({ action: "clear_conversation" });
   if (/reset.*(workspace|demo)|start (fresh|over)/u.test(text))

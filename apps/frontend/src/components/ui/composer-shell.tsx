@@ -20,8 +20,8 @@ export function ComposerShell({
 }) {
   return (
     <div className="rs-composer-wrap">
-      {children && <div className="rs-composer-messages">{children}</div>}
-      {shortcuts && <div className="rs-chat-shortcuts">{shortcuts}</div>}
+      {children && <div className="rs-composer-messages rs-scrollbar">{children}</div>}
+      {shortcuts && <div className="rs-chat-shortcuts rs-scrollbar">{shortcuts}</div>}
       <form
         className="rs-composer-form rs-glass"
         onSubmit={(event) => {

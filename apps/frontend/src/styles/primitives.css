@@ -36,6 +36,50 @@
   text-align: inherit;
   cursor: pointer;
 }
+.rs-scrollbar {
+  --rs-scrollbar-thumb: rgb(190 214 193 / 28%);
+  --rs-scrollbar-thumb-hover: rgb(190 214 193 / 55%);
+  scrollbar-width: thin;
+  scrollbar-color: var(--rs-scrollbar-thumb) transparent;
+}
+@supports selector(::-webkit-scrollbar) {
+  .rs-scrollbar {
+    /* Non-auto standard values override the custom 4 px scrollbar. */
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+  .rs-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .rs-scrollbar::-webkit-scrollbar-track,
+  .rs-scrollbar::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  .rs-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--rs-scrollbar-thumb);
+    border-radius: 100px;
+  }
+  .rs-scrollbar:hover::-webkit-scrollbar-thumb,
+  .rs-scrollbar:focus-within::-webkit-scrollbar-thumb,
+  .rs-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--rs-scrollbar-thumb-hover);
+  }
+  .rs-scrollbar::-webkit-scrollbar-thumb:active {
+    background: var(--rs-orange);
+  }
+  .rs-scrollbar::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+@supports not selector(::-webkit-scrollbar) {
+  .rs-scrollbar:hover,
+  .rs-scrollbar:focus-within {
+    scrollbar-color: var(--rs-scrollbar-thumb-hover) transparent;
+  }
+}
 .rs-button {
   display: inline-flex;
   align-items: center;
@@ -261,7 +305,6 @@
   max-height: min(38dvh, 18rem);
   overflow-y: auto;
   padding: 0.6rem 0.3rem 1rem;
-  scrollbar-width: thin;
 }
 .rs-chat-user {
   justify-self: end;

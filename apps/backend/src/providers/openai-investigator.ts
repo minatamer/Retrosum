@@ -69,6 +69,7 @@ export function buildInvestigationRequest(
     throw new RangeError("context_too_large");
   return {
     model: MODEL,
+    service_tier: "default",
     store: false,
     background: false,
     reasoning: { effort: "low" },

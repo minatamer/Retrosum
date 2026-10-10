@@ -74,6 +74,7 @@ export function createOpenAiProvider(key: string, fetcher: typeof fetch = fetch)
 export function buildResponsesRequest(metadata: ExtractionRequest, bytes: Uint8Array) {
   return {
     model: MODEL,
+    service_tier: "default",
     store: false,
     background: false,
     reasoning: { effort: "low" },

@@ -242,6 +242,7 @@ describe("bounded provider and request admission", () => {
     const body = buildResponsesRequest(metadata(cases[0].doc), cases[0].bytes);
     expect(body).toMatchObject({
       model: "gpt-6.1-sol",
+      service_tier: "default",
       store: false,
       background: false,
       reasoning: { effort: "low" },

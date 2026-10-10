@@ -14,6 +14,7 @@ import { buildCustomChart, isRetroCurrent, isRetroUiCurrent } from "@retrosum/mo
 import { useSession } from "../session/session-provider";
 import { StyleFigure } from "../dashboard/widget-chart";
 import styles from "./dashboard-request.module.css";
+import { ReplyText } from "./reply-text";
 
 export function DashboardRequestPreview({
   decision,
@@ -241,11 +242,15 @@ export function DashboardRequestPreview({
             </label>
           )}
           <p>
-            {changing
-              ? "Choose an item, then confirm the change."
-              : kpi
-                ? `Add a ${decision.metric.replaceAll("_", " ")} KPI with its source trail.`
-                : `${range === "history" ? "All supplied history" : "Current filters"} · ${groupBy} groups · source-linked figures.`}
+            <ReplyText
+              text={
+                changing
+                  ? "Choose an item, then confirm the change."
+                  : kpi
+                    ? `Add a ${decision.metric.replaceAll("_", " ")} KPI with its source trail.`
+                    : `${range === "history" ? "All supplied history" : "Current filters"} · ${groupBy} groups · source-linked figures.`
+              }
+            />
           </p>
           <button className={styles.apply} type="button" onClick={apply}>
             {decision.action === "remove"
@@ -257,8 +262,16 @@ export function DashboardRequestPreview({
           </button>
         </>
       )}
-      {notice && <p role="status">{notice}</p>}
-      {applied && !notice && <p>This proposal is on your dashboard.</p>}
+      {notice && (
+        <p role="status">
+          <ReplyText text={notice} />
+        </p>
+      )}
+      {applied && !notice && (
+        <p>
+          <ReplyText text="This proposal is on your dashboard." />
+        </p>
+      )}
       {applied &&
         session.dashboardUndo &&
         !session.dashboardUndo.appliedProposalIds.includes(proposalId) && (

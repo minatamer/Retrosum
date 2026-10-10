@@ -1,9 +1,10 @@
 .retro {
+  --conversation-toggle-row: 18px;
   position: relative;
   isolation: isolate;
   min-width: 0;
   color: var(--rs-ivory);
-  padding-top: 44px;
+  padding-top: var(--conversation-toggle-row);
 }
 .retro[data-expanded="false"] {
   border: 1px solid var(--rs-glass-border);
@@ -24,11 +25,12 @@
 .conversationToggle {
   position: absolute;
   z-index: 1;
-  top: 0;
+  /* The full touch target extends upward, keeping the input unobstructed. */
+  top: calc(var(--conversation-toggle-row) - 44px);
   left: 50%;
   transform: translateX(-50%);
   display: grid;
-  place-items: center;
+  place-items: end center;
   width: 44px;
   height: 44px;
   padding: 0;
@@ -55,8 +57,6 @@
   flex-wrap: nowrap;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
-  scrollbar-width: thin;
-  scrollbar-color: rgb(190 214 193 / 45%) transparent;
   max-width: 100%;
 }
 .retro :global(.rs-chat-shortcuts button) {
@@ -65,13 +65,67 @@
 .topline {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 0.6rem;
-  padding: 0.3rem 0.45rem 0.55rem;
+  padding: 0 1.15rem;
   font-size: 0.82rem;
 }
-.topline button,
-.clear {
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.topline .resizeChat {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  padding: 0;
+}
+.retro[data-expanded="true"][data-roomy="true"] {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.retro[data-roomy="true"] .topline,
+.retro[data-roomy="true"] :global(.rs-composer-wrap) {
+  flex-shrink: 0;
+}
+.retro[data-roomy="true"] .messages {
+  flex: 1;
+  max-height: none;
+}
+.sourceDisclosure {
+  margin-top: 0.65rem;
+}
+.sourceDisclosure summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  min-height: 44px;
+  cursor: pointer;
+  color: #d1ddcf;
+  font-size: 0.78rem;
+  list-style: none;
+}
+.sourceDisclosure summary::before {
+  content: "›";
+  color: var(--rs-orange);
+  font-size: 1.2rem;
+  transition: transform 180ms ease;
+}
+.sourceDisclosure[open] summary::before {
+  transform: rotate(90deg);
+}
+.sourceDisclosure summary span {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+.sourceDisclosure[open] .sources {
+  animation: rs-message-in 260ms var(--rs-ease) both;
+}
+.topline button {
   border: 0;
   background: transparent;
   color: #d1ddcf;
@@ -81,8 +135,7 @@
   padding: 0.25rem 0.55rem;
   border-radius: 0.7rem;
 }
-.topline button:hover,
-.clear:hover {
+.topline button:hover {
   background: rgb(213 232 205 / 10%);
   color: white;
 }
@@ -93,17 +146,8 @@
   overscroll-behavior: contain;
   max-height: max(0px, min(28dvh, 18rem, calc(var(--rs-visual-height, 100dvh) - 220px)));
   min-height: 0;
-  border: 1px solid var(--rs-glass-border);
-  border-radius: 1.4rem;
   padding: 1rem 1.15rem;
   margin-bottom: 0.7rem;
-  background: linear-gradient(145deg, rgb(28 62 50 / 85%), rgb(11 33 27 / 94%));
-  backdrop-filter: blur(18px) saturate(175%) contrast(108%);
-  box-shadow:
-    0 18px 60px rgb(0 12 7 / 28%),
-    inset 0 1px 0 rgb(245 241 227 / 8%);
-  scrollbar-width: thin;
-  scrollbar-color: rgb(190 214 193 / 45%) transparent;
   animation: rs-message-in 260ms var(--rs-ease) both;
 }
 .welcome p {
@@ -124,7 +168,7 @@
   max-width: 88%;
   padding: 0.7rem 1rem;
   border-radius: 1.15rem 1.15rem 0.35rem 1.15rem;
-  background: #345344;
+  background: linear-gradient(145deg, rgb(28 62 50 / 85%), rgb(11 33 27 / 94%));
   border: 1px solid var(--rs-glass-border);
   line-height: 1.55;
   overflow-wrap: anywhere;
@@ -140,6 +184,27 @@
 .answer p {
   margin: 0.4rem 0 0.8rem;
   overflow-wrap: anywhere;
+}
+.replyText {
+  display: grid;
+  min-width: 0;
+}
+.replyText > span[aria-hidden="true"] {
+  grid-area: 1 / 1;
+}
+.replyMeasure {
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+.replyAccessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .facts {
   display: grid;
@@ -221,18 +286,20 @@
   line-height: 1.6;
   margin: 0.25rem 0;
 }
+.working {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+}
 .working::before {
   content: "";
   display: inline-block;
   width: 7px;
   height: 7px;
+  flex: 0 0 7px;
   border-radius: 50%;
   background: var(--rs-orange);
-  margin-right: 0.65rem;
   animation: working 1200ms ease-in-out infinite alternate;
-}
-.clear {
-  justify-self: start;
 }
 .outline {
   position: fixed;
@@ -275,7 +342,6 @@
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
 }
 .tour > .actions {
   flex-shrink: 0;

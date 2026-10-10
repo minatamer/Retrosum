@@ -21,20 +21,8 @@ import { DocumentReview } from "../documents/document-review";
 import { PaperDialog } from "../../components/ui/paper-dialog";
 import { navigateWorkspace, openWorkspacePanel } from "../workspace/navigation";
 import styles from "./workspace-request.module.css";
-
-const examples = [
-  ["Understand figures", "Summarize this period"],
-  ["Follow sources", "Open PDF HS-101"],
-  ["Review held figures", "Review held figures"],
-  ["Change filters", "Change period"],
-  ["Create records", "Create invoice"],
-  ["Record payments", "Record payment"],
-  ["Build charts", "Chart quarterly income"],
-  ["Add a KPI", "Add cash net KPI"],
-  ["Set a target", "Set income target"],
-  ["Profile & currency", "Open settings"],
-  ["Undo", "Undo"],
-] as const;
+import { ReplyText } from "./reply-text";
+import { RETRO_HELP_EXAMPLES } from "./shortcuts";
 
 export function WorkspaceRequestPreview({
   decision,
@@ -59,7 +47,11 @@ export function WorkspaceRequestPreview({
   const intent = decision.intent;
   // Legacy messages remain restorable, but no longer expose workspace export controls.
   if (intent.action === "panel" && intent.panel === "export")
-    return <p>Original PDFs can be downloaded from Documents.</p>;
+    return (
+      <p>
+        <ReplyText text="Original PDFs can be downloaded from Documents." />
+      </p>
+    );
   const current = (layout = false) => {
     const snapshot = controller.getSnapshot().session;
     if (!snapshot || !isRetroCurrent(response, snapshot.workspace, snapshot.filters))
@@ -119,15 +111,24 @@ export function WorkspaceRequestPreview({
       {intent.action === "help" && (
         <>
           <div className={styles.choices}>
-            {examples.map(([label, prompt]) => (
-              <button type="button" key={label} onClick={() => onPrompt(prompt)}>
-                {label} ↗
+            {RETRO_HELP_EXAMPLES.slice(0, 4).map((prompt) => (
+              <button type="button" key={prompt} onClick={() => onPrompt(prompt)}>
+                {prompt}
               </button>
             ))}
           </div>
+          <details>
+            <summary>More things Retro can help with</summary>
+            <div className={styles.choices}>
+              {RETRO_HELP_EXAMPLES.slice(4).map((prompt) => (
+                <button type="button" key={prompt} onClick={() => onPrompt(prompt)}>
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          </details>
           <p>
-            Every change has a review step. Unknown history stays unknown; transfers, bank
-            connections, emails and investment or tax advice are outside this demo.
+            <ReplyText text="Every change has a review step. Unknown history stays unknown; transfers, bank connections, emails and investment or tax advice are outside this demo." />
           </p>
         </>
       )}
@@ -135,12 +136,18 @@ export function WorkspaceRequestPreview({
       {(intent.action === "source" || intent.action === "review") && (
         <>
           <p>
-            {intent.action === "source"
-              ? "Choose an original. The viewer includes its PDF download."
-              : "Choose the document to review. Check the original before confirming any figures or duplicate decision."}
+            <ReplyText
+              text={
+                intent.action === "source"
+                  ? "Choose an original. The viewer includes its PDF download."
+                  : "Choose the document to review. Check the original before confirming any figures or duplicate decision."
+              }
+            />
           </p>
           {documents.length === 0 && (
-            <p>No matching document is available. Open Documents to inspect the collection.</p>
+            <p>
+              <ReplyText text="No matching document is available. Open Documents to inspect the collection." />
+            </p>
           )}
           <div className={styles.documents}>
             {documents.map((doc) => (
@@ -215,11 +222,14 @@ export function WorkspaceRequestPreview({
         <>
           {intent.panel === "settings" && (
             <p>
-              Edit your profile and display currency. Choose EUR to load the latest exchange rate
-              automatically.
+              <ReplyText text="Edit your profile and display currency. Choose EUR to load the latest exchange rate automatically." />
             </p>
           )}
-          {intent.panel === "reset" && <p>Review what will be cleared before starting fresh.</p>}
+          {intent.panel === "reset" && (
+            <p>
+              <ReplyText text="Review what will be cleared before starting fresh." />
+            </p>
+          )}
           <button
             type="button"
             onClick={() =>
@@ -257,7 +267,9 @@ export function WorkspaceRequestPreview({
       )}
       {intent.action === "undo" && (
         <>
-          <p>Record changes and dashboard layout have independent latest Undo.</p>
+          <p>
+            <ReplyText text="Record changes and dashboard layout have independent latest Undo." />
+          </p>
           {(intent.which === null || intent.which === "financial") && (
             <button
               type="button"
@@ -310,8 +322,7 @@ export function WorkspaceRequestPreview({
             />
           </label>
           <p>
-            A manual target for the current dashboard filters; its progress uses exact source-linked
-            income.
+            <ReplyText text="A manual target for the current dashboard filters; its progress uses exact source-linked income." />
           </p>
           <button
             type="submit"
@@ -343,7 +354,11 @@ export function WorkspaceRequestPreview({
           Review clear conversation
         </button>
       )}
-      {notice && <p role="status">{notice}</p>}
+      {notice && (
+        <p role="status">
+          <ReplyText text={notice} />
+        </p>
+      )}
       {source && <OriginalViewer target={source} onClose={() => setSource(null)} />}
       {review && !source && (
         <DocumentReview
@@ -469,8 +484,14 @@ function FilterRequest({
           </select>
         </label>
       </div>
-      <p>Review the dates and scope. Figures recalculate from the supplied records.</p>
-      {error && <p role="alert">{error}</p>}
+      <p>
+        <ReplyText text="Review the dates and scope. Figures recalculate from the supplied records." />
+      </p>
+      {error && (
+        <p role="alert">
+          <ReplyText text={error} />
+        </p>
+      )}
       <button type="submit">Apply filters →</button>
     </form>
   );

@@ -11,7 +11,7 @@ Updated **10 October 2026**. This page summarizes current completion; the [bluep
 
 ## Owner-confirmed OpenAI setup
 
-Document selection now exposes **How processing works** as an optional details dialog. A concise OpenAI disclosure accompanies the explicit Process action; per-document admission/challenge runs inline without repeated extraction-review modals. Retro retains its per-turn review and all individual one-use grants remain required.
+Document selection now exposes **How processing works** as an optional details dialog. A concise OpenAI disclosure accompanies the explicit Process action; per-document admission/challenge runs inline without repeated extraction-review modals. Routine Turnstile checks stay visually quiet; show the widget only when interaction is required and an alert on failure. Retro retains its per-turn review and all individual one-use grants remain required. Current document concurrency is one; a two-document pool needs coordinated admission/revision handling and measured account/resource capacity before implementation.
 
 The owner confirms the configured OpenAI spending limit is **USD 5** and is already set. Record this as owner-confirmed setup, not a pending request to configure it. Its dashboard scope/period and enforcement have not been independently inspected; no prepaid balance or guaranteed global application cap is inferred. The USD 2.50 process-local admission/evaluation allowance remains a separate application control.
 

@@ -39,11 +39,13 @@
   width: min(28rem, 100%);
   display: grid;
   justify-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
   color: var(--rs-forest);
   font-size: 0.85rem;
   line-height: 1.6;
+}
+.inlineReview[data-attention="true"] {
+  gap: 0.75rem;
+  padding: 0.75rem;
 }
 .inlineReview p {
   margin: 0;

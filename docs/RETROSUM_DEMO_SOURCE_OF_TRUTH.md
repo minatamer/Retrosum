@@ -363,7 +363,7 @@ Do not keep two independently mounted workspaces for desktop and phone. Adapt on
 
 ### 6.3 Document collection
 
-**Owner processing-disclosure feedback, 10 October 2026:** Keep the full handling explanation behind a **How processing works** dialog CTA beside Process on document selection. Show the concise OpenAI disclosure there before a live batch; explicitly choosing Process approves only those selected PDFs and their business context. Do not automatically open an extraction-review modal for every PDF. Admission and the managed challenge appear within the processing page, retaining individual action-bound one-use grants and normal cancellation/expiry. Opening the details never grants consent or starts admission. Retro retains its separate per-turn review.
+**Owner processing-disclosure feedback, 10 October 2026:** Keep the full handling explanation behind a **How processing works** dialog CTA beside Process on document selection. Show the concise OpenAI disclosure there before a live batch; explicitly choosing Process approves only those selected PDFs and their business context. Do not automatically open an extraction-review modal for every PDF. Per-document admission and the managed challenge run within the processing page, retaining individual action-bound one-use grants and normal cancellation/expiry. Turnstile uses `interaction-only` appearance: routine checks add no visible widget, status copy or padding; show the challenge when interaction is required and an actionable alert on failure. Opening the details never grants consent or starts admission. Retro retains its separate per-turn review.
 
 | Element | Specification |
 | --- | --- |
@@ -1571,6 +1571,8 @@ Failures before dispatch make zero provider calls. Failures after dispatch remai
 | Cloud Run minimum / maximum | 0 / 1 for each service, measured before widening |
 
 These are conservative proposals for controlled release, not copied spend guarantees. Tune through measured owner walkthroughs and rejection telemetry. The longer hourly source window can be bounded in-memory with expiry; browser refresh cannot reset the active server session counter, but a new session/IP or process restart limits enforcement.
+
+**Owner concurrency assessment, 10 October 2026:** Actual code currently permits one document operation at a time: extraction intake/reservation and the paid dispatch ledger each enforce a single lease, while browser processing and revision-bound graph merging are sequential. A two-document pool is a reasonable first measurement target, not an implemented or verified capacity. It requires coordinated bounded backend leases, per-operation cancellation/atomic reservations, concurrent authorization ownership and safe serial result commits against the latest workspace revision. Preserve the completion counter, per-document grants, six/minute challenge-admission attempts and twenty/hour paid starts; check actual OpenAI model/project request/token limits and measure memory/latency before widening. No paid parallel stress test or capacity change is included. [OpenAI rate limits](https://developers.openai.com/api/docs/guides/rate-limits).
 
 ### 19.5 Stateless-quota limitation
 

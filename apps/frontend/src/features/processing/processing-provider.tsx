@@ -40,6 +40,7 @@ type Turnstile = {
       action: string;
       cData: string;
       size: "compact";
+      appearance: "interaction-only";
       theme: "light";
       language: "en";
       retry: "never";
@@ -49,6 +50,8 @@ type Turnstile = {
       callback(token: string): void;
       "error-callback"(): void;
       "expired-callback"(): void;
+      "before-interactive-callback"(): void;
+      "after-interactive-callback"(): void;
     },
   ): string;
   remove(id: string): void;
@@ -177,6 +180,7 @@ function LiveReview({ pending }: { pending: Pending }) {
   const inline = pending.presentation === "document-selection";
   const [accepted, setAccepted] = useState(false),
     [busy, setBusy] = useState(inline),
+    [interactive, setInteractive] = useState(false),
     [error, setError] = useState<string | null>(null);
   const accepting = useRef(false),
     submitting = useRef(false);
@@ -238,6 +242,7 @@ function LiveReview({ pending }: { pending: Pending }) {
         <Challenge
           pending={pending}
           verified={verified}
+          interaction={setInteractive}
           failed={() =>
             setError(
               inline
@@ -247,15 +252,16 @@ function LiveReview({ pending }: { pending: Pending }) {
           }
         />
       )}
-      {!error && (busy || inline) && (
-        <p role="status">{busy ? "Checking admission…" : "Verifying this document…"}</p>
+      {!error && !inline && busy && <p role="status">Checking admission…</p>}
+      {!error && inline && interactive && (
+        <p role="status">Complete the security check to continue.</p>
       )}
       {error && <p role="alert">{error}</p>}
     </>
   );
   if (inline)
     return (
-      <div className={styles.inlineReview} aria-busy={busy}>
+      <div className={styles.inlineReview} aria-busy={busy} data-attention={interactive || !!error}>
         {verification}
       </div>
     );
@@ -299,17 +305,19 @@ function Challenge({
   pending,
   verified,
   failed,
+  interaction,
 }: {
   pending: Pending;
   verified(token: string): Promise<void>;
   failed(): void;
+  interaction(required: boolean): void;
 }) {
   const element = useRef<HTMLDivElement>(null),
     [loaded, setLoaded] = useState(false);
-  const callbacks = useRef({ verified, failed });
+  const callbacks = useRef({ verified, failed, interaction });
   useEffect(() => {
-    callbacks.current = { verified, failed };
-  }, [verified, failed]);
+    callbacks.current = { verified, failed, interaction };
+  }, [verified, failed, interaction]);
   useEffect(() => {
     if (!loaded || !element.current || !window.turnstile || pending.signal.aborted) return;
     const api = window.turnstile;
@@ -320,6 +328,7 @@ function Challenge({
         action: `retrosum_${pending.identity.action}`,
         cData: pending.identity.inputHash,
         size: "compact",
+        appearance: "interaction-only",
         theme: "light",
         language: "en",
         retry: "never",
@@ -331,6 +340,8 @@ function Challenge({
         },
         "error-callback": () => callbacks.current.failed(),
         "expired-callback": () => callbacks.current.failed(),
+        "before-interactive-callback": () => callbacks.current.interaction(true),
+        "after-interactive-callback": () => callbacks.current.interaction(false),
       });
     } catch {
       callbacks.current.failed();

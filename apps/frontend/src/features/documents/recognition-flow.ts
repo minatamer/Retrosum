@@ -2,6 +2,9 @@ import {
   documentSchema,
   extractionRequestSchema,
   MAX_TOTAL_BYTES,
+  MAX_CONCURRENT_OPERATIONS,
+  PAID_ATTEMPTS_PER_MINUTE,
+  type ExtractionRequest,
   type SourceDocument,
   type OperationToken,
   type SampleAsset,
@@ -98,7 +101,7 @@ export async function prepareUploads(
   checkEnvelope(items.map((item) => item.doc));
   return items;
 }
-const pause = (signal: AbortSignal) =>
+const pause = (signal: AbortSignal, milliseconds = 400) =>
   new Promise<void>((resolve, reject) => {
     const abort = () => {
       clearTimeout(timer);
@@ -108,7 +111,7 @@ const pause = (signal: AbortSignal) =>
     const timer = setTimeout(() => {
       signal.removeEventListener("abort", abort);
       resolve();
-    }, 400);
+    }, milliseconds);
     signal.addEventListener("abort", abort, { once: true });
     if (signal.aborted) abort();
   });
@@ -142,34 +145,86 @@ export async function processDocuments(
         });
     throw error;
   }
-  for (const [n, item] of items.entries()) {
+  const abort = new AbortController();
+  const untrack = controller.trackEffect(abort);
+  const batchSignal = AbortSignal.any([signal, abort.signal]);
+  const completions = items.map(() => {
+    let resolve!: () => void;
+    const done = new Promise<void>((finish) => {
+      resolve = finish;
+    });
+    return { done, resolve };
+  });
+  // Payment matching and duplicate review depend on earlier sources. Keep input-order
+  // commits while two requests overlap; each worker holds at most one decoded result.
+  const priorCommits = items.map((_, n) =>
+    Promise.all(completions.slice(0, n).map((completion) => completion.done)),
+  );
+  // Only this batch advances its shared token. Unrelated edits/reset still invalidate it.
+  const checkCurrent = () => {
+    batchSignal.throwIfAborted();
     if (!controller.isCurrent(token))
       throw new RangeError(
         "The workspace changed during processing. Completed sources are preserved.",
       );
-    if (signal.aborted) {
-      for (const pending of items.slice(n))
-        token = updateDocument(controller, token, pending.doc.id, {
-          state: "cancelled",
-          disposition: "held",
-          reviewNotes: ["Cancelled before submission."],
-        });
-      progress("Processing stopped. Completed sources are preserved.");
-      throw new RangeError("Processing cancelled.");
-    }
-    token = updateDocument(controller, token, item.doc.id, { state: "reading" });
-    const session = controller.getSnapshot().session!;
-    const docs = session.workspace.documents;
+  };
+  let admission = Promise.resolve();
+  const admissionTimes: number[] = [];
+  const admit = (metadata: ExtractionRequest) => {
+    // Keep a single challenge owner while already-admitted PDF requests overlap.
+    const next = admission.then(async () => {
+      checkCurrent();
+      const inputHash = await hashRequest(metadata);
+      // Leave one of the six attempts for initial session creation. This is local pacing,
+      // not an exemption from the server's aggregate source limit (including other tabs).
+      while (true) {
+        checkCurrent();
+        const now = Date.now();
+        while (admissionTimes.length && admissionTimes[0]! <= now - 60_000) admissionTimes.shift();
+        if (admissionTimes.length < PAID_ATTEMPTS_PER_MINUTE - 1) break;
+        progress("Preparing the next documents…");
+        await pause(batchSignal, admissionTimes[0]! + 60_001 - now);
+      }
+      try {
+        return await authorize?.(
+          {
+            action: "extract",
+            workspaceId: metadata.workspaceId,
+            operationId: metadata.operationId,
+            inputHash,
+            documentHash: metadata.document.sha256,
+            retry: metadata.retry,
+          },
+          capabilities,
+          batchSignal,
+        );
+      } finally {
+        // Grant verification can happen long after the widget starts. Count from its
+        // completion so a slow challenge cannot prematurely reopen the rate window.
+        admissionTimes.push(Date.now());
+      }
+    });
+    admission = next.then(
+      () => undefined,
+      () => undefined,
+    );
+    return next;
+  };
+  const process = async (item: IntakeItem, n: number) => {
     try {
+      checkCurrent();
+      token = updateDocument(controller, token, item.doc.id, { state: "reading" });
+      const session = controller.getSnapshot().session!;
+      const docs = session.workspace.documents;
       progress(`Reading · ${n + 1} of ${items.length} · ${item.doc.name}`);
-      if (capabilities.mode === "fake") await pause(signal);
-      if (!controller.isCurrent(token))
-        throw new RangeError("The workspace changed before submission.");
+      if (capabilities.mode === "fake") await pause(batchSignal);
+      checkCurrent();
       const metadata = extractionRequestSchema.parse({
         operationId: crypto.randomUUID(),
         workspaceId: token.workspaceId,
-        // Bind the revision that the submission marker will create after consent.
-        revision: token.inputRevision + 1,
+        // Exact input snapshot bound to the grant. Other batch documents may advance
+        // the workspace while this request is running; results merge into the latest graph.
+        revision: token.inputRevision,
         retry,
         business: session.workspace.business,
         asOf: session.workspace.asOf,
@@ -180,66 +235,74 @@ export async function processDocuments(
           bytes: docs.reduce((sum, doc) => sum + doc.byteLength, 0),
         },
       });
-      const grant =
-        capabilities.mode === "live"
-          ? await authorize?.(
-              {
-                action: "extract",
-                workspaceId: metadata.workspaceId,
-                operationId: metadata.operationId,
-                inputHash: await hashRequest(metadata),
-                documentHash: metadata.document.sha256,
-                retry: metadata.retry,
-              },
-              capabilities,
-              signal,
-            )
-          : undefined;
+      const grant = capabilities.mode === "live" ? await admit(metadata) : undefined;
       if (capabilities.mode === "live" && !grant)
         throw new RangeError(
           "Live processing requires disclosure and admission. No PDF was submitted.",
         );
-      if (!controller.isCurrent(token))
-        throw new RangeError("The workspace changed before submission.");
-      const result = await extractOriginal(metadata, item.blob, signal, grant, () => {
+      checkCurrent();
+      const result = await extractOriginal(metadata, item.blob, batchSignal, grant, () => {
+        checkCurrent();
         token = updateDocument(controller, token, item.doc.id, { recognitionAttempted: true });
       });
-      if (!controller.isCurrent(token))
-        throw new RangeError(
-          "The workspace changed. This result was discarded without automatic retry.",
-        );
+      checkCurrent();
       token = updateDocument(controller, token, item.doc.id, { state: "validating" });
       progress(`Checking source figures · ${item.doc.name}`);
-      if (capabilities.mode === "fake") await pause(signal);
-      if (!controller.isCurrent(token))
-        throw new RangeError("The workspace changed before validation finished.");
+      if (capabilities.mode === "fake") await pause(batchSignal);
+      await priorCommits[n];
+      checkCurrent();
       const current = controller.getSnapshot().session!.workspace;
       controller.replaceGraph(token, mergeInterpretation(current, item.doc, result));
       token = controller.token(token.operationId);
     } catch (error) {
       if (!controller.isCurrent(token)) throw error;
       token = updateDocument(controller, token, item.doc.id, {
-        state: signal.aborted ? "cancelled" : "error",
+        state: batchSignal.aborted ? "cancelled" : "error",
         disposition: "held",
         reviewNotes: [
-          signal.aborted
+          batchSignal.aborted
             ? "Processing cancelled. No automatic retry will run."
             : error instanceof Error
               ? error.message
               : "Recognition failed.",
         ],
       });
-      if (signal.aborted) {
-        for (const pending of items.slice(n + 1))
+      if (batchSignal.aborted) throw error;
+    } finally {
+      completions[n]!.resolve();
+    }
+  };
+  let cursor = 0;
+  let failure: { error: unknown } | undefined;
+  const worker = async () => {
+    try {
+      while (cursor < items.length) {
+        checkCurrent();
+        const n = cursor++;
+        await process(items[n]!, n);
+      }
+    } catch (error) {
+      failure ??= { error };
+      abort.abort(error);
+    }
+  };
+  try {
+    await Promise.all(
+      Array.from({ length: Math.min(MAX_CONCURRENT_OPERATIONS, items.length) }, worker),
+    );
+    if (failure) {
+      if (controller.isCurrent(token))
+        for (const pending of items.slice(cursor))
           token = updateDocument(controller, token, pending.doc.id, {
             state: "cancelled",
             disposition: "held",
             reviewNotes: ["Cancelled before submission."],
           });
-        progress("Processing stopped. Completed sources are preserved.");
-        throw error;
-      }
+      progress("Processing stopped. Completed sources are preserved.");
+      throw failure.error;
     }
+  } finally {
+    untrack();
   }
   const selected = new Set(items.map((item) => item.doc.id));
   const finished = controller

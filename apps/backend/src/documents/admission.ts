@@ -1,3 +1,5 @@
+import { MAX_CONCURRENT_OPERATIONS } from "@retrosum/contracts";
+
 type Budget = {
   expiresAt: number;
   originals: Set<string>;
@@ -7,24 +9,24 @@ type Budget = {
 // Bounded process-local counters contain no PDF bytes, records or provider output.
 export class ExtractionAdmission {
   private readonly budgets = new Map<string, Budget>();
-  private active = false;
-  private intakeActive = false;
+  private active = 0;
+  private intakeActive = 0;
   constructor(private readonly now: () => number) {}
   enter() {
-    if (this.intakeActive || this.active) throw new RangeError("instance_busy");
-    this.intakeActive = true;
+    if (this.intakeActive >= MAX_CONCURRENT_OPERATIONS) throw new RangeError("instance_busy");
+    this.intakeActive++;
     let released = false;
     return () => {
       if (!released) {
         released = true;
-        this.intakeActive = false;
+        this.intakeActive--;
       }
     };
   }
   reserve(workspaceId: string, operationId: string, hash: string, retry: boolean) {
     const now = this.now();
     for (const [id, budget] of this.budgets) if (budget.expiresAt <= now) this.budgets.delete(id);
-    if (this.active) throw new RangeError("instance_busy");
+    if (this.active >= MAX_CONCURRENT_OPERATIONS) throw new RangeError("instance_busy");
     let budget = this.budgets.get(workspaceId);
     if (!budget) {
       if (this.budgets.size >= 1000) throw new RangeError("admission_full");
@@ -46,12 +48,12 @@ export class ExtractionAdmission {
     budget.operations.add(operationId);
     budget.originals.add(hash);
     if (retry) budget.retries++;
-    this.active = true;
+    this.active++;
     let released = false;
     return () => {
       if (!released) {
         released = true;
-        this.active = false;
+        this.active--;
       }
     };
   }

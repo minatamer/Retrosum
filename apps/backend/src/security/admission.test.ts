@@ -111,19 +111,40 @@ describe("one-use admission and conservative reservations", () => {
     h.advance(1800000);
     expect(() => h.ledger.session("workspace_a", cookie)).toThrow("admission_expired");
   });
-  it("one global lease spans action classes and rejected concurrency remains deliberately retryable", async () => {
+  it("two global leases span action classes; a third waits and old releases cannot free newer work", async () => {
     const h = harness(),
       cookie = h.session(),
       a = action(1),
       b = action(2, "extract", { documentHash: "b".repeat(64) }),
+      c = action(3, "insights"),
+      d = action(4),
+      ga = await issue(h, cookie, a),
+      gb = await issue(h, cookie, b),
+      gc = await issue(h, cookie, c),
+      gd = await issue(h, cookie, d);
+    const release = h.ledger.consume(cookie, ga.grant, identity(a));
+    const second = h.ledger.consume(cookie, gb.grant, identity(b));
+    expect(() => h.ledger.consume(cookie, gc.grant, identity(c))).toThrow("instance_busy");
+    expect(() => h.ledger.consume(cookie, gb.grant, identity(b))).toThrow("operation_replayed");
+    release();
+    const third = h.ledger.consume(cookie, gc.grant, identity(c));
+    release();
+    expect(() => h.ledger.consume(cookie, gd.grant, identity(d))).toThrow("instance_busy");
+    second();
+    h.ledger.consume(cookie, gd.grant, identity(d))();
+    third();
+  });
+  it("concurrent dispatch still reserves the full combined cost before either outcome", async () => {
+    const h = harness(true, 2 * reservationMicroUsd("extract") - 1),
+      cookie = h.session(),
+      a = action(1, "extract", { documentHash: "a".repeat(64) }),
+      b = action(2, "extract", { documentHash: "b".repeat(64) }),
       ga = await issue(h, cookie, a),
       gb = await issue(h, cookie, b);
     const release = h.ledger.consume(cookie, ga.grant, identity(a));
-    expect(() => h.ledger.consume(cookie, gb.grant, identity(b))).toThrow("instance_busy");
+    expect(() => h.ledger.consume(cookie, gb.grant, identity(b))).toThrow("spend_allowance_used");
     release();
-    const second = h.ledger.consume(cookie, gb.grant, identity(b));
-    release();
-    second();
+    expect(() => h.ledger.consume(cookie, gb.grant, identity(b))).toThrow("spend_allowance_used");
   });
   it("unknown outcomes retain reservations; a lower controlled envelope rejects before another call", async () => {
     const h = harness(true, reservationMicroUsd("chat")),

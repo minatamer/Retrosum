@@ -4,6 +4,8 @@ import {
   grantRequestSchema,
   inputHashSchema,
   paidActionSchema,
+  MAX_CONCURRENT_OPERATIONS,
+  PAID_ATTEMPTS_PER_MINUTE,
   workspaceIdSchema,
   type GrantRequest,
   type PaidAction,
@@ -56,7 +58,7 @@ export class PaidAdmission {
   private readonly runs = new Map<string, Run>();
   private readonly sources = new Map<string, number[]>();
   private starts: number[] = [];
-  private active: string | null = null;
+  private readonly active = new Set<string>();
   constructor(
     private readonly secret: string,
     private readonly now: () => number,
@@ -90,7 +92,10 @@ export class PaidAdmission {
     this.sweep();
     const now = this.now(),
       times = this.sources.get(source) ?? [];
-    if (times.filter((t) => t > now - 60_000).length >= 6 || times.length >= 30)
+    if (
+      times.filter((t) => t > now - 60_000).length >= PAID_ATTEMPTS_PER_MINUTE ||
+      times.length >= 30
+    )
       throw new RangeError("rate_limited");
     if (this.sources.size >= 1000 && !this.sources.has(source))
       throw new RangeError("admission_full");
@@ -193,7 +198,7 @@ export class PaidAdmission {
       Object.entries(identity).some(([key, value]) => claims[key as keyof Claims] !== value)
     )
       throw new RangeError("invalid_grant");
-    if (this.active) throw new RangeError("instance_busy");
+    if (this.active.size >= MAX_CONCURRENT_OPERATIONS) throw new RangeError("instance_busy");
     if (this.starts.length >= 20) throw new RangeError("rate_limited");
     const reserve = reservationMicroUsd(identity.action);
     if (run.reserved + reserve > this.ceilingMicroUsd) throw new RangeError("spend_allowance_used");
@@ -215,9 +220,9 @@ export class PaidAdmission {
       if (identity.retry) run.retries++;
     } else run[identity.action]++;
     this.starts.push(this.now());
-    this.active = claims.nonce;
+    this.active.add(claims.nonce);
     return () => {
-      if (this.active === claims.nonce) this.active = null;
+      this.active.delete(claims.nonce);
     };
   }
   preflight(cookie: string, token: string, action: PaidAction) {

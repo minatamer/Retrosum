@@ -285,16 +285,28 @@ describe("bounded provider and request admission", () => {
   it("burns reservations, rejects replay and allows one deliberate retry without automatic refund", () => {
     const gate = new ExtractionAdmission(clock.now);
     const releaseIntake = gate.enter();
+    const secondIntake = gate.enter();
     expect(() => gate.enter()).toThrow("busy");
     releaseIntake();
+    const thirdIntake = gate.enter();
+    releaseIntake();
+    expect(() => gate.enter()).toThrow("busy");
+    secondIntake();
+    thirdIntake();
     gate.reserve("workspace_a", "first", "hash", false)();
     expect(() => gate.reserve("workspace_a", "first", "hash", false)).toThrow("replayed");
     expect(() => gate.reserve("workspace_a", "second", "hash", false)).toThrow("allowance");
     gate.reserve("workspace_a", "retry", "hash", true)();
     expect(() => gate.reserve("workspace_a", "retry2", "hash", true)).toThrow("allowance");
     const release = gate.reserve("workspace_b", "next", "hash2", false);
-    expect(() => gate.reserve("workspace_c", "parallel", "hash3", false)).toThrow("busy");
+    const parallel = gate.reserve("workspace_c", "parallel", "hash3", false);
+    expect(() => gate.reserve("workspace_d", "third", "hash4", false)).toThrow("busy");
     release();
+    const next = gate.reserve("workspace_d", "third", "hash4", false);
+    release();
+    expect(() => gate.reserve("workspace_e", "fourth", "hash5", false)).toThrow("busy");
+    parallel();
+    next();
   });
   it("uses actual inline bytes, foreground strict output, no tools and supported reasoning", () => {
     const body = buildResponsesRequest(metadata(cases[0].doc), cases[0].bytes);
@@ -357,6 +369,49 @@ describe("bounded provider and request admission", () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(fetcher.mock.calls[0][0]).toBe("https://api.openai.com/v1/responses/input_tokens");
   });
+  it("holds two real HTTP extraction slots, rejects a third and frees only the completed slot", async () => {
+    const completions = [Promise.withResolvers(), Promise.withResolvers(), Promise.withResolvers()];
+    const dispatch = vi.fn(async (input, signal) => {
+      const index = dispatch.mock.calls.length - 1;
+      await completions[index].promise;
+      return provider.interpretDocument(input, signal);
+    });
+    const app = createApp(
+      composeRuntime(parseConfig({}), {
+        clock,
+        createRequestId: () => "request_test",
+        provider: { kind: "fake", interpretDocument: dispatch },
+      }),
+    );
+    const send = (n) =>
+      request(app)
+        .post("/v1/extract")
+        .set("Origin", "http://localhost:3000")
+        .field("metadata", JSON.stringify(metadata(cases[n].doc, `parallel_${n}`)))
+        .attach("file", Buffer.from(cases[n].bytes), {
+          filename: "demo.pdf",
+          contentType: "application/pdf",
+        });
+    const first = send(0).then((response) => response);
+    const second = send(1).then((response) => response);
+    try {
+      await vi.waitFor(() => expect(dispatch).toHaveBeenCalledTimes(2), { timeout: 5000 });
+      expect((await send(2)).status).toBe(409);
+      expect(dispatch).toHaveBeenCalledTimes(2);
+      completions[0].resolve();
+      await Promise.race([first, second]);
+      const third = send(2).then((response) => response);
+      await vi.waitFor(() => expect(dispatch).toHaveBeenCalledTimes(3), { timeout: 5000 });
+      completions[1].resolve();
+      completions[2].resolve();
+      expect(
+        (await Promise.all([first, second, third])).map((response) => response.status),
+      ).toEqual([200, 200, 200]);
+    } finally {
+      for (const completion of completions) completion.resolve();
+      await Promise.all([first, second]);
+    }
+  }, 15000);
   it("runs the actual bounded multipart route and dispatches zero extra work for replay or paid-off", async () => {
     const dispatch = vi.fn(provider.interpretDocument);
     const runtime = composeRuntime(parseConfig({}), {

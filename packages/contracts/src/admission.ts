@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { workspaceIdSchema } from "./ids.js";
 export const PROCESSING_DISCLOSURE_VERSION = "retrosum-processing-v1";
+export const MAX_CONCURRENT_OPERATIONS = 2;
+export const PAID_ATTEMPTS_PER_MINUTE = 6;
 export const paidActionSchema = z.enum(["extract", "chat", "insights"]);
 export const inputHashSchema = z.string().regex(/^[a-f0-9]{64}$/u);
 export const admissionSessionSchema = z.strictObject({

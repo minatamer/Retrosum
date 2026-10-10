@@ -1769,6 +1769,8 @@ Cloudflare DNS is the intended custom-domain tool if the owner confirms domain o
 
 ### 22.2 Resources and identities
 
+**Owner cloud-setup checkpoint, 10 October 2026:** The Retrosum Google Cloud project already exists, budget controls/alerts at **USD 5 and USD 10** are configured, and deployment secrets are already set up, as confirmed by the owner. The owner describes this as the same pattern used for ClipBuilder and ScreenPilot. Use the existing Retrosum resources; their creation is not pending. Exact private identities, budget period/scope/recipients/delivery/enforcement, secret names/versions/bindings and runtime IAM have not been inspected. No hard spending cap or actual deployment follows from this setup. Cloud alerts remain separate from the owner-confirmed USD 5 OpenAI limit and process-local allowance.
+
 | Resource | Purpose | Access |
 | --- | --- | --- |
 | Cloud Run frontend | Public pages/assets and same-origin bridge | Public invocation; dedicated runtime identity |
@@ -1799,7 +1801,7 @@ There is no first-build application database, object bucket, scheduler, queue, r
 
 These are proposals, not deployed values. Set the frontend proxy deadline to exceed the backend application deadline while remaining below its service timeout; include upload time in the bounded transport budget. For a slow upload that exhausts its deadline, abort before provider dispatch.
 
-`europe-west1` is a concrete comparison region from ClipBuilder's inspected guide. The owner must choose Retrosum's project/region after considering latency, account constraints and provider/data handling. This file does not claim Cairo-specific latency or residency.
+`europe-west1` is a concrete comparison region from ClipBuilder's inspected guide. Use the owner's already-created Retrosum project; its exact private identifier and region still need recording/verification after considering latency, account constraints and provider/data handling. This file does not claim Cairo-specific latency or residency.
 
 ### 22.4 Images and build context
 
@@ -1814,7 +1816,7 @@ No runtime npm install, browser/tool download or arbitrary document-conversion e
 1. Complete deterministic quality gates and the focused sample/own-input UI matrix.
 2. Audit source, boundaries, dependencies, secrets/content exclusion and declared claims.
 3. Select exact candidate commit, image tags and digest pair.
-4. Resolve project, region, identities, budgets, provider policy and required owner approvals.
+4. Record the existing owner-created project and secrets, verify the configured USD 5/USD 10 cloud budget alerts, and resolve region, runtime identities, provider policy and required deployment approvals.
 5. Build/inspect Linux images and push immutable artifacts.
 6. Deploy backend private and frontend public with paid processing disabled.
 7. Verify free health/configuration, sample assets, same-origin private transport and IAM denial for direct unauthenticated backend access.

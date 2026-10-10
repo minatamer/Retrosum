@@ -1,5 +1,7 @@
 # RET-012 — Deploy manually, validate live behavior and record rollback
 
+**Owner Google Cloud setup checkpoint — 10 October 2026:** The Retrosum Google Cloud project already exists, budget controls/alerts at **USD 5 and USD 10** are set up, and deployment secrets are created. The owner confirms the same pattern as ClipBuilder/ScreenPilot. Creation is complete on owner confirmation; exact private identifiers, budget scope/period/delivery/enforcement, secret versions/runtime bindings and hosted IAM remain unverified. This does not authorize or establish image publication/deployment. See the [file-level plan](../commit-plans/RET-012.md) and [validation](../validation/RET-012.md).
+
 **Current deployment status — 10 October 2026:** Local paid corpus/Retro/Turnstile acceptance passed. The owner confirms the configured USD 5 OpenAI spending limit. The eight-PDF Linux pair below is historical; rebuild/reverify the current ten-PDF/eighteen-page accepted source as deployment preparation. All actual hosted/deployment acceptance remains pending. See [current status](../CURRENT-STATUS.md).
 
 Status: **Local preparation complete — deployment pending**<br>
@@ -12,7 +14,7 @@ Queue: [Ticket index](README.md)
 
 ## Outcome and standalone context
 
-**Current owner authorization, 8 October 2026:** include this packet's local packaging and deployment preparation in the execute/validate loop after RET-011. Prepare Dockerfiles, configuration templates, probes, operator guides and rollback instructions locally. Use available local verification without requiring Docker Desktop installation. Actual image publication, cloud resources, credentials, domains and deployment remain deferred. Keep unperformed container/live/cloud acceptance explicitly pending; do not request these inputs during the local loop.
+**Local preparation authorization, 8 October 2026:** include this packet's local packaging and deployment preparation in the execute/validate loop after RET-011. Prepare Dockerfiles, configuration templates, probes, operator guides and rollback instructions locally. Use available local verification without requiring Docker Desktop installation. Actual image publication, further cloud changes, domain configuration and deployment remain deferred; the owner-confirmed project/budget/secret setup is recorded above. Keep unperformed container/live/cloud acceptance explicitly pending; do not request these inputs during the local loop.
 
 Prepare and, when authorized, deploy the exact accepted release to the same tool family as ScreenPilot/ClipBuilder: public Next frontend and private Express backend on Google Cloud Run, Artifact Registry, Secret Manager/runtime IAM, Cloudflare DNS/Turnstile and manual release control. No server database or uploaded-document bucket is required.
 
@@ -32,7 +34,7 @@ Areas owned by this packet:
 ## Implementation plan
 
 1. Confirm the exact RET-011 candidate, completed local gates, current model availability/price evidence, sample rights and live exact-field gate. Do not deploy a visually working fake build labelled as the public AI sample.
-2. Resolve actual cloud project/billing/region/service names/domain ownership and intended public availability. Inspect sibling guides for command structure only; never copy their identities, credentials, domains, permissions or prior approvals.
+2. Record/verify the existing owner-created cloud project's private identifiers/billing ownership and USD 5/USD 10 budget alerts; resolve region/service names/domain ownership and intended public availability. Existing deployment secrets need private version inventory/runtime bindings, not recreation. Inspect sibling guides for command structure only; never copy their identities, credentials, domains, permissions or prior approvals.
 3. Build/test nonroot Linux images with exact lockfile, PDF inspection/worker/assets/font packaging and correct runtime port. Push immutable versioned images only under authorized cloud scope; record digests and deployed revisions.
 4. Create least-privilege runtime identities: public frontend can invoke only the private backend; backend can access required OpenAI/grant secrets. Use audience-bound runtime ID tokens, exact origins, configured Turnstile and server-only private connection values. No service-account JSON in Git/browser.
 5. Start conservatively with min 0/max 1 each, measured CPU/memory/concurrency/timeouts and one expensive backend operation lease. Budget alerts/quotas/emergency switches are operational controls with documented scope, not guaranteed USD 5 total app spending.
@@ -55,6 +57,8 @@ Areas owned by this packet:
 - [ ] Public claims and release record match what was actually measured.
 
 ## Verification and evidence
+
+**Documentation checkpoint, 10 October 2026:** owner-confirmed project, USD 5/USD 10 budget alerts and secret creation are recorded consistently across the ten-path allocation. Required root checks passed (386 tests in 39 files, 130 boundary checks and both production builds). Focused review found no actionable documentation findings; account inspection and hosted acceptance were not performed. See [validation](../validation/RET-012.md).
 
 | Case                                          | Evidence                                             |
 | --------------------------------------------- | ---------------------------------------------------- |

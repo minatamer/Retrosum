@@ -17,9 +17,15 @@ The owner confirms the configured OpenAI spending limit is **USD 5** and is alre
 
 The owner selected **90-day API-key expiry**. Actual Responses generation/input-count access works; the final dashboard expiry timestamp and complete saved permissions have not been inspected. These are manual account-verification details, not missing application features. Secrets remain in ignored backend `.env.local`; no key/account value was copied into documentation.
 
+## Owner-confirmed Google Cloud setup
+
+The owner confirms the Retrosum Google Cloud project is already created, with budget controls and alerts at **USD 5 and USD 10**, following the same setup pattern as ClipBuilder and ScreenPilot. Deployment secrets are also already set up. Creation is complete on the owner's confirmation; it is not a request to recreate the project, budgets or secrets.
+
+Exact project/secret identifiers and versions are not recorded publicly or inspected. Budget period/scope, alert recipients/delivery, enforcement and runtime secret bindings/IAM remain to be verified for deployment. Cloud budget alerts are separate from the **USD 5 OpenAI limit** and the USD 2.50 process-local allowance; no guaranteed hard cloud/app cap is inferred.
+
 ## Remaining acceptance
 
-- **Deployment preparation and hosted acceptance:** rebuild/verify Linux images for the current ten-PDF/code snapshot, record immutable digests, resolve Cloud Run project/region/domain/runtime identities and secret bindings, then verify IAM, hosted Turnstile/origins, log retention, capacity/overlap, paid-off and rollback. Earlier eight-PDF Linux evidence is historical. No image push, cloud change or deployment is authorized or completed.
+- **Deployment preparation and hosted acceptance:** rebuild/verify Linux images for the current ten-PDF/code snapshot, record immutable digests, record the existing project's private identifiers, resolve region/domain/runtime identities and bind existing secret versions, then verify budget alerts, IAM, hosted Turnstile/origins, log retention, capacity/overlap, paid-off and rollback. Earlier eight-PDF Linux evidence is historical. No image push or deployment is authorized or completed by this task.
 - **Manual testing and owner acceptance:** aesthetics, physical touch/software keyboards, assistive technology/browser profiling, real human handwriting and broader upload accuracy. Current sample OCR success does not establish every upload's accuracy. Account permission/expiry/billing-enforcement and provider-handling verification remain manual checks.
 
 No further feature implementation is identified by the documented queue. Future defects or owner feedback can reopen the relevant packet; deployment and manual acceptance remain separate from completed local checks.

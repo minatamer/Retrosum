@@ -2,6 +2,8 @@
 
 Updated **10 October 2026**. All twelve packets have completed local implementation or deployment-preparation outcomes. The ten-PDF/eighteen-page corpus passed two independent actual-byte numeric/record passes, seventeen live Retro cases and real localhost Turnstile/browser checks. The owner confirms the configured OpenAI spending limit is **USD 5**. No additional local feature packet is eligible. Remaining work is deployment preparation/hosted acceptance and manual testing/owner acceptance. See [current status](../CURRENT-STATUS.md).
 
+**Owner Google Cloud setup, 10 October 2026:** Retrosum's project, budget controls/alerts at USD 5/USD 10 and deployment secrets are already set up, following the owner's ClipBuilder/ScreenPilot pattern. Their creation is owner-confirmed complete; private identifiers, alert delivery/scope and runtime secret/IAM bindings remain deployment-verification details. RET-012 deployment/hosted acceptance stays pending.
+
 ## Why twelve packets
 
 Actual ClipBuilder's source-of-truth section 22 records consolidation from 22 slices to 15 cohesive tickets. Retrosum follows that principle: one reviewable feature includes its UI, contracts, backend/local effects, recovery and meaningful checks. ScreenPilot's detailed packets supply acceptance specificity; its earlier ticket volume is not the model. There are no separate tickets for each form, endpoint, chart, font, shadow, shortcut or highlight.

@@ -8,6 +8,10 @@ The ten-PDF/eighteen-page corpus passed two independent actual-byte numeric and 
 
 The owner confirms the configured OpenAI spending limit is **USD 5**, already set, and selected 90-day key expiry. Generation/input-count access is proven. Dashboard scope/period/enforcement, final expiry timestamp and complete permissions have not been independently inspected; those remain manual account-verification details, not an unconfigured-limit blocker. No prepaid balance or hard global application cap is inferred.
 
+## Owner-confirmed Google Cloud setup
+
+The owner confirms the Retrosum Google Cloud project, budget controls/alerts at **USD 5 and USD 10**, and deployment secrets are already set up, matching the owner's ClipBuilder/ScreenPilot pattern. Resource creation is complete on that confirmation. Exact private identifiers, budget scope/period/recipients/delivery/enforcement and secret versions/runtime bindings have not been inspected. Cloud budget notifications do not establish a hard spending cap and are separate from OpenAI account controls.
+
 ## Local controls already available
 
 - Fake/paid-off committed defaults; accepted local OpenAI mode requires the single paid switch and complete key/challenge/grant configuration.
@@ -19,12 +23,12 @@ The owner confirms the configured OpenAI spending limit is **USD 5**, already se
 ## Deployment preparation and hosted acceptance
 
 - Rebuild and recheck the current accepted source in Linux, including all ten originals/eighteen pages, workers/fonts/assets, nonroot execution, ports and fake/paid-off probes. Record actual immutable registry digests/revisions when publication is authorized. This refresh belongs to RET-012 deployment preparation.
-- Resolve project/billing/region/domain/service names and least-privilege runtime identities; verify private-backend IAM, frontend-only invocation, exact origin/audience and TLS/fixed-path behavior.
+- Record/verify the existing project's private identifiers, billing ownership and USD 5/USD 10 budget-alert scope/delivery; resolve region/domain/service names and least-privilege runtime identities. Verify private-backend IAM, frontend-only invocation, exact origin/audience and TLS/fixed-path behavior.
 - Bind approved secret versions and hosted Turnstile keys/domain; verify action/hash/hostname/time/replay/cancel/CSP and accessible recovery in the hosted topology.
 - Verify trusted ingress, cold starts, memory/deadlines, one expensive operation, minimum zero/maximum one instances, overlap/epoch rejection, conservative unknown outcomes and paid-off/compatible paired rollback.
 - Configure approved seven-day operational/platform log retention and access; verify content exclusions, privacy/provider retention and source/asset rights against the enabled services. Record actual usage and account-control scope.
 
-No image push, cloud resource/change or deployment is authorized or completed by local acceptance. Historical image IDs and loopback memory/timing samples do not prove hosted behavior.
+Local acceptance authorizes no image push, cloud change or deployment. Owner-confirmed project/budget/secret creation does not establish deployed bindings or hosted acceptance. Historical image IDs and loopback memory/timing samples do not prove hosted behavior.
 
 ## Manual testing and owner acceptance
 

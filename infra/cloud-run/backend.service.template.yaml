@@ -22,7 +22,8 @@ spec:
         run.googleapis.com/execution-environment: gen2
     spec:
       serviceAccountName: "${BACKEND_SERVICE_ACCOUNT}"
-      containerConcurrency: 4
+      containerConcurrency: 6
+      # Four expensive requests plus grant/cancel traffic; hosted capacity must be measured.
       # Above the bounded 170-second extraction operation; no work is queued.
       timeoutSeconds: 180
       containers:

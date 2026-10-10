@@ -321,7 +321,7 @@ On a live outage or exhausted allowance, retain PDF viewing, existing records, m
 2. Preview the collection locally, validate type/size/page limits and remove unwanted files.
 3. Confirm the business identity once if the documents do not establish which party is the visitor.
 4. Read the actual enabled provider disclosure and choose Process documents.
-5. Admit files through one serialized challenge owner and process at most two documents concurrently; clear sources can become eligible without forcing review of every field. Merge completed results in selection order into the latest batch-owned workspace revision, preserving earlier-source payment/duplicate dependencies.
+5. Verify one exact selected batch through the shared challenge owner and process at most four documents concurrently with fresh one-use grants; clear sources can become eligible without forcing review of every field. Merge completed results in selection order into the latest batch-owned workspace revision, preserving earlier-source payment/duplicate dependencies.
 6. Keep uncertain direction, incompatible currencies, questionable amounts and duplicate candidates in the review queue.
 7. Open the overview from the successful subset with explicit coverage and pending exclusions.
 
@@ -674,7 +674,7 @@ OpenAI's Responses API supports inline Base64 PDF `input_file` content and suppl
 | Workspace lifetime | Fixed 2 hours from creation | Expire and clear; refresh does not extend it |
 | Business/currency | One business, English, USD | Reject unsupported currency aggregation; no FX |
 
-MiB is 1,048,576 bytes. Process at most two individual requests concurrently through a bounded streaming multipart route; do not ship the whole corpus as one Base64 request. Inline PDF Base64 exists only inside the request-scoped private OpenAI adapter. Base64 expands bytes, so derive proxy/body/buffer bounds from two simultaneous maximum-size files plus context and measure hosted memory. Browser PDF rendering and server inspection must reject active content and pathological resource usage.
+MiB is 1,048,576 bytes. Process at most four individual requests concurrently through a bounded streaming multipart route; do not ship the whole corpus as one Base64 request. Inline PDF Base64 exists only inside the request-scoped private OpenAI adapter. Base64 expands bytes, so derive proxy/body/buffer bounds from four simultaneous maximum-size files plus context and measure hosted memory. Browser PDF rendering and server inspection must reject active content and pathological resource usage.
 
 ### 8.3 Recognition output
 
@@ -1395,7 +1395,8 @@ Local service-to-service transport uses the documented loopback API. Hosted tran
 | `GET /v1/ready` | Composition readiness | Never |
 | `GET /v1/exchange-rate` | Fixed anonymous dated ECB/Frankfurter quote, no visitor data | Never |
 | `POST /v1/session` | Create short-lived content-free admission identity | Never |
-| `POST /v1/grants` | Validate challenge/scope and issue one action-bound grant | Never invokes AI |
+| `POST /v1/document-batches` | Verify one exact selected extraction manifest and issue bounded batch approval | Never invokes AI |
+| `POST /v1/grants` | Verify a Retro challenge or mint one exact approved extraction grant | Never invokes AI |
 | `POST /v1/extract` | One bounded multipart original plus business/preparation context | Only if a live interpretation/mapping dispatch is required |
 | `POST /v1/insights` | Validated current snapshot, computed facts, bounded investigation | Live mode only |
 | `POST /v1/chat` | One bounded Retro intent/message and validated snapshot; grounded response or change proposal | Live mode only |
@@ -1547,10 +1548,10 @@ The structural worst-case envelope is 624,000 input-token units and 111,000 outp
 1. Verify enabled capability and current processing disclosure/consent action.
 2. Check exact origin/source policy and bounded request headers/body.
 3. Validate the session/admission identity and action-bound one-use grant.
-4. Verify the challenge for the relevant paid action.
+4. Require server-verified challenge proof bound to the current Retro action or exact selected extraction manifest; never reuse a Siteverify token.
 5. Validate files/snapshot, graph, revision and operation identity.
 6. Check source/session and route rate limits.
-7. Acquire an independent expensive-operation capacity lease within the two-slot instance limit.
+7. Acquire an independent expensive-operation capacity lease within the four-slot instance limit.
 8. Reserve the maximum possible usage/cost for the declared operation.
 9. Mark operation as dispatched atomically in the process-local ledger.
 10. Invoke the provider with deadline and zero automatic retries.
@@ -1561,9 +1562,10 @@ Failures before dispatch make zero provider calls. Failures after dispatch remai
 
 | Control | Initial proposal |
 | --- | --- |
-| Expensive operations per backend instance | At most 2 in flight across extraction/chat/insights |
-| Document processing within a workspace | Two workers; serialized challenge admission and result commits |
+| Expensive operations per backend instance | At most 4 in flight across extraction/chat/insights |
+| Document processing within a workspace | Four workers; one exact batch verification, fresh grants and selection-order commits |
 | Content-free admission session lifetime | 30 minutes |
+| Selected extraction batch approval | Fixed 10 minutes; at most ten exact identities; cannot dispatch AI |
 | Action grant lifetime | 2 minutes; one operation class/input identity |
 | Per admission session | One workspace run with the file/Retro-turn/generation limits above |
 | Paid-action attempts per hashed source | 6 per minute and 30 per hour; enforce alongside run limits |
@@ -1572,7 +1574,7 @@ Failures before dispatch make zero provider calls. Failures after dispatch remai
 
 These are conservative proposals for controlled release, not copied spend guarantees. Tune through measured owner walkthroughs and rejection telemetry. The longer hourly source window can be bounded in-memory with expiry; browser refresh cannot reset the active server session counter, but a new session/IP or process restart limits enforcement.
 
-**Owner two-document trial, 10 October 2026:** The browser now runs two workers and backend intake/extraction/paid dispatch each cap capacity at two. Each request retains its exact metadata/hash and one-use grant; challenge admission has one owner while admitted provider requests overlap. Results commit synchronously in selection order into the latest batch-owned graph; unrelated revisions/reset invalidate the batch. Cancel aborts both slots, preserves completed sources and leaves queued originals unsubmitted. A fast batch paces five grant attempts in a rolling minute, leaving one attempt for initial session creation under the unchanged aggregate six/minute server limit. Other tabs/visitors can still exhaust that source limit. Twenty/hour starts, structural quotas and USD 2.50 conservative reservations are unchanged. Actual local paid D01/D02 requests passed (50.145 s and 52.803 s overlapping, USD 4,800 income/USD 1,800 known customer open). This pair does not establish account RPM/TPM, maximum-file memory or hosted throughput; verify those before hosted paid enablement or widening. [OpenAI rate limits](https://developers.openai.com/api/docs/guides/rate-limits).
+**Owner faster-batch implementation, 10 October 2026:** One production Turnstile verification approves a canonical manifest of at most ten distinct exact PDF request identities. A fixed ten-minute content-free batch approval cannot dispatch extraction directly; fresh two-minute, single-use grants are minted just before each approved upload. Changes to operation, input hash, PDF hash, retry, workspace or run reject. Reset/expiry/boot change invalidate approval; no token is reused at Siteverify and no future selection is authorized. Four browser workers overlap bounded requests, with selection-order commits against the latest batch-owned revision. Cancel aborts all active slots, preserves completed sources and leaves queued originals unsubmitted. The accepted model, prompt, exact token preflight, standard tier, twenty/hour paid starts, ten originals/one retry and USD 2.50 conservative reservation remain unchanged. Source attempts stay six/minute and thirty/hour; the initial session and batch verification use two attempts, while bounded just-in-time minting uses the approved manifest without further challenge attempts. Combined pending approved identities/grants are bounded to twenty per run. Current measured local timing is in [RET-011 validation](validation/RET-011.md); account RPM/TPM and four maximum-file memory/hosted throughput require deployment acceptance.
 
 ### 19.5 Stateless-quota limitation
 
@@ -1795,8 +1797,8 @@ There is no first-build application database, object bucket, scheduler, queue, r
 | Memory | 512 MiB | 1 GiB, subject to parser measurements |
 | Minimum instances | 0 | 0 |
 | Maximum instances | 1 | 1 |
-| HTTP concurrency | 8 | 4 |
-| Expensive application concurrency | No independent inference | 2 across extraction/chat/insights |
+| HTTP concurrency | 8 | 6; room for grants/cancel alongside four extractions |
+| Expensive application concurrency | No independent inference | 4 across extraction/chat/insights |
 | Cloud Run request timeout | 210 seconds | 180 seconds |
 | Application extraction deadline | Proxy budget above backend operation | 170 seconds backend / 175 seconds transport; count ≤60 seconds, generation ≤75 seconds |
 | Investigation deadline | Proxy budget above backend operation | 60 seconds whole action |

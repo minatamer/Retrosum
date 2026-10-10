@@ -1,5 +1,9 @@
 # Local product acceptance and candidate handoff
 
+## Latest local paid candidate — 10 October 2026
+
+Two live passes over the expanded ten-PDF/eighteen-page corpus and seventeen live Retro intent cases passed numeric, source/role and grounding review. Connected local paid startup, exact token preflight and deterministic receipt/transfer guards are implemented. Real localhost disclosure, Turnstile, one-use grant, PDF extraction and Retro checks passed. The dated eight-document simulation below remains historical evidence. [Current paid evidence](../validation/RET-011.md) retains general handwriting, physical/owner and hosted limitations.
+
 Updated **8 October 2026**, RET-011. This is a local fake/injected release-candidate review, not approval to publish or enable AI. Public live capability remains closed. RET-012 prepares packaging; real provider, physical-device/owner and hosted acceptance are separate gates.
 
 ## Connected customer flow

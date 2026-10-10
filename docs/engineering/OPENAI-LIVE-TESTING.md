@@ -1,14 +1,14 @@
-# OpenAI local test preparation
+# OpenAI local testing
 
-Prepared 10 October 2026 under RET-011. No paid request or API key was used in this preparation pass. Public live dispatch remains closed by `LIVE_ACCEPTANCE_VERIFIED=false`; adding a key alone does not enable live processing or chat in `/demo`.
+Updated 10 October 2026. The owner-authorized ten-PDF numeric/record checks and seventeen live Retro cases passed with the installed key. Local paid startup is connected; real localhost Turnstile/browser verification passed. See [actual evidence and limitations](../validation/RET-011.md). Earlier preparation statements below are dated historical context.
 
 `PAID_DEMO_ENABLED` is the only paid feature switch. With `FAKE_MODE=false`, `PAID_DEMO_ENABLED=true` requests live document processing and live Retro together; there are no separate document/copilot enablement settings. Credentials, admission and verified acceptance still apply. Keep committed examples fake and paid-off while those checks are pending.
 
-`FAKE_MODE` is the only mode selector. Its default `true` selects local fixtures; `false` requests the supported OpenAI path, subject to the paid switch and remaining prerequisites. The unused separate provider setting was removed by the owner's 10 October 2026 decision. Setting mode/paid flags does not override the pending public-live acceptance gate.
+`FAKE_MODE` is the only mode selector. Its default `true` selects local fixtures; `false` requests the accepted OpenAI path, subject to the paid switch and remaining prerequisites. The unused separate provider setting was removed by the owner's 10 October 2026 decision. Hosted acceptance remains independent of those flags.
 
 ## Key expiry and restricted permissions
 
-Owner checkpoint, **10 October 2026**: the owner selected **90 days** in the Retrosum project-key creation dialog. Retain that lifetime for local testing. This records the chosen setting, not confirmation that the key has been created, installed or used successfully. The dashboard's final expiry timestamp remains authoritative; it has not been inspected. Keep the secret only in backend `OPENAI_API_KEY` in the ignored `apps/backend/.env.local`.
+Owner checkpoint, **10 October 2026**: the owner selected **90 days** in the Retrosum project-key creation dialog. Retain that lifetime for local testing. The installed key has now completed live generation and exact input-count requests. The dashboard's final expiry timestamp remains authoritative; it has not been inspected. Keep the secret only in backend `OPENAI_API_KEY` in the ignored `apps/backend/.env.local`.
 
 Ninety days is a project recommendation, not an OpenAI-mandated duration. Start replacement about two weeks before expiry: create a replacement with the same narrow permissions, update the private backend environment, restart, verify the replacement during an authorized bounded test, then revoke the old key. OpenAI recommends expiring project keys and replacement-first rotation; organization/project lifetime policies may impose a shorter maximum. [Official key-expiration guidance](https://developers.openai.com/api/docs/guides/production-best-practices).
 
@@ -18,7 +18,7 @@ Select **Restricted** in the Retrosum key dialog. The following recommendation c
 
 | Permission/resource                                                                                       | Setting                         | Current Retrosum use                                             |
 | --------------------------------------------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------- |
-| Responses API (`POST /v1/responses`)                                                                      | Write/create-request permission | PDF extraction and Retro investigation                           |
+| Responses API (`POST /v1/responses`, `POST /v1/responses/input_tokens`)                                   | Write/create-request permission | PDF extraction, Retro investigation and exact input preflight    |
 | List models                                                                                               | None                            | The reviewed model ID is fixed in backend policy                 |
 | Other model endpoints: chat completions, audio, images, embeddings, Realtime                              | None                            | No requests to these endpoints                                   |
 | Files and vector stores                                                                                   | None                            | Original PDF bytes are sent inline as `input_file.file_data`     |
@@ -27,11 +27,11 @@ Select **Restricted** in the Retrosum key dialog. The following recommendation c
 
 Scroll inside the dialog to find **Responses API**; if it appears under the expandable **Model capabilities** group, enable only its Responses child permission. Keep the other children disabled rather than granting the entire group. Do not enable List models just to request a known model. The Responses permission permits creating the result and receiving its body; this implementation does not retrieve stored responses. A read-only key cannot perform the required POST. OpenAI also checks the key owner's project role, so a later permission failure needs its specific missing scope checked rather than automatically broadening the key to All. [Official permission reference](https://developers.openai.com/api/docs/guides/rbac), [Responses creation reference](https://developers.openai.com/api/reference/resources/responses/methods/create).
 
-Model access and spending are separate project settings. In the Retrosum project's Limits, allow the configured `gpt-6.1-sol` model and disable unrelated models where supported; retain conservative spend/rate limits. Key expiry and endpoint permissions do not impose a dollar cap. This documentation update makes no account change or paid request and leaves live acceptance pending.
+Model access and spending are separate project settings. In the Retrosum project's Limits, allow the configured `gpt-6.1-sol` model and disable unrelated models where supported; retain conservative spend/rate limits. Key expiry and endpoint permissions do not impose a dollar cap. The installed key's generation/count access is proven by the authorized tests; saved dashboard permissions and account-wide spending controls were not inspected or changed.
 
 ## Current integration
 
-Both backend adapters use the fixed Responses endpoint, `gpt-6.1-sol`, `service_tier: "default"`, low reasoning, foreground requests and `store: false`. Keys stay in the backend/operator environment; never use a `NEXT_PUBLIC_` variable, commit a key or paste it into chat. Committed examples remain fake and paid-off. A private OpenAI project needs API billing/credits and access to the configured model before a live run; those account conditions have not been tested here.
+Both backend adapters use the fixed Responses and input-count endpoints, `gpt-6.1-sol`, `service_tier: "default"`, low reasoning, foreground generation and `store: false`. Keys stay in the backend/operator environment; never use a `NEXT_PUBLIC_` variable, commit a key or paste it into chat. Committed examples remain fake and paid-off. The installed key's model/generation/count access is proven; current account balance, saved permissions and aggregate billing controls were not inspected.
 
 PDF extraction forwards the actual inspected original bytes inline, with strict structured transcription output. Retro receives bounded current-workspace facts, registered topics/tools and recent messages. It returns a typed intent; the application validates it, calculates exact figures, renders source links and owns navigation, editable previews and confirmation. Reasoning/tool output is preserved for stateless continuations. Errors, refusal, incomplete output, excessive usage and deadline cancellation stop the turn without automatic retries.
 
@@ -59,7 +59,7 @@ pnpm evaluate:retro --live --confirm-paid
 
 No `.env` is loaded automatically by this runner. It checks all opt-ins before dispatch, uses only the fixed endpoint, forbids redirects, reserves the configured three-request allowance before each case, meters reported input/output tokens, verifies the actual standard tier and stops at the first failed/unknown outcome. No retries or financial writes occur. The report records declared prompts, structured decisions, source/tool counts and usage; it excludes keys, provider bodies and raw error messages. Review the live decisions against the question and current workspace before treating intent accuracy as accepted.
 
-The policy's nominal run allowance is USD 2.50, using standard USD 2/input and USD 10/output per million tokens. Input-token ceilings are validated after a response; they are not an API-enforced prebilling ceiling. Actual image/context tokens, account pricing and unknown outcomes still require live measurement. Set an account/project budget as an additional operator control. A failed run never automatically resumes.
+The USD 2.50 process-local allowance reserves at USD 2.50/M input (the cache-write ceiling) and USD 10/M output. The fixed token-count endpoint checks the complete PDF/context/schema/tool input before generation, and actual usage/tier is checked afterward. Counting failure/excess rejects generation. Unknown outcomes retain the full reservation; no automatic retries. Account billing controls remain separate. Generation ceilings are USD 0.120/extraction and USD 0.135/three-request Retro turn.
 
 ## Separate PDF recognition evaluation
 
@@ -77,6 +77,14 @@ node scripts/evaluate-recognition.mjs --live --confirm-paid
 
 It runs two independent passes over the ten visible original PDFs/eighteen pages and compares numeric transcription only after dispatch. The ignored recognition report contains sample interpretations, hashes and usage. Exact numeric accuracy, business-role/event/payment grounding, handwriting, image-token envelope and observed spend need review before release acceptance.
 
-## Opening public live mode later
+## Local paid mode
 
-Keep the public gate closed until those live results settle. `runtime/compose.ts` currently advertises only fake capabilities while acceptance is pending; changing environment flags is insufficient. A later reviewed change must wire accepted live document/chat capability and admission together, rerun the origin/grant/usage/abort/failure tests, and test the actual browser path with a funded key. This preparation does not claim public live readiness, live accuracy, account access or deployment acceptance.
+The backend's ignored `apps/backend/.env.local` uses `FAKE_MODE=false` and `PAID_DEMO_ENABLED=true`, plus the existing `OPENAI_API_KEY`, `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` and at least 32-character `GRANT_SIGNING_SECRET`. Keep committed examples fake/paid-off. Use the normal `pnpm dev:backend` and `pnpm dev:frontend` commands, then localhost:3000/demo. Every live action requires its disclosure and a real challenge-bound grant. Keys never enter frontend public environment variables. After editing backend environment values restart the normal stack.
+
+The widget must permit `localhost`; use the matching production site/secret pair. The backend validates hostname/action/request hash/timestamp. If the widget rejects the local hostname, update its hostname setting through the owner's Cloudflare account before testing; do not substitute test keys to claim real acceptance.
+
+Actual localhost testing passed for an invoice, a two-page receipts PDF and a grounded Retro profit explanation, using the installed production challenge pair. If a server restart leaves a signed previous-boot admission cookie, the first Allow rejects and clears only that obsolete cookie: close the review and deliberately send/process again. Current-run refresh and Reset never replenish allowances. Request preparation failure does not spend the document retry; errors after dispatch remain conservatively attempted.
+
+Extraction now separates a 60-second input-count deadline from the 75-second generation deadline, inside a 170-second backend and 175-second browser/bridge bound. The earlier combined 75-second budget timed out during real raster checks. All clocks cover decoding and owned cancellation. Retro retains its 60-second whole-turn bound.
+
+The PDF runner writes progressive checkpoints and reserves unknown attempts. To deliberately resume the identical authorized live candidate, add `--resume`; changed model/prompt/schema/originals reject reuse. Neither runner authorizes release. Hosted IAM/domain/privacy/billing/overlap, general handwriting and owner/physical acceptance remain pending.

@@ -1,5 +1,9 @@
 # RET-011 — Verify responsive product quality and audit the release candidate
 
+**Latest owner live acceptance — 10 October 2026:** Both actual-byte numeric passes and independent record audits passed on the ten-PDF/eighteen-page corpus. All seventeen live Retro intents/grounding cases passed. Exact OpenAI token preflight, standard-tier/cache-write reservation, receipt/transfer guards, normal paid composition and bounded connected deadlines are implemented. Real localhost disclosure, Turnstile, one-use grant, PDF extraction and Retro checks passed. Full settled checks and final validation are recorded in [RET-011 validation](../validation/RET-011.md). Hosted/owner/physical and general handwriting acceptance remain pending; no push/deployment.
+
+**Settled local paid candidate:** `bd9af4b` — `RET-011: verify and connect local paid document and Retro processing` (34 allocated source/test/evaluation/plan paths). Final root checks passed with 386 tests in 39 files, 130 boundary source files and both builds. Actual CUA checks cover two paid PDFs, grounded Retro/source links and deliberate recovery after backend restart; focused read-only validation found no actionable issues within this authorized local scope. The eleven evidence documents form the accompanying commit; private keys/configuration and generated outputs remain excluded.
+
 Status: **Implemented locally — deferred acceptance pending**<br>
 Last synchronized: **10 October 2026**
 

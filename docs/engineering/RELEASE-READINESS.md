@@ -1,5 +1,9 @@
 # Release readiness and operator-owned gates
 
+## Latest local live evidence — 10 October 2026
+
+The owner supplied and authorized use of the private key. Two actual-byte numeric/record passes and seventeen live Retro cases passed. Exact input preflight and conservative cache-write reservations establish the generation envelope; accepted startup now composes both paid features with all admission prerequisites. Actual localhost Turnstile/browser checks passed. [RET-011 evidence](../validation/RET-011.md) separates completed checks, failed/unknown requests and remaining external acceptance. Historical packaging and 8 October checklists below are not a claim that the current source has been deployed or that hosted/account/physical gates passed.
+
 Updated **8 October 2026**, RET-012 local packaging acceptance. No live provider test, cloud resource, challenge registration, push or deployment has occurred. [Product acceptance](PRODUCT-ACCEPTANCE.md) retains the dated RET-011 candidate, connected simulated flow, device matrix and resource/asset limitations. [RET-012 validation](../validation/RET-012.md) records the final nonroot Linux image pair, exact package inventories, fourteen-page worker and fake/unavailable browser/probe evidence, with **192 tests and 105 boundary checks**. The [manual release guide](../operations/MANUAL-DEPLOYMENT.md) and unfilled service/operator templates are prepared; actual hosted acceptance remains pending.
 
 ## Local controls already available

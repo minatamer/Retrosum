@@ -4,6 +4,29 @@ Prepared 10 October 2026 under RET-011. No paid request or API key was used in t
 
 `PAID_DEMO_ENABLED` is the only paid feature switch. With `FAKE_MODE=false`, `PAID_DEMO_ENABLED=true` requests live document processing and live Retro together; there are no separate document/copilot enablement settings. Credentials, admission and verified acceptance still apply. Keep committed examples fake and paid-off while those checks are pending.
 
+## Key expiry and restricted permissions
+
+Owner checkpoint, **10 October 2026**: the owner selected **90 days** in the Retrosum project-key creation dialog. Retain that lifetime for local testing. This records the chosen setting, not confirmation that the key has been created, installed or used successfully. The dashboard's final expiry timestamp remains authoritative; it has not been inspected. Keep the secret only in backend `OPENAI_API_KEY` in the ignored `apps/backend/.env.local`.
+
+Ninety days is a project recommendation, not an OpenAI-mandated duration. Start replacement about two weeks before expiry: create a replacement with the same narrow permissions, update the private backend environment, restart, verify the replacement during an authorized bounded test, then revoke the old key. OpenAI recommends expiring project keys and replacement-first rotation; organization/project lifetime policies may impose a shorter maximum. [Official key-expiration guidance](https://developers.openai.com/api/docs/guides/production-best-practices).
+
+Read-only comparison with ScreenPilot's `docs/operations/live-provider-setup.md`, Phase B: its 14 September 2026 owner checkpoint records a restricted OpenAI key with a finite expiry and only Responses write access. It does **not** record the number of days, so a longer lifetime cannot be confirmed. That guide's explicit 30-day key belongs to ElevenLabs and does not establish the OpenAI lifetime. No ScreenPilot secret was read or copied.
+
+Select **Restricted** in the Retrosum key dialog. The following recommendation comes from the current backend's endpoint inventory and OpenAI's resource-permission documentation; saved account permissions have not been verified:
+
+| Permission/resource                                                                                       | Setting                         | Current Retrosum use                                             |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------- |
+| Responses API (`POST /v1/responses`)                                                                      | Write/create-request permission | PDF extraction and Retro investigation                           |
+| List models                                                                                               | None                            | The reviewed model ID is fixed in backend policy                 |
+| Other model endpoints: chat completions, audio, images, embeddings, Realtime                              | None                            | No requests to these endpoints                                   |
+| Files and vector stores                                                                                   | None                            | Original PDF bytes are sent inline as `input_file.file_data`     |
+| Agents, Traces, Vaults, Voices, Assistants, Threads, Evals, fine-tuning, Batch and other unused resources | None                            | Local tools and evaluation scripts do not call these hosted APIs |
+| Administration and key/project management                                                                 | None                            | The app does not manage the account                              |
+
+Scroll inside the dialog to find **Responses API**; if it appears under the expandable **Model capabilities** group, enable only its Responses child permission. Keep the other children disabled rather than granting the entire group. Do not enable List models just to request a known model. The Responses permission permits creating the result and receiving its body; this implementation does not retrieve stored responses. A read-only key cannot perform the required POST. OpenAI also checks the key owner's project role, so a later permission failure needs its specific missing scope checked rather than automatically broadening the key to All. [Official permission reference](https://developers.openai.com/api/docs/guides/rbac), [Responses creation reference](https://developers.openai.com/api/reference/resources/responses/methods/create).
+
+Model access and spending are separate project settings. In the Retrosum project's Limits, allow the configured `gpt-6.1-sol` model and disable unrelated models where supported; retain conservative spend/rate limits. Key expiry and endpoint permissions do not impose a dollar cap. This documentation update makes no account change or paid request and leaves live acceptance pending.
+
 ## Current integration
 
 Both backend adapters use the fixed Responses endpoint, `gpt-6.1-sol`, `service_tier: "default"`, low reasoning, foreground requests and `store: false`. Keys stay in the backend/operator environment; never use a `NEXT_PUBLIC_` variable, commit a key or paste it into chat. Committed examples remain fake and paid-off. A private OpenAI project needs API billing/credits and access to the configured model before a live run; those account conditions have not been tested here.

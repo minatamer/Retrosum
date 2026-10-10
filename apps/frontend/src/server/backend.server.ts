@@ -6,6 +6,7 @@ type PrivatePath =
   | "/v1/insights"
   | "/v1/session"
   | "/v1/grants"
+  | "/v1/document-batches"
   | "/v1/exchange-rate";
 const paths = new Set<PrivatePath>([
   "/v1/config",
@@ -14,6 +15,7 @@ const paths = new Set<PrivatePath>([
   "/v1/insights",
   "/v1/session",
   "/v1/grants",
+  "/v1/document-batches",
   "/v1/exchange-rate",
 ]);
 // TLS/port termination changes Next's internal URL. Only the configured public

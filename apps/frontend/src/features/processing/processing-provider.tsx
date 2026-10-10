@@ -85,6 +85,11 @@ export function ProcessingProvider({ children }: { children: ReactNode }) {
       if (presentation === "document-selection" && identity.action !== "extract")
         return Promise.reject(new Error("Document selection cannot authorize a Retro turn."));
       if (
+        identity.operations &&
+        (identity.action !== "extract" || presentation !== "document-selection")
+      )
+        return Promise.reject(new Error("A document batch requires its selected-document action."));
+      if (
         capabilities.mode !== "live" ||
         !capabilities.processing?.admissionAvailable ||
         !capabilities.processing.siteKey ||
@@ -142,7 +147,8 @@ export function ProcessingProvider({ children }: { children: ReactNode }) {
   );
 }
 async function admit(
-  path: "/api/retrosum/v1/session" | "/api/retrosum/v1/grants",
+  path:
+    "/api/retrosum/v1/session" | "/api/retrosum/v1/grants" | "/api/retrosum/v1/document-batches",
   body: unknown,
   signal: AbortSignal,
 ) {
@@ -212,7 +218,9 @@ function LiveReview({ pending }: { pending: Pending }) {
     try {
       const result = grantResultSchema.parse(
         await admit(
-          "/api/retrosum/v1/grants",
+          pending.identity.operations
+            ? "/api/retrosum/v1/document-batches"
+            : "/api/retrosum/v1/grants",
           {
             ...pending.identity,
             disclosureVersion: PROCESSING_DISCLOSURE_VERSION,

@@ -1,7 +1,8 @@
 import "server-only";
 import {
   admissionSessionSchema,
-  grantRequestSchema,
+  admissionGrantRequestSchema,
+  extractionBatchRequestSchema,
   grantResultSchema,
   admissionSessionResultSchema,
 } from "@retrosum/contracts";
@@ -13,7 +14,7 @@ import {
 } from "./backend.server";
 export async function forwardAdmission(
   request: Request,
-  kind: "session" | "grant",
+  kind: "session" | "grant" | "batch",
   fetcher: typeof fetch = fetch,
   environment: Record<string, string | undefined> = process.env,
 ) {
@@ -31,10 +32,18 @@ export async function forwardAdmission(
     return Response.json({ error: "invalid_admission" }, { status: 400, headers });
   const signal = AbortSignal.any([request.signal, AbortSignal.timeout(12000)]);
   try {
-    const raw: unknown = JSON.parse(await readBounded(request.body, 4096, signal));
-    const body = (kind === "session" ? admissionSessionSchema : grantRequestSchema).parse(raw);
+    const raw: unknown = JSON.parse(
+      await readBounded(request.body, kind === "batch" ? 8192 : 4096, signal),
+    );
+    const body = (
+      kind === "session"
+        ? admissionSessionSchema
+        : kind === "batch"
+          ? extractionBatchRequestSchema
+          : admissionGrantRequestSchema
+    ).parse(raw);
     const response = await backendRequest(
-      kind === "session" ? "/v1/session" : "/v1/grants",
+      kind === "session" ? "/v1/session" : kind === "batch" ? "/v1/document-batches" : "/v1/grants",
       {
         method: "POST",
         signal,

@@ -23,6 +23,7 @@ export function createApp(runtime: AppRuntime): Express {
       "/v1/chat": "chat",
       "/v1/insights": "insights",
       "/v1/grants": "admission",
+      "/v1/document-batches": "admission",
       "/v1/session": "session",
     };
     const route = routes[request.path];
@@ -78,6 +79,11 @@ export function createApp(runtime: AppRuntime): Express {
       (request, response) => chatRoute(runtime, request, response, action, true),
     );
   app.post("/v1/extract", (request, response) => extractRoute(runtime, request, response));
+  app.post(
+    "/v1/document-batches",
+    express.json({ limit: "8kb", strict: true }),
+    (request, response) => admissionRoute(runtime, request, response, "batch"),
+  );
   app.use(express.json({ limit: "4kb", strict: true }));
   app.post("/v1/session", (request, response) =>
     admissionRoute(runtime, request, response, "session"),

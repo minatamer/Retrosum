@@ -156,22 +156,24 @@ describe("actual route guards before provider dispatch", () => {
       "Content-Type": "application/json",
     };
     const busy = h.admission.enter();
-    const otherBusy = h.admission.enter();
+    const otherBusy = [h.admission.enter(), h.admission.enter(), h.admission.enter()];
     await request(h.app).post("/v1/chat").set(headers).send("not-json").expect(409);
     busy();
     await request(h.app).post("/v1/chat").set(headers).send("not-json").expect(400);
     await request(h.app).post("/v1/chat").set(headers).send(body).expect(200);
     expect(h.step).toHaveBeenCalledTimes(1);
-    otherBusy();
+    for (const release of otherBusy) release();
     const capacity = new ExtractionAdmission(() => 0),
       release = capacity.enter();
     release();
     const second = capacity.enter();
     const third = capacity.enter();
+    const fourthSlots = [capacity.enter(), capacity.enter()];
     release();
     expect(() => capacity.enter()).toThrow("instance_busy");
     second();
     third();
+    for (const release of fourthSlots) release();
     expect(() => capacity.enter()()).not.toThrow();
   });
   it("the consent/session/grant HTTP path issues a private run and consumes its action exactly once", async () => {

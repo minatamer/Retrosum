@@ -3,7 +3,6 @@ import {
   extractionRequestSchema,
   MAX_TOTAL_BYTES,
   MAX_CONCURRENT_OPERATIONS,
-  PAID_ATTEMPTS_PER_MINUTE,
   type ExtractionRequest,
   type SourceDocument,
   type OperationToken,
@@ -14,7 +13,11 @@ import type { SessionController } from "../session/session-controller";
 import { inspectOriginal } from "./inspect-client";
 import { recognitionCapabilities, extractOriginal } from "./recognition-client";
 import { loadSampleBytes } from "./pdf-policy";
-import { hashRequest, type AuthorizePaid } from "../processing/processing-client";
+import {
+  hashRequest,
+  requestBatchGrant,
+  type AuthorizePaid,
+} from "../processing/processing-client";
 
 export type IntakeItem = { doc: SourceDocument; blob: Blob };
 export function updateDocument(
@@ -156,7 +159,7 @@ export async function processDocuments(
     return { done, resolve };
   });
   // Payment matching and duplicate review depend on earlier sources. Keep input-order
-  // commits while two requests overlap; each worker holds at most one decoded result.
+  // commits while four requests overlap; each worker holds at most one decoded result.
   const priorCommits = items.map((_, n) =>
     Promise.all(completions.slice(0, n).map((completion) => completion.done)),
   );
@@ -168,74 +171,38 @@ export async function processDocuments(
         "The workspace changed during processing. Completed sources are preserved.",
       );
   };
-  let admission = Promise.resolve();
-  const admissionTimes: number[] = [];
-  const admit = (metadata: ExtractionRequest) => {
-    // Keep a single challenge owner while already-admitted PDF requests overlap.
-    const next = admission.then(async () => {
-      checkCurrent();
-      const inputHash = await hashRequest(metadata);
-      // Leave one of the six attempts for initial session creation. This is local pacing,
-      // not an exemption from the server's aggregate source limit (including other tabs).
-      while (true) {
-        checkCurrent();
-        const now = Date.now();
-        while (admissionTimes.length && admissionTimes[0]! <= now - 60_000) admissionTimes.shift();
-        if (admissionTimes.length < PAID_ATTEMPTS_PER_MINUTE - 1) break;
-        progress("Preparing the next documents…");
-        await pause(batchSignal, admissionTimes[0]! + 60_001 - now);
-      }
-      try {
-        return await authorize?.(
-          {
-            action: "extract",
-            workspaceId: metadata.workspaceId,
-            operationId: metadata.operationId,
-            inputHash,
-            documentHash: metadata.document.sha256,
-            retry: metadata.retry,
-          },
-          capabilities,
-          batchSignal,
-        );
-      } finally {
-        // Grant verification can happen long after the widget starts. Count from its
-        // completion so a slow challenge cannot prematurely reopen the rate window.
-        admissionTimes.push(Date.now());
-      }
-    });
-    admission = next.then(
-      () => undefined,
-      () => undefined,
-    );
-    return next;
-  };
+  const session = controller.getSnapshot().session!;
+  const docs = session.workspace.documents;
+  // Freeze the exact selected snapshots before verification. Only batch-owned commits
+  // may advance the graph while these immutable requests are in flight.
+  let requests: ExtractionRequest[] = [];
+  let approved: string | undefined;
+  let identities: {
+    operationId: string;
+    inputHash: string;
+    documentHash: string;
+    retry: boolean;
+  }[] = [];
   const process = async (item: IntakeItem, n: number) => {
     try {
       checkCurrent();
       token = updateDocument(controller, token, item.doc.id, { state: "reading" });
-      const session = controller.getSnapshot().session!;
-      const docs = session.workspace.documents;
       progress(`Reading · ${n + 1} of ${items.length} · ${item.doc.name}`);
       if (capabilities.mode === "fake") await pause(batchSignal);
       checkCurrent();
-      const metadata = extractionRequestSchema.parse({
-        operationId: crypto.randomUUID(),
-        workspaceId: token.workspaceId,
-        // Exact input snapshot bound to the grant. Other batch documents may advance
-        // the workspace while this request is running; results merge into the latest graph.
-        revision: token.inputRevision,
-        retry,
-        business: session.workspace.business,
-        asOf: session.workspace.asOf,
-        document: item.doc,
-        envelope: {
-          files: docs.length,
-          pages: docs.reduce((sum, doc) => sum + doc.pageCount, 0),
-          bytes: docs.reduce((sum, doc) => sum + doc.byteLength, 0),
-        },
-      });
-      const grant = capabilities.mode === "live" ? await admit(metadata) : undefined;
+      const metadata = requests[n]!;
+      const grant =
+        capabilities.mode === "live" && approved
+          ? await requestBatchGrant(
+              {
+                ...identities[n]!,
+                action: "extract",
+                workspaceId: token.workspaceId,
+              },
+              approved,
+              batchSignal,
+            )
+          : undefined;
       if (capabilities.mode === "live" && !grant)
         throw new RangeError(
           "Live processing requires disclosure and admission. No PDF was submitted.",
@@ -287,6 +254,49 @@ export async function processDocuments(
     }
   };
   try {
+    requests = items.map((item) =>
+      extractionRequestSchema.parse({
+        operationId: crypto.randomUUID(),
+        workspaceId: token.workspaceId,
+        revision: token.inputRevision,
+        retry,
+        business: session.workspace.business,
+        asOf: session.workspace.asOf,
+        document: item.doc,
+        envelope: {
+          files: docs.length,
+          pages: docs.reduce((sum, doc) => sum + doc.pageCount, 0),
+          bytes: docs.reduce((sum, doc) => sum + doc.byteLength, 0),
+        },
+      }),
+    );
+    if (capabilities.mode === "live" && items.length) {
+      if (!authorize) throw new RangeError("Live processing requires selected-batch verification.");
+      identities = await Promise.all(
+        requests.map(async (metadata) => ({
+          operationId: metadata.operationId,
+          inputHash: await hashRequest(metadata),
+          documentHash: metadata.document.sha256,
+          retry: metadata.retry,
+        })),
+      );
+      checkCurrent();
+      const inputHash = await hashRequest(identities);
+      checkCurrent();
+      approved = await authorize(
+        {
+          action: "extract",
+          workspaceId: token.workspaceId,
+          operationId: token.operationId,
+          inputHash,
+          retry: false,
+          operations: identities,
+        },
+        capabilities,
+        batchSignal,
+      );
+      checkCurrent();
+    }
     await Promise.all(
       Array.from({ length: Math.min(MAX_CONCURRENT_OPERATIONS, items.length) }, worker),
     );

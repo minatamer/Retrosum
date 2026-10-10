@@ -10,10 +10,16 @@ import { SessionController } from "../session/session-controller";
 import { processDocuments, type IntakeItem } from "./recognition-flow";
 import { extractOriginal, recognitionCapabilities } from "./recognition-client";
 import type { AuthorizePaid } from "../processing/processing-client";
+import type * as ProcessingClient from "../processing/processing-client";
+import { requestBatchGrant, hashRequest } from "../processing/processing-client";
 
 vi.mock("./recognition-client", () => ({
   extractOriginal: vi.fn(),
   recognitionCapabilities: vi.fn(),
+}));
+vi.mock("../processing/processing-client", async (original) => ({
+  ...(await original<typeof ProcessingClient>()),
+  requestBatchGrant: vi.fn(async () => "grant"),
 }));
 
 const live: RuntimeCapabilities = {
@@ -89,7 +95,7 @@ const result = (input: ExtractionRequest) =>
       ],
     },
   });
-async function harness(count = 3, firstAuthorization?: Promise<string>) {
+async function harness(count = 5, firstAuthorization?: Promise<string>) {
   const values = new Map<string, string>();
   let identity = 0;
   const controller = new SessionController({
@@ -164,35 +170,48 @@ async function harness(count = 3, firstAuthorization?: Promise<string>) {
 afterEach(() => {
   vi.useRealTimers();
 });
-describe("two-document processing", () => {
-  it("overlaps two requests and commits reversed completions in selection order without losing records", async () => {
+describe("four-document verified batches", () => {
+  it("verifies once, overlaps four requests and commits reversed completions in selection order", async () => {
     const h = await harness();
-    await vi.waitFor(() => expect(h.calls).toHaveLength(2));
-    expect(
-      h.controller.getSnapshot().session!.workspace.documents.filter((d) => d.recognitionAttempted),
-    ).toHaveLength(2);
-    h.calls[1]!.completion.resolve(result(h.calls[1]!.input));
+    await vi.waitFor(() => expect(h.calls).toHaveLength(4));
+    expect(h.authorize).toHaveBeenCalledTimes(1);
+    const manifest = h.authorize.mock.calls[0]![0];
+    expect(manifest.operations).toHaveLength(5);
+    expect(manifest.inputHash).toBe(await hashRequest(manifest.operations));
+    h.calls[3]!.completion.resolve(result(h.calls[3]!.input));
     await vi.waitFor(() =>
-      expect(h.controller.getSnapshot().session!.workspace.documents[1]!.state).toBe("validating"),
+      expect(h.controller.getSnapshot().session!.workspace.documents[3]!.state).toBe("validating"),
     );
-    expect(h.calls).toHaveLength(2);
     expect(h.controller.getSnapshot().session!.workspace.events).toHaveLength(0);
-    h.calls[0]!.completion.resolve(result(h.calls[0]!.input));
-    await vi.waitFor(() => expect(h.calls).toHaveLength(3));
-    expect(h.controller.getSnapshot().session!.workspace.events.map((e) => e.reference)).toEqual([
-      "INV-0",
-      "INV-1",
-    ]);
-    h.calls[2]!.completion.resolve(result(h.calls[2]!.input));
+    expect(h.calls).toHaveLength(4);
+    for (const call of h.calls.slice(0, 3).reverse()) call.completion.resolve(result(call.input));
+    await vi.waitFor(() => expect(h.calls).toHaveLength(5));
+    h.calls[4]!.completion.resolve(result(h.calls[4]!.input));
     await h.running;
     const graph = h.controller.getSnapshot().session!.workspace;
-    expect(graph.events.map((e) => e.reference).sort()).toEqual(["INV-0", "INV-1", "INV-2"]);
-    expect(graph.events.reduce((sum, e) => sum + e.amountMinor, 0)).toBe(30000);
+    expect(graph.events.map((e) => e.reference)).toEqual([
+      "INV-0",
+      "INV-1",
+      "INV-2",
+      "INV-3",
+      "INV-4",
+    ]);
+    expect(graph.events.reduce((sum, e) => sum + e.amountMinor, 0)).toBe(50000);
     expect(graph.documents.every((d) => d.state === "ready")).toBe(true);
-    expect(h.authorize).toHaveBeenCalledTimes(3);
+    for (const call of h.calls) {
+      const approved = manifest.operations!.find(
+        (op) => op.operationId === call.input.operationId,
+      )!;
+      expect(approved.inputHash).toBe(await hashRequest(call.input));
+      expect(requestBatchGrant).toHaveBeenCalledWith(
+        { ...approved, action: "extract", workspaceId: call.input.workspaceId },
+        "grant",
+        call.signal,
+      );
+    }
     h.controller.dispose();
   });
-  it("matches a payment to its earlier invoice even when the payment request finishes first", async () => {
+  it("matches a payment to its earlier invoice when the payment response arrives first", async () => {
     const h = await harness(2);
     await vi.waitFor(() => expect(h.calls).toHaveLength(2));
     const payment = result(h.calls[1]!.input);
@@ -223,37 +242,35 @@ describe("two-document processing", () => {
     expect(graph.documents.every((d) => d.state === "ready")).toBe(true);
     h.controller.dispose();
   });
-  it("keeps one challenge owner while admitted extraction continues", async () => {
-    const h = await harness();
+  it("starts no PDF while the selected-batch challenge is waiting", async () => {
     const waiting = deferred<string>();
-    h.authorize.mockImplementationOnce(() => waiting.promise);
+    const h = await harness(5, waiting.promise);
     await vi.waitFor(() => expect(h.authorize).toHaveBeenCalledTimes(1));
     expect(h.calls).toHaveLength(0);
     waiting.resolve("grant");
-    await vi.waitFor(() => expect(h.calls).toHaveLength(2));
-    h.calls[0]!.completion.resolve(result(h.calls[0]!.input));
-    h.calls[1]!.completion.resolve(result(h.calls[1]!.input));
-    await vi.waitFor(() => expect(h.calls).toHaveLength(3));
-    h.calls[2]!.completion.resolve(result(h.calls[2]!.input));
+    await vi.waitFor(() => expect(h.calls).toHaveLength(4));
+    for (const call of h.calls) call.completion.resolve(result(call.input));
+    await vi.waitFor(() => expect(h.calls).toHaveLength(5));
+    h.calls[4]!.completion.resolve(result(h.calls[4]!.input));
     await h.running;
+    expect(h.authorize).toHaveBeenCalledTimes(1);
     h.controller.dispose();
   });
-  it("keeps other successes and continues the pool after one failure without retrying", async () => {
+  it("continues after one failed PDF and preserves the other results without retry", async () => {
     const h = await harness();
-    await vi.waitFor(() => expect(h.calls).toHaveLength(2));
+    await vi.waitFor(() => expect(h.calls).toHaveLength(4));
     h.calls[0]!.completion.reject(new Error("Provider refused"));
-    await vi.waitFor(() => expect(h.calls).toHaveLength(3));
-    h.calls[1]!.completion.resolve(result(h.calls[1]!.input));
-    h.calls[2]!.completion.resolve(result(h.calls[2]!.input));
+    await vi.waitFor(() => expect(h.calls).toHaveLength(5));
+    for (const call of h.calls.slice(1)) call.completion.resolve(result(call.input));
     await h.running;
     expect(h.controller.getSnapshot().session!.workspace.documents[0]!.state).toBe("error");
-    expect(h.controller.getSnapshot().session!.workspace.events).toHaveLength(2);
-    expect(h.calls).toHaveLength(3);
+    expect(h.controller.getSnapshot().session!.workspace.events).toHaveLength(4);
+    expect(h.calls).toHaveLength(5);
     h.controller.dispose();
   });
-  it("aborts both in-flight requests and leaves unstarted originals unsubmitted", async () => {
-    const h = await harness(4);
-    await vi.waitFor(() => expect(h.calls).toHaveLength(2));
+  it("aborts all four active requests and leaves queued originals unsubmitted", async () => {
+    const h = await harness(6);
+    await vi.waitFor(() => expect(h.calls).toHaveLength(4));
     h.abort.abort();
     expect(h.calls.every((call) => call.signal.aborted)).toBe(true);
     for (const call of h.calls) call.completion.resolve(result(call.input));
@@ -261,15 +278,15 @@ describe("two-document processing", () => {
     const graph = h.controller.getSnapshot().session!.workspace;
     expect(graph.events).toHaveLength(0);
     expect(graph.documents.every((d) => d.state === "cancelled")).toBe(true);
-    expect(graph.documents.slice(2).some((d) => d.recognitionAttempted)).toBe(false);
-    expect(h.calls).toHaveLength(2);
+    expect(graph.documents.slice(4).some((d) => d.recognitionAttempted)).toBe(false);
+    expect(h.calls).toHaveLength(4);
     h.controller.dispose();
   });
-  it("preserves completed sources when cancellation occurs with two more slots active", async () => {
-    const h = await harness(4);
-    await vi.waitFor(() => expect(h.calls).toHaveLength(2));
+  it("keeps completed sources when four further slots are cancelled", async () => {
+    const h = await harness(6);
+    await vi.waitFor(() => expect(h.calls).toHaveLength(4));
     h.calls[0]!.completion.resolve(result(h.calls[0]!.input));
-    await vi.waitFor(() => expect(h.calls).toHaveLength(3));
+    await vi.waitFor(() => expect(h.calls).toHaveLength(5));
     h.abort.abort();
     for (const call of h.calls.slice(1)) call.completion.resolve(result(call.input));
     await h.settled;
@@ -279,21 +296,21 @@ describe("two-document processing", () => {
     expect(h.controller.getSnapshot().session!.workspace.documents[0]!.state).toBe("ready");
     h.controller.dispose();
   });
-  it("reset aborts both slots and discards late results from the old workspace", async () => {
+  it("reset aborts four slots and discards responses from the old workspace", async () => {
     const h = await harness();
-    await vi.waitFor(() => expect(h.calls).toHaveLength(2));
+    await vi.waitFor(() => expect(h.calls).toHaveLength(4));
     await h.controller.reset();
     expect(h.calls.every((call) => call.signal.aborted)).toBe(true);
     for (const call of h.calls) call.completion.resolve(result(call.input));
     await h.settled;
     expect(h.controller.getSnapshot().session!.workspace.documents).toHaveLength(0);
     expect(h.controller.getSnapshot().session!.workspace.events).toHaveLength(0);
-    expect(h.calls).toHaveLength(2);
+    expect(h.calls).toHaveLength(4);
     h.controller.dispose();
   });
-  it("does not treat an unrelated workspace revision as a mutation owned by the batch", async () => {
+  it("rejects unrelated workspace edits instead of treating them as batch-owned revisions", async () => {
     const h = await harness();
-    await vi.waitFor(() => expect(h.calls).toHaveLength(2));
+    await vi.waitFor(() => expect(h.calls).toHaveLength(4));
     const graph = h.controller.getSnapshot().session!.workspace;
     h.controller.replaceGraph(h.controller.token("external_edit"), {
       ...graph,
@@ -302,37 +319,25 @@ describe("two-document processing", () => {
     });
     h.calls[0]!.completion.resolve(result(h.calls[0]!.input));
     await vi.waitFor(() => expect(h.calls[1]!.signal.aborted).toBe(true));
-    h.calls[1]!.completion.resolve(result(h.calls[1]!.input));
+    for (const call of h.calls.slice(1)) call.completion.resolve(result(call.input));
     expect(await h.settled).toBeInstanceOf(Error);
     expect(h.controller.getSnapshot().session!.workspace.business.name).toBe("Changed business");
     expect(h.controller.getSnapshot().session!.workspace.events).toHaveLength(0);
-    expect(h.calls).toHaveLength(2);
+    expect(h.calls).toHaveLength(4);
     h.controller.dispose();
   });
-  it("paces from actual verification completion when the first challenge is slow", async () => {
-    vi.useFakeTimers();
-    const waiting = deferred<string>();
-    const h = await harness(6, waiting.promise);
-    vi.mocked(extractOriginal).mockImplementation(
-      async (input, _blob, _signal, _grant, submitting) => {
-        submitting?.();
-        return result(input);
-      },
-    );
-    await vi.waitFor(() => expect(h.authorize).toHaveBeenCalledTimes(1));
-    await vi.advanceTimersByTimeAsync(50000);
-    waiting.resolve("grant");
-    await vi.waitFor(() => expect(h.authorize).toHaveBeenCalledTimes(5));
-    await vi.advanceTimersByTimeAsync(10000);
-    expect(h.authorize).toHaveBeenCalledTimes(5);
-    await vi.advanceTimersByTimeAsync(50100);
-    await vi.waitFor(() => expect(h.authorize).toHaveBeenCalledTimes(6));
-    await h.running;
-    expect(h.controller.getSnapshot().session!.workspace.events).toHaveLength(6);
+  it("a rejected batch verification submits no PDF or follow-on challenges", async () => {
+    const h = await harness(10);
+    h.authorize.mockRejectedValueOnce(new Error("Verification failed"));
+    expect(await h.settled).toBeInstanceOf(Error);
+    expect(h.authorize).toHaveBeenCalledTimes(1);
+    expect(h.calls).toHaveLength(0);
+    expect(
+      h.controller.getSnapshot().session!.workspace.documents.some((d) => d.recognitionAttempted),
+    ).toBe(false);
     h.controller.dispose();
   });
-  it("paces a fast ten-document batch under the unchanged six/minute admission limit", async () => {
-    vi.useFakeTimers();
+  it("processes ten fast documents with one challenge and ten distinct just-in-time grants", async () => {
     const h = await harness(10);
     vi.mocked(extractOriginal).mockImplementation(
       async (input, _blob, _signal, _grant, submitting) => {
@@ -340,12 +345,9 @@ describe("two-document processing", () => {
         return result(input);
       },
     );
-    await vi.waitFor(() => expect(h.authorize).toHaveBeenCalledTimes(5));
-    await vi.advanceTimersByTimeAsync(59000);
-    expect(h.authorize).toHaveBeenCalledTimes(5);
-    await vi.advanceTimersByTimeAsync(1100);
-    await vi.waitFor(() => expect(h.authorize).toHaveBeenCalledTimes(10));
     await h.running;
+    expect(h.authorize).toHaveBeenCalledTimes(1);
+    expect(h.authorize.mock.calls[0]![0].operations).toHaveLength(10);
     expect(h.controller.getSnapshot().session!.workspace.events).toHaveLength(10);
     h.controller.dispose();
   });

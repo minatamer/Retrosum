@@ -1,5 +1,9 @@
 import type { Request, Response } from "express";
-import { admissionSessionSchema, grantRequestSchema } from "@retrosum/contracts";
+import {
+  admissionSessionSchema,
+  admissionGrantRequestSchema,
+  extractionBatchRequestSchema,
+} from "@retrosum/contracts";
 import type { AppRuntime } from "../runtime/compose.js";
 import { runCookie } from "./admission.js";
 export function safeAdmissionError(cause: unknown) {
@@ -68,7 +72,7 @@ export async function admissionRoute(
   runtime: AppRuntime,
   request: Request,
   response: Response,
-  kind: "session" | "grant",
+  kind: "session" | "grant" | "batch",
 ) {
   if (request.headers.origin !== runtime.config.FRONTEND_ORIGIN) {
     response.status(403).json({ error: "origin_not_allowed" });
@@ -77,6 +81,7 @@ export async function admissionRoute(
   if (
     !runtime.config.PAID_DEMO_ENABLED ||
     runtime.config.FAKE_MODE ||
+    (kind === "batch" && !runtime.capabilities.documents.available) ||
     (!runtime.capabilities.documents.available && !runtime.capabilities.copilot.available)
   ) {
     response.status(503).json({ error: "paid_disabled" });
@@ -104,13 +109,22 @@ export async function admissionRoute(
       response.json({ expiresAt: result.expiresAt, disclosureVersion: input.disclosureVersion });
     } else {
       if (!cookie) throw new RangeError("invalid_grant");
+      if (kind === "batch") {
+        response.json(
+          await runtime.paidAdmission.issueBatch(
+            cookie,
+            extractionBatchRequestSchema.parse(request.body),
+            source,
+            signal,
+          ),
+        );
+        return;
+      }
+      const input = admissionGrantRequestSchema.parse(request.body);
       response.json(
-        await runtime.paidAdmission.issue(
-          cookie,
-          grantRequestSchema.parse(request.body),
-          source,
-          signal,
-        ),
+        "batchGrant" in input
+          ? runtime.paidAdmission.issueFromBatch(cookie, input)
+          : await runtime.paidAdmission.issue(cookie, input, source, signal),
       );
     }
   } catch (cause) {

@@ -9,12 +9,19 @@ vi.mock("../apps/frontend/src/features/documents/recognition-client.ts", () => (
   recognitionCapabilities: vi.fn(),
   extractOriginal: vi.fn(),
 }));
+vi.mock("../apps/frontend/src/features/processing/processing-client.ts", async (original) => ({
+  ...(await original()),
+  requestBatchGrant: vi.fn(async () => "injected-grant"),
+}));
 import {
   recognitionCapabilities,
   extractOriginal,
 } from "../apps/frontend/src/features/documents/recognition-client.ts";
 import { processDocuments } from "../apps/frontend/src/features/documents/recognition-flow.ts";
-import { hashRequest } from "../apps/frontend/src/features/processing/processing-client.ts";
+import {
+  hashRequest,
+  requestBatchGrant,
+} from "../apps/frontend/src/features/processing/processing-client.ts";
 import { SessionController } from "../apps/frontend/src/features/session/session-controller.ts";
 const capabilities = capabilitiesSchema.parse({
   schemaVersion: 1,
@@ -75,17 +82,20 @@ describe("consent precedes recognition submission state", () => {
         throw new Error("Cancelled review");
       });
     try {
-      await processDocuments(
-        h.controller,
-        [h.item],
-        new AbortController().signal,
-        () => {},
-        false,
-        authorize,
-      );
+      await expect(
+        processDocuments(
+          h.controller,
+          [h.item],
+          new AbortController().signal,
+          () => {},
+          false,
+          authorize,
+        ),
+      ).rejects.toThrow("Cancelled review");
       expect(extractOriginal).not.toHaveBeenCalled();
+      expect(requestBatchGrant).not.toHaveBeenCalled();
       expect(h.controller.getSnapshot().session.workspace.documents[0]).toMatchObject({
-        state: "error",
+        state: "queued",
         recognitionAttempted: false,
       });
     } finally {
@@ -94,6 +104,7 @@ describe("consent precedes recognition submission state", () => {
   });
   it("allowed input hash matches the exact submitted revision and dispatch remains one attempt", async () => {
     const h = await harness();
+    const selectedRevision = h.controller.getSnapshot().session.workspace.revision;
     let authorized;
     const authorize = vi.fn(async (identity) => {
       authorized = identity;
@@ -102,8 +113,14 @@ describe("consent precedes recognition submission state", () => {
     extractOriginal.mockImplementationOnce(async (metadata, _blob, _signal, grant, submitting) => {
       expect(grant).toBe("injected-grant");
       submitting();
-      expect(metadata.revision).toBe(h.controller.getSnapshot().session.workspace.revision);
-      expect(authorized.inputHash).toBe(await hashRequest(metadata));
+      expect(metadata.revision).toBe(selectedRevision);
+      expect(authorized.inputHash).toBe(await hashRequest(authorized.operations));
+      expect(authorized.operations[0].inputHash).toBe(await hashRequest(metadata));
+      expect(requestBatchGrant).toHaveBeenCalledWith(
+        { ...authorized.operations[0], action: "extract", workspaceId: authorized.workspaceId },
+        "injected-grant",
+        expect.any(AbortSignal),
+      );
       throw new Error("Injected unavailable response");
     });
     try {

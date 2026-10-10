@@ -7,6 +7,7 @@ import {
   extractionRequestSchema,
   commandIdSchema,
   interpretationSchema,
+  PROCESSING_DISCLOSURE_VERSION,
 } from "../packages/contracts/dist/index.js";
 import {
   mergeInterpretation,
@@ -25,6 +26,7 @@ import { ExtractionAdmission } from "../apps/backend/src/documents/admission.ts"
 import { createApp } from "../apps/backend/src/http/app.ts";
 import { composeRuntime } from "../apps/backend/src/runtime/compose.ts";
 import { parseConfig } from "../apps/backend/src/config/config.ts";
+import { requestInputHash } from "../apps/backend/src/security/admission.ts";
 import manifest from "../apps/frontend/src/features/documents/sample-manifest.json" with { type: "json" };
 
 const clock = { now: () => 2000, sleep: async (_ms, signal) => signal.throwIfAborted() };
@@ -286,6 +288,7 @@ describe("bounded provider and request admission", () => {
     const gate = new ExtractionAdmission(clock.now);
     const releaseIntake = gate.enter();
     const secondIntake = gate.enter();
+    const extraIntakes = [gate.enter(), gate.enter()];
     expect(() => gate.enter()).toThrow("busy");
     releaseIntake();
     const thirdIntake = gate.enter();
@@ -293,6 +296,7 @@ describe("bounded provider and request admission", () => {
     expect(() => gate.enter()).toThrow("busy");
     secondIntake();
     thirdIntake();
+    for (const release of extraIntakes) release();
     gate.reserve("workspace_a", "first", "hash", false)();
     expect(() => gate.reserve("workspace_a", "first", "hash", false)).toThrow("replayed");
     expect(() => gate.reserve("workspace_a", "second", "hash", false)).toThrow("allowance");
@@ -300,6 +304,10 @@ describe("bounded provider and request admission", () => {
     expect(() => gate.reserve("workspace_a", "retry2", "hash", true)).toThrow("allowance");
     const release = gate.reserve("workspace_b", "next", "hash2", false);
     const parallel = gate.reserve("workspace_c", "parallel", "hash3", false);
+    const extraReservations = [
+      gate.reserve("workspace_x", "x", "x", false),
+      gate.reserve("workspace_y", "y", "y", false),
+    ];
     expect(() => gate.reserve("workspace_d", "third", "hash4", false)).toThrow("busy");
     release();
     const next = gate.reserve("workspace_d", "third", "hash4", false);
@@ -307,6 +315,7 @@ describe("bounded provider and request admission", () => {
     expect(() => gate.reserve("workspace_e", "fourth", "hash5", false)).toThrow("busy");
     parallel();
     next();
+    for (const release of extraReservations) release();
   });
   it("uses actual inline bytes, foreground strict output, no tools and supported reasoning", () => {
     const body = buildResponsesRequest(metadata(cases[0].doc), cases[0].bytes);
@@ -369,49 +378,116 @@ describe("bounded provider and request admission", () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(fetcher.mock.calls[0][0]).toBe("https://api.openai.com/v1/responses/input_tokens");
   });
-  it("holds two real HTTP extraction slots, rejects a third and frees only the completed slot", async () => {
-    const completions = [Promise.withResolvers(), Promise.withResolvers(), Promise.withResolvers()];
-    const dispatch = vi.fn(async (input, signal) => {
-      const index = dispatch.mock.calls.length - 1;
-      await completions[index].promise;
-      return provider.interpretDocument(input, signal);
-    });
-    const app = createApp(
-      composeRuntime(parseConfig({}), {
-        clock,
-        createRequestId: () => "request_test",
-        provider: { kind: "fake", interpretDocument: dispatch },
-      }),
-    );
-    const send = (n) =>
-      request(app)
-        .post("/v1/extract")
-        .set("Origin", "http://localhost:3000")
-        .field("metadata", JSON.stringify(metadata(cases[n].doc, `parallel_${n}`)))
-        .attach("file", Buffer.from(cases[n].bytes), {
-          filename: "demo.pdf",
-          contentType: "application/pdf",
-        });
-    const first = send(0).then((response) => response);
-    const second = send(1).then((response) => response);
-    try {
-      await vi.waitFor(() => expect(dispatch).toHaveBeenCalledTimes(2), { timeout: 5000 });
-      expect((await send(2)).status).toBe(409);
-      expect(dispatch).toHaveBeenCalledTimes(2);
-      completions[0].resolve();
-      await Promise.race([first, second]);
-      const third = send(2).then((response) => response);
-      await vi.waitFor(() => expect(dispatch).toHaveBeenCalledTimes(3), { timeout: 5000 });
-      completions[1].resolve();
-      completions[2].resolve();
-      expect(
-        (await Promise.all([first, second, third])).map((response) => response.status),
-      ).toEqual([200, 200, 200]);
-    } finally {
-      for (const completion of completions) completion.resolve();
-      await Promise.all([first, second]);
-    }
-  }, 15000);
+  it.each(["fake", "live"])(
+    "holds four actual HTTP extraction slots, rejects a fifth and frees only the completed slot [%s]",
+    async (mode) => {
+      const completions = Array.from({ length: 5 }, () => Promise.withResolvers());
+      const dispatch = vi.fn(async (input, signal) => {
+        const index = dispatch.mock.calls.length - 1;
+        await completions[index].promise;
+        return provider.interpretDocument(input, signal);
+      });
+      const challenge = vi.fn(async () => true);
+      const app = createApp(
+        composeRuntime(
+          parseConfig(
+            mode === "fake"
+              ? {}
+              : {
+                  FAKE_MODE: "false",
+                  PAID_DEMO_ENABLED: "true",
+                  OPENAI_API_KEY: "injected-key",
+                  TURNSTILE_SITE_KEY: "injected-site",
+                  TURNSTILE_SECRET_KEY: "injected-secret",
+                  GRANT_SIGNING_SECRET: "injected-test-only-secret-longer-than-32",
+                },
+          ),
+          {
+            clock,
+            createRequestId: () => "request_test",
+            provider: { kind: mode === "fake" ? "fake" : "openai", interpretDocument: dispatch },
+            challengeVerifier: challenge,
+          },
+        ),
+      );
+      let cookie = "",
+        grants = [];
+      if (mode === "live") {
+        const consent = {
+          workspaceId: "workspace_review",
+          consent: true,
+          disclosureVersion: PROCESSING_DISCLOSURE_VERSION,
+        };
+        const session = await request(app)
+          .post("/v1/session")
+          .set("Origin", "http://localhost:3000")
+          .send(consent)
+          .expect(200);
+        cookie = session.headers["set-cookie"][0].split(";")[0];
+        const operations = cases.map((item, n) => ({
+          operationId: `parallel_${n}`,
+          inputHash: requestInputHash(metadata(item.doc, `parallel_${n}`)),
+          documentHash: item.doc.sha256,
+          retry: false,
+        }));
+        const batch = await request(app)
+          .post("/v1/document-batches")
+          .set("Origin", "http://localhost:3000")
+          .set("Cookie", cookie)
+          .send({
+            ...consent,
+            action: "extract",
+            operationId: "batch_all",
+            inputHash: requestInputHash(operations),
+            retry: false,
+            operations,
+            challengeToken: "injected",
+          })
+          .expect(200);
+        for (const op of operations) {
+          const grant = await request(app)
+            .post("/v1/grants")
+            .set("Origin", "http://localhost:3000")
+            .set("Cookie", cookie)
+            .send({ ...consent, ...op, action: "extract", batchGrant: batch.body.grant })
+            .expect(200);
+          grants.push(grant.body.grant);
+        }
+        expect(challenge).toHaveBeenCalledTimes(1);
+      }
+      const send = (n) =>
+        request(app)
+          .post("/v1/extract")
+          .set("Origin", "http://localhost:3000")
+          .set("Cookie", cookie)
+          .set("X-Retrosum-Grant", grants[n] ?? "fake-unused")
+          .field("metadata", JSON.stringify(metadata(cases[n].doc, `parallel_${n}`)))
+          .attach("file", Buffer.from(cases[n].bytes), {
+            filename: "demo.pdf",
+            contentType: "application/pdf",
+          });
+      const pending = Array.from({ length: 4 }, (_, n) => send(n).then((r) => r));
+      try {
+        await vi.waitFor(() => expect(dispatch).toHaveBeenCalledTimes(4), { timeout: 5000 });
+        const busy = await send(4);
+        expect(busy.status).toBe(mode === "live" ? 429 : 409);
+        expect(busy.body.error).toBe("instance_busy");
+        expect(dispatch).toHaveBeenCalledTimes(4);
+        completions[0].resolve();
+        await Promise.race(pending);
+        pending.push(send(4).then((r) => r));
+        await vi.waitFor(() => expect(dispatch).toHaveBeenCalledTimes(5), { timeout: 5000 });
+        for (const completion of completions) completion.resolve();
+        expect((await Promise.all(pending)).map((r) => r.status)).toEqual([
+          200, 200, 200, 200, 200,
+        ]);
+      } finally {
+        for (const completion of completions) completion.resolve();
+        await Promise.all(pending);
+      }
+    },
+    15000,
+  );
   it("runs the actual bounded multipart route and dispatches zero extra work for replay or paid-off", async () => {
     const dispatch = vi.fn(provider.interpretDocument);
     const runtime = composeRuntime(parseConfig({}), {

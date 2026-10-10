@@ -2,13 +2,20 @@ import { createHash, createHmac, randomUUID, timingSafeEqual } from "node:crypto
 import { z } from "zod";
 import {
   grantRequestSchema,
+  extractionBatchRequestSchema,
+  batchGrantRequestSchema,
+  EXTRACTION_BATCH_APPROVAL_MS,
   inputHashSchema,
   paidActionSchema,
   MAX_CONCURRENT_OPERATIONS,
   PAID_ATTEMPTS_PER_MINUTE,
+  PROCESSING_DISCLOSURE_VERSION,
   workspaceIdSchema,
   type GrantRequest,
   type PaidAction,
+  type ExtractionBatchRequest,
+  type ExtractionOperation,
+  type BatchGrantRequest,
 } from "@retrosum/contracts";
 import { reservationMicroUsd, SPEND_POLICY } from "../providers/policy.js";
 const sessionClaims = z.strictObject({
@@ -27,6 +34,16 @@ const grantClaims = z.strictObject({
   retry: z.boolean(),
 });
 type Claims = z.infer<typeof grantClaims>;
+const batchClaims = z.strictObject({
+  ...sessionClaims.shape,
+  kind: z.literal("extraction_batch"),
+  nonce: z.string().uuid(),
+  workspaceId: workspaceIdSchema,
+});
+type ApprovedBatch = {
+  expiresAt: number;
+  operations: Map<string, ExtractionOperation>;
+};
 type Run = {
   workspaceId: string;
   expiresAt: number;
@@ -37,9 +54,13 @@ type Run = {
   insights: number;
   reserved: number;
   grants: Map<string, Claims>;
+  batches: Map<string, ApprovedBatch>;
   generation: number;
 };
-export type ChallengeVerifier = (request: GrantRequest, signal: AbortSignal) => Promise<boolean>;
+export type ChallengeVerifier = (
+  request: Pick<GrantRequest, "action" | "inputHash" | "challengeToken">,
+  signal: AbortSignal,
+) => Promise<boolean>;
 export type ActionIdentity = {
   action: PaidAction;
   workspaceId: string;
@@ -73,9 +94,12 @@ export class PaidAdmission {
     const now = this.now();
     for (const [id, run] of this.runs) {
       if (run.expiresAt <= now) this.runs.delete(id);
-      else
+      else {
         for (const [nonce, grant] of run.grants)
           if (grant.expiresAt <= now) run.grants.delete(nonce);
+        for (const [nonce, batch] of run.batches)
+          if (batch.expiresAt <= now) run.batches.delete(nonce);
+      }
     }
     for (const [key, times] of this.sources) {
       const retained = times.filter((t) => t > now - 3_600_000);
@@ -146,6 +170,7 @@ export class PaidAdmission {
       insights: 0,
       reserved: 0,
       grants: new Map(),
+      batches: new Map(),
       generation: 0,
     });
     return { cookie: this.sign({ run, expiresAt, epoch: this.epoch }), expiresAt };
@@ -156,14 +181,27 @@ export class PaidAdmission {
       { run, id } = this.run(cookie);
     if (run.workspaceId !== request.workspaceId) throw new RangeError("workspace_mismatch");
     const generation = run.generation;
-    if (run.grants.size >= 20) throw new RangeError("admission_full");
+    if (this.pending(run) >= 20) throw new RangeError("admission_full");
     if (!(await this.verifyChallenge(request, signal))) throw new RangeError("challenge_rejected");
     signal.throwIfAborted();
     this.gate();
     if (this.run(cookie).run !== run) throw new RangeError("admission_expired");
     if (run.generation !== generation) throw new RangeError("invalid_grant");
-    if (run.grants.size >= 20) throw new RangeError("admission_full");
+    if (this.pending(run) >= 20) throw new RangeError("admission_full");
     if (run.operations.has(request.operationId)) throw new RangeError("operation_replayed");
+    return this.mint(run, id, request);
+  }
+  private pending(run: Run) {
+    return run.grants.size + [...run.batches.values()].reduce((n, b) => n + b.operations.size, 0);
+  }
+  private mint(
+    run: Run,
+    id: string,
+    request: Pick<
+      GrantRequest,
+      "workspaceId" | "action" | "operationId" | "inputHash" | "retry" | "documentHash"
+    >,
+  ) {
     const claims: Claims = {
       run: id,
       epoch: this.epoch,
@@ -180,8 +218,83 @@ export class PaidAdmission {
     return {
       grant: this.sign(claims),
       expiresAt: claims.expiresAt,
+      disclosureVersion: PROCESSING_DISCLOSURE_VERSION,
+    };
+  }
+  async issueBatch(
+    cookie: string,
+    input: ExtractionBatchRequest,
+    source: string,
+    signal: AbortSignal,
+  ) {
+    this.attempt(source);
+    const request = extractionBatchRequestSchema.parse(input),
+      { run, id } = this.run(cookie);
+    if (run.workspaceId !== request.workspaceId) throw new RangeError("workspace_mismatch");
+    if (request.inputHash !== requestInputHash(request.operations))
+      throw new RangeError("invalid_grant");
+    const generation = run.generation;
+    const check = () => {
+      signal.throwIfAborted();
+      this.gate();
+      this.sweep();
+      if (this.run(cookie).run !== run) throw new RangeError("admission_expired");
+      if (run.generation !== generation) throw new RangeError("invalid_grant");
+      if (this.pending(run) + request.operations.length > 20)
+        throw new RangeError("admission_full");
+      if (request.operations.some((op) => run.operations.has(op.operationId)))
+        throw new RangeError("operation_replayed");
+    };
+    check();
+    if (!(await this.verifyChallenge(request, signal))) throw new RangeError("challenge_rejected");
+    check();
+    const nonce = randomUUID(),
+      expiresAt = Math.min(run.expiresAt, this.now() + EXTRACTION_BATCH_APPROVAL_MS);
+    run.batches.set(nonce, {
+      expiresAt,
+      operations: new Map(request.operations.map((op) => [op.operationId, op])),
+    });
+    return {
+      grant: this.sign({
+        run: id,
+        epoch: this.epoch,
+        kind: "extraction_batch",
+        nonce,
+        workspaceId: run.workspaceId,
+        expiresAt,
+      }),
+      expiresAt,
       disclosureVersion: request.disclosureVersion,
     };
+  }
+  issueFromBatch(cookie: string, input: BatchGrantRequest) {
+    this.gate();
+    this.sweep();
+    const request = batchGrantRequestSchema.parse(input),
+      claims = batchClaims.parse(this.decode(request.batchGrant)),
+      { run, id } = this.run(cookie);
+    const batch = run.batches.get(claims.nonce),
+      approved = batch?.operations.get(request.operationId);
+    if (claims.epoch !== this.epoch) throw new RangeError("boot_changed");
+    if (claims.expiresAt <= this.now()) throw new RangeError("grant_expired");
+    if (
+      claims.run !== id ||
+      claims.workspaceId !== request.workspaceId ||
+      run.workspaceId !== request.workspaceId ||
+      !batch ||
+      batch.expiresAt !== claims.expiresAt ||
+      !approved ||
+      approved.inputHash !== request.inputHash ||
+      approved.documentHash !== request.documentHash ||
+      approved.retry !== request.retry
+    )
+      throw new RangeError("invalid_grant");
+    if (run.operations.has(request.operationId)) throw new RangeError("operation_replayed");
+    // Replace exactly one approved identity with one short-lived grant, without an await.
+    const result = this.mint(run, id, request);
+    batch.operations.delete(request.operationId);
+    if (!batch.operations.size) run.batches.delete(claims.nonce);
+    return result;
   }
   consume(cookie: string, token: string, identity: ActionIdentity) {
     this.gate();
@@ -240,6 +353,7 @@ export class PaidAdmission {
     const { run } = this.run(cookie);
     if (run.workspaceId !== workspaceId) throw new RangeError("workspace_mismatch");
     run.grants.clear(); // Retain independent run cookie, consumed operations and full reservations.
+    run.batches.clear();
     run.generation++;
   }
 }

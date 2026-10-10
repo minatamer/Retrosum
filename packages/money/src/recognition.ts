@@ -73,6 +73,12 @@ export function mergeInterpretation(
     blocked = true;
     notes.push("This PDF exceeds the supported 100 financial rows. No rows were truncated.");
   }
+  if (data.payments.length && data.kind !== "payment_register") {
+    blocked = true;
+    notes.push(
+      "A paid claim on an invoice, bill or receipt is not a recorded cash movement. Keep this source held; cash requires dedicated payment-register evidence.",
+    );
+  }
   for (const page of result.inspection.pages) {
     const pageFields = data.fields.filter((field) => field.page === page.page);
     const expected = counts(
@@ -242,7 +248,7 @@ export function mergeInterpretation(
           const calculated = invoiceAmounts(invoice);
           if (
             calculated.lines.some((minor, n) => minor !== amount(row.lines[n]!.total)) ||
-            calculated.netMinor !== record.netMinor ||
+            (record.netMinor !== undefined && calculated.netMinor !== record.netMinor) ||
             calculated.grossMinor !== record.amountMinor ||
             record.taxMinor === undefined
           )
@@ -273,7 +279,7 @@ export function mergeInterpretation(
               .filter((item) => item.eventId === event.id)
               .reduce((sum, item) => sum + item.amountMinor, 0)
           : 0;
-        const canMatch = event && amountMinor <= event.amountMinor - allocated;
+        const canMatch = !transfer && event && amountMinor <= event.amountMinor - allocated;
         const record = paymentSchema.parse({
           id: `payment_${base}_${index}`,
           occurredOn: value(row.dateField, "ISO_date"),
@@ -288,7 +294,7 @@ export function mergeInterpretation(
           ...(transfer ? { fromAccount: row.fromAccount, toAccount: row.toAccount } : {}),
         });
         workspace.payments.push(record);
-        if (row.eventReference && !canMatch)
+        if (!transfer && row.eventReference && !canMatch)
           notes.push(
             `Payment ${record.reference}: no safe unique invoice/bill match; cash is kept separately.`,
           );

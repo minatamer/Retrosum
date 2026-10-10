@@ -1,5 +1,10 @@
 import "server-only";
-import { MAX_FILE_BYTES, MAX_RECOGNITION_BYTES, extractionResultSchema } from "@retrosum/contracts";
+import {
+  MAX_FILE_BYTES,
+  MAX_RECOGNITION_BYTES,
+  EXTRACTION_TRANSPORT_DEADLINE_MS,
+  extractionResultSchema,
+} from "@retrosum/contracts";
 import { readBackendCapabilities } from "./capabilities.server";
 import {
   backendRequest,
@@ -27,7 +32,10 @@ export async function forwardExtraction(
   const capabilities = await readBackendCapabilities(fetcher, environment);
   if (!capabilities.documents.available)
     return error(capabilities.documents.reason ?? "backend_unavailable", 503);
-  const signal = AbortSignal.any([request.signal, AbortSignal.timeout(95000)]);
+  const signal = AbortSignal.any([
+    request.signal,
+    AbortSignal.timeout(EXTRACTION_TRANSPORT_DEADLINE_MS),
+  ]);
   const incoming = request.body.getReader();
   let bytes = 0;
   let limitHit = false;

@@ -38,21 +38,29 @@ export interface AppRuntime {
   exchangeRates: ExchangeRateService;
 }
 export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRuntime {
-  // Live support stays closed until exact-field, token and admission acceptance.
-  const reason = config.FAKE_MODE
+  const prerequisiteReason = config.FAKE_MODE
     ? "feature_pending"
     : !config.PAID_DEMO_ENABLED
       ? "paid_disabled"
       : !config.OPENAI_API_KEY
         ? "key_missing"
-        : !config.TURNSTILE_SECRET_KEY || config.GRANT_SIGNING_SECRET.length < 32
+        : !config.TURNSTILE_SITE_KEY ||
+            !config.TURNSTILE_SECRET_KEY ||
+            config.GRANT_SIGNING_SECRET.length < 32
           ? "admission_missing"
-          : "acceptance_pending";
+          : !LIVE_ACCEPTANCE_VERIFIED
+            ? "acceptance_pending"
+            : undefined;
   const providerMatches = ports.provider?.kind === (config.FAKE_MODE ? "fake" : "openai");
+  const enabled = config.FAKE_MODE || prerequisiteReason === undefined;
   const documentsAvailable =
-    providerMatches && Boolean(ports.provider?.interpretDocument) && config.FAKE_MODE;
+    enabled && providerMatches && Boolean(ports.provider?.interpretDocument);
   const copilotAvailable =
-    providerMatches && ports.provider?.investigator?.kind === "fake" && config.FAKE_MODE;
+    enabled &&
+    providerMatches &&
+    ports.provider?.investigator?.kind === (config.FAKE_MODE ? "fake" : "openai");
+  const reason = prerequisiteReason ?? "adapter_not_ready";
+  const admissionAvailable = !config.FAKE_MODE && (documentsAvailable || copilotAvailable);
   const capabilities = capabilitiesSchema.parse({
     schemaVersion: 1,
     mode: config.FAKE_MODE
@@ -67,8 +75,7 @@ export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRunti
       disclosureVersion: PROCESSING_DISCLOSURE_VERSION,
       provider: "OpenAI",
       siteKey: config.TURNSTILE_SITE_KEY,
-      admissionAvailable:
-        !config.FAKE_MODE && config.PAID_DEMO_ENABLED && (documentsAvailable || copilotAvailable),
+      admissionAvailable,
     },
   });
   return Object.freeze({
@@ -83,7 +90,7 @@ export function composeRuntime(config: AppConfig, ports: RuntimePorts): AppRunti
     paidAdmission: new PaidAdmission(
       config.GRANT_SIGNING_SECRET,
       ports.clock.now,
-      () => !config.FAKE_MODE && config.PAID_DEMO_ENABLED && LIVE_ACCEPTANCE_VERIFIED,
+      () => admissionAvailable,
       ports.challengeVerifier ??
         turnstileVerifier(
           config.TURNSTILE_SECRET_KEY,

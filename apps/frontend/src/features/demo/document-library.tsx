@@ -46,7 +46,7 @@ export function DocumentLibrary({ onAddDocuments }: { onAddDocuments(): void }) 
                 {doc.state.replaceAll("_", " ")}
                 {doc.disposition === "duplicate" ? " · Excluded duplicate" : ""}
               </p>
-              {doc.state === "needs_review" && doc.reviewNotes[0] && (
+              {["needs_review", "error", "cancelled"].includes(doc.state) && doc.reviewNotes[0] && (
                 <small>{doc.reviewNotes[0]}</small>
               )}
             </div>

@@ -5,6 +5,9 @@ import { dateSchema, businessIdentitySchema } from "./records.js";
 
 export const RECOGNITION_SCHEMA_VERSION = "recognition-v1";
 export const MAX_RECOGNITION_BYTES = 512 * 1024;
+// Inspection (20s), exact input preflight (60s), generation (75s), bounded decoding.
+export const EXTRACTION_DEADLINE_MS = 170_000;
+export const EXTRACTION_TRANSPORT_DEADLINE_MS = 175_000;
 const fieldKey = z.string().regex(/^[A-Za-z0-9_-]{1,60}$/u);
 export const numericFieldSchema = z.strictObject({
   key: fieldKey,

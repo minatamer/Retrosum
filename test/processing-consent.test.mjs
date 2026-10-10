@@ -99,8 +99,9 @@ describe("consent precedes recognition submission state", () => {
       authorized = identity;
       return "injected-grant";
     });
-    extractOriginal.mockImplementationOnce(async (metadata, _blob, _signal, grant) => {
+    extractOriginal.mockImplementationOnce(async (metadata, _blob, _signal, grant, submitting) => {
       expect(grant).toBe("injected-grant");
+      submitting();
       expect(metadata.revision).toBe(h.controller.getSnapshot().session.workspace.revision);
       expect(authorized.inputHash).toBe(await hashRequest(metadata));
       throw new Error("Injected unavailable response");
@@ -118,6 +119,26 @@ describe("consent precedes recognition submission state", () => {
       expect(h.controller.getSnapshot().session.workspace.documents[0].recognitionAttempted).toBe(
         true,
       );
+    } finally {
+      h.controller.dispose();
+    }
+  });
+  it("transport preparation failure leaves the original unsubmitted after allowed consent", async () => {
+    const h = await harness();
+    extractOriginal.mockRejectedValueOnce(new TypeError("Transport could not be prepared"));
+    try {
+      await processDocuments(
+        h.controller,
+        [h.item],
+        new AbortController().signal,
+        () => {},
+        false,
+        async () => "injected-grant",
+      );
+      expect(h.controller.getSnapshot().session.workspace.documents[0]).toMatchObject({
+        state: "error",
+        recognitionAttempted: false,
+      });
     } finally {
       h.controller.dispose();
     }

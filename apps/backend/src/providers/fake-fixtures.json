@@ -1809,7 +1809,7 @@
         "raw": "8",
         "occurrences": 1,
         "normalized": "8",
-        "scale": "units",
+        "scale": "packs",
         "treatment": "line_quantity",
         "ambiguous": false
       },
@@ -1985,7 +1985,7 @@
         "raw": "3",
         "occurrences": 1,
         "normalized": "3",
-        "scale": "units",
+        "scale": "hours",
         "treatment": "line_quantity",
         "ambiguous": false
       },

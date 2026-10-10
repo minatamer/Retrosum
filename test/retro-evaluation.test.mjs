@@ -34,7 +34,7 @@ describe("private live Retro evaluation admission and metering", () => {
     const meter = createEvaluationMeter(SPEND_POLICY, fetcher, readBoundedJson);
     meter.beginTurn();
     for (let i = 0; i < 3; i++) await meter.fetch(url, options());
-    expect(meter.snapshot().spentMicroUsd).toBe(900);
+    expect(meter.snapshot().spentMicroUsd).toBe(1050);
     await expect(meter.fetch(url, options())).rejects.toThrow("evaluation_request_limit");
     expect(fetcher).toHaveBeenCalledTimes(3);
     meter.beginTurn();

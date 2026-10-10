@@ -59,9 +59,9 @@ describe("one-use admission and conservative reservations", () => {
     expect(() => h.session()).toThrow("paid_disabled");
     await expect(issue(h, "invalid", action(1))).rejects.toThrow("paid_disabled");
     expect(h.verify).not.toHaveBeenCalled();
-    expect(reservationMicroUsd("extract")).toBe(108000);
-    expect(reservationMicroUsd("chat")).toBe(117000);
-    expect(11 * reservationMicroUsd("extract") + 10 * reservationMicroUsd("chat")).toBe(2358000);
+    expect(reservationMicroUsd("extract")).toBe(120000);
+    expect(reservationMicroUsd("chat")).toBe(135000);
+    expect(11 * reservationMicroUsd("extract") + 10 * reservationMicroUsd("chat")).toBe(2670000);
   });
   it("binds exact run/workspace/action/input, rejects tampering and consumes atomically before calls", async () => {
     const h = harness(),
@@ -126,7 +126,7 @@ describe("one-use admission and conservative reservations", () => {
     second();
   });
   it("unknown outcomes retain reservations; a lower controlled envelope rejects before another call", async () => {
-    const h = harness(true, 120000),
+    const h = harness(true, reservationMicroUsd("chat")),
       cookie = h.session(),
       a = action(1),
       g = await issue(h, cookie, a);

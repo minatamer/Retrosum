@@ -8,11 +8,7 @@ import {
 import { composeRuntime } from "../apps/backend/src/runtime/compose.ts";
 import { parseConfig } from "../apps/backend/src/config/config.ts";
 import { createApp } from "../apps/backend/src/http/app.ts";
-import {
-  PaidAdmission,
-  requestInputHash,
-  runCookie,
-} from "../apps/backend/src/security/admission.ts";
+import { requestInputHash, runCookie } from "../apps/backend/src/security/admission.ts";
 import { ExtractionAdmission } from "../apps/backend/src/documents/admission.ts";
 const input = (operationId = "retro_bound") =>
   retroRequestSchema.parse({
@@ -33,7 +29,14 @@ function harness(paid = true) {
     challenge = vi.fn(async () => true),
     metric = vi.fn();
   const runtime = composeRuntime(
-    parseConfig({ FAKE_MODE: "false", PAID_DEMO_ENABLED: String(paid) }),
+    parseConfig({
+      FAKE_MODE: "false",
+      PAID_DEMO_ENABLED: String(paid),
+      OPENAI_API_KEY: "injected-key",
+      TURNSTILE_SITE_KEY: "injected-site",
+      TURNSTILE_SECRET_KEY: "injected-secret",
+      GRANT_SIGNING_SECRET: "injected-test-only-secret-longer-than-32",
+    }),
     {
       clock: { now: () => now, sleep: async () => {} },
       createRequestId: () => "request_test",
@@ -46,25 +49,9 @@ function harness(paid = true) {
       metric,
     },
   );
-  // An injected test runtime exercises live guards. Production composition has no bypass flag.
-  const ledger = new PaidAdmission(
-    "injected-test-only-secret-longer-than-32",
-    () => now,
-    () => paid,
-    challenge,
-  );
-  const available = {
-    ...runtime,
-    paidAdmission: ledger,
-    capabilities: {
-      ...runtime.capabilities,
-      mode: "live",
-      documents: { available: true },
-      copilot: { available: true },
-    },
-  };
+  const ledger = runtime.paidAdmission;
   return {
-    app: createApp(available),
+    app: createApp(runtime),
     ledger,
     step,
     document,
@@ -94,6 +81,69 @@ async function grant(h, cookie, body, action = "chat") {
   );
 }
 describe("actual route guards before provider dispatch", () => {
+  it("restart rejects a signed obsolete run, then permits a deliberate fresh review without renewing current runs", async () => {
+    const before = harness(),
+      after = harness(),
+      body = input();
+    const stale = before.ledger.session(body.workspace.id, null).cookie;
+    const consent = {
+      workspaceId: body.workspace.id,
+      consent: true,
+      disclosureVersion: PROCESSING_DISCLOSURE_VERSION,
+    };
+    const rejected = await request(after.app)
+      .post("/v1/session")
+      .set("Origin", origin)
+      .set("Cookie", `retrosum_run=${stale}`)
+      .send(consent)
+      .expect(409);
+    expect(rejected.body.error).toBe("boot_changed");
+    expect(rejected.headers["set-cookie"]).toEqual([
+      "retrosum_run=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict",
+    ]);
+    expect(after.challenge).not.toHaveBeenCalled();
+    expect(after.step).not.toHaveBeenCalled();
+    const fresh = await request(after.app)
+      .post("/v1/session")
+      .set("Origin", origin)
+      .send(consent)
+      .expect(200);
+    const current = fresh.headers["set-cookie"][0].split(";")[0];
+    after.advance();
+    const refreshed = await request(after.app)
+      .post("/v1/session")
+      .set("Origin", origin)
+      .set("Cookie", current)
+      .send(consent)
+      .expect(200);
+    expect(refreshed.body.expiresAt).toBe(fresh.body.expiresAt);
+    const mismatch = await request(after.app)
+      .post("/v1/session")
+      .set("Origin", origin)
+      .set("Cookie", current)
+      .send({ ...consent, workspaceId: "workspace_another" })
+      .expect(409);
+    expect(mismatch.body.error).toBe("workspace_mismatch");
+    expect(mismatch.headers["set-cookie"]).toBeUndefined();
+    const invalid = await request(after.app)
+      .post("/v1/session")
+      .set("Origin", origin)
+      .set("Cookie", "retrosum_run=invalid")
+      .send(consent)
+      .expect(403);
+    expect(invalid.headers["set-cookie"]).toBeUndefined();
+    const cookie = current.slice("retrosum_run=".length);
+    const g = await grant(after, cookie, body);
+    await request(after.app)
+      .post("/v1/chat")
+      .set("Origin", origin)
+      .set("Cookie", current)
+      .set("X-Retrosum-Grant", g.grant)
+      .send(body)
+      .expect(200);
+    expect(after.challenge).toHaveBeenCalledTimes(1);
+    expect(after.step).toHaveBeenCalledTimes(1);
+  });
   it("capacity is acquired before JSON parsing and always released after malformed bodies", async () => {
     const h = harness(),
       body = input(),

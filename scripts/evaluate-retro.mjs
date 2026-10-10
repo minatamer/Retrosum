@@ -46,7 +46,7 @@ const report = {
   createdAt: new Date().toISOString(),
   fixture: "harbor-v1 declared test workspace; not live recognition evidence",
   publicLiveEnabled: LIVE_ACCEPTANCE_VERIFIED,
-  acceptance: "Pending live intent, extraction, token and owner review",
+  acceptance: "This evaluation requires independent intent review; it does not authorize release",
   cases: [],
 };
 try {
@@ -87,6 +87,6 @@ try {
   await mkdir("artifacts/local", { recursive: true });
   await writeFile("artifacts/local/retro-evaluation.json", JSON.stringify(report, null, 2) + "\n");
   console.log(
-    `${mode}: ${report.cases.length}/${cases.length} grounded cases. Live acceptance remains pending. Report: artifacts/local/retro-evaluation.json`,
+    `${mode}: ${report.cases.length}/${cases.length} grounded cases. Review the saved decisions before acceptance. Report: artifacts/local/retro-evaluation.json`,
   );
 }

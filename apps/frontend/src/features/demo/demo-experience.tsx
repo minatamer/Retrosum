@@ -281,7 +281,7 @@ function DemoFlow() {
               >
                 <span className={styles.choiceIcon}>▤</span>
                 <h2>Try the sample</h2>
-                <p>Eight realistic PDFs from fictional Harbor Studio.</p>
+                <p>{sampleAssets.length} realistic PDFs from fictional Harbor Studio.</p>
                 <span>
                   Explore the paperwork <b>↗</b>
                 </span>

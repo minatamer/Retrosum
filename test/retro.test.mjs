@@ -1,3 +1,4 @@
+import { withTokenPreflight } from "./lib/openai-transport.mjs";
 import { describe, it, expect, vi } from "vitest";
 import request from "supertest";
 import { harborSession } from "./fixtures/harbor-v1/money-fixture.mjs";
@@ -269,6 +270,7 @@ describe("bounded investigator dispatch", () => {
     const fetcher = vi.fn(async () =>
       Response.json({
         status: "completed",
+        service_tier: "default",
         usage: { input_tokens: 100, output_tokens: 40 },
         output: [
           {
@@ -290,7 +292,11 @@ describe("bounded investigator dispatch", () => {
         ],
       }),
     );
-    await investigate(input("income"), createOpenAiInvestigator("test-key", fetcher), signal());
+    await investigate(
+      input("income"),
+      createOpenAiInvestigator("test-key", withTokenPreflight(fetcher)),
+      signal(),
+    );
     const body = JSON.parse(fetcher.mock.calls[0][1].body);
     expect(body.store).toBe(false);
     expect(body.max_output_tokens).toBe(1500);
@@ -300,7 +306,7 @@ describe("bounded investigator dispatch", () => {
     expect(body.input[0].content[0].text).not.toContain("simulationDecision");
     const bad = vi.fn(async () => Response.json({ status: "incomplete", output: [] }));
     await expect(
-      investigate(input(), createOpenAiInvestigator("test-key", bad), signal()),
+      investigate(input(), createOpenAiInvestigator("test-key", withTokenPreflight(bad)), signal()),
     ).rejects.toThrow();
     expect(bad).toHaveBeenCalledTimes(1);
     expect(fetch).not.toHaveBeenCalled();
@@ -311,6 +317,7 @@ describe("bounded investigator dispatch", () => {
       .mockResolvedValueOnce(
         Response.json({
           status: "completed",
+          service_tier: "default",
           usage: { input_tokens: 50, output_tokens: 40 },
           output: [
             { type: "reasoning", id: "reason_1", encrypted_content: "opaque", summary: [] },
@@ -327,6 +334,7 @@ describe("bounded investigator dispatch", () => {
       .mockResolvedValueOnce(
         Response.json({
           status: "completed",
+          service_tier: "default",
           usage: { input_tokens: 100, output_tokens: 40 },
           output: [
             {
@@ -350,7 +358,7 @@ describe("bounded investigator dispatch", () => {
       );
     const result = await investigate(
       input("income"),
-      createOpenAiInvestigator("test-key", fetcher),
+      createOpenAiInvestigator("test-key", withTokenPreflight(fetcher)),
       signal(),
     );
     const body = JSON.parse(fetcher.mock.calls[1][1].body);

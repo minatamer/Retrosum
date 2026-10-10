@@ -50,11 +50,23 @@ export async function forwardAdmission(
     );
     if (!response.body) throw new Error();
     const value: unknown = JSON.parse(await readBounded(response.body, 4096, signal));
-    if (!response.ok)
+    if (!response.ok) {
+      const expiredCookie = `retrosum_run=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict${publicOrigin.startsWith("https:") ? "; Secure" : ""}`;
+      if (
+        kind === "session" &&
+        response.status === 409 &&
+        typeof value === "object" &&
+        value !== null &&
+        "error" in value &&
+        value.error === "boot_changed" &&
+        response.headers.get("set-cookie") === expiredCookie
+      )
+        headers["Set-Cookie"] = expiredCookie;
       return Response.json(
         { error: "admission_unavailable" },
         { status: [403, 409, 429, 503].includes(response.status) ? response.status : 503, headers },
       );
+    }
     const result =
       kind === "session"
         ? admissionSessionResultSchema.parse(value)

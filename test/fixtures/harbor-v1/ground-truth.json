@@ -274,7 +274,7 @@
           "fields": [
             ["NS-092", 1, "NS-092", "identifier", "event_reference"],
             ["2026-09-08", 1, "2026-09-08", "ISO_date", "paid_date"],
-            ["8", 1, 8, "units", "line_quantity"],
+            ["8", 1, 8, "packs", "line_quantity"],
             ["30.00", 1, 3000, "USD_cents", "unit_price"],
             ["240.00", 3, 24000, "USD_cents", "line_subtotal_and_total"],
             ["0.00", 1, 0, "USD_cents", "separate_tax"]
@@ -303,7 +303,7 @@
           "fields": [
             ["FC-091", 1, "FC-091", "identifier", "event_reference"],
             ["2026-09-15", 1, "2026-09-15", "ISO_date", "paid_date"],
-            ["3", 1, 3, "units", "line_quantity"],
+            ["3", 1, 3, "hours", "line_quantity"],
             ["150.00", 1, 15000, "USD_cents", "unit_price"],
             ["450.00", 3, 45000, "USD_cents", "line_subtotal_and_total"],
             ["0.00", 1, 0, "USD_cents", "separate_tax"]

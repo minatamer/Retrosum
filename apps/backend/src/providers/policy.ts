@@ -1,9 +1,11 @@
 export const MODEL = "gpt-6.1-sol";
-// This release cannot enable live dispatch until its exact-number and image-token gates pass.
-export const LIVE_ACCEPTANCE_VERIFIED = false;
+// RET-011: two live corpus passes, grounded intent review and exact preflight verified locally.
+// Hosted/domain acceptance remains an operator gate; committed defaults remain paid-off.
+export const LIVE_ACCEPTANCE_VERIFIED = true;
 export const SPEND_POLICY = Object.freeze({
-  version: "standard-short-context-2026-10-08",
-  inputMicroUsdPerToken: 2,
+  version: "standard-cache-write-ceiling-2026-10-10",
+  // Reserve at the standard cache-write ceiling; ordinary/cached input costs less.
+  inputMicroUsdPerToken: 2.5,
   outputMicroUsdPerToken: 10,
   runMicroUsd: 2_500_000,
   extraction: { input: 24_000, output: 6_000, requests: 1 },

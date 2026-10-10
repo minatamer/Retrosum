@@ -4,32 +4,85 @@ import { composeRuntime } from "./compose.js";
 import { systemClock } from "./clock.js";
 
 describe("provider composition stays explicit and side-effect free", () => {
+  it.each(["false", "true"])(
+    "the single paid=%s switch covers documents and Retro together",
+    (paid) => {
+      const interpretDocument = vi.fn();
+      const step = vi.fn();
+      const runtime = composeRuntime(
+        parseConfig({
+          FAKE_MODE: "false",
+          PAID_DEMO_ENABLED: paid,
+          OPENAI_API_KEY: "injected-key",
+          TURNSTILE_SITE_KEY: "injected-site",
+          TURNSTILE_SECRET_KEY: "injected-challenge-secret",
+          GRANT_SIGNING_SECRET: "x".repeat(32),
+        }),
+        {
+          clock: systemClock,
+          createRequestId: () => "request_test",
+          provider: { kind: "openai", interpretDocument, investigator: { kind: "openai", step } },
+        },
+      );
+      const capability =
+        paid === "true" ? { available: true } : { available: false, reason: "paid_disabled" };
+      expect(runtime.capabilities.documents).toEqual(capability);
+      expect(runtime.capabilities.copilot).toEqual(capability);
+      expect(runtime.capabilities.processing?.admissionAvailable).toBe(paid === "true");
+      expect(interpretDocument).not.toHaveBeenCalled();
+      expect(step).not.toHaveBeenCalled();
+    },
+  );
   it.each([
-    ["false", "paid_disabled"],
-    ["true", "acceptance_pending"],
-  ] as const)("the single paid=%s switch covers documents and Retro together", (paid, reason) => {
-    const interpretDocument = vi.fn();
-    const step = vi.fn();
+    ["OPENAI_API_KEY", "key_missing"],
+    ["TURNSTILE_SITE_KEY", "admission_missing"],
+    ["TURNSTILE_SECRET_KEY", "admission_missing"],
+    ["GRANT_SIGNING_SECRET", "admission_missing"],
+  ])("missing %s closes both paid capabilities", (field, reason) => {
     const runtime = composeRuntime(
       parseConfig({
         FAKE_MODE: "false",
-        PAID_DEMO_ENABLED: paid,
+        PAID_DEMO_ENABLED: "true",
         OPENAI_API_KEY: "injected-key",
         TURNSTILE_SITE_KEY: "injected-site",
-        TURNSTILE_SECRET_KEY: "injected-challenge-secret",
+        TURNSTILE_SECRET_KEY: "injected-secret",
         GRANT_SIGNING_SECRET: "x".repeat(32),
+        [field]: "",
       }),
       {
         clock: systemClock,
         createRequestId: () => "request_test",
-        provider: { kind: "openai", interpretDocument, investigator: { kind: "openai", step } },
+        provider: {
+          kind: "openai",
+          interpretDocument: vi.fn(),
+          investigator: { kind: "openai", step: vi.fn() },
+        },
       },
     );
     expect(runtime.capabilities.documents).toEqual({ available: false, reason });
     expect(runtime.capabilities.copilot).toEqual({ available: false, reason });
     expect(runtime.capabilities.processing?.admissionAvailable).toBe(false);
-    expect(interpretDocument).not.toHaveBeenCalled();
-    expect(step).not.toHaveBeenCalled();
+    expect(runtime.ready).toBe(false);
+  });
+  it("does not advertise either paid feature without its actual adapter", () => {
+    const runtime = composeRuntime(
+      parseConfig({
+        FAKE_MODE: "false",
+        PAID_DEMO_ENABLED: "true",
+        OPENAI_API_KEY: "injected-key",
+        TURNSTILE_SITE_KEY: "injected-site",
+        TURNSTILE_SECRET_KEY: "injected-secret",
+        GRANT_SIGNING_SECRET: "x".repeat(32),
+      }),
+      { clock: systemClock, createRequestId: () => "request_test" },
+    );
+    expect(runtime.capabilities.documents).toEqual({
+      available: false,
+      reason: "adapter_not_ready",
+    });
+    expect(runtime.capabilities.copilot).toEqual({ available: false, reason: "adapter_not_ready" });
+    expect(runtime.capabilities.processing?.admissionAvailable).toBe(false);
+    expect(runtime.ready).toBe(false);
   });
   it("selects fake documents and Retro from fake mode even with paid settings present", () => {
     const interpretDocument = vi.fn();

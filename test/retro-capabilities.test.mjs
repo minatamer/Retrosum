@@ -1,3 +1,4 @@
+import { withTokenPreflight } from "./lib/openai-transport.mjs";
 import { describe, it, expect, vi } from "vitest";
 import {
   retroRequestSchema,
@@ -37,6 +38,7 @@ const snapshot = (prompt) => {
 const completed = (decision) =>
   Response.json({
     status: "completed",
+    service_tier: "default",
     usage: { input_tokens: 120, output_tokens: 60 },
     output: [
       { type: "message", content: [{ type: "output_text", text: JSON.stringify({ decision }) }] },
@@ -116,7 +118,7 @@ describe("Retro workspace capabilities in both provider paths", () => {
       const fetcher = vi.fn(async () => completed(decision));
       const live = await investigate(
         input,
-        createOpenAiInvestigator("injected-test-key", fetcher),
+        createOpenAiInvestigator("injected-test-key", withTokenPreflight(fetcher)),
         new AbortController().signal,
       );
       expect(live.change).toEqual(fake.change);
@@ -153,7 +155,7 @@ describe("Retro workspace capabilities in both provider paths", () => {
     const fetcher = vi.fn(async () => completed(decision));
     const live = await investigate(
       input,
-      createOpenAiInvestigator("injected-test-key", fetcher),
+      createOpenAiInvestigator("injected-test-key", withTokenPreflight(fetcher)),
       new AbortController().signal,
     );
     expect(live.decision).toEqual(decision);
@@ -175,7 +177,7 @@ describe("Retro workspace capabilities in both provider paths", () => {
       const fetcher = vi.fn(async () => completed(expected));
       const live = await investigate(
         input,
-        createOpenAiInvestigator("injected-test-key", fetcher),
+        createOpenAiInvestigator("injected-test-key", withTokenPreflight(fetcher)),
         new AbortController().signal,
       );
       expect(live.mode).toBe("live");
@@ -214,7 +216,7 @@ describe("Retro workspace capabilities in both provider paths", () => {
     const fetcher = vi.fn(async () => completed(expected));
     const live = await investigate(
       input,
-      createOpenAiInvestigator("injected-test-key", fetcher),
+      createOpenAiInvestigator("injected-test-key", withTokenPreflight(fetcher)),
       new AbortController().signal,
     );
     expect(fake.decision).toEqual(expected);
@@ -230,6 +232,7 @@ describe("Retro workspace capabilities in both provider paths", () => {
       if (fetcher.mock.calls.length === 1)
         return Response.json({
           status: "completed",
+          service_tier: "default",
           usage: { input_tokens: 100, output_tokens: 50 },
           output: [
             {
@@ -249,7 +252,7 @@ describe("Retro workspace capabilities in both provider paths", () => {
     });
     const result = await investigate(
       input,
-      createOpenAiInvestigator("injected-test-key", fetcher),
+      createOpenAiInvestigator("injected-test-key", withTokenPreflight(fetcher)),
       new AbortController().signal,
     );
     expect(fetcher).toHaveBeenCalledTimes(2);
@@ -260,13 +263,14 @@ describe("Retro workspace capabilities in both provider paths", () => {
     const fetcher = vi.fn(async () => completed(intent({ action: "help" })));
     await investigate(
       snapshot("Help"),
-      createOpenAiInvestigator("injected-test-key", fetcher),
+      createOpenAiInvestigator("injected-test-key", withTokenPreflight(fetcher)),
       new AbortController().signal,
     );
     const body = JSON.parse(fetcher.mock.calls[0][1].body);
     expect(body.service_tier).toBe("default");
     const walk = (schema) => {
       if (!schema || typeof schema !== "object") return;
+      expect(schema).not.toHaveProperty("oneOf");
       if (schema.type === "object") {
         expect(schema.additionalProperties).toBe(false);
         expect([...(schema.required ?? [])].sort()).toEqual(
@@ -370,7 +374,7 @@ describe("workspace proposals remain scoped, bounded and read-only", () => {
     await expect(
       investigate(
         snapshot("restore"),
-        createOpenAiInvestigator("injected-test-key", fetcher),
+        createOpenAiInvestigator("injected-test-key", withTokenPreflight(fetcher)),
         new AbortController().signal,
       ),
     ).rejects.toThrow();

@@ -3,6 +3,7 @@ import {
   extractionResultSchema,
   extractionRequestSchema,
   MAX_RECOGNITION_BYTES,
+  EXTRACTION_TRANSPORT_DEADLINE_MS,
   type ExtractionRequest,
 } from "@retrosum/contracts";
 
@@ -65,12 +66,15 @@ export async function extractOriginal(
   blob: Blob,
   signal: AbortSignal,
   grant?: string,
+  submitting?: () => void,
 ) {
   const metadata = extractionRequestSchema.parse(input);
   const form = new FormData();
   form.set("metadata", JSON.stringify(metadata));
   form.set("file", blob, "document.pdf");
-  const deadline = AbortSignal.any([signal, AbortSignal.timeout(95000)]);
+  const deadline = AbortSignal.any([signal, AbortSignal.timeout(EXTRACTION_TRANSPORT_DEADLINE_MS)]);
+  deadline.throwIfAborted();
+  submitting?.();
   const response = await fetch("/api/retrosum/v1/extract", {
     method: "POST",
     body: form,

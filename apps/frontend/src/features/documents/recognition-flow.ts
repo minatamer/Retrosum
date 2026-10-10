@@ -201,8 +201,9 @@ export async function processDocuments(
         );
       if (!controller.isCurrent(token))
         throw new RangeError("The workspace changed before submission.");
-      token = updateDocument(controller, token, item.doc.id, { recognitionAttempted: true });
-      const result = await extractOriginal(metadata, item.blob, signal, grant);
+      const result = await extractOriginal(metadata, item.blob, signal, grant, () => {
+        token = updateDocument(controller, token, item.doc.id, { recognitionAttempted: true });
+      });
       if (!controller.isCurrent(token))
         throw new RangeError(
           "The workspace changed. This result was discarded without automatic retry.",

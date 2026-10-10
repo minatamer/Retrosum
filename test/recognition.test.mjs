@@ -1,3 +1,4 @@
+import { withTokenPreflight } from "./lib/openai-transport.mjs";
 import { readFile } from "node:fs/promises";
 import { describe, it, expect, vi, beforeAll } from "vitest";
 import request from "supertest";
@@ -83,6 +84,42 @@ function empty() {
   };
 }
 describe("actual PDF recognition and source grounding", () => {
+  it("keeps a transfer reference as context without holding or allocating its payment register", () => {
+    const item = cases[6];
+    const output = structuredClone(item.output);
+    const transfer = output.interpretation.payments.find(
+      (row) => row.direction === "internal_transfer",
+    );
+    transfer.eventReference = "HS-101";
+    let graph = empty();
+    for (const original of cases.slice(0, 6))
+      graph = mergeInterpretation(graph, original.doc, original.output);
+    graph = mergeInterpretation(graph, item.doc, output);
+    expect(graph.documents[6].state).toBe("ready");
+    expect(graph.payments.find((row) => row.direction === "internal_transfer").allocations).toEqual(
+      [],
+    );
+    expect(
+      buildDashboard(graph, { from: "2026-09-01", to: "2026-09-30" }).facts.cash_net.value,
+    ).toBe(208000);
+  });
+  it("checks receipt lines against the stated total and explicit tax when no separate net is printed", () => {
+    const item = cases[4];
+    const output = structuredClone(item.output);
+    output.interpretation.events[0].netField = null;
+    const graph = mergeInterpretation(empty(), item.doc, output);
+    expect(graph.events).toHaveLength(1);
+    expect(graph.events[0].amountMinor).toBe(12000);
+    expect(graph.events[0].netMinor).toBeUndefined();
+    expect(graph.documents[4].reviewBlocked).toBe(false);
+    output.interpretation.events[0].lines[0].unitPrice = output.interpretation.events[0].taxField;
+    const invalid = mergeInterpretation(empty(), item.doc, output);
+    expect(invalid.events).toHaveLength(0);
+    expect(invalid.documents[4].reviewBlocked).toBe(true);
+    expect(invalid.documents[4].reviewNotes).toContain(
+      "The line arithmetic for PC-091 does not agree with its source figures. It was not corrected.",
+    );
+  });
   it("inspects all eighteen real pages; populates five cost categories while keeping raster sources held", () => {
     let workspace = empty();
     for (const item of cases) workspace = mergeInterpretation(workspace, item.doc, item.output);
@@ -168,6 +205,27 @@ describe("actual PDF recognition and source grounding", () => {
         "Accept",
       ),
     ).toThrow("unresolved");
+  });
+  it("holds a receipt that invents cash from its paid claim, preserving every raw figure", () => {
+    const item = cases[8];
+    const bad = structuredClone(item.output);
+    const row = bad.interpretation.events[0];
+    bad.interpretation.payments.push({
+      party: row.party,
+      direction: "out",
+      dateField: row.dateField,
+      referenceField: row.referenceField,
+      amountField: row.grossField,
+      eventReference: bad.interpretation.fields.find((field) => field.key === row.referenceField)
+        .raw,
+      fromAccount: null,
+      toAccount: null,
+    });
+    const graph = mergeInterpretation(empty(), item.doc, bad);
+    expect(graph.events).toHaveLength(0);
+    expect(graph.payments).toHaveLength(0);
+    expect(graph.documents[8].reviewBlocked).toBe(true);
+    expect(graph.documents[8].numericFields).toHaveLength(bad.interpretation.fields.length);
   });
   it.each(["tax", "currency", "role", "line", "page"])(
     "holds %s inconsistency without correcting it",
@@ -256,10 +314,11 @@ describe("bounded provider and request admission", () => {
     expect(JSON.stringify(body)).not.toContain("HS-101");
   });
   it("handles successful injected structured output and rejects incomplete/refusal/usage excess with one dispatch", async () => {
-    for (const variant of ["success", "incomplete", "refusal", "usage"]) {
+    for (const variant of ["success", "incomplete", "refusal", "usage", "tier"]) {
       const fetcher = vi.fn(async () =>
         Response.json({
           status: variant === "incomplete" ? "incomplete" : "completed",
+          service_tier: variant === "tier" ? "priority" : "default",
           output: [
             {
               type: "message",
@@ -273,7 +332,10 @@ describe("bounded provider and request admission", () => {
           usage: { input_tokens: variant === "usage" ? 24001 : 200, output_tokens: 100 },
         }),
       );
-      const pending = createOpenAiProvider("injected-test-key", fetcher).interpretDocument(
+      const pending = createOpenAiProvider(
+        "injected-test-key",
+        withTokenPreflight(fetcher),
+      ).interpretDocument(
         { metadata: metadata(cases[0].doc), bytes: cases[0].bytes },
         new AbortController().signal,
       );
@@ -281,6 +343,19 @@ describe("bounded provider and request admission", () => {
       else await expect(pending).rejects.toThrow();
       expect(fetcher).toHaveBeenCalledTimes(1);
     }
+  });
+  it("never generates a paid transcription when the PDF input count exceeds the reservation", async () => {
+    const fetcher = vi.fn(async () =>
+      Response.json({ object: "response.input_tokens", input_tokens: 24001 }),
+    );
+    await expect(
+      createOpenAiProvider("injected-test-key", fetcher).interpretDocument(
+        { metadata: metadata(cases[0].doc), bytes: cases[0].bytes },
+        new AbortController().signal,
+      ),
+    ).rejects.toThrow("context_too_large");
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(fetcher.mock.calls[0][0]).toBe("https://api.openai.com/v1/responses/input_tokens");
   });
   it("runs the actual bounded multipart route and dispatches zero extra work for replay or paid-off", async () => {
     const dispatch = vi.fn(provider.interpretDocument);
@@ -320,7 +395,7 @@ describe("bounded provider and request admission", () => {
       ),
     );
     expect((await send(closed, metadata(cases[0].doc)).expect(503)).body.error).toBe(
-      "acceptance_pending",
+      "admission_missing",
     );
     await send(app, metadata(cases[1].doc, "badbytes"), Buffer.from("not a PDF")).expect(400);
     expect(dispatch).toHaveBeenCalledTimes(1);

@@ -115,8 +115,16 @@ export async function admissionRoute(
     }
   } catch (cause) {
     const code = safeAdmissionError(cause);
-    if (!response.destroyed && !response.headersSent)
+    if (!response.destroyed && !response.headersSent) {
+      // A verified cookie from a previous boot cannot select any current run.
+      // Reject this action first; a fresh, deliberate review still requires consent and challenge.
+      if (kind === "session" && code === "boot_changed")
+        response.set(
+          "Set-Cookie",
+          `retrosum_run=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict${runtime.config.FRONTEND_ORIGIN.startsWith("https:") ? "; Secure" : ""}`,
+        );
       response.status(admissionStatus(code)).json({ error: code });
+    }
   } finally {
     clearTimeout(timer);
     request.removeListener("aborted", abort);

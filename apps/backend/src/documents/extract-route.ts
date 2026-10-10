@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { extractionResultSchema } from "@retrosum/contracts";
+import { extractionResultSchema, EXTRACTION_DEADLINE_MS } from "@retrosum/contracts";
 import type { AppRuntime } from "../runtime/compose.js";
 import { inspectPdf, verifyOriginal } from "./inspection.js";
 import { readExtraction } from "./multipart.js";
@@ -37,7 +37,7 @@ export async function extractRoute(runtime: AppRuntime, req: Request, res: Respo
   }
   if (!paidPreflight(runtime, req, res, "extract")) return;
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 90000);
+  const timer = setTimeout(() => controller.abort(), EXTRACTION_DEADLINE_MS);
   const abort = () => {
     if (!res.writableEnded) controller.abort();
   };

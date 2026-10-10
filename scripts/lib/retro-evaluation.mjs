@@ -32,6 +32,11 @@ export function createEvaluationMeter(policy, fetcher, readJson) {
     },
     snapshot: () => ({ spentMicroUsd, requests, usage: [...usage] }),
     async fetch(url, options) {
+      if (
+        url === "https://api.openai.com/v1/responses/input_tokens" &&
+        options?.redirect === "error"
+      )
+        return fetcher(url, options);
       if (url !== "https://api.openai.com/v1/responses" || options?.redirect !== "error")
         throw new RangeError("unexpected_evaluation_transport");
       const body = JSON.parse(options.body);
@@ -45,11 +50,15 @@ export function createEvaluationMeter(policy, fetcher, readJson) {
       const output = payload.usage?.output_tokens;
       if (!Number.isSafeInteger(input) || input < 0 || !Number.isSafeInteger(output) || output < 0)
         throw new RangeError("evaluation_usage_missing");
-      spentMicroUsd +=
-        input * policy.inputMicroUsdPerToken + output * policy.outputMicroUsdPerToken;
+      // Round each observed upper cost up to integer micro-USD, including cache writes.
+      spentMicroUsd += Math.ceil(
+        input * policy.inputMicroUsdPerToken + output * policy.outputMicroUsdPerToken,
+      );
       usage.push({
         inputTokens: input,
         outputTokens: output,
+        cachedInputTokens: payload.usage?.input_tokens_details?.cached_tokens ?? null,
+        cacheWriteTokens: payload.usage?.input_tokens_details?.cache_write_tokens ?? null,
         serviceTier: payload.service_tier ?? null,
       });
       if (input > bound.input || output > bound.output || spentMicroUsd > policy.runMicroUsd)

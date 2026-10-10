@@ -37,8 +37,6 @@ spec:
               value: "${FRONTEND_ORIGIN}"
             - name: FAKE_MODE
               value: "false"
-            - name: AI_PROVIDER
-              value: openai
             - name: PAID_DEMO_ENABLED
               value: "false"
           resources:

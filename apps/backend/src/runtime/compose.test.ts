@@ -14,7 +14,6 @@ describe("provider composition stays explicit and side-effect free", () => {
       parseConfig({
         FAKE_MODE: "false",
         PAID_DEMO_ENABLED: paid,
-        AI_PROVIDER: "openai",
         OPENAI_API_KEY: "injected-key",
         TURNSTILE_SITE_KEY: "injected-site",
         TURNSTILE_SECRET_KEY: "injected-challenge-secret",
@@ -32,16 +31,23 @@ describe("provider composition stays explicit and side-effect free", () => {
     expect(interpretDocument).not.toHaveBeenCalled();
     expect(step).not.toHaveBeenCalled();
   });
-  it("uses only a matching fake adapter without dispatching during readiness", () => {
+  it("selects fake documents and Retro from fake mode even with paid settings present", () => {
     const interpretDocument = vi.fn();
-    const runtime = composeRuntime(parseConfig({ OPENAI_API_KEY: "inherited" }), {
-      clock: systemClock,
-      createRequestId: () => "request_test",
-      provider: { kind: "fake", interpretDocument },
-    });
+    const step = vi.fn();
+    const runtime = composeRuntime(
+      parseConfig({ PAID_DEMO_ENABLED: "true", OPENAI_API_KEY: "inherited" }),
+      {
+        clock: systemClock,
+        createRequestId: () => "request_test",
+        provider: { kind: "fake", interpretDocument, investigator: { kind: "fake", step } },
+      },
+    );
     expect(runtime.capabilities.documents.available).toBe(true);
+    expect(runtime.capabilities.copilot.available).toBe(true);
     expect(runtime.capabilities.mode).toBe("fake");
+    expect(runtime.capabilities.processing?.admissionAvailable).toBe(false);
     expect(interpretDocument).not.toHaveBeenCalled();
+    expect(step).not.toHaveBeenCalled();
   });
   it("does not activate a live adapter while fake mode is selected", () => {
     const answer = vi.fn();
@@ -58,7 +64,6 @@ describe("provider composition stays explicit and side-effect free", () => {
     const runtime = composeRuntime(
       parseConfig({
         FAKE_MODE: "false",
-        AI_PROVIDER: "openai",
         OPENAI_API_KEY: "secret",
         TURNSTILE_SECRET_KEY: "secret",
         GRANT_SIGNING_SECRET: "x".repeat(32),

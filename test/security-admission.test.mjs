@@ -33,7 +33,7 @@ function harness(paid = true) {
     challenge = vi.fn(async () => true),
     metric = vi.fn();
   const runtime = composeRuntime(
-    parseConfig({ FAKE_MODE: "false", AI_PROVIDER: "openai", PAID_DEMO_ENABLED: String(paid) }),
+    parseConfig({ FAKE_MODE: "false", PAID_DEMO_ENABLED: String(paid) }),
     {
       clock: { now: () => now, sleep: async () => {} },
       createRequestId: () => "request_test",

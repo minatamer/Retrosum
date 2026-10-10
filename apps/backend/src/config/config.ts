@@ -7,7 +7,6 @@ const flag = (fallback: "true" | "false") =>
 const configSchema = z.object({
   FAKE_MODE: flag("true"),
   PAID_DEMO_ENABLED: flag("false"),
-  AI_PROVIDER: z.enum(["fake", "openai"]).default("fake"),
   PORT: z.coerce.number().int().min(1).max(65535).default(4000),
   HOST: z.enum(["127.0.0.1", "0.0.0.0"]).default("127.0.0.1"),
   FRONTEND_ORIGIN: z

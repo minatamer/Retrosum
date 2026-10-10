@@ -307,7 +307,6 @@ describe("bounded provider and request admission", () => {
       composeRuntime(
         parseConfig({
           FAKE_MODE: "false",
-          AI_PROVIDER: "openai",
           OPENAI_API_KEY: "present",
           PAID_DEMO_ENABLED: "true",
           TURNSTILE_SECRET_KEY: "present",

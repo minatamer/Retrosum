@@ -26,7 +26,6 @@ describe("safe explicit HTTP composition", () => {
       composeRuntime(
         parseConfig({
           FAKE_MODE: fake,
-          AI_PROVIDER: fake === "true" ? "fake" : "openai",
           PAID_DEMO_ENABLED: "false",
         }),
         { clock: systemClock, createRequestId: () => "request_test", exchangeRates: { read } },
@@ -91,7 +90,7 @@ describe("safe explicit HTTP composition", () => {
     expect(dispatch).not.toHaveBeenCalled();
   });
   it("keeps liveness distinct from missing live prerequisites", async () => {
-    const app = makeApp({ FAKE_MODE: "false", AI_PROVIDER: "openai", PAID_DEMO_ENABLED: "true" });
+    const app = makeApp({ FAKE_MODE: "false", PAID_DEMO_ENABLED: "true" });
     await request(app).get("/v1/health").expect(200);
     await request(app).get("/v1/ready").expect(503);
     const config = await request(app).get("/v1/config");

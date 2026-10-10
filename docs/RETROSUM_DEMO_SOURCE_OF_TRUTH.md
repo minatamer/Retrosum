@@ -1727,9 +1727,8 @@ Numerical resource limits, operation budgets, retry policy and tested model IDs 
 | --- | --- | --- |
 | `NODE_ENV` | Each app | Standard dev/test/production value |
 | `PORT` | Runtime/service entry | Local backend 4000; hosted injected port |
-| `FAKE_MODE` | Backend | `true` |
+| `FAKE_MODE` | Backend | `true`; selects fixture mode, otherwise requests the OpenAI path subject to live prerequisites |
 | `PAID_DEMO_ENABLED` | Backend | `false`; one paid switch for both live documents and Retro |
-| `AI_PROVIDER` | Backend | `fake`; approved live value `openai` |
 | `OPENAI_API_KEY` | Backend | Blank |
 | `TURNSTILE_SECRET_KEY` | Backend | Blank |
 | `GRANT_SIGNING_SECRET` | Backend | Blank; live admission unavailable until configured |
@@ -1740,6 +1739,8 @@ Numerical resource limits, operation budgets, retry policy and tested model IDs 
 | `PUBLIC_SITE_ORIGIN` | Frontend | Local origin/example; approved hosted canonical origin |
 
 Use a single backend capability response for fake/live availability. Do not add a second browser toggle that can disagree with backend mode. Live configuration errors return safe fixed prerequisite codes, never environment values.
+
+The owner's 10 October 2026 simplification removes the unused separate provider selector. `FAKE_MODE` alone selects the operating mode; `PAID_DEMO_ENABLED` controls both paid operations together. OpenAI is the only live provider supported by the current adapters. Removing a redundant setting does not open pending live acceptance.
 
 Blank examples must not contain sibling-project keys, account IDs, buckets, private origins or real domains treated as owned. Keep owner identifiers in deployment configuration outside Git. Secret Manager stores hosted secrets; no service-account JSON belongs in the repository.
 

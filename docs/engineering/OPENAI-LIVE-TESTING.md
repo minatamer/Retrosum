@@ -4,6 +4,8 @@ Prepared 10 October 2026 under RET-011. No paid request or API key was used in t
 
 `PAID_DEMO_ENABLED` is the only paid feature switch. With `FAKE_MODE=false`, `PAID_DEMO_ENABLED=true` requests live document processing and live Retro together; there are no separate document/copilot enablement settings. Credentials, admission and verified acceptance still apply. Keep committed examples fake and paid-off while those checks are pending.
 
+`FAKE_MODE` is the only mode selector. Its default `true` selects local fixtures; `false` requests the supported OpenAI path, subject to the paid switch and remaining prerequisites. The unused separate provider setting was removed by the owner's 10 October 2026 decision. Setting mode/paid flags does not override the pending public-live acceptance gate.
+
 ## Key expiry and restricted permissions
 
 Owner checkpoint, **10 October 2026**: the owner selected **90 days** in the Retrosum project-key creation dialog. Retain that lifetime for local testing. This records the chosen setting, not confirmation that the key has been created, installed or used successfully. The dashboard's final expiry timestamp remains authoritative; it has not been inspected. Keep the secret only in backend `OPENAI_API_KEY` in the ignored `apps/backend/.env.local`.

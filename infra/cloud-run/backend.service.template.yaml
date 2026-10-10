@@ -23,7 +23,8 @@ spec:
     spec:
       serviceAccountName: "${BACKEND_SERVICE_ACCOUNT}"
       containerConcurrency: 4
-      timeoutSeconds: 120
+      # Above the bounded 170-second extraction operation; no work is queued.
+      timeoutSeconds: 180
       containers:
         - image: "${BACKEND_IMAGE}"
           ports:

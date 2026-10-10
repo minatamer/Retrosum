@@ -39,6 +39,7 @@ Owner setup checkpoint, **10 October 2026**: the Retrosum Google Cloud project, 
 - [ ] Paid-off confirmed before enablement and after emergency closure.
 - [x] Local published ten-PDF corpus satisfies every required numeric field on two independent runs (RET-011, 10 October; hosted rollout still unchecked).
 - [ ] Provider/account spend and target capacity are measured, not assumed from a test balance.
+- [ ] Two-document completion/progress, third-request rejection, paired peak memory, cancel/reset/replay and unchanged reservations/rates verified; service timeouts exceed the 170/175 s application envelope.
 - [ ] Actual full customer flow, physical/owner acceptance and bounded cleanup recorded.
 - [ ] Previous compatible paid-off pair and rollback probes actually exercised.
 - [ ] Remaining gates/public claims honestly reflect actual evidence.

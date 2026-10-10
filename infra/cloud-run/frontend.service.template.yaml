@@ -21,7 +21,8 @@ spec:
     spec:
       serviceAccountName: "${FRONTEND_SERVICE_ACCOUNT}"
       containerConcurrency: 8
-      timeoutSeconds: 150
+      # Above the bounded 175-second bridge/transport deadline.
+      timeoutSeconds: 210
       containers:
         - image: "${FRONTEND_IMAGE}"
           ports:

@@ -1,10 +1,10 @@
 # Local product acceptance and candidate handoff
 
-Current completion and outstanding work: [current status](../CURRENT-STATUS.md). The configured USD 5 OpenAI spending limit is owner-confirmed. Linux image refresh belongs to deployment preparation; physical/assistive/aesthetic/general-upload and manual account verification remain separate.
+Current completion and outstanding work: [current status](../CURRENT-STATUS.md). **The owner confirms local manual testing is complete and the release is ready for deployment on 11 October 2026.** Owner local sign-off is no longer pending. Linux image refresh, account/cloud configuration and hosted rollout verification belong to RET-012; extended device/assistive/general-upload coverage is not inferred from the confirmation.
 
-## Latest local paid candidate — 10 October 2026
+## Accepted local paid candidate — 11 October 2026
 
-Two live passes over the expanded ten-PDF/eighteen-page corpus and seventeen live Retro intent cases passed numeric, source/role and grounding review. Connected local paid startup, exact token preflight and deterministic receipt/transfer guards are implemented. Real localhost disclosure, Turnstile, one-use grant, PDF extraction and Retro checks passed. The dated eight-document simulation below remains historical evidence. [Current paid evidence](../validation/RET-011.md) retains general handwriting, physical/owner and hosted limitations.
+Two live passes over the expanded ten-PDF/eighteen-page corpus and seventeen live Retro intent cases passed numeric, source/role and grounding review. Connected local paid startup, exact token preflight and deterministic receipt/transfer guards are implemented. Real localhost disclosure, Turnstile, one-use grant, PDF extraction and Retro checks passed. Final conversational/placement/scope source `b1afd8d` and evidence `55febe5` passed 448 tests/41 files, 132 boundaries and both builds; actual paid target/placement checks passed. Owner manual acceptance is complete. The dated eight-document simulation below remains historical evidence. [Current evidence](../validation/RET-011.md) separates this accepted local release from unperformed broader accuracy/device and hosted measurements.
 
 ## Historical candidate review — 8 October 2026
 

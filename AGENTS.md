@@ -1,6 +1,6 @@
 # Retrosum repository instructions
 
-Read the complete selected ticket and relevant blueprint sections before edits. Latest owner instructions govern scope. Execute and validate one ticket at a time; advance only after the settled snapshot has no actionable findings except agreed deferred external checks. Do not delegate unless explicitly authorized. Per-ticket staging and commits are authorized; no push or deployment is authorized.
+Read the complete selected ticket and relevant blueprint sections before edits. Latest owner instructions govern scope. Execute and validate one ticket at a time; advance only after the settled snapshot has no actionable findings except agreed deferred external checks. Do not delegate unless explicitly authorized. Staging and committing require explicit owner permission for the specific changes. Previous approvals do not authorize future work, and implementing a task does not imply permission to stage or commit. The owner revoked the earlier blanket per-ticket approval on 11 October 2026. No push or deployment is authorized.
 
 ## Architecture and safety
 
@@ -20,6 +20,6 @@ Permanent owner motion decision: intended animations must always run. Never rein
 
 Use focused meaningful tests during iteration. Before closing each ticket run its required checks; root settled gates are pnpm format:check, pnpm lint, pnpm typecheck, pnpm check:boundaries, pnpm test:unit, pnpm build. Browser verification uses the available CUA browser tools. Record actual fake/local/live/cloud evidence separately. The ten-PDF/two-pass and seventeen-case local live acceptance is recorded in RET-011; the owner confirms a configured USD 5 OpenAI spending limit. Keep broader accuracy, owner/physical/manual account verification and hosted acceptance distinct from those completed checks. RET-012 local packaging/preparation is authorized; cloud changes and actual deployment remain deferred.
 
-Write a file-level commit plan under docs/commit-plans/RET-###.md. Keep all commits for a ticket under its prefix; multiple cohesive commits are preferred. Stage explicit allocated paths, inspect staged diff, exclude secrets/dependencies/generated output, and record verification/validation in the ticket and docs/validation/. Do not falsely mark external acceptance complete.
+Write a file-level commit plan under docs/commit-plans/RET-###.md. Keep all commits for a ticket under its prefix; multiple cohesive commits are preferred. After explicit owner permission, stage explicit allocated paths, inspect staged diff, exclude secrets/dependencies/generated output, and record verification/validation in the ticket and docs/validation/. Do not falsely mark external acceptance complete.
 
 Owner-confirmed Google Cloud setup, 10 October 2026: the Retrosum project, budget controls/alerts at USD 5 and USD 10, and deployment secrets are already created, following the owner's ClipBuilder/ScreenPilot pattern. Do not treat their creation as pending. Exact private identifiers, budget scope/delivery/enforcement, secret versions/bindings and runtime IAM have not been inspected; hosted verification and deployment remain deferred.

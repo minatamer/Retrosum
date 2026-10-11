@@ -2,6 +2,10 @@
 
 Updated **11 October 2026**. This page summarizes current completion; the [blueprint](RETROSUM_DEMO_SOURCE_OF_TRUTH.md) owns behavior and [RET-011 validation](validation/RET-011.md) owns measured acceptance. Older ticket/evidence/commit snapshots retain their original dates and results.
 
+## Release handoff
+
+**Owner manual testing is complete, and the local release is accepted and ready for deployment**, confirmed by the owner on **11 October 2026**. The accepted application source is `b1afd8d`, with verification evidence in `55febe5`; all 448 tests/41 files, 132 boundaries and both production builds passed. No further local feature or owner manual-acceptance step is required before beginning deployment preparation. RET-012 now owns the final image refresh, cloud configuration, deployment and hosted verification. This confirmation does not itself authorize staging, committing, pushing or deploying.
+
 ## Completed locally
 
 - Friendly Retro conversation and Retrosum-only scope guards are implemented under the [researched two-task plan](design/RET-011-RETRO-CONVERSATION.md). Greetings introduce four options; useful explanations/questions replace generic yes/no; recent widget/topic context and confirmed first/last/before/after placement retain Undo and stale/replay checks. Shared server guards, strict schemas and existing money/source authority block unrelated code/equations and external execution. Final root gates passed 448 tests/41 files, 132 boundaries and both builds. The [validation record](validation/RET-011.md) separates deterministic/injected checks, responsive fictional UI and actual paid-mode evidence; universal intent/injection resistance and external acceptance are not claimed.
@@ -26,9 +30,13 @@ The owner confirms the Retrosum Google Cloud project is already created, with bu
 
 Exact project/secret identifiers and versions are not recorded publicly or inspected. Budget period/scope, alert recipients/delivery, enforcement and runtime secret bindings/IAM remain to be verified for deployment. Cloud budget alerts are separate from the **USD 5 OpenAI limit** and the USD 2.50 process-local allowance; no guaranteed hard cloud/app cap is inferred.
 
-## Remaining acceptance
+## Deployment to-do
 
-- **Deployment preparation and hosted acceptance:** rebuild/verify Linux images for the current ten-PDF/code snapshot, record immutable digests, record the existing project's private identifiers, resolve region/domain/runtime identities and bind existing secret versions, then verify budget alerts, IAM, hosted Turnstile/origins, log retention, capacity/overlap, paid-off and rollback. Earlier eight-PDF Linux evidence is historical. No image push or deployment is authorized or completed by this task.
-- **Manual testing and owner acceptance:** aesthetics, physical touch/software keyboards, assistive technology/browser profiling, real human handwriting and broader upload accuracy. Current sample OCR success does not establish every upload's accuracy. Account permission/expiry/billing-enforcement and provider-handling verification remain manual checks.
+1. Freeze the accepted release after explicit commit approval; refresh and verify both nonroot Linux images for the current ten-PDF/eighteen-page source, including workers/fonts/assets and fake/paid-off probes. Earlier eight-PDF image evidence is historical.
+2. Verify the existing project's private identifiers, registry, region, service names, canonical URL/domain, runtime identities, secret versions/bindings and budget-alert scope/delivery. Project, USD 5/USD 10 alerts and secrets are already created. Check the separately configured OpenAI limit/key permissions/expiry without recreating the setup.
+3. Obtain approval for the exact image pair and cloud/public scope; publish immutable image digests and fill the prepared service templates privately.
+4. Deploy the private backend and initially private frontend with paid features off. Verify frontend-only backend invocation, anonymous denial, exact origins/audience, secret isolation, hosted Turnstile hostnames/CSP, domain/HTTPS and approved seven-day operational log retention/access.
+5. Verify hosted cold starts, deadlines, four-operation capacity/fifth rejection, four maximum-file peak memory, cancellation/expiry/replay, paid-off behavior and a compatible rollback/closure target. Start with the existing min 0/max 1, backend concurrency 6/frontend 8 and 180/210 s service timeouts.
+6. Run an explicitly approved bounded live hosted ten-PDF/Retro walkthrough, record exact results and actual usage, then complete the release record and approve public availability. Follow the [manual runbook](operations/MANUAL-DEPLOYMENT.md).
 
-No further feature implementation is identified by the documented queue. Future defects or owner feedback can reopen the relevant packet; deployment and manual acceptance remain separate from completed local checks.
+Manual local acceptance is complete on owner confirmation. Dedicated physical/assistive profiling, genuine human-handwriting and broader arbitrary-upload coverage are not newly measured by that statement and remain follow-up coverage; they do not reopen the accepted local manual sign-off. Hosted/account checks above remain deployment work. No image push or deployment has occurred.

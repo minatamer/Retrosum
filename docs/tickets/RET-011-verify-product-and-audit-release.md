@@ -1,5 +1,7 @@
 # RET-011 — Verify responsive product quality and audit the release candidate
 
+**Owner manual acceptance — 11 October 2026:** The owner confirms local manual testing is complete and the current release is ready to deploy. Source `b1afd8d` / evidence `55febe5` is accepted, with 448 tests/41 files, 132 boundaries and both builds passing. This closes local owner/manual sign-off and supersedes earlier pending wording. RET-012 owns final-image refresh, cloud/account configuration, deployment and hosted acceptance. Dedicated physical/assistive profiling and arbitrary-upload coverage are not independently established by the confirmation. Documentation updates do not authorize staging, committing, pushing or deployment.
+
 **Latest owner conversational/security feedback — 11 October 2026:** Research, plan and implement helpful, friendly Retrosum-only conversation. The [two-task design](../design/RET-011-RETRO-CONVERSATION.md) records primary-source research and acceptance before edits. Retro greets visitors, introduces four useful options, explains figures and product controls, uses relevant follow-up questions instead of automatic yes/no pairs, remembers a fresh recently applied widget and supports confirmed first/last/before/after placement. App-owned templates and exact money facts remain authoritative. Shared scope guards run before backend provider/tools and final response creation; coding, general equations, mixed unrelated work, policy overrides, advice and external execution receive useful limited replies. Supported manual payments/contact edits remain allowed. Strict schemas, source distrust, bounded context, confirmation, layout/financial Undo, replay/staleness, storage and spend controls remain. Final root gates passed **448 tests/41 files**, **132 boundaries**, typechecks and both builds. Actual fake/injected/local-paid browser evidence and scoped review are recorded in [validation](../validation/RET-011.md); broader intent accuracy, owner/physical/hosted acceptance remain separate.
 
 **Latest owner direct-chat feedback — 11 October 2026:** Remove the repeated dashboard processing-review dialog and investigate chat access. Send approves only the exact Retro turn and starts quiet inline verification. Opening chat/details starts no admission. Keep the OpenAI/Retro handling explanation in the earlier processing-details CTA, with correct live copy in dashboard details. Required challenge interaction stays visible in chat, verification failures immediately release submission, and the sixty-second reply clock starts after the separate two-minute verification window. Action-bound one-use grants, limits, cleanup and separate record-change confirmation remain. This supersedes earlier references to Retro's Allow review. The [file-level plan](../commit-plans/RET-011.md) and [validation](../validation/RET-011.md) record the twelve-path follow-up, passing root gates (408 tests/40 files, 131 boundaries, both builds), declared callback/four-size checks, actual paid income/source replies, initial failed detail turn and deliberate restart recovery. Scoped read-only validation found no actionable findings; broader intent/owner/physical/hosted acceptance remains separate.
@@ -24,8 +26,8 @@
 
 **Settled local paid candidate:** `bd9af4b` — `RET-011: verify and connect local paid document and Retro processing` (34 allocated source/test/evaluation/plan paths). Final root checks passed with 386 tests in 39 files, 130 boundary source files and both builds. Actual CUA checks cover two paid PDFs, grounded Retro/source links and deliberate recovery after backend restart; focused read-only validation found no actionable issues within this authorized local scope. The eleven evidence documents form the accompanying commit; private keys/configuration and generated outputs remain excluded.
 
-Status: **Implemented locally — deferred acceptance pending**<br>
-Last synchronized: **10 October 2026**
+Status: **Local release accepted — ready for deployment**<br>
+Last synchronized: **11 October 2026**
 
 ## Historical owner-feedback checkpoints
 
@@ -165,16 +167,16 @@ Areas owned by this packet:
 
 ## Acceptance criteria
 
-- [ ] Complete flow works coherently and all three pillars meet intended visual/functional quality.
+- [x] Complete local flow and intended visual/functional quality accepted by the owner (manual testing complete, 11 October).
 - [x] Source-backed metrics, live numeric acceptance and CRUD/Undo/original-download checks have exact evidence.
-- [ ] Phone/keyboard/touch/source/dialog/composer interactions are usable and unobstructed.
-- [x] Smooth signature animations remain enabled with accessible normal controls (local browser evidence; physical/owner review pending).
-- [ ] Performance/resource behavior is measured and no material leak/overrun remains.
+- [x] Supported local phone/keyboard/touch/source/dialog/composer interactions have browser evidence and owner manual sign-off; no blanket physical/assistive certification is inferred.
+- [x] Smooth signature animations remain enabled with accessible normal controls (local browser evidence; owner local acceptance complete).
+- [ ] Hosted performance/resource capacity is measured and no material leak/overrun remains (RET-012 deployment verification).
 - [x] Exact release candidate passes settled quality/test/build/packaging checks (local assets/build; Linux images remain RET-012's gate).
 - [x] Privacy/support/performance claims match observed behavior and evidence class.
 - [x] Material release blockers are resolved or explicitly keep public launch unavailable.
 
-The combined flow/owner visual, physical/assistive input and full profiling criteria remain pending. The current ten-PDF/eighteen-page corpus passed two live numeric/record passes, seventeen Retro cases and real localhost Turnstile/paid-document/chat/restart checks. Earlier ZIP/eight-PDF checks are historical; workspace export controls are removed. Current numerical/source/CRUD/Undo evidence is covered, without claiming physical/human-handwriting/general-upload or hosted acceptance.
+Combined local flow/owner visual/manual acceptance is complete on the owner's 11 October confirmation. The current ten-PDF/eighteen-page corpus passed two live numeric/record passes, seventeen Retro cases and real localhost Turnstile/paid-document/chat/restart checks, followed by the final friendly Retro/target/placement checks. Earlier ZIP/eight-PDF checks are historical; workspace export controls are removed. Hosted performance and rollout remain RET-012 checks; dedicated physical/assistive profiles and human-handwriting/general-upload accuracy remain additional coverage rather than a newly inferred pass.
 
 ## Verification and evidence
 
@@ -192,7 +194,7 @@ Broaden tests only for new fixes or unresolved concerns. Record what was actuall
 
 ## Scope limits and completion record
 
-The current owner-authorized local live numeric/record/Retro/Turnstile checks are complete. Owner/manual/physical and actual hosted acceptance remain pending; current Linux image refresh belongs to deployment preparation. A completed local fake-mode walkthrough and local quality review may be recorded as **Implemented locally — deferred acceptance pending**, retaining each unperformed check explicitly. Proceed to RET-012 local packaging/preparation after clean local validation; do not ask for cloud credentials during the local loop.
+The current owner-authorized local live numeric/record/Retro/Turnstile checks and owner manual acceptance are complete. The local release is accepted and ready for deployment. Current Linux image refresh and actual cloud/account/hosted acceptance belong to RET-012. Keep unperformed detailed device/accuracy/profiling evidence classified accurately, without reopening the accepted local manual sign-off. Proceed with authorized deployment preparation; external rollout and Git mutations require specific owner permission.
 
 Keep this packet one coherent outcome: necessary UI, contracts, backend/local effects, recovery and focused verification belong together. Do not create extra tickets for individual buttons, charts, fields or endpoints. Follow the blueprint's English/USD, PDF evidence, live-public/fake-development, no-server-database, temporary browser storage and motion decisions.
 

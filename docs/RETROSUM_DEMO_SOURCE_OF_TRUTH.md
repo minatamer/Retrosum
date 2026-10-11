@@ -1767,7 +1767,7 @@ Requested local startup uses normal configured behavior; automated tests use iso
 
 ## 22. Cloud infrastructure and deployment
 
-**Local preparation complete — owner authorization, 8 October 2026.** RET-012 now supplies pinned, frozen-lockfile Dockerfiles, verified nonroot Linux images, bounded free probes, unresolved Cloud Run templates and manual deployment/rollback guidance. Actual original-PDF inspection/viewing and fake/unavailable modes pass in the final images. See [RET-012 evidence](validation/RET-012.md) and [manual release guide](operations/MANUAL-DEPLOYMENT.md). No image push, cloud resource, identity/domain change or deployment occurred. Local development still runs directly with pnpm/Node and does not require Docker. The current ten-PDF local live checks passed. Rebuilding/rechecking updated Linux images is deployment preparation; physical/owner/manual and actual hosted acceptance remain later gates.
+**Local preparation complete — owner authorization, 8 October 2026.** RET-012 supplies pinned, frozen-lockfile Dockerfiles, historically verified nonroot Linux images, bounded free probes, unresolved Cloud Run templates and manual deployment/rollback guidance. The dated eight-PDF image results retain their corpus boundary. See [RET-012 evidence](validation/RET-012.md) and [manual release guide](operations/MANUAL-DEPLOYMENT.md). No image push, cloud resource, identity/domain change or deployment occurred. Local development still runs directly with pnpm/Node and does not require Docker. Current ten-PDF local live checks passed, and the owner confirms manual testing/release acceptance complete on 11 October. The owner now authorizes committing the pending docs/AGENTS.md and rebuilding/verifying both current Linux images; publication/deployment and actual hosted acceptance remain separate. Detailed additional device/accuracy coverage is not inferred from local sign-off.
 
 ### 22.1 Same deployment tool family
 
@@ -1990,6 +1990,8 @@ Before any app modules load, set test/fake mode, paid-off with `FAKE_MODE=true` 
 Assert exact dispatch counts at metered boundaries. Double click, retry, reset, reload-like stale action and malicious grant reuse must not dispatch extra model calls. Contract/money packages compile without ambient Node globals; executable negative import fixtures prove cross-app/platform imports fail.
 
 ### 24.7 Manual acceptance matrix
+
+**Owner acceptance checkpoint, 11 October 2026:** The owner confirms local manual testing is complete and accepts the current release as ready for deployment. Source `b1afd8d` and evidence `55febe5` are the accepted local baseline; the latest settled gates passed 448 tests/41 files, 132 boundaries and both builds. This supersedes earlier pending local owner/manual sign-off. The matrix remains the behavior reference, not a claim that this confirmation supplies an independently measured result for every device, accessibility profile or arbitrary upload. RET-012 retains final-image, hosted/account/IAM/challenge/capacity and rollout/rollback verification. Deployment and Git mutations still require explicit owner authorization.
 
 | Scenario | Acceptance |
 | --- | --- |

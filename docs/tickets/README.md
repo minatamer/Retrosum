@@ -1,6 +1,6 @@
 # Retrosum implementation ticket queue
 
-Updated **10 October 2026**. All twelve packets have completed local implementation or deployment-preparation outcomes. The ten-PDF/eighteen-page corpus passed two independent actual-byte numeric/record passes, seventeen live Retro cases and real localhost Turnstile/browser checks. The owner confirms the configured OpenAI spending limit is **USD 5**. No additional local feature packet is eligible. Remaining work is deployment preparation/hosted acceptance and manual testing/owner acceptance. See [current status](../CURRENT-STATUS.md).
+Updated **11 October 2026**. All twelve packets have completed local implementation or deployment-preparation outcomes. **The owner confirms manual testing is complete and accepts the local release as ready for deployment.** The ten-PDF/eighteen-page corpus passed two independent actual-byte numeric/record passes, seventeen live Retro cases and real localhost Turnstile/browser checks, followed by the final conversation/placement/scope follow-up (448 tests/41 files, 132 boundaries, both builds). The owner confirms the configured OpenAI spending limit is **USD 5**. No additional local feature or owner manual-sign-off step is pending. Remaining work is RET-012 final-image preparation, cloud/account configuration verification, deployment and hosted acceptance. See [current status](../CURRENT-STATUS.md).
 
 **Owner Google Cloud setup, 10 October 2026:** Retrosum's project, budget controls/alerts at USD 5/USD 10 and deployment secrets are already set up, following the owner's ClipBuilder/ScreenPilot pattern. Their creation is owner-confirmed complete; private identifiers, alert delivery/scope and runtime secret/IAM bindings remain deployment-verification details. RET-012 deployment/hosted acceptance stays pending.
 
@@ -12,20 +12,20 @@ RET-001 establishes safe boundaries. RET-002/003 make the brand and visible evid
 
 ## Canonical queue and dependencies
 
-| Ticket                                                        | Complete outcome                                                         | Dependencies     | Status                                  |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------- | --------------------------------------- |
-| [RET-001](RET-001-initialize-workspace-and-contracts.md)      | Initialize the workspace, contracts and safe runtime                     | None             | Complete                                |
-| [RET-002](RET-002-build-brand-and-landing.md)                 | Build the brand system and calm sourced landing                          | RET-001          | Local; visual pending                   |
-| [RET-003](RET-003-author-sample-pdfs-and-viewer.md)           | Author the visible PDF corpus and floating paper viewer                  | RET-002          | Local; visual pending                   |
-| [RET-004](RET-004-build-money-state-crud-and-refresh.md)      | Build the canonical money workspace, CRUD, Undo and refresh recovery     | RET-001, RET-003 | Local; visual pending                   |
-| [RET-005](RET-005-deliver-live-pdf-recognition-and-review.md) | Deliver live OpenAI PDF recognition, review and exact-number evaluation  | RET-004          | Local paid passed; manual pending       |
-| [RET-006](RET-006-build-interactive-money-dashboard.md)       | Build the beautiful interactive dashboard and source drill-down          | RET-004, RET-005 | Local; visual pending                   |
-| [RET-007](RET-007-build-retro-conversation-and-guidance.md)   | Build Retro conversation, grounded explanations and interactive guidance | RET-006          | Local paid passed; manual pending       |
-| [RET-008](RET-008-deliver-retro-animated-crud.md)             | Deliver Retro animated forms, confirmation and inline Undo               | RET-007          | Local paid passed; manual pending       |
-| [RET-009](RET-009-complete-exports-and-session-lifecycle.md)  | Whole-session reset, expiry and recovery; export UI removed              | RET-008          | Local; visual pending                   |
-| [RET-010](RET-010-harden-privacy-admission-and-spend.md)      | Harden privacy, private transport, abuse controls and spend readiness    | RET-005, RET-009 | Local paid passed; manual/cloud pending |
-| [RET-011](RET-011-verify-product-and-audit-release.md)        | Verify responsive product quality and audit the release candidate        | RET-010          | Local; deferred pending                 |
-| [RET-012](RET-012-deploy-and-validate-cloud-run.md)           | Deploy manually, validate live behavior and record rollback              | RET-011          | Local prep; cloud pending               |
+| Ticket                                                        | Complete outcome                                                         | Dependencies     | Status                          |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------- | ------------------------------- |
+| [RET-001](RET-001-initialize-workspace-and-contracts.md)      | Initialize the workspace, contracts and safe runtime                     | None             | Complete                        |
+| [RET-002](RET-002-build-brand-and-landing.md)                 | Build the brand system and calm sourced landing                          | RET-001          | Local accepted                  |
+| [RET-003](RET-003-author-sample-pdfs-and-viewer.md)           | Author the visible PDF corpus and floating paper viewer                  | RET-002          | Local accepted                  |
+| [RET-004](RET-004-build-money-state-crud-and-refresh.md)      | Build the canonical money workspace, CRUD, Undo and refresh recovery     | RET-001, RET-003 | Local accepted                  |
+| [RET-005](RET-005-deliver-live-pdf-recognition-and-review.md) | Deliver live OpenAI PDF recognition, review and exact-number evaluation  | RET-004          | Local paid/manual accepted      |
+| [RET-006](RET-006-build-interactive-money-dashboard.md)       | Build the beautiful interactive dashboard and source drill-down          | RET-004, RET-005 | Local accepted                  |
+| [RET-007](RET-007-build-retro-conversation-and-guidance.md)   | Build Retro conversation, grounded explanations and interactive guidance | RET-006          | Local paid/manual accepted      |
+| [RET-008](RET-008-deliver-retro-animated-crud.md)             | Deliver Retro animated forms, confirmation and inline Undo               | RET-007          | Local paid/manual accepted      |
+| [RET-009](RET-009-complete-exports-and-session-lifecycle.md)  | Whole-session reset, expiry and recovery; export UI removed              | RET-008          | Local accepted                  |
+| [RET-010](RET-010-harden-privacy-admission-and-spend.md)      | Harden privacy, private transport, abuse controls and spend readiness    | RET-005, RET-009 | Local accepted; cloud pending   |
+| [RET-011](RET-011-verify-product-and-audit-release.md)        | Verify responsive product quality and audit the release candidate        | RET-010          | Local accepted; ready to deploy |
+| [RET-012](RET-012-deploy-and-validate-cloud-run.md)           | Deploy manually, validate live behavior and record rollback              | RET-011          | Ready to deploy; hosted pending |
 
 **No local packet remains eligible:** all twelve authorized local outcomes are implemented and validated. RET-012's earlier Linux packaging is complete; refreshing those images for today's ten-PDF source belongs to deployment preparation. Actual hosted acceptance remains pending. See [final local evidence](../validation/RET-012.md) and [manual release/rollback](../operations/MANUAL-DEPLOYMENT.md). The canonical order above is sufficient; do not infer parallel agent authorization from the dependency graph. Start a packet only when the user requests implementation and its required local dependency evidence exists.
 
@@ -43,7 +43,7 @@ RET-001 establishes safe boundaries. RET-002/003 make the brand and visible evid
 
 ## Historical execution authorization and current completion policy
 
-The 8 October fake-first directions below preserve the original local loop. The 10 October authorized paid corpus/Retro/localhost checks supersede its live deferrals; cloud/physical/manual acceptance is still separate. Workspace ZIP/generated-invoice export requirements are superseded by removal. No runtime feature is pending because an older packet says live-pending.
+The 8 October fake-first directions below preserve the original local loop. The 10 October authorized paid corpus/Retro/localhost checks and 11 October owner manual acceptance supersede their corresponding deferrals. Cloud/hosted checks and detailed additional device/accuracy evidence stay separate. Workspace ZIP/generated-invoice export requirements are superseded by removal. No runtime feature or local manual sign-off is pending because an older packet says otherwise. Earlier blanket Git approval is revoked; staging and committing need explicit owner permission for the specific changes.
 
 **Owner authorization, 8 October 2026:** execute/validate every packet, including RET-012 local packaging/preparation. Research/acquire or recreate the handwriting PDF without making an owner-provided scan a prerequisite. OpenAI accuracy/spend measurements, owner visual feedback and actual cloud deployment happen later. Local development and verification use pnpm/Node; a running Docker engine, OpenAI key, cloud credentials and an approved visual design are not prerequisites for local progress. Keep any unavailable container verification explicitly pending.
 

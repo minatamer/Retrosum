@@ -1,13 +1,15 @@
 # RET-012 — Deploy manually, validate live behavior and record rollback
 
+**Owner release handoff — 11 October 2026:** Manual local testing is complete and the owner accepts the current release as ready to deploy. Source `b1afd8d` / evidence `55febe5` passed 448 tests/41 files, 132 boundaries and both builds, including the final Retro conversation/placement/scope follow-up. No further local owner sign-off is pending. Remaining work is final-image refresh, existing cloud/account configuration verification, approved immutable publication/rollout, hosted paid-off/live/capacity checks and release/rollback evidence. This documentation request grants no Git mutation, cloud change or deployment permission.
+
 **RET-011 capacity integration — 10 October 2026:** Current extraction verifies one exact selected batch and runs four workers. Deployment must verify four expensive jobs/fifth-request rejection, exact batch and one-use grant binding/expiry/reset/replay, four maximum-file memory, model/project limits, cancellation and unchanged rate/spend reservations. Local backend HTTP template concurrency is 6 (four extraction requests plus control traffic); frontend remains 8, min 0/max 1 and 180/210 s timeouts above the 170/175 s application envelope. Rebuild the current image pair; no new secret/switch or actual cloud mutation is needed. See [runbook](../operations/MANUAL-DEPLOYMENT.md) and [RET-011 evidence](../validation/RET-011.md).
 
 **Owner Google Cloud setup checkpoint — 10 October 2026:** The Retrosum Google Cloud project already exists, budget controls/alerts at **USD 5 and USD 10** are set up, and deployment secrets are created. The owner confirms the same pattern as ClipBuilder/ScreenPilot. Creation is complete on owner confirmation; exact private identifiers, budget scope/period/delivery/enforcement, secret versions/runtime bindings and hosted IAM remain unverified. This does not authorize or establish image publication/deployment. See the [file-level plan](../commit-plans/RET-012.md) and [validation](../validation/RET-012.md).
 
-**Current deployment status — 10 October 2026:** Local paid corpus/Retro/Turnstile acceptance passed. The owner confirms the configured USD 5 OpenAI spending limit. The eight-PDF Linux pair below is historical; rebuild/reverify the current ten-PDF/eighteen-page accepted source as deployment preparation. All actual hosted/deployment acceptance remains pending. See [current status](../CURRENT-STATUS.md).
+**Current deployment status — 11 October 2026:** Local paid corpus/Retro/Turnstile and owner manual acceptance are complete; the release is ready for deployment. The owner confirms the configured USD 5 OpenAI spending limit. The eight-PDF Linux pair below is historical; rebuild/reverify the current ten-PDF/eighteen-page accepted source as deployment preparation. Actual hosted/deployment acceptance remains pending. See [current status](../CURRENT-STATUS.md).
 
-Status: **Local preparation complete — deployment pending**<br>
-Last synchronized: **10 October 2026**<br>
+Status: **Ready for deployment — hosted rollout pending**<br>
+Last synchronized: **11 October 2026**<br>
 Depends on: [RET-011](RET-011-verify-product-and-audit-release.md)  
 Blocks: Final packet  
 Suggested commits: see [file-level commit plan](../commit-plans/RET-012.md)<br>

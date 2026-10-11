@@ -1,10 +1,12 @@
 # Release readiness and operator-owned gates
 
-Updated **10 October 2026**. See [current status](../CURRENT-STATUS.md) and [RET-011 acceptance](../validation/RET-011.md).
+Updated **11 October 2026**. See [current status](../CURRENT-STATUS.md) and [RET-011 acceptance](../validation/RET-011.md).
+
+**Ready for deployment:** The owner confirms local manual testing and release acceptance are complete on 11 October 2026. The accepted source `b1afd8d` and evidence `55febe5` passed 448 tests/41 files, 132 boundaries and both production builds, including the final friendly Retro/placement/scope changes. RET-012 owns the final images, cloud rollout and hosted checks below. This is deployment readiness, not a completed deployment or permission to stage, commit, push or change cloud resources.
 
 ## Completed local acceptance
 
-The ten-PDF/eighteen-page corpus passed two independent actual-byte numeric and source/record audits. Seventeen live Retro cases passed. Exact full-input token preflight, standard-tier/cache-write reservation and normal paid composition are connected. Real localhost Turnstile, disclosure, one-use grants, PDF extraction, grounded Retro/source replies and deliberate restart recovery passed. Candidate `bd9af4b` and evidence `939ca7e` passed 386 tests/39 files, 130 boundary source files and both production builds.
+The ten-PDF/eighteen-page corpus passed two independent actual-byte numeric and source/record audits. Seventeen live Retro cases passed, with the later paid target/placement follow-up also verified. Exact full-input token preflight, standard-tier/cache-write reservation and normal paid composition are connected. Real localhost Turnstile, disclosure, one-use grants, PDF extraction, grounded Retro/source replies and deliberate restart recovery passed. Historical candidate `bd9af4b` / evidence `939ca7e` passed 386 tests/39 files; the current source/check evidence is recorded above.
 
 The owner confirms the configured OpenAI spending limit is **USD 5**, already set, and selected 90-day key expiry. Generation/input-count access is proven. Dashboard scope/period/enforcement, final expiry timestamp and complete permissions have not been independently inspected; those remain manual account-verification details, not an unconfigured-limit blocker. No prepaid balance or hard global application cap is inferred.
 
@@ -30,9 +32,9 @@ The owner confirms the Retrosum Google Cloud project, budget controls/alerts at 
 
 Local acceptance authorizes no image push, cloud change or deployment. Owner-confirmed project/budget/secret creation does not establish deployed bindings or hosted acceptance. Historical image IDs and loopback memory/timing samples do not prove hosted behavior.
 
-## Manual testing and owner acceptance
+## Completed owner manual acceptance and follow-up coverage
 
-Owner aesthetics; physical phone/tablet touch/software keyboards/safe areas; zoom/forced colors/screen-reader speech; actual browser/device performance profiling; genuine human handwriting and broader upload accuracy. Inspect account permissions/expiry/billing-control behavior and provider-handling policy manually. None of these are silently marked passed by local corpus or injected tests.
+Local manual testing and owner release acceptance are complete on the owner's 11 October confirmation. Dedicated physical-device/assistive/performance profiles, genuine human handwriting and broader arbitrary-upload accuracy remain additional coverage, without a new claim that every case was measured. These do not leave owner manual sign-off pending. Account permissions/expiry/billing-control behavior and enabled provider-handling verification belong to the deployment checks above.
 
 ## Future evaluations and emergency response
 

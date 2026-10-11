@@ -1,6 +1,6 @@
 # Retrosum release record — unfilled operator template
 
-Local baseline: [current status](../CURRENT-STATUS.md). The configured USD 5 OpenAI limit is owner-confirmed and the current numeric/Retro/localhost Turnstile checks passed. This does not prefill hosted operator evidence or authorize deployment.
+Local baseline: [current status](../CURRENT-STATUS.md). **Owner local manual testing and release acceptance are complete, confirmed 11 October 2026; the release is ready for deployment.** Source `b1afd8d` / evidence `55febe5` passed 448 tests/41 files, 132 boundaries and both builds. The configured USD 5 OpenAI limit is owner-confirmed and the current numeric/Retro/localhost Turnstile checks passed. This does not prefill hosted operator evidence or authorize deployment/Git mutations.
 
 This template is preparation, not evidence of deployment. Fill an ignored/private working copy, then publish only a content-safe approved record. No credentials, document/chats/business content, secret values or identity tokens belong here.
 
@@ -9,7 +9,7 @@ Owner setup checkpoint, **10 October 2026**: the Retrosum Google Cloud project, 
 | Field                                                               | Actual operator evidence                                                   |
 | ------------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | Approval, operator and UTC date                                     | Pending                                                                    |
-| Intended availability and live gate                                 | Local paid accepted; hosted availability/approval pending                  |
+| Intended availability and live gate                                 | Local paid/manual accepted; hosted availability/approval pending           |
 | Source commit / clean candidate / lock SHA-256                      | Pending                                                                    |
 | Frontend and backend registry digests                               | Pending; distinguish local image IDs                                       |
 | Base image / Node / pnpm / dependency audit                         | Pending                                                                    |
@@ -27,7 +27,8 @@ Owner setup checkpoint, **10 October 2026**: the Retrosum Google Cloud project, 
 | Cold/warm/resource measurements                                     | Pending                                                                    |
 | Source viewer / charts / CRUD / Undo / refresh / original downloads | Pending; fake/local/live/hosted classes separate                           |
 | Cancellation/reset/expiry and paid-off probes                       | Pending                                                                    |
-| Owner aesthetics / physical input / accessibility                   | Pending                                                                    |
+| Owner local manual acceptance                                       | Complete on owner confirmation, 11 October 2026; ready for deployment      |
+| Dedicated physical input / accessibility / profiling                | Additional coverage; no case-by-case evidence inferred from sign-off       |
 | Previous compatible pair / revisions / configuration                | Pending                                                                    |
 | Projection 1 / harbor-v1 / disclosure 1 compatibility               | Pending                                                                    |
 | Rollback/closure date, no-cost probe and remaining risk             | Pending                                                                    |
@@ -40,6 +41,7 @@ Owner setup checkpoint, **10 October 2026**: the Retrosum Google Cloud project, 
 - [x] Local published ten-PDF corpus satisfies every required numeric field on two independent runs (RET-011, 10 October; hosted rollout still unchecked).
 - [ ] Provider/account spend and target capacity are measured, not assumed from a test balance.
 - [ ] Ten-document timing/completion, four active requests/fifth-request rejection, exact batch/grant binding and four-file peak memory, cancel/reset/replay and unchanged reservations/rates verified; service timeouts exceed the 170/175 s application envelope.
-- [ ] Actual full customer flow, physical/owner acceptance and bounded cleanup recorded.
+- [x] Local manual testing and owner release acceptance confirmed (11 October 2026; see RET-011).
+- [ ] Hosted customer flow and bounded cleanup recorded; additional physical/accessibility evidence classified honestly.
 - [ ] Previous compatible paid-off pair and rollback probes actually exercised.
 - [ ] Remaining gates/public claims honestly reflect actual evidence.

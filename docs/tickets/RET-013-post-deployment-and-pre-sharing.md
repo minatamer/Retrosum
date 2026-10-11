@@ -1,8 +1,21 @@
 # RET-013 — Post deployment and pre sharing ticket
 
-**Status:** Phase A complete — quality application commit `743a9dc`, evidence committed with this ticket. Phase B audit pending; security implementation locked.
+**Status:** Phase A complete and committed (`743a9dc`, `6d8c4eb`). Approved SEC-01–04 repairs pass the settled security review and all six root gates; implementation is committed as `24e3e71`. The six-path security evidence allocation completes Phase B. The subsequent paid portfolio run is authorized separately, with its original captures/results manifest excluded from Git.
 
-**Owner instruction:** 11 October 2026. Audit the completed demo before sharing it. Preserve functionality above all other goals. Fully document the code-quality plan before application edits; execute/validate until the settled plan has no actionable findings, then stage and commit that phase. Subsequently audit security without implementing fixes. Leave security findings and their HTML review unstaged and uncommitted for the owner's manual decisions.
+**Latest owner authority:** Execute and validate the security findings until the settled review has no actionable findings, then prepare a new file-level allocation and stage/commit the security work. After those commits, one further paid test and comprehensive portfolio screenshots are authorized, followed by a professional branded thumbnail. This supersedes the earlier documentation-only gate. No push, public rollout or new edge service is selected.
+
+### Approved implementation plan (before security application edits)
+
+1. SEC-01: replace immediate-proxy source buckets with one bounded service entry window (120/minute, 600/hour) and separate validated-run challenge windows (6/minute, 30/hour). Session creation uses the global window; challenge issuance uses both. Exact batch child minting retains its current one-challenge behavior. Preserve 20/hour paid starts, four active operations, fixed expiries and run rotation/spend controls. Remove the obsolete socket identity API rather than trust forwarding headers.
+2. SEC-02: factor complete grant validation into one side-effect-free ledger method reused by atomic consumption. Check actual bytes/hash and full request identity before operation tracking, workspace reservations and PDF inspection. Revalidate after inspection before dispatch. Cover wrong identities, valid-token recovery, expiry/revocation and concurrent replay; retain every diagnostic event.
+3. SEC-03: add one process-owned frontend request gate with separate navigation/free and mutating windows, plus four independent large-operation leases. Cover the canonical pages, API paths and image optimizer; leave owned static assets available. Reject malformed admission headers before capability lookup and require complete headers for live requests before body reads. Because fake/live authority belongs to the backend, an unknown mode may need the first coalesced capability read; do not invent a second frontend paid switch. Coalesce capability reads only while in flight (no stale availability cache), and coalesce fixed FX misses with a short failure backoff and independent caller abort ownership. The selected scope is application-only; a load balancer/WAF remains optional infrastructure, not an implied deployment.
+4. SEC-04: first run bounded synthetic/sample inspection measurements in an isolated Linux 1 GiB container, without keys/network/provider dispatch. Include all ten originals, four concurrent demanding PDFs, cancellation, release and fifth-slot rejection. Select the smallest demonstrated parser control from those results; document any throughput effect before implementation. Preserve four normal document requests and provider slots, exact originals and held-file behavior. No production stress test or unbounded fuzzing.
+5. Review the combined diff in read-only validation passes, independently verify and repair findings, then run all six required gates and connected fake browser preservation checks. Record exact scope and remaining external verification limits. Write `docs/commit-plans/RET-013-security.md`, stage only allocated paths, inspect the staged diff and commit under `RET-013:`.
+6. After security commits, run the new local paid candidate with ten synthetic originals and up to four live Retro turns, no automatic retry and at most USD 2.50 reserved. Capture landing, every flow stage and every dashboard view, including useful forms/Retro/source states. Save numbered original screenshots and a manifest to a Desktop portfolio folder. Keep billing/account proof and hosted deployment separate. Generate the thumbnail with the canonical logo, forest/orange/ivory and actual screenshot references; no invented financial UI.
+
+**SEC-04 measured repair selection, before parser edits:** Four 797,346-byte synthetic PDFs, each with 7,000 unique small inline images (68,607,000 pixels, within the current per-document image budget), reached 989,671,424 bytes process peak RSS / 945,635,328 bytes cgroup peak and all timed out at the existing 20-second deadline. This leaves inadequate production headroom in 1 GiB. Select two simultaneous inspection workers with at most two request-owned, abortable waiters; retain four document/provider operations. The same 20-second deadline includes lease waiting. Add a 640 MiB process-RSS stop with a 10 ms observation interval, preserving the heap/pixel/body/deadline controls. Await worker termination before settling/releasing the inspection lease. This is measured headroom protection, not an OS-enforced per-parser memory cap or proof for every possible PDF. Verify actual pressure rejection/cleanup, subsequent sample success, four normal HTTP/provider overlaps and cancellation; do not add a helper service, change instance size or alter paid concurrency.
+
+**Original owner instruction (fulfilled audit stage; superseded for execution):** 11 October 2026. Audit the completed demo before sharing it. Preserve functionality above all other goals. Fully document the code-quality plan before application edits; execute/validate until the settled plan has no actionable findings, then stage and commit that phase. Subsequently audit security without implementing fixes. Leave security findings and their HTML review unstaged and uncommitted for the owner's manual decisions.
 
 **Dependencies:** RET-001–012 implemented; clean `main` at `c716c52`. RET-012 is deployed on its managed origin. This ticket does not declare its outstanding custom-domain, maximum-load, billing/account or physical-device checks complete.
 
@@ -14,7 +27,7 @@
 - [Release record](../operations/RELEASE-RECORD-2026-10-11.md) and [RET-012 validation](../validation/RET-012.md) distinguish code assertions, bounded hosted observations and remaining external acceptance.
 - Execute/validate skills: one ticket, meaningful focused regression checks, read-only validation passes, then execution repairs. No delegation is authorized.
 
-## Phase separation and permissions
+## Original phase separation and permissions (audit-stage history)
 
 1. **A — Code quality, structure and efficiency:** inspect, plan, implement behavior-preserving improvements, validate and commit. The owner's current instruction explicitly authorizes staging and committing this phase after verification. Use explicit file allocations under `RET-013:`; inspect staged content. No push or deployment.
 2. **B — Security review:** inspect the committed result, research current advisories, document material STRIDE/common threats and careful proposed repairs, create a readable HTML decision aid. **No security implementation, dependency upgrades, cloud mutations, staging or commits in this phase.** Wait for manual owner feedback. A finding discovered in A that needs a security-policy change is recorded for B, not silently implemented.
@@ -91,7 +104,7 @@ Record each confirmed quality finding in the audit ledger with evidence, affecte
 | Responsive/motion                  | Representative phone/laptop checks; actual visible movement/completion and normal keyboard operation                        |
 | Production composition             | Strict build, import boundaries, no-secret/no-network tests and unchanged private transport/admission behavior              |
 
-## B. Security audit plan — documentation only
+## B. Original security audit plan — documentation only until owner approval
 
 Audit the committed A snapshot, not an intermediate diff. Map assets, entry points and trust boundaries: guest tab/storage, public Next, private IAM backend, native PDF worker, OpenAI, Turnstile, fixed FX lookup, secrets/images/CI/logging. Assess spoofing, tampering, repudiation, information disclosure, denial of service and elevation of privilege across each boundary. Include common web/AI/upload/supply-chain threats even where they do not fit neatly into one category.
 
@@ -112,10 +125,22 @@ Create a standalone HTML summary under `docs/audits/` with high → medium → m
 - [x] Meaningful focused regressions, fake browser evidence and six settled root gates pass.
 - [x] Read-only validation loop concludes with no actionable quality findings on the settled snapshot.
 - [x] A file-level plan and explicit reviewed quality commit(s) completed; no push/deployment.
-- [ ] B whole-repository threat/dependency analysis and detailed proposed remediations complete.
-- [ ] Readable severity-ranked HTML rendered and reviewed.
-- [ ] Security artifacts remain unstaged/uncommitted; no security implementation performed; owner review pending.
+- [x] B whole-repository threat/dependency analysis and detailed proposed remediations complete.
+- [x] Readable severity-ranked HTML rendered and reviewed.
+- [x] Original security artifacts were left unstaged/uncommitted for manual owner review; the owner subsequently approved all four findings.
+- [x] Approved security changes preserve exact calculations, four provider operations, one batch challenge, cleanup, UI behavior and all existing private logs.
+- [x] Settled read-only security validation has no actionable application findings; all six gates pass (482 tests/48 files, 135 boundary modules, both builds).
+- [x] Both final nonroot/read-only Linux candidates build and pass isolated fake release probes with zero paid requests.
+- [x] New security file-level allocation and reviewed implementation/evidence commits complete; no push or deployment.
+- [ ] Authorized post-commit paid run and complete portfolio screenshot folder delivered.
+- [ ] Professional canonical-brand thumbnail delivered.
 
-## Evidence and current result
+## Evidence and original audit-stage result
 
 See [RET-013 validation](../validation/RET-013.md) and the [quality ledger](../audits/RET-013-code-quality.md). CQ-01–04 were documented before execution and are implemented. Read-only review identified one inherited-key message lookup, subsequently repaired with a Map and four regression cases. The second review has no actionable quality findings. Connected fake browser verification and all six settled gates passed (460 tests/45 files, 133 boundaries, both builds). Application changes are committed as `743a9dc`; this evidence allocation completes A. Security findings will be separate post-commit artifacts, with no implementation before owner feedback.
+
+**Phase B delivered:** [Full security audit](../audits/RET-013-security.md) and [HTML owner review](../audits/RET-013-security-review.html). Four medium findings cover shared pre-challenge lockout, late complete upload binding, public request capacity and the PDF external-memory gap. Two request effects were reproduced locally with zero provider calls; hosted outage/OOM was not tested. Current/deployed-era production npm audits report no advisory; development-only braces and exact-image Debian/Node/native reachability are documented separately. Two external verification items retain account enforcement and bundled-native visibility uncertainty. Read-only metadata confirms private backend IAM/secret scopes and the already configured USD 5 Cloud Run spend cap. No security fixes, dependency upgrades, cloud changes, push or redeployment occurred. The owner must select fixes/acceptance/deferrals before any security execution. These completion notes are part of the intentionally uncommitted security documentation, not an additional quality commit.
+
+## Approved execution result
+
+SEC-01–04 are implemented locally under the latest approval. [Security dispositions](../audits/RET-013-security.md), [settled evidence](../validation/RET-013.md) and the new [security commit allocation](../commit-plans/RET-013-security.md) supersede the original audit-stage decision state. Pages/images use proxy-local limits; APIs remain outside the body-buffering proxy and acquire handler-owned limits. Shared capability/FX lookup ownership, complete grant binding and native inspection containment have meaningful rejection/concurrency/cancellation regressions. No money, provider prompt/model, dependencies or existing private operational event is changed. Local improvements are not claimed deployed. External account/bundled-native visibility and a distributed edge service remain explicitly separate from this application review.

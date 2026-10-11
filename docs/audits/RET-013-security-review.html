@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'"
+    />
+    <title>Retrosum — security review before sharing</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #f7f1e6;
+        --ink: #173d33;
+        --muted: #486258;
+        --line: #d3dace;
+        --accent: #a84629;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.55;
+      }
+      a {
+        color: var(--accent);
+        text-underline-offset: 0.2em;
+      }
+      a:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 5px;
+      }
+      .skip {
+        position: absolute;
+        left: 16px;
+        top: -80px;
+        background: white;
+        padding: 12px;
+        z-index: 1;
+      }
+      .skip:focus {
+        top: 12px;
+      }
+      header,
+      main,
+      footer {
+        max-width: 1120px;
+        margin: auto;
+        padding-left: 32px;
+        padding-right: 32px;
+      }
+      header {
+        padding-top: 36px;
+        padding-bottom: 28px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+      .brand span {
+        font-family: Georgia, serif;
+        font-size: 25px;
+      }
+      .brand small {
+        display: block;
+        font:
+          12px system-ui,
+          sans-serif;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .eyebrow {
+        margin: 0 0 10px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: Georgia, serif;
+        font-weight: 500;
+        line-height: 1.15;
+      }
+      h1 {
+        font-size: clamp(36px, 5vw, 57px);
+        max-width: 800px;
+        margin: 0 0 16px;
+        letter-spacing: -0.035em;
+      }
+      h2 {
+        font-size: 30px;
+        margin: 0 0 12px;
+      }
+      h3 {
+        font-size: 26px;
+        margin: 12px 0 20px;
+      }
+      p {
+        margin: 0 0 16px;
+      }
+      .intro {
+        max-width: 800px;
+        font-size: 18px;
+        color: var(--muted);
+      }
+      .status {
+        display: inline-block;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        border-radius: 30px;
+        padding: 7px 13px;
+        font-size: 13px;
+        font-weight: 650;
+        margin-bottom: 18px;
+      }
+      .scores {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        margin: 28px 0 12px;
+      }
+      .score {
+        padding: 18px 18px 18px 0;
+      }
+      .score + .score {
+        padding-left: 24px;
+        border-left: 1px solid var(--line);
+      }
+      .score strong {
+        font:
+          36px Georgia,
+          serif;
+        display: block;
+      }
+      .score span {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .score.active strong {
+        color: var(--accent);
+      }
+      .note {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 24px;
+        padding: 14px 0 6px;
+        font-size: 14px;
+      }
+      section {
+        margin-bottom: 40px;
+        scroll-margin-top: 20px;
+      }
+      .section-intro {
+        max-width: 850px;
+        color: var(--muted);
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+      article {
+        background: #fffcf5;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 26px;
+      }
+      .card-top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .priority {
+        color: var(--accent);
+        background: #f6e6d8;
+        border-radius: 20px;
+        padding: 4px 10px;
+      }
+      .label {
+        display: block;
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 5px;
+      }
+      .preserve {
+        border-left: 3px solid var(--line);
+        padding-left: 14px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .decision {
+        margin: 20px 0 0;
+        padding-top: 14px;
+        border-top: 1px solid var(--line);
+        font-size: 13px;
+        color: var(--accent);
+        font-weight: 650;
+      }
+      details {
+        font-size: 14px;
+        margin-top: 16px;
+      }
+      summary {
+        cursor: pointer;
+        color: var(--muted);
+      }
+      details p {
+        margin: 12px 0 0;
+      }
+      .verification {
+        background: #eaf0e8;
+      }
+      .verification h3 {
+        font-size: 23px;
+      }
+      .good {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 28px;
+        border-radius: 18px;
+      }
+      .good h2 {
+        color: var(--paper);
+      }
+      .good p {
+        max-width: 920px;
+      }
+      .good a {
+        color: #f4b18a;
+      }
+      .next {
+        border-top: 1px solid var(--line);
+        padding-top: 28px;
+      }
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-top: 20px;
+      }
+      .steps strong {
+        display: block;
+        margin-bottom: 5px;
+      }
+      .steps p {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      code {
+        font-size: 0.85em;
+        overflow-wrap: anywhere;
+      }
+      footer {
+        border-top: 1px solid var(--line);
+        padding-top: 22px;
+        padding-bottom: 32px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      @media (max-width: 680px) {
+        header,
+        main,
+        footer {
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        header {
+          padding-top: 24px;
+        }
+        .brand {
+          margin-bottom: 24px;
+        }
+        .cards,
+        .steps {
+          grid-template-columns: 1fr;
+        }
+        article {
+          padding: 22px;
+        }
+        .score + .score {
+          padding-left: 14px;
+        }
+        .score {
+          padding-right: 8px;
+        }
+        .score span {
+          font-size: 12px;
+        }
+        .intro {
+          font-size: 17px;
+        }
+        .good {
+          padding: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#findings">Skip to findings</a>
+    <header>
+      <div class="brand">
+        <img src="../../apps/frontend/public/favicon.svg" width="44" height="44" alt="" />
+        <span>Retrosum<small>Owner review · RET-013 · 11 October 2026</small></span>
+      </div>
+      <p class="eyebrow">Post deployment · Before sharing</p>
+      <h1>Four risks addressed before the first visitors.</h1>
+      <div class="status">Approved local repairs · Settled checks pass</div>
+      <p class="intro">
+        The main concerns are keeping the demo available when requests or PDFs become demanding. No
+        demonstrated data-theft, arbitrary-code execution or unauthorized paid-call path was found
+        in this review.
+      </p>
+      <div class="scores" aria-label="Finding counts by severity">
+        <div class="score"><strong>0</strong><span>Confirmed high findings</span></div>
+        <div class="score active"><strong>4</strong><span>Medium findings</span></div>
+        <div class="score"><strong>0</strong><span>Minor low items included</span></div>
+      </div>
+      <p class="note">
+        These are the original audit findings. Their application fixes pass 482 tests, strict builds
+        and the settled local review; Linux PDF pressure was measured separately. Hosted rollout and
+        network-flood resistance remain separate checks. These counts are an assessment, not a
+        guarantee.
+      </p>
+      <nav aria-label="Review sections">
+        <a href="#findings">Review the four risks</a
+        ><a href="#verification">Two checks to confirm</a
+        ><a href="#working">Controls already working</a
+        ><a href="#full-evidence">Full audit location</a>
+      </nav>
+    </header>
+    <main>
+      <section id="findings" aria-labelledby="findings-title">
+        <h2 id="findings-title">Medium findings</h2>
+        <p class="section-intro">
+          Ordered by practical sharing risk. You approved these repairs on 11 October. The detailed
+          audit retains the original evidence and records the new local dispositions.
+        </p>
+        <div class="cards">
+          <article id="sec-01">
+            <div class="card-top">
+              <span>SEC-01 · ENTRY LIMITS</span><span class="priority">Medium · Reproduced</span>
+            </div>
+            <h3>A few attempts can block other visitors.</h3>
+            <p>
+              <span class="label">Threat</span>The entry allowance follows the server's immediate
+              network connection, which may be shared by visitors. Six new-session requests filled
+              that allowance before any human verification ran.
+            </p>
+            <p>
+              <span class="label">Selected solution</span>Separate a larger service entry guard from
+              each run's small challenge allowance. A blocked run no longer fills another visitor's
+              small bucket. No forwarded-IP trust or visitor tracking.
+            </p>
+            <p class="preserve">
+              Keep the ten-document batch, one batch verification, four parallel requests and
+              existing paid ceilings. No new processing dialog.
+            </p>
+            <details>
+              <summary>What the evidence means</summary>
+              <p>
+                The seventh local request returned 429; no challenge or provider call ran. The exact
+                grouping of visitors on Google's live network remains unmeasured. Simply trusting a
+                forwarded IP would introduce a new weakness.
+              </p>
+            </details>
+            <p class="decision">Approved · Local repair implemented; settled review passes.</p>
+          </article>
+          <article id="sec-02">
+            <div class="card-top">
+              <span>SEC-02 · UPLOAD APPROVAL</span><span class="priority">Medium · Reproduced</span>
+            </div>
+            <h3>Rejected uploads still do expensive work.</h3>
+            <p>
+              <span class="label">Threat</span>Someone with one valid upload approval can change
+              request details and make the server inspect PDFs before it rejects the mismatch.
+              Reusing that approval can waste shared capacity.
+            </p>
+            <p>
+              <span class="label">Selected solution</span>Match every approved detail before
+              starting PDF inspection or recording workspace intake. Keep the final single-use paid
+              check immediately before the provider call.
+            </p>
+            <p class="preserve">
+              Unsupported files must keep their useful guidance without burning a paid allowance.
+              Preserve cancellation, explicit retry and genuine batch processing.
+            </p>
+            <details>
+              <summary>What the evidence means</summary>
+              <p>
+                Two mismatched local requests were rejected, but both reserved unapproved workspace
+                intake first. No paid call occurred. This is wasted work before rejection, not a
+                bypass that obtains paid processing.
+              </p>
+            </details>
+            <p class="decision">Approved · Local repair implemented; settled review passes.</p>
+          </article>
+          <article id="sec-03">
+            <div class="card-top">
+              <span>SEC-03 · PUBLIC TRAFFIC</span><span class="priority">Medium · Control gap</span>
+            </div>
+            <h3>Bots can occupy the app before Turnstile.</h3>
+            <p>
+              <span class="label">Threat</span>Page requests, free configuration/rate lookups and
+              unapproved submissions still use runtime capacity. The public Google URL stays
+              reachable; DNS-only Cloudflare records do not filter this traffic.
+            </p>
+            <p>
+              <span class="label">Selected solution</span>Add cheap application request limits,
+              reject invalid approvals earlier and combine concurrent free lookups. Keep uploads
+              streaming. Stronger edge protection remains an optional infrastructure choice.
+            </p>
+            <p class="preserve">
+              Keep normal navigation, anonymous exchange rates, cold starts and four uploads
+              working. No invented rate, user-account requirement or new data store.
+            </p>
+            <details>
+              <summary>The cost and DDoS tradeoff</summary>
+              <p>
+                A USD 5 Cloud Run spend cap is already configured, with possible billing lag. It
+                limits exposure but does not keep the site responsive. App limits reduce work;
+                stronger flood protection needs a protected edge that also closes the Google-URL
+                bypass.
+              </p>
+            </details>
+            <p class="decision">Approved · Application guards selected; no edge rollout.</p>
+          </article>
+          <article id="sec-04">
+            <div class="card-top">
+              <span>SEC-04 · PDF MEMORY</span><span class="priority">Medium · Measured</span>
+            </div>
+            <h3>Heavy PDFs may interrupt other requests.</h3>
+            <p>
+              <span class="label">Threat</span>The worker's JavaScript heap limit does not cover all
+              decoded image memory. Four demanding PDFs could pressure the shared backend, despite
+              file-size and timeout limits.
+            </p>
+            <p>
+              <span class="label">Selected solution</span>Two native inspections at a time, bounded
+              request-owned waiting and a memory headroom stop. Four uploads and paid operations
+              still overlap; cleanup waits for each worker to stop.
+            </p>
+            <p class="preserve">
+              Preserve scans, handwriting, exact results, originals and normal parallel processing.
+              Do not cut concurrency or reject useful PDFs by guesswork.
+            </p>
+            <details>
+              <summary>What is and is not proved</summary>
+              <p>
+                Four small inline-image PDFs reached about 944 MiB RSS before timing out. The
+                repaired isolated candidate stopped that workload around 640 MiB, kept genuine
+                originals working and passed the 20 MiB/20-page envelope. The monitor provides
+                measured headroom; it is not an absolute memory guarantee for every PDF.
+              </p>
+            </details>
+            <p class="decision">Approved · Measured containment implemented locally.</p>
+          </article>
+        </div>
+      </section>
+      <section id="verification" aria-labelledby="verification-title">
+        <h2 id="verification-title">Two checks to confirm</h2>
+        <p class="section-intro">
+          These are evidence gaps, not claims that you lack controls or have vulnerable containers.
+        </p>
+        <div class="cards">
+          <article class="verification">
+            <div class="card-top">
+              <span>V-01 · ACCOUNT SETTING</span><span>Manual verification</span>
+            </div>
+            <h3>Confirm the existing OpenAI limit is enforced.</h3>
+            <p>
+              You already confirmed a USD 5 limit. Check that it is an enforced limit covering the
+              backend's billed project, rather than an alert. App counters reset when an instance is
+              replaced.
+            </p>
+            <p class="preserve">
+              If the setting is already correct, keep it. There is no default proposal for a
+              spending database or new infrastructure.
+            </p>
+          </article>
+          <article class="verification">
+            <div class="card-top">
+              <span>V-02 · IMAGE DEPENDENCIES</span><span>Separate verification</span>
+            </div>
+            <h3>Confirm the remaining native-library coverage.</h3>
+            <p>
+              Production npm audits returned zero advisories. Both exact deployed images and their
+              88 OS packages were inventoried and assessed. Some bundled decoder internals still
+              lack a complete independent report; Google's scanning API is disabled.
+            </p>
+            <p class="preserve">
+              Update only an applicable issue with regression checks. Known unused-tool advisories
+              are not treated as public website flaws. No service was enabled or package upgraded.
+            </p>
+          </article>
+        </div>
+        <p class="note" style="margin-top: 16px">
+          One development-only braces advisory is documented in the full report. Visitors cannot
+          reach its lint-pattern path, and no patched version is published; it is not presented as a
+          public high-severity website flaw.
+        </p>
+      </section>
+      <section id="working" class="good" aria-labelledby="working-title">
+        <h2 id="working-title">Controls already working</h2>
+        <p>
+          The backend is private; secrets stay there. Upload and chat approvals are signed,
+          short-lived and single-use. Paid dispatch fails closed. Retro uses grounded facts and
+          editable confirmations rather than autonomous writes. Browser errors use safe wording;
+          private backend logs remain intact.
+        </p>
+        <p>
+          Exact calculations, source review, original downloads, reset/refresh, phone/laptop layouts
+          and visible reply animation passed the quality checks. The quality work is committed as
+          <code>743a9dc</code> and <code>6d8c4eb</code>; all six gates passed with 460 tests. Those
+          newer changes have not been deployed.
+        </p>
+        <p class="note" style="color: #d4e3d8; margin-bottom: 0">
+          Domain metadata now reports its certificate and routing ready. The app still uses the
+          managed origin; full retrosum.com origin/Turnstile/browser acceptance is a separate
+          release step.
+        </p>
+      </section>
+      <section id="next" class="next" aria-labelledby="next-title">
+        <h2 id="next-title">Verification before the portfolio run.</h2>
+        <p>
+          The approved execution/validation loop has settled without actionable application
+          findings. The security file-level commit plan allocates the verified changes. Security
+          commits, a bounded paid run and full portfolio screenshots follow. The hosted app is still
+          the previous release until a separate rollout.
+        </p>
+        <div class="steps">
+          <div>
+            <strong>1. Review</strong>
+            <p>
+              Read this summary or open the <a href="#full-evidence">full audit file</a> in Codex.
+            </p>
+          </div>
+          <div>
+            <strong>2. Validate</strong>
+            <p>
+              Review the complete changed snapshot, resolve actionable findings and run required
+              gates. Preserve the completed quality work and all private logs.
+            </p>
+          </div>
+          <div>
+            <strong>3. Commit and capture</strong>
+            <p>
+              Security commits and the next paid portfolio test are approved. Record actual results
+              separately; deployment remains outside this local task.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section id="full-evidence" aria-labelledby="evidence-title">
+        <h2 id="evidence-title">Full evidence and careful fix plans</h2>
+        <p>
+          Open <code>docs/audits/RET-013-security.md</code> in Codex. It contains the STRIDE matrix,
+          exact evidence, candidate file scopes, preservation tests and rollout constraints for
+          every finding.
+        </p>
+        <p class="note">
+          The in-app browser does not display Markdown documents. The final task reply links
+          directly to this workspace file; this HTML is the decision summary.
+        </p>
+      </section>
+    </main>
+    <footer>
+      Security execution and commits are owner-approved. Local verification does not deploy changes
+      or establish account enforcement. No cloud mutation, public stress test, push or redeployment
+      occurs in this task. This review page loads no external resources and submits no data.
+    </footer>
+  </body>
+</html>

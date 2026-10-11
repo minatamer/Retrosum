@@ -85,15 +85,21 @@ if (kind === "backend") {
     "Unexpected capability readiness.",
   );
 } else {
-  const landing = await request("/");
-  assert(
-    landing.response.status === 200 && landing.body.includes("Retrosum"),
-    "Landing probe failed.",
-  );
-  assert(
-    landing.response.headers.get("content-security-policy")?.includes("'nonce-"),
-    "Nonce CSP is missing.",
-  );
+  for (const path of ["/", "/demo"]) {
+    const page = await request(path);
+    assert(
+      page.response.status === 200 && page.body.includes("Retrosum"),
+      "Public page probe failed.",
+    );
+    const policy = page.response.headers.get("content-security-policy");
+    const nonce = policy?.match(/'nonce-([^']+)'/u)?.[1];
+    assert(
+      nonce &&
+        !policy.includes("'unsafe-eval'") &&
+        page.body.includes(`name="retrosum-csp-nonce" content="${nonce}"`),
+      "Public page nonce CSP or rendering integration is missing.",
+    );
+  }
   const samples = [
     "harbor-HS-101",
     "harbor-HS-102",

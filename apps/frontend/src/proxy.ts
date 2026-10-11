@@ -24,4 +24,4 @@ export function proxy(request: NextRequest) {
   response.headers.set("Cache-Control", "no-store");
   return response;
 }
-export const config = { matcher: ["/", "/workspace"] };
+export const config = { matcher: ["/", "/demo", "/workspace"] };

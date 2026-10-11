@@ -1,5 +1,7 @@
 # Retrosum
 
+![Retrosum — From paperwork to perspective](docs/assets/retrosum-overview.png)
+
 Retrosum is a guest demo that turns financial PDF evidence into an interactive money dashboard and lets an assistant named **Retro** explain, guide and edit temporary session records. The local build supports both simulation and the accepted paid OpenAI path. Two numeric/record corpus passes and seventeen live Retro cases passed; actual localhost Turnstile/browser checks passed. Hosted release acceptance remains separate.
 
 The interface and source documents use English/exact USD; dashboard EUR display uses an automatically retrieved dated ECB reference rate. Every sample figure comes from a viewable PDF; the intended public AI sample will process those originals live. Development fake mode supports the same interaction flow without API usage. Records and PDF previews survive refresh using bounded browser storage, with a fixed two-hour expiry and no server database.
@@ -8,12 +10,12 @@ The interface and source documents use English/exact USD; dashboard EUR display 
 
 - [Complete product, architecture and delivery blueprint](docs/RETROSUM_DEMO_SOURCE_OF_TRUTH.md)
 - [Short visual product brief](docs/RETROSUM_OVERVIEW.html)
-- [Twelve detailed implementation tickets and dependencies](docs/tickets/README.md)
+- [Detailed implementation tickets and dependencies](docs/tickets/README.md)
 - [Current completion and remaining acceptance](docs/CURRENT-STATUS.md)
 - [Documentation map and authority](docs/README.md)
 - [Prepared manual release and rollback guide](docs/operations/MANUAL-DEPLOYMENT.md)
 
-**Status:** RET-001 through RET-012 have local product and packaging evidence. The current ten-PDF/eighteen-page sample is source-backed; the workspace starts empty. RET-011's 10 October owner-authorized live numeric/record/Retro checks passed, and normal paid startup is connected with exact token preflight and challenge-bound admission. Real localhost disclosure, Turnstile, one-use grant, PDF extraction and Retro checks passed. Committed examples remain fake/paid-off. Owner/physical/general handwriting, hosted domain/IAM/retention/deployment remain pending. The owner confirms the configured OpenAI spending limit is USD 5; dashboard enforcement has not been independently inspected. Refreshing Linux images is deployment preparation. See [current validation](docs/validation/RET-011.md), [live setup](docs/engineering/OPENAI-LIVE-TESTING.md) and the ticket evidence. No push or deployment.
+**Status:** RET-001 through RET-013 have product, packaging and audit evidence. The app is deployed with public live processing at [Retrosum](https://retrosum-frontend-imspgi7bya-ew.a.run.app/demo), using the committed quality/security source `35bc824`. The ten-PDF/eighteen-page sample is source-backed; the workspace starts empty. RET-011's local live checks, RET-012's bounded hosted paid walkthrough and RET-013's local paid portfolio run/new free hosted checks retain their separate scopes. Committed examples remain fake/paid-off. Custom-domain cutover, hosted maximum-load checks, actual billing/account enforcement and broader arbitrary-upload/physical-device acceptance remain separate. See the [current release](docs/operations/RELEASE-RECORD-RET-013-2026-10-11.md), [current validation](docs/validation/RET-013.md) and [live setup](docs/engineering/OPENAI-LIVE-TESTING.md). No Git remote push occurred.
 
 ## Local development
 

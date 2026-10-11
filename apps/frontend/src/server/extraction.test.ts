@@ -24,6 +24,41 @@ const incoming = (
     body,
   });
 describe("bounded same-origin document bridge", () => {
+  it("rejects malformed admission before config and missing live admission before reading a body", async () => {
+    const malformed = incoming();
+    malformed.headers.set("Cookie", "retrosum_run=a.b; retrosum_run=c.d");
+    const noLookup = vi.fn<typeof fetch>();
+    expect((await forwardExtraction(malformed, noLookup, {})).status).toBe(403);
+    expect(noLookup).not.toHaveBeenCalled();
+    const live = incoming(),
+      reader = vi.spyOn(live.body!, "getReader");
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(Response.json({ ...available, mode: "live" }));
+    expect((await forwardExtraction(live, fetcher, {})).status).toBe(403);
+    expect(reader).not.toHaveBeenCalled();
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+  it("holds four capability/body leases, rejects a fifth, and releases all when availability fails", async () => {
+    let finish!: (response: Response) => void;
+    const fetcher = vi.fn<typeof fetch>().mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const work = Array.from({ length: 4 }, () => forwardExtraction(incoming(), fetcher, {}));
+    expect((await forwardExtraction(incoming(), fetcher, {})).status).toBe(429);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    finish(
+      Response.json({ ...available, documents: { available: false, reason: "paid_disabled" } }),
+    );
+    expect((await Promise.all(work)).map((r) => r.status)).toEqual([503, 503, 503, 503]);
+    fetcher.mockResolvedValueOnce(
+      Response.json({ ...available, documents: { available: false, reason: "paid_disabled" } }),
+    );
+    expect((await forwardExtraction(incoming(), fetcher, {})).status).toBe(503);
+  });
   it("rejects foreign origin and advertised oversized uploads before backend dispatch", async () => {
     const fetcher = vi.fn<typeof fetch>();
     expect(

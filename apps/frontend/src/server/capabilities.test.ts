@@ -10,6 +10,51 @@ const fake = {
   limits: DEMO_LIMITS,
 };
 describe("bounded server-only capability bridge", () => {
+  it("releases one aborted caller immediately without canceling another cold-start waiter", async () => {
+    let finish!: (response: Response) => void;
+    const fetcher = vi.fn<typeof fetch>().mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const canceled = new AbortController();
+    const first = readBackendCapabilities(fetcher, {}, canceled.signal),
+      second = readBackendCapabilities(fetcher, {});
+    canceled.abort();
+    expect((await first).mode).toBe("unavailable");
+    expect(fetcher.mock.calls[0]?.[1]?.signal?.aborted).toBe(false);
+    finish(Response.json(fake));
+    expect(await second).toEqual(fake);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+  it("coalesces only simultaneous lookups and reads fresh paid availability after completion", async () => {
+    let finish!: (response: Response) => void;
+    const fetcher = vi.fn<typeof fetch>().mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const one = readBackendCapabilities(fetcher, {}),
+      two = readBackendCapabilities(fetcher, {});
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    finish(Response.json({ ...fake, documents: { available: true } }));
+    expect((await one).documents.available).toBe(true);
+    expect(await two).toEqual(await one);
+    fetcher.mockResolvedValueOnce(
+      Response.json({
+        ...fake,
+        mode: "unavailable",
+        documents: { available: false, reason: "paid_disabled" },
+      }),
+    );
+    expect((await readBackendCapabilities(fetcher, {})).documents).toEqual({
+      available: false,
+      reason: "paid_disabled",
+    });
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
   it("validates the public projection", async () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(Response.json(fake));
     expect(await readBackendCapabilities(fetcher, {})).toEqual(capabilitiesSchema.parse(fake));

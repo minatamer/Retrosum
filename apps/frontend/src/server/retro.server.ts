@@ -1,6 +1,7 @@
 import "server-only";
 import { RETRO_LIMITS, retroRequestSchema, retroResponseSchema } from "@retrosum/contracts";
 import { readBackendCapabilities } from "./capabilities.server";
+import { frontendRequestGate, requestLimitResponse } from "./request-gate.server";
 import {
   backendRequest,
   admissionHeaders,
@@ -17,71 +18,86 @@ export async function forwardRetro(
   const error = (code: string, status: number) =>
     Response.json({ error: code }, { status, headers });
   if (!frontendRequestOrigin(request, environment)) return error("origin_not_allowed", 403);
+  if (!frontendRequestGate.admit(request.method)) return requestLimitResponse();
   if (
     !/^application\/json(?:;|$)/u.test(request.headers.get("content-type") ?? "") ||
     !request.body
   )
     return error("invalid_json", 400);
-  const capabilities = await readBackendCapabilities(fetcher, environment);
-  if (!capabilities.copilot.available)
-    return error(capabilities.copilot.reason ?? "backend_unavailable", 503);
-  const signal = AbortSignal.any([request.signal, AbortSignal.timeout(65000)]);
-  let forwarded = false;
+  let admission: ReturnType<typeof admissionHeaders>;
   try {
-    const payload = retroRequestSchema.parse(
-      JSON.parse(await readBounded(request.body, RETRO_LIMITS.bodyBytes, signal)),
-    );
-    forwarded = true;
-    const response = await backendRequest(
-      action === "chat" ? "/v1/chat" : "/v1/insights",
-      {
-        method: "POST",
-        signal,
-        redirect: "error",
-        cache: "no-store",
-        headers: {
-          "Content-Type": "application/json",
-          Origin: environment.FRONTEND_ORIGIN ?? "http://localhost:3000",
-          ...admissionHeaders(request),
+    admission = admissionHeaders(request);
+  } catch {
+    return error("invalid_grant", 403);
+  }
+  const releaseCapacity = frontendRequestGate.enter();
+  if (!releaseCapacity) return error("instance_busy", 429);
+  try {
+    const capabilities = await readBackendCapabilities(fetcher, environment, request.signal);
+    if (!capabilities.copilot.available)
+      return error(capabilities.copilot.reason ?? "backend_unavailable", 503);
+    if (capabilities.mode !== "fake" && (!admission.Cookie || !admission["X-Retrosum-Grant"]))
+      return error("invalid_grant", 403);
+    const signal = AbortSignal.any([request.signal, AbortSignal.timeout(65000)]);
+    let forwarded = false;
+    try {
+      const payload = retroRequestSchema.parse(
+        JSON.parse(await readBounded(request.body, RETRO_LIMITS.bodyBytes, signal)),
+      );
+      forwarded = true;
+      const response = await backendRequest(
+        action === "chat" ? "/v1/chat" : "/v1/insights",
+        {
+          method: "POST",
+          signal,
+          redirect: "error",
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json",
+            Origin: environment.FRONTEND_ORIGIN ?? "http://localhost:3000",
+            ...admission,
+          },
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload),
-      },
-      fetcher,
-      environment,
-    );
-    if (!response.body) return error("backend_unavailable", 503);
-    const raw: unknown = JSON.parse(await readBounded(response.body, 128 * 1024, signal));
-    if (!response.ok) {
-      const code =
-        typeof raw === "object" &&
-        raw !== null &&
-        "error" in raw &&
-        typeof raw.error === "string" &&
-        /^[a-z_]{1,60}$/u.test(raw.error)
-          ? raw.error
-          : "investigation_failed";
+        fetcher,
+        environment,
+      );
+      if (!response.body) return error("backend_unavailable", 503);
+      const raw: unknown = JSON.parse(await readBounded(response.body, 128 * 1024, signal));
+      if (!response.ok) {
+        const code =
+          typeof raw === "object" &&
+          raw !== null &&
+          "error" in raw &&
+          typeof raw.error === "string" &&
+          /^[a-z_]{1,60}$/u.test(raw.error)
+            ? raw.error
+            : "investigation_failed";
+        return error(
+          code,
+          [400, 403, 409, 413, 429, 503, 504].includes(response.status) ? response.status : 502,
+        );
+      }
+      return Response.json(retroResponseSchema.parse(raw), { headers });
+    } catch (cause) {
       return error(
-        code,
-        [400, 403, 409, 413, 429, 503, 504].includes(response.status) ? response.status : 502,
+        signal.aborted
+          ? "turn_timeout"
+          : cause instanceof RangeError && cause.message === "body_too_large"
+            ? "body_too_large"
+            : "invalid_or_unavailable_turn",
+        signal.aborted
+          ? 504
+          : cause instanceof RangeError && cause.message === "body_too_large"
+            ? forwarded
+              ? 502
+              : 413
+            : forwarded
+              ? 502
+              : 400,
       );
     }
-    return Response.json(retroResponseSchema.parse(raw), { headers });
-  } catch (cause) {
-    return error(
-      signal.aborted
-        ? "turn_timeout"
-        : cause instanceof RangeError && cause.message === "body_too_large"
-          ? "body_too_large"
-          : "invalid_or_unavailable_turn",
-      signal.aborted
-        ? 504
-        : cause instanceof RangeError && cause.message === "body_too_large"
-          ? forwarded
-            ? 502
-            : 413
-          : forwarded
-            ? 502
-            : 400,
-    );
+  } finally {
+    releaseCapacity();
   }
 }

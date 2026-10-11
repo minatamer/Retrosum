@@ -1,6 +1,7 @@
 import "server-only";
 import { usdEurRateSchema } from "@retrosum/contracts";
 import { backendRequest, readBounded } from "./backend.server";
+import { frontendRequestGate, requestLimitResponse } from "./request-gate.server";
 
 export async function forwardExchangeRate(
   request: Request,
@@ -8,6 +9,7 @@ export async function forwardExchangeRate(
   environment: Record<string, string | undefined> = process.env,
 ) {
   const headers = { "Cache-Control": "no-store" };
+  if (!frontendRequestGate.admit(request.method)) return requestLimitResponse();
   try {
     const signal = AbortSignal.any([request.signal, AbortSignal.timeout(8000)]);
     const response = await backendRequest("/v1/exchange-rate", { signal }, fetcher, environment);

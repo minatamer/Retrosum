@@ -1,4 +1,5 @@
 import "server-only";
+import { frontendRequestGate, requestLimitResponse } from "./request-gate.server";
 import { workspaceIdSchema } from "@retrosum/contracts";
 import {
   backendRequest,
@@ -16,6 +17,7 @@ export async function revokeSession(
     return Response.json({ error: "origin_not_allowed" }, { status: 403, headers });
   if (!/^application\/json(?:;|$)/u.test(request.headers.get("content-type") ?? ""))
     return Response.json({ error: "invalid_session" }, { status: 400, headers });
+  if (!frontendRequestGate.admit(request.method)) return requestLimitResponse();
   const signal = AbortSignal.any([request.signal, AbortSignal.timeout(5000)]);
   try {
     if (!request.body) throw new Error();

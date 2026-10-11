@@ -2,7 +2,46 @@ import "server-only";
 import { capabilitiesSchema, unavailableCapabilities } from "@retrosum/contracts";
 import type { RuntimeCapabilities } from "@retrosum/contracts";
 import { backendRequest, readBounded } from "./backend.server";
-export async function readBackendCapabilities(
+const pending = new WeakMap<typeof fetch, Map<string, Promise<RuntimeCapabilities>>>();
+export function readBackendCapabilities(
+  fetcher: typeof fetch = fetch,
+  environment: Record<string, string | undefined> = process.env,
+  signal?: AbortSignal,
+): Promise<RuntimeCapabilities> {
+  if (signal?.aborted) return Promise.resolve(unavailableCapabilities());
+  const key = JSON.stringify([
+    environment.BACKEND_ORIGIN,
+    environment.BACKEND_AUDIENCE,
+    environment.K_SERVICE,
+  ]);
+  let requests = pending.get(fetcher);
+  if (!requests) {
+    requests = new Map();
+    pending.set(fetcher, requests);
+  }
+  const existing = requests.get(key);
+  if (existing) return waitForCapabilities(existing, signal);
+  if (requests.size >= 8) return Promise.resolve(unavailableCapabilities());
+  const result = lookupCapabilities(fetcher, environment).finally(() => requests.delete(key));
+  requests.set(key, result);
+  return waitForCapabilities(result, signal);
+}
+function waitForCapabilities(result: Promise<RuntimeCapabilities>, signal?: AbortSignal) {
+  if (!signal) return result;
+  return new Promise<RuntimeCapabilities>((resolve) => {
+    const abort = () => {
+      resolve(unavailableCapabilities());
+      signal.removeEventListener("abort", abort);
+    };
+    signal.addEventListener("abort", abort, { once: true });
+    void result.then((value) => {
+      signal.removeEventListener("abort", abort);
+      resolve(value);
+    });
+    if (signal.aborted) abort();
+  });
+}
+async function lookupCapabilities(
   fetcher: typeof fetch = fetch,
   environment: Record<string, string | undefined> = process.env,
 ): Promise<RuntimeCapabilities> {

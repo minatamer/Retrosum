@@ -40,6 +40,19 @@ const incoming = (body = JSON.stringify(payload()), origin = "http://localhost:3
     body,
   });
 describe("Retro same-origin private bridge", () => {
+  it("does not lookup config for malformed tokens or parse a live body without admission", async () => {
+    const malformed = incoming();
+    malformed.headers.set("X-Retrosum-Grant", "not-signed");
+    const fetcher = vi.fn<typeof fetch>();
+    expect((await forwardRetro(malformed, fetcher, {})).status).toBe(403);
+    expect(fetcher).not.toHaveBeenCalled();
+    const live = incoming(),
+      reader = vi.spyOn(live.body!, "getReader");
+    fetcher.mockResolvedValueOnce(Response.json({ ...available, mode: "live" }));
+    expect((await forwardRetro(live, fetcher, {})).status).toBe(403);
+    expect(reader).not.toHaveBeenCalled();
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
   it("foreign origin, unsafe upstream and closed capability never dispatch chat", async () => {
     const fetcher = vi.fn();
     expect((await forwardRetro(incoming("{}", "https://bad.example"), fetcher, {})).status).toBe(

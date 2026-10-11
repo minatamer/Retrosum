@@ -56,6 +56,7 @@ type Run = {
   grants: Map<string, Claims>;
   batches: Map<string, ApprovedBatch>;
   generation: number;
+  attempts: number[];
 };
 export type ChallengeVerifier = (
   request: Pick<GrantRequest, "action" | "inputHash" | "challengeToken">,
@@ -77,7 +78,7 @@ export function requestInputHash(input: unknown) {
 export class PaidAdmission {
   readonly epoch = randomUUID();
   private readonly runs = new Map<string, Run>();
-  private readonly sources = new Map<string, number[]>();
+  private entries: number[] = [];
   private starts: number[] = [];
   private readonly active = new Set<string>();
   constructor(
@@ -101,30 +102,27 @@ export class PaidAdmission {
           if (batch.expiresAt <= now) run.batches.delete(nonce);
       }
     }
-    for (const [key, times] of this.sources) {
-      const retained = times.filter((t) => t > now - 3_600_000);
-      if (retained.length) this.sources.set(key, retained);
-      else this.sources.delete(key);
-    }
+    this.entries = this.entries.filter((t) => t > now - 3_600_000);
     this.starts = this.starts.filter((t) => t > now - 3_600_000);
   }
-  source(address: string) {
-    return createHmac("sha256", this.secret).update(address).digest("hex");
-  }
-  attempt(source: string) {
+  attempt() {
     this.gate();
     this.sweep();
     const now = this.now(),
-      times = this.sources.get(source) ?? [];
+      times = this.entries;
+    if (times.filter((t) => t > now - 60_000).length >= 120 || times.length >= 600)
+      throw new RangeError("rate_limited");
+    times.push(now);
+  }
+  private attemptRun(run: Run) {
+    const now = this.now();
+    run.attempts = run.attempts.filter((t) => t > now - 3_600_000);
     if (
-      times.filter((t) => t > now - 60_000).length >= PAID_ATTEMPTS_PER_MINUTE ||
-      times.length >= 30
+      run.attempts.filter((t) => t > now - 60_000).length >= PAID_ATTEMPTS_PER_MINUTE ||
+      run.attempts.length >= 30
     )
       throw new RangeError("rate_limited");
-    if (this.sources.size >= 1000 && !this.sources.has(source))
-      throw new RangeError("admission_full");
-    times.push(now);
-    this.sources.set(source, times);
+    run.attempts.push(now);
   }
   private sign(value: unknown) {
     const body = Buffer.from(JSON.stringify(value)).toString("base64url");
@@ -172,14 +170,16 @@ export class PaidAdmission {
       grants: new Map(),
       batches: new Map(),
       generation: 0,
+      attempts: [],
     });
     return { cookie: this.sign({ run, expiresAt, epoch: this.epoch }), expiresAt };
   }
-  async issue(cookie: string, input: GrantRequest, source: string, signal: AbortSignal) {
-    this.attempt(source);
+  async issue(cookie: string, input: GrantRequest, signal: AbortSignal) {
+    this.attempt();
     const request = grantRequestSchema.parse(input),
       { run, id } = this.run(cookie);
     if (run.workspaceId !== request.workspaceId) throw new RangeError("workspace_mismatch");
+    this.attemptRun(run);
     const generation = run.generation;
     if (this.pending(run) >= 20) throw new RangeError("admission_full");
     if (!(await this.verifyChallenge(request, signal))) throw new RangeError("challenge_rejected");
@@ -221,16 +221,12 @@ export class PaidAdmission {
       disclosureVersion: PROCESSING_DISCLOSURE_VERSION,
     };
   }
-  async issueBatch(
-    cookie: string,
-    input: ExtractionBatchRequest,
-    source: string,
-    signal: AbortSignal,
-  ) {
-    this.attempt(source);
+  async issueBatch(cookie: string, input: ExtractionBatchRequest, signal: AbortSignal) {
+    this.attempt();
     const request = extractionBatchRequestSchema.parse(input),
       { run, id } = this.run(cookie);
     if (run.workspaceId !== request.workspaceId) throw new RangeError("workspace_mismatch");
+    this.attemptRun(run);
     if (request.inputHash !== requestInputHash(request.operations))
       throw new RangeError("invalid_grant");
     const generation = run.generation;
@@ -296,7 +292,7 @@ export class PaidAdmission {
     if (!batch.operations.size) run.batches.delete(claims.nonce);
     return result;
   }
-  consume(cookie: string, token: string, identity: ActionIdentity) {
+  validate(cookie: string, token: string, identity: ActionIdentity) {
     this.gate();
     this.sweep();
     const claims = grantClaims.parse(this.decode(token)),
@@ -311,6 +307,10 @@ export class PaidAdmission {
       Object.entries(identity).some(([key, value]) => claims[key as keyof Claims] !== value)
     )
       throw new RangeError("invalid_grant");
+    return { run, claims };
+  }
+  consume(cookie: string, token: string, identity: ActionIdentity) {
+    const { run, claims } = this.validate(cookie, token, identity);
     if (this.active.size >= MAX_CONCURRENT_OPERATIONS) throw new RangeError("instance_busy");
     if (this.starts.length >= 20) throw new RangeError("rate_limited");
     const reserve = reservationMicroUsd(identity.action);

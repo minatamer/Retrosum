@@ -74,8 +74,7 @@ function batch(h: ReturnType<typeof harness>, cookie: string, count = 10) {
   };
   return {
     request,
-    start: () =>
-      h.ledger.issueBatch(cookie, request, h.ledger.source("socket"), new AbortController().signal),
+    start: () => h.ledger.issueBatch(cookie, request, new AbortController().signal),
   };
 }
 describe("exact selected-batch verification", () => {
@@ -231,14 +230,12 @@ describe("exact selected-batch verification", () => {
       next = batch(live, cookie),
       abort = new AbortController();
     abort.abort();
-    await expect(
-      live.ledger.issueBatch(cookie, next.request, "source", abort.signal),
-    ).rejects.toThrow();
+    await expect(live.ledger.issueBatch(cookie, next.request, abort.signal)).rejects.toThrow();
     expect(live.verify).not.toHaveBeenCalled();
   });
 });
 const issue = (h: ReturnType<typeof harness>, cookie: string, r: GrantRequest) =>
-  h.ledger.issue(cookie, r, h.ledger.source("immediate-ingress"), new AbortController().signal);
+  h.ledger.issue(cookie, r, new AbortController().signal);
 describe("one-use admission and conservative reservations", () => {
   it("paid-off rejects before challenge or dispatch; all priced ceilings remain explicit", async () => {
     const h = harness(false);
@@ -385,7 +382,7 @@ describe("one-use admission and conservative reservations", () => {
       "document_allowance_used",
     );
   });
-  it("bounds eight turns, two insight generations and immediate-source attempts without using forwarded identity", async () => {
+  it("bounds eight turns and two insight generations", async () => {
     const h = harness(),
       cookie = h.session();
     for (let i = 0; i < 8; i++) {
@@ -410,9 +407,6 @@ describe("one-use admission and conservative reservations", () => {
     expect(() => h.ledger.consume(cookie, tg.grant, identity(third))).toThrow(
       "turn_allowance_used",
     );
-    const limit = harness();
-    for (let i = 0; i < 6; i++) limit.ledger.attempt(limit.ledger.source("socket"));
-    expect(() => limit.ledger.attempt(limit.ledger.source("socket"))).toThrow("rate_limited");
   });
   it("rejects failed and cancelled challenge verification without minting a grant", async () => {
     const h = harness(),
@@ -422,9 +416,7 @@ describe("one-use admission and conservative reservations", () => {
     h.verify.mockResolvedValue(true);
     const abort = new AbortController();
     abort.abort();
-    await expect(
-      h.ledger.issue(cookie, action(2), h.ledger.source("socket"), abort.signal),
-    ).rejects.toThrow();
+    await expect(h.ledger.issue(cookie, action(2), abort.signal)).rejects.toThrow();
   });
   it("reset revokes a challenge that was already awaiting verification", async () => {
     let verified!: (value: boolean) => void;
@@ -440,5 +432,59 @@ describe("one-use admission and conservative reservations", () => {
     h.ledger.revoke(cookie, "workspace_a");
     verified(true);
     await expect(pending).rejects.toThrow("invalid_grant");
+  });
+});
+
+describe("service entry and independent run windows", () => {
+  it("allows neighboring runs after one run exhausts its challenge window, without renewing that run on reset", async () => {
+    const h = harness(),
+      cookie = h.session();
+    h.verify.mockResolvedValue(false);
+    for (let i = 0; i < 6; i++)
+      await expect(issue(h, cookie, action(i))).rejects.toThrow("challenge_rejected");
+    await expect(issue(h, cookie, action(7))).rejects.toThrow("rate_limited");
+    h.ledger.revoke(cookie, "workspace_a");
+    await expect(issue(h, cookie, action(8))).rejects.toThrow("rate_limited");
+    const neighbor = h.session("workspace_b");
+    h.verify.mockResolvedValue(true);
+    await expect(
+      issue(
+        h,
+        neighbor,
+        action(9, "chat", { workspaceId: workspaceIdSchema.parse("workspace_b") }),
+      ),
+    ).resolves.toHaveProperty("grant");
+    expect(h.verify).toHaveBeenCalledTimes(7);
+  });
+  it("retains bounded minute/hour service ceilings and releases expired entries", () => {
+    const h = harness();
+    for (let window = 0; window < 5; window++) {
+      for (let i = 0; i < 120; i++) h.ledger.attempt();
+      expect(() => h.ledger.attempt()).toThrow("rate_limited");
+      h.advance(60_001);
+    }
+    expect(() => h.ledger.attempt()).toThrow("rate_limited");
+    h.advance(3_600_000);
+    expect(() => h.ledger.attempt()).not.toThrow();
+  });
+  it("complete validation is side-effect free and shares all identity/replay checks with consumption", async () => {
+    const h = harness(),
+      cookie = h.session(),
+      r = action(1, "extract", { documentHash: "b".repeat(64) }),
+      g = await issue(h, cookie, r);
+    for (const change of [
+      { workspaceId: "workspace_wrong" },
+      { operationId: "wrong" },
+      { inputHash: "c".repeat(64) },
+      { documentHash: "c".repeat(64) },
+      { retry: true },
+      { action: "chat" as const },
+    ])
+      expect(() => h.ledger.validate(cookie, g.grant, { ...identity(r), ...change })).toThrow(
+        "invalid_grant",
+      );
+    for (let i = 0; i < 5; i++) h.ledger.validate(cookie, g.grant, identity(r));
+    h.ledger.consume(cookie, g.grant, identity(r))();
+    expect(() => h.ledger.validate(cookie, g.grant, identity(r))).toThrow("operation_replayed");
   });
 });

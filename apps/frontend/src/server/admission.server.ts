@@ -1,4 +1,5 @@
 import "server-only";
+import { frontendRequestGate, requestLimitResponse } from "./request-gate.server";
 import {
   admissionSessionSchema,
   admissionGrantRequestSchema,
@@ -25,6 +26,7 @@ export async function forwardAdmission(
   const publicOrigin = frontendRequestOrigin(request, environment);
   if (!publicOrigin)
     return Response.json({ error: "origin_not_allowed" }, { status: 403, headers });
+  if (!frontendRequestGate.admit(request.method)) return requestLimitResponse();
   if (
     !request.body ||
     !/^application\/json(?:;|$)/u.test(request.headers.get("content-type") ?? "")
@@ -32,6 +34,9 @@ export async function forwardAdmission(
     return Response.json({ error: "invalid_admission" }, { status: 400, headers });
   const signal = AbortSignal.any([request.signal, AbortSignal.timeout(12000)]);
   try {
+    const admission = admissionHeaders(request);
+    if (kind !== "session" && !admission.Cookie)
+      return Response.json({ error: "admission_unavailable" }, { status: 403, headers });
     const raw: unknown = JSON.parse(
       await readBounded(request.body, kind === "batch" ? 8192 : 4096, signal),
     );
@@ -50,7 +55,7 @@ export async function forwardAdmission(
         headers: {
           "Content-Type": "application/json",
           Origin: environment.FRONTEND_ORIGIN ?? "http://localhost:3000",
-          ...admissionHeaders(request),
+          ...admission,
         },
         body: JSON.stringify(body),
       },

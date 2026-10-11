@@ -17,6 +17,7 @@ import {
 } from "../packages/money/dist/index.js";
 import { harborSession } from "./fixtures/harbor-v1/money-fixture.mjs";
 import { inspectPdf, verifyOriginal } from "../apps/backend/src/documents/inspection.ts";
+import * as pdfInspection from "../apps/backend/src/documents/inspection.ts";
 import { createFakeProvider } from "../apps/backend/src/providers/fake.ts";
 import {
   createOpenAiProvider,
@@ -86,6 +87,133 @@ function empty() {
   };
 }
 describe("actual PDF recognition and source grounding", () => {
+  it("rechecks a revoked grant after inspection and frees intake without a provider start", async () => {
+    const dispatch = vi.fn(provider.interpretDocument);
+    const runtime = composeRuntime(
+      parseConfig({
+        FAKE_MODE: "false",
+        PAID_DEMO_ENABLED: "true",
+        OPENAI_API_KEY: "injected",
+        TURNSTILE_SITE_KEY: "injected",
+        TURNSTILE_SECRET_KEY: "injected",
+        GRANT_SIGNING_SECRET: "injected-test-only-secret-longer-than-32",
+      }),
+      {
+        clock,
+        createRequestId: () => "request_test",
+        provider: { kind: "openai", interpretDocument: dispatch },
+        challengeVerifier: async () => true,
+      },
+    );
+    const app = createApp(runtime),
+      meta = metadata(cases[0].doc),
+      cookie = runtime.paidAdmission.session(meta.workspaceId, null).cookie;
+    const g = await runtime.paidAdmission.issue(
+      cookie,
+      {
+        workspaceId: meta.workspaceId,
+        operationId: meta.operationId,
+        action: "extract",
+        retry: false,
+        inputHash: requestInputHash(meta),
+        documentHash: meta.document.sha256,
+        consent: true,
+        disclosureVersion: PROCESSING_DISCLOSURE_VERSION,
+        challengeToken: "injected",
+      },
+      new AbortController().signal,
+    );
+    const completion = Promise.withResolvers();
+    const inspect = vi.spyOn(pdfInspection, "inspectPdf").mockReturnValueOnce(completion.promise);
+    const pending = request(app)
+      .post("/v1/extract")
+      .set("Origin", "http://localhost:3000")
+      .set("Cookie", `retrosum_run=${cookie}`)
+      .set("X-Retrosum-Grant", g.grant)
+      .field("metadata", JSON.stringify(meta))
+      .attach("file", Buffer.from(cases[0].bytes), {
+        filename: "demo.pdf",
+        contentType: "application/pdf",
+      })
+      .then((r) => r);
+    await vi.waitFor(() => expect(inspect).toHaveBeenCalledTimes(1));
+    runtime.paidAdmission.revoke(cookie, meta.workspaceId);
+    completion.resolve(cases[0].output.inspection);
+    expect((await pending).status).toBe(403);
+    expect(dispatch).not.toHaveBeenCalled();
+    const slots = Array.from({ length: 4 }, () => runtime.admission.enter());
+    slots.forEach((release) => release());
+  });
+  it("rejects a valid grant bound to different metadata before tracking, budget or inspection; its approved original remains usable", async () => {
+    const dispatch = vi.fn(provider.interpretDocument);
+    const runtime = composeRuntime(
+      parseConfig({
+        FAKE_MODE: "false",
+        PAID_DEMO_ENABLED: "true",
+        OPENAI_API_KEY: "injected",
+        TURNSTILE_SITE_KEY: "injected",
+        TURNSTILE_SECRET_KEY: "injected",
+        GRANT_SIGNING_SECRET: "injected-test-only-secret-longer-than-32",
+      }),
+      {
+        clock,
+        createRequestId: () => "request_test",
+        provider: { kind: "openai", interpretDocument: dispatch },
+        challengeVerifier: async () => true,
+      },
+    );
+    const app = createApp(runtime),
+      meta = metadata(cases[0].doc),
+      cookie = runtime.paidAdmission.session(meta.workspaceId, null).cookie;
+    const g = await runtime.paidAdmission.issue(
+      cookie,
+      {
+        workspaceId: meta.workspaceId,
+        operationId: meta.operationId,
+        action: "extract",
+        retry: false,
+        inputHash: requestInputHash(meta),
+        documentHash: meta.document.sha256,
+        consent: true,
+        disclosureVersion: PROCESSING_DISCLOSURE_VERSION,
+        challengeToken: "injected",
+      },
+      new AbortController().signal,
+    );
+    const track = vi.spyOn(runtime.operations, "track"),
+      reserve = vi.spyOn(runtime.admission, "reserve"),
+      inspect = vi.spyOn(pdfInspection, "inspectPdf");
+    const send = (changed, header = g.grant, run = `retrosum_run=${cookie}`) =>
+      request(app)
+        .post("/v1/extract")
+        .set("Origin", "http://localhost:3000")
+        .set("Cookie", run)
+        .set("X-Retrosum-Grant", header)
+        .field("metadata", JSON.stringify(changed))
+        .attach("file", Buffer.from(cases[0].bytes), {
+          filename: "demo.pdf",
+          contentType: "application/pdf",
+        });
+    for (const changed of [
+      { ...meta, workspaceId: "workspace_wrong" },
+      { ...meta, operationId: "operation_wrong" },
+      { ...meta, asOf: "2026-10-04" },
+      { ...meta, retry: true },
+      { ...meta, document: { ...meta.document, sha256: "a".repeat(64) } },
+    ])
+      expect((await send(changed)).status).toBe(403);
+    await send(meta, g.grant, `retrosum_run=${cookie}; retrosum_run=${cookie}`).expect(403);
+    expect(track).not.toHaveBeenCalled();
+    expect(reserve).not.toHaveBeenCalled();
+    expect(inspect).not.toHaveBeenCalled();
+    expect(dispatch).not.toHaveBeenCalled();
+    const competing = await Promise.all([send(meta), send(meta)]);
+    expect(competing.map((r) => r.status).sort()).toEqual([200, 409]);
+    expect(inspect).toHaveBeenCalledTimes(1);
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    await send(meta).expect(409);
+    expect(inspect).toHaveBeenCalledTimes(1);
+  }, 10000);
   it("keeps a transfer reference as context without holding or allocating its payment register", () => {
     const item = cases[6];
     const output = structuredClone(item.output);

@@ -161,7 +161,8 @@ export function admissionHeaders(request: Request) {
   )
     output.Cookie = cookies[0]!;
   const grant = request.headers.get("x-retrosum-grant");
-  if (grant && grant.length <= 2048 && /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/u.test(grant))
-    output["X-Retrosum-Grant"] = grant;
+  if (grant !== null && (grant.length > 2048 || !/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/u.test(grant)))
+    throw new RangeError("invalid_grant");
+  if (grant) output["X-Retrosum-Grant"] = grant;
   return output;
 }

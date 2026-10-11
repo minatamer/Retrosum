@@ -1,5 +1,18 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { frontendRequestGate } from "./server/request-gate.server";
 export function proxy(request: NextRequest) {
+  if (!frontendRequestGate.admit(request.method)) {
+    const headers = {
+      "Cache-Control": "no-store",
+      "Retry-After": "60",
+      "X-Content-Type-Options": "nosniff",
+    };
+    return new NextResponse("Retrosum is busy. Please try again in a minute.", {
+      status: 429,
+      headers,
+    });
+  }
+  if (request.nextUrl.pathname === "/_next/image") return NextResponse.next();
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const dev = process.env.NODE_ENV === "development";
   const policy = [
@@ -24,4 +37,6 @@ export function proxy(request: NextRequest) {
   response.headers.set("Cache-Control", "no-store");
   return response;
 }
-export const config = { matcher: ["/", "/demo", "/workspace"] };
+export const config = {
+  matcher: ["/", "/demo", "/workspace", "/_next/image"],
+};

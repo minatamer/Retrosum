@@ -50,8 +50,22 @@ export async function extractRoute(runtime: AppRuntime, req: Request, res: Respo
   try {
     releaseIntake = runtime.admission.enter();
     const { metadata, bytes } = await readExtraction(req, controller.signal);
-    untrack = runtime.operations.track(metadata.workspaceId, controller);
     verifyOriginal(bytes, metadata.document);
+    const identity = {
+      action: "extract" as const,
+      workspaceId: metadata.workspaceId,
+      operationId: metadata.operationId,
+      inputHash: requestInputHash(metadata),
+      documentHash: metadata.document.sha256,
+      retry: metadata.retry,
+    };
+    const cookie = runtime.config.FAKE_MODE ? null : runCookie(req.headers.cookie),
+      grant = req.headers["x-retrosum-grant"];
+    if (!runtime.config.FAKE_MODE) {
+      if (!cookie || typeof grant !== "string") throw new RangeError("invalid_grant");
+      runtime.paidAdmission.validate(cookie, grant, identity);
+    }
+    untrack = runtime.operations.track(metadata.workspaceId, controller);
     release = runtime.admission.reserve(
       metadata.workspaceId,
       metadata.operationId,
@@ -66,17 +80,9 @@ export async function extractRoute(runtime: AppRuntime, req: Request, res: Respo
     )
       throw new RangeError("invalid_original");
     if (!runtime.config.FAKE_MODE) {
-      const cookie = runCookie(req.headers.cookie),
-        grant = req.headers["x-retrosum-grant"];
       if (!cookie || typeof grant !== "string") throw new RangeError("invalid_grant");
-      releasePaid = runtime.paidAdmission.consume(cookie, grant, {
-        action: "extract",
-        workspaceId: metadata.workspaceId,
-        operationId: metadata.operationId,
-        inputHash: requestInputHash(metadata),
-        documentHash: metadata.document.sha256,
-        retry: metadata.retry,
-      });
+      controller.signal.throwIfAborted();
+      releasePaid = runtime.paidAdmission.consume(cookie, grant, identity);
     }
     const output = await runtime.ports.provider.interpretDocument(
       { metadata, bytes },

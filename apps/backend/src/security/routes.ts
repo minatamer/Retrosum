@@ -96,11 +96,10 @@ export async function admissionRoute(
   response.once("close", abort);
   const signal = controller.signal;
   try {
-    const cookie = runCookie(request.headers.cookie),
-      source = runtime.paidAdmission.source(request.socket.remoteAddress ?? "unknown-ingress");
+    const cookie = runCookie(request.headers.cookie);
     if (kind === "session") {
       const input = admissionSessionSchema.parse(request.body);
-      if (!cookie) runtime.paidAdmission.attempt(source);
+      if (!cookie) runtime.paidAdmission.attempt();
       const result = runtime.paidAdmission.session(input.workspaceId, cookie);
       response.set(
         "Set-Cookie",
@@ -114,7 +113,6 @@ export async function admissionRoute(
           await runtime.paidAdmission.issueBatch(
             cookie,
             extractionBatchRequestSchema.parse(request.body),
-            source,
             signal,
           ),
         );
@@ -124,7 +122,7 @@ export async function admissionRoute(
       response.json(
         "batchGrant" in input
           ? runtime.paidAdmission.issueFromBatch(cookie, input)
-          : await runtime.paidAdmission.issue(cookie, input, source, signal),
+          : await runtime.paidAdmission.issue(cookie, input, signal),
       );
     }
   } catch (cause) {

@@ -76,7 +76,6 @@ async function grant(h, cookie, body, action = "chat") {
       disclosureVersion: PROCESSING_DISCLOSURE_VERSION,
       challengeToken: "injected",
     },
-    h.ledger.source("socket"),
     new AbortController().signal,
   );
 }

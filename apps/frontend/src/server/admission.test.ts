@@ -122,7 +122,11 @@ describe("exact batch private bridge", () => {
     ]) {
       const request = new Request("http://localhost:3000/api/retrosum/v1/grants", {
         method: "POST",
-        headers: { Origin: "http://localhost:3000", "Content-Type": "application/json" },
+        headers: {
+          Origin: "http://localhost:3000",
+          "Content-Type": "application/json",
+          Cookie: "retrosum_run=a.b",
+        },
         body: JSON.stringify(body),
       });
       expect((await forwardAdmission(request, "grant", fetcher, {})).status).toBe(503);

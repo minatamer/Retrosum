@@ -15,6 +15,26 @@ describe("bounded server-only capability bridge", () => {
     expect(await readBackendCapabilities(fetcher, {})).toEqual(capabilitiesSchema.parse(fake));
     expect(fetcher.mock.calls[0]?.[0]).toEqual(new URL("http://127.0.0.1:4000/v1/config"));
   });
+  it("allows a cold backend to respond after three seconds without retrying", async () => {
+    const fetcher = vi.fn<typeof fetch>().mockImplementation(
+      async (_url, options) =>
+        new Promise<Response>((resolve, reject) => {
+          const signal = options?.signal;
+          const abort = () => {
+            clearTimeout(timer);
+            reject(signal?.reason);
+          };
+          const timer = setTimeout(() => {
+            signal?.removeEventListener("abort", abort);
+            resolve(Response.json(fake));
+          }, 3200);
+          signal?.addEventListener("abort", abort, { once: true });
+          if (signal?.aborted) abort();
+        }),
+    );
+    expect(await readBackendCapabilities(fetcher, {})).toEqual(capabilitiesSchema.parse(fake));
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
   it("never exposes rejected backend payloads", async () => {
     const fetcher = vi
       .fn<typeof fetch>()

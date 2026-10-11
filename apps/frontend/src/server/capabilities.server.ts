@@ -7,7 +7,9 @@ export async function readBackendCapabilities(
   environment: Record<string, string | undefined> = process.env,
 ): Promise<RuntimeCapabilities> {
   try {
-    const signal = AbortSignal.timeout(3000);
+    // Both hosted services scale to zero; the public, no-cost config request
+    // must allow the private backend to start before declaring it unavailable.
+    const signal = AbortSignal.timeout(10000);
     const response = await backendRequest(
       "/v1/config",
       {

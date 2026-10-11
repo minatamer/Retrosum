@@ -1,6 +1,6 @@
 # Local product acceptance and candidate handoff
 
-Current completion and outstanding work: [current status](../CURRENT-STATUS.md). **The owner confirms local manual testing is complete and the release is ready for deployment on 11 October 2026.** Owner local sign-off is no longer pending. RET-012's current ten-PDF/eighteen-page Linux image refresh and fake/unavailable verification are complete; the build-discovered packaging correction/evidence await specific commit permission. Account/cloud configuration and hosted rollout verification remain RET-012 work; extended device/assistive/general-upload coverage is not inferred from the confirmation.
+Current completion and outstanding work: [current status](../CURRENT-STATUS.md). **Owner local manual acceptance is complete; the app is deployed with approved public live processing**, 11 October 2026. The [managed-URL release record](../operations/RELEASE-RECORD-2026-10-11.md) records the actual ten-PDF batch, additional payment hold/explicit review, successful live Retro summary, uncompleted manual CAPTCHA/recovery, placement/Undo, source/contact changes, refresh/download and emergency closure/restoration. Broader hosted capacity, account usage and custom-domain checks remain partial. Earlier local snapshots below retain their evidence class.
 
 ## Accepted local paid candidate — 11 October 2026
 

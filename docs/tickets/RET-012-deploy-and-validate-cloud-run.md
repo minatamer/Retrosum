@@ -1,16 +1,14 @@
 # RET-012 — Deploy manually, validate live behavior and record rollback
 
-**Current Linux refresh — 11 October 2026:** The owner-authorized thirteen-path documentation/`AGENTS.md` commit is `cb0b103`. Both final local Linux amd64 images built from that archive plus the exact two-file packaging correction, keeping the frozen graph/security policies and allowing missing registry metadata during build. Runtime/package/ten-PDF/eighteen-page checks, actual fake browser/source/Retro/placement/Undo/refresh and all four fake/unavailable probes passed. Settled root checks passed: 448 tests/41 files, 132 boundaries and both builds. The correction and new evidence remain unstaged/uncommitted pending specific permission. No push, cloud/account action, paid request or deployment occurred. See [exact artifacts and validation](../validation/RET-012.md).
+**Current deployment — 11 October 2026:** Deployed on the public managed HTTPS URL with live processing enabled after explicit owner approval. Frontend source `e741197` includes `/demo` CSP and cold-start fixes; backend image/source is `ef915a0`. Both nonroot immutable images/runtime assets are verified. All final source gates passed 451 tests/42 files, 132 boundaries and both builds. Public/private IAM, backend-only version 1 secret references, exact origins, zero-cost paid-off/rollback probes and actual hosted browser behavior are recorded in the [managed-URL release record](../operations/RELEASE-RECORD-2026-10-11.md). No Git remote push occurred.
 
-**Owner release handoff — 11 October 2026:** Manual local testing is complete and the owner accepts the current release as ready to deploy. Source `b1afd8d` / evidence `55febe5` passed 448 tests/41 files, 132 boundaries and both builds, including the final Retro conversation/placement/scope follow-up. No further local owner sign-off is pending. After the completed image refresh above, remaining work is committing the verified packaging correction with specific permission, existing cloud/account configuration verification, approved immutable publication/rollout, hosted paid-off/live/capacity checks and release/rollback evidence. Manual acceptance alone grants no Git mutation, cloud change or deployment permission.
+One hosted ten-PDF batch returned ten extraction HTTP 200 responses. Exact income/cost/profit/open values passed; a conservative unmatched-payment hold required normal explicit source review before cash totals appeared. Friendly greeting, live grounded summary, manual target/confirmed placement, source/contact/layout Undo, refresh and original download were verified. An income-target turn stopped at an uncompleted manual CAPTCHA and recovered without retry; four submissions produced one live chat HTTP 200. These limitations remain recorded.
 
-**RET-011 capacity integration — 10 October 2026:** Current extraction verifies one exact selected batch and runs four workers. Deployment must verify four expensive jobs/fifth-request rejection, exact batch and one-use grant binding/expiry/reset/replay, four maximum-file memory, model/project limits, cancellation and unchanged rate/spend reservations. Local backend HTTP template concurrency is 6 (four extraction requests plus control traffic); frontend remains 8, min 0/max 1 and 180/210 s timeouts above the 170/175 s application envelope. Rebuild the current image pair; no new secret/switch or actual cloud mutation is needed. See [runbook](../operations/MANUAL-DEPLOYMENT.md) and [RET-011 evidence](../validation/RET-011.md).
+Owner local manual acceptance is complete. Existing project/budgets/secrets were verified rather than recreated. Specific source/documentation commits, frontend-only public access, private backend secret bindings, seven-day default retention, one bounded ten-PDF/up-to-four-message test with at most USD 2.50 reserved and public live mode are explicitly approved. Future commits/paid tests require specific permission.
 
-**Owner Google Cloud setup checkpoint — 10 October 2026:** The Retrosum Google Cloud project already exists, budget controls/alerts at **USD 5 and USD 10** are set up, and deployment secrets are created. The owner confirms the same pattern as ClipBuilder/ScreenPilot. Creation is complete on owner confirmation; exact private identifiers, budget scope/period/delivery/enforcement, secret versions/runtime bindings and hosted IAM remain unverified. This does not authorize or establish image publication/deployment. See the [file-level plan](../commit-plans/RET-012.md) and [validation](../validation/RET-012.md).
+**Remaining verification:** retrosum.com ownership/DNS/TLS/Turnstile/canonical cutover, maximum-file hosted memory/fifth-operation and cancellation/reset/expiry/replay, actual provider units/invoice/cloud billing and account quotas/permissions/expiry/alert delivery. These remain distinct from completed deployment and local acceptance; do not mark the full matrix complete. Earlier dated preparation checkpoints below retain their original scope.
 
-**Current deployment status — 11 October 2026:** Local paid corpus/Retro/Turnstile and owner manual acceptance are complete; the release is ready for deployment. The owner confirms the configured USD 5 OpenAI spending limit. The eight-PDF Linux pair below is historical; the current ten-PDF/eighteen-page pair is built and verified as recorded above. Actual hosted/deployment acceptance remains pending. See [current status](../CURRENT-STATUS.md).
-
-Status: **Ready for deployment — hosted rollout pending**<br>
+Status: **Deployed — follow-up verification pending**<br>
 Last synchronized: **11 October 2026**<br>
 Depends on: [RET-011](RET-011-verify-product-and-audit-release.md)  
 Blocks: Final packet  
@@ -53,14 +51,14 @@ Areas owned by this packet:
 
 ## Acceptance criteria
 
-- [ ] Exact accepted images/revisions are deployed with documented ownership and configuration.
-- [ ] Frontend is public, backend is private and service-to-service invocation is verified.
+- [x] Exact accepted images/revisions are deployed with documented ownership and configuration.
+- [x] Frontend is public, backend is private and service-to-service invocation is verified.
 - [ ] Secrets/provider grants stay private; origin/challenge/replay/limits work in the deployed topology.
-- [ ] All ten originals remain viewable and the public sample actually processes live.
-- [ ] Deployed numeric/Retro/CRUD/refresh/original-download behavior has bounded actual evidence.
+- [x] All ten originals remain viewable and the public sample actually processes live.
+- [x] Deployed numeric/Retro/CRUD/refresh/original-download behavior has bounded actual evidence.
 - [ ] Actual provider/cloud usage is monitored; operator paid-off and remaining quota limitations are clear.
-- [ ] Rollback procedure identifies immutable targets and browser schema compatibility.
-- [ ] Public claims and release record match what was actually measured.
+- [x] Rollback procedure identifies immutable targets and browser schema compatibility.
+- [x] Public claims and release record match what was actually measured.
 
 ## Verification and evidence
 

@@ -1,44 +1,27 @@
 # Release readiness and operator-owned gates
 
-Updated **11 October 2026**. See [current status](../CURRENT-STATUS.md) and [RET-011 acceptance](../validation/RET-011.md).
+Updated **11 October 2026**. **Deployed; public live mode enabled** at [Retrosum](https://retrosum-frontend-imspgi7bya-ew.a.run.app/demo). Owner local manual acceptance is complete. [Current status](../CURRENT-STATUS.md), [RET-011 local acceptance](../validation/RET-011.md) and [the actual cloud release](../operations/RELEASE-RECORD-2026-10-11.md) separate evidence classes. No Git remote push occurred; specific approval remains required for future commits/paid tests.
 
-**Ready for deployment:** The owner confirms local manual testing and release acceptance are complete on 11 October 2026. The accepted source `b1afd8d` and evidence `55febe5` passed 448 tests/41 files, 132 boundaries and both production builds, including the final friendly Retro/placement/scope changes. RET-012 owns the final images, cloud rollout and hosted checks below. This is deployment readiness, not a completed deployment or permission to stage, commit, push or change cloud resources.
+## Completed release checks
 
-## Completed local acceptance
+- Both frozen, pinned, nonroot Linux images/package inventories/workers/fonts/ten originals/eighteen pages are verified and published by immutable digest. Final frontend source `e741197`, backend `ef915a0`; all settled gates pass **451 tests/42 files**, **132 boundaries** and both builds.
+- Actual public frontend/private backend IAM, exact audience/origins, backend-only version 1 secret references, anonymous/wrong-origin 403, nonce CSP on both public pages and private-configuration exclusions in public assets are verified.
+- Paid-off before enablement and actual emergency rollback passed free zero-dispatch probes. Existing records, originals and downloaded original hash remained usable; approved live mode was restored and public capabilities verified.
+- One hosted ten-PDF batch returned ten extraction HTTP 200 responses. Income/cost/profit/open totals matched expected values; payment register's additional unmatched-reference hold was explicitly reviewed against both original pages before correct cash totals appeared. Automatic relationship accuracy is not asserted.
+- Friendly greeting, actual live grounded summary/suggestions, manual target creation, confirmed placement/layout Undo, source review, synthetic contact creation/Undo and refresh recovery worked. Manual CAPTCHA completion failed through the protected browser tool; normal timeout recovery/no retry worked. Four submitted messages produced one live chat HTTP 200.
+- Owner local manual acceptance is complete. RET-011 independently records two actual-byte numeric/source passes, seventeen live Retro cases and normal localhost paid/Turnstile checks.
+- Existing budget scope/thresholds, runtime settings and approved seven-day default retention were inspected/applied; required audit retention was unchanged.
 
-The ten-PDF/eighteen-page corpus passed two independent actual-byte numeric and source/record audits. Seventeen live Retro cases passed, with the later paid target/placement follow-up also verified. Exact full-input token preflight, standard-tier/cache-write reservation and normal paid composition are connected. Real localhost Turnstile, disclosure, one-use grants, PDF extraction, grounded Retro/source replies and deliberate restart recovery passed. Historical candidate `bd9af4b` / evidence `939ca7e` passed 386 tests/39 files; the current source/check evidence is recorded above.
+## Remaining operator verification
 
-The owner confirms the configured OpenAI spending limit is **USD 5**, already set, and selected 90-day key expiry. Generation/input-count access is proven. Dashboard scope/period/enforcement, final expiry timestamp and complete permissions have not been independently inspected; those remain manual account-verification details, not an unconfigured-limit blocker. No prepaid balance or hard global application cap is inferred.
+The managed URL is available; **retrosum.com** ownership/DNS/TLS/Turnstile/canonical-origin cutover is pending. No custom-domain mapping or DNS changes have been made. Keep actual returned DNS records and full hosted TLS/origin checks separate from buying the domain.
 
-## Owner-confirmed Google Cloud setup
+Hosted maximum-file peak memory/fifth-operation rejection, cancellation/reset/expiry/replay, model/account RPM/TPM and saved key permissions/expiry remain unmeasured. The ten small originals do not prove maximum capacity. Existing resource settings remain backend 1 CPU/1 GiB/concurrency 6/180 s, frontend 1 CPU/512 MiB/concurrency 8/210 s, min 0/max 1; application leases cap four expensive operations.
 
-The owner confirms the Retrosum Google Cloud project, budget controls/alerts at **USD 5 and USD 10**, and deployment secrets are already set up, matching the owner's ClipBuilder/ScreenPilot pattern. Resource creation is complete on that confirmation. Exact private identifiers, budget scope/period/recipients/delivery/enforcement and secret versions/runtime bindings have not been inspected. Cloud budget notifications do not establish a hard spending cap and are separate from OpenAI account controls.
+Actual provider units/invoice USD, cloud billing totals and budget notification delivery/enforcement were not collected. Owner-confirmed USD 5 OpenAI limit, existing USD 5 Cloud Run/USD 10 project alerts and USD 2.50 process-local reservation are distinct controls; none is inferred to guarantee a durable global app cap. Application counters can reset at restart and in-flight revisions can overlap.
 
-## Local controls already available
+Broader arbitrary-upload/genuine human-handwriting/physical-device/assistive coverage remains follow-up work without reopening accepted local manual sign-off. RET-012's full acceptance matrix remains partial while deployment is complete.
 
-- Fake/paid-off committed defaults; accepted local OpenAI mode requires the single paid switch and complete key/challenge/grant configuration.
-- Fixed server-only paths, exact origins, hosted audience/IAM design, one-use challenge-bound grants, conservative content-free rate/capacity/spend reservations and unknown-outcome accounting.
-- Bounded parsers/streams/contexts/readers, owned cancellation/reset/expiry, nonce CSP, local fonts/assets, untrusted-output grounding and content-free diagnostics.
-- One exact money authority and bounded browser-only session/PDF persistence; no server database, uploaded-file bucket, stored chat or provider Files library.
-- Standalone/backend package scripts, nonroot Dockerfiles, narrow build contexts and free fake/unavailable probes. The verified Linux pair from 8 October covers eight PDFs/fourteen pages; it is historical packaging evidence.
-- Current matching Linux amd64 images passed on 11 October: UID 1000, Node 24.19.0, packages/fonts/workers/canonical logo, all ten original hashes/eighteen inspected pages, actual browser flow/source/Retro/confirmed placement/Undo/refresh and all four fake/unavailable probes. Root gates passed again with 448 tests/41 files and 132 boundaries. The documentation/instruction commit is `cb0b103`; its necessary two-file frozen packaging correction and new evidence remain unstaged/uncommitted. See [exact candidate and local image IDs](../validation/RET-012.md). No new live/cloud test was run.
+## Emergency paid-off and rollback
 
-## Deployment preparation and hosted acceptance
-
-- Obtain specific approval to commit the verified packaging correction and evidence, then freeze the publication candidate against the recorded image/source inventory. Both current Linux images are verified locally. Record actual immutable registry digests/revisions only when publication is authorized; local Docker IDs are not registry digests.
-- Record/verify the existing project's private identifiers, billing ownership and USD 5/USD 10 budget-alert scope/delivery; resolve region/domain/service names and least-privilege runtime identities. Verify private-backend IAM, frontend-only invocation, exact origin/audience and TLS/fixed-path behavior.
-- Bind approved secret versions and hosted Turnstile keys/domain; verify action/hash/hostname/time/replay/cancel/CSP and accessible recovery in the hosted topology.
-- Verify trusted ingress, cold starts, four simultaneous expensive operations and fifth-request rejection, four maximum-size files in memory, exact batch verification/just-in-time grants and unchanged spend/rate limits. Confirm backend 180 s/frontend 210 s service timeouts above the 170/175 s application envelope, minimum zero/maximum one instances, overlap/epoch rejection, conservative unknown outcomes and paid-off/compatible paired rollback.
-- Configure approved seven-day operational/platform log retention and access; verify content exclusions, privacy/provider retention and source/asset rights against the enabled services. Record actual usage and account-control scope.
-
-Local acceptance authorizes no image push, cloud change or deployment. Owner-confirmed project/budget/secret creation does not establish deployed bindings or hosted acceptance. Historical image IDs and loopback memory/timing samples do not prove hosted behavior.
-
-## Completed owner manual acceptance and follow-up coverage
-
-Local manual testing and owner release acceptance are complete on the owner's 11 October confirmation. Dedicated physical-device/assistive/performance profiles, genuine human handwriting and broader arbitrary-upload accuracy remain additional coverage, without a new claim that every case was measured. These do not leave owner manual sign-off pending. Account permissions/expiry/billing-control behavior and enabled provider-handling verification belong to the deployment checks above.
-
-## Future evaluations and emergency response
-
-Recheck model/rates before a new explicitly authorized bounded paid evaluation; use the independent runners and record failures/unknown attempts without automatic retry. The USD 2.50 process-local reservation is separate from the owner-confirmed USD 5 OpenAI limit and loses counters on restart; it is not a durable global quota.
-
-When authorized, set backend `PAID_DEMO_ENABLED=false` and restart/redeploy to close both paid operations. Verify unavailable capabilities and zero new provider starts while preserving originals, recognized records, manual review/forms and cleanup. Record real usage/closure/rollback evidence without content or secrets.
+Use the actual compatible pair in the [release record](../operations/RELEASE-RECORD-2026-10-11.md): final CSP/cold-start frontend plus backend `retrosum-backend-00003-crk` paid-off. Route the backend to that revision, verify unavailable config and zero-dispatch action probes, retain originals/manual features, inspect usage and restore only after review/approval. Never restore a superseded frontend missing canonical `/demo` CSP or assume traffic changes recall dispatched work/downloads.

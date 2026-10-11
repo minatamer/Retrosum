@@ -74,6 +74,53 @@ function harness(storage = new MemoryStorage(), cache = new MemoryCache(), owned
   };
 }
 describe("bounded browser refresh and lifecycle", () => {
+  it("preserves validated financial inputs for chat/layout edits, while records and filters still invalidate them", async () => {
+    const h = harness();
+    writeProjection(h.storage, harborSession());
+    await h.controller.initialize();
+    const before = h.controller.getSnapshot().session;
+    const values = JSON.stringify(before.workspace);
+    h.controller.setMessages([
+      { id: "greeting", role: "user", text: "hello", revision: before.workspace.revision },
+    ]);
+    let next = h.controller.getSnapshot().session;
+    expect(next.workspace).toBe(before.workspace);
+    expect(next.filters).toBe(before.filters);
+    h.controller.setDashboard({
+      ...next.dashboard,
+      widgets: [...next.dashboard.widgets].reverse(),
+    });
+    next = h.controller.getSnapshot().session;
+    expect(next.workspace).toBe(before.workspace);
+    expect(next.filters).toBe(before.filters);
+    h.controller.undoDashboard();
+    next = h.controller.getSnapshot().session;
+    expect(next.workspace).toBe(before.workspace);
+    expect(next.dashboard.widgets).toEqual(before.dashboard.widgets);
+    expect(JSON.stringify(next.workspace)).toBe(values);
+    expect(() =>
+      h.controller.setMessages([
+        { id: "invalid", role: "user", text: "bad", revision: before.workspace.revision + 1 },
+      ]),
+    ).toThrow(/future revision/);
+    expect(h.controller.getSnapshot().session).toBe(next);
+    h.controller.setFilters({ ...next.filters, from: "2026-09-15" });
+    const filtered = h.controller.getSnapshot().session;
+    expect(filtered.filters).not.toBe(before.filters);
+    h.controller.apply(
+      [
+        {
+          type: "create_contact",
+          record: { id: "contact_new", name: "New customer", role: "customer" },
+        },
+      ],
+      "Create contact",
+    );
+    const edited = h.controller.getSnapshot().session;
+    expect(edited.workspace).not.toBe(filtered.workspace);
+    expect(edited.workspace.revision).toBe(filtered.workspace.revision + 1);
+    h.controller.dispose();
+  });
   it.each(["sample", "upload"])("initializes both date ranges when choosing %s", async (entry) => {
     const h = harness();
     h.clock(Date.parse("2026-10-10T12:00:00Z"));

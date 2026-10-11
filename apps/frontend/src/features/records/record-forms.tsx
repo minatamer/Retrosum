@@ -1,4 +1,6 @@
 "use client";
+import { userFacingError } from "../../components/ui/user-facing-error";
+
 import {
   useEffect,
   useLayoutEffect,
@@ -136,9 +138,7 @@ export function RecordForm({
       onSave(result.action, result.label);
     } catch (cause) {
       setError(
-        cause instanceof RangeError
-          ? cause.message
-          : "Check the required fields, dates, email and exact USD amounts.",
+        userFacingError(cause, "Check the required fields, dates, email and exact USD amounts."),
       );
     }
   };

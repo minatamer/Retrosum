@@ -1,4 +1,6 @@
 "use client";
+import { UserFacingError, userFacingError } from "../../components/ui/user-facing-error";
+
 import { useState } from "react";
 import {
   chartMetricSchema,
@@ -71,18 +73,18 @@ export function DashboardRequestPreview({
     try {
       const current = controller.getSnapshot().session;
       if (!current || !isRetroCurrent(response, current.workspace, current.filters))
-        throw new RangeError("Your figures or filters changed. Ask again for a current view.");
+        throw new UserFacingError("Your figures or filters changed. Ask again for a current view.");
       if (!isRetroUiCurrent(response, current.dashboard))
-        throw new RangeError("Your dashboard changed. Ask again for a current proposal.");
+        throw new UserFacingError("Your dashboard changed. Ask again for a current proposal.");
       let widgets = current.dashboard.widgets;
       let confirmedDecision = decision;
       if (current.dashboard.appliedProposalIds.includes(proposalId))
-        throw new RangeError("This proposal was already applied.");
+        throw new UserFacingError("This proposal was already applied.");
       if (changing) {
         const chosen =
           candidates.find((w) => w.id === target) ??
           (candidates.length === 1 ? candidates[0] : undefined);
-        if (!chosen) throw new RangeError("Choose the dashboard item you want to change.");
+        if (!chosen) throw new UserFacingError("Choose the dashboard item you want to change.");
         confirmedDecision = {
           ...decision,
           targetId: chosen.id,
@@ -96,14 +98,14 @@ export function DashboardRequestPreview({
           buildCustomChart(current.workspace, current.filters, { ...chosen.spec, style })
             .pieUnavailable
         )
-          throw new RangeError("Negative values need Line, Curve or Bar.");
+          throw new UserFacingError("Negative values need Line, Curve or Bar.");
         if (
           decision.action === "restyle" &&
           chosen.kind === "chart" &&
           style === "pie" &&
           chosen.spec.comparison
         )
-          throw new RangeError("This chart compares two metrics. Choose Line, Curve or Bar.");
+          throw new UserFacingError("This chart compares two metrics. Choose Line, Curve or Bar.");
         widgets =
           decision.action === "move"
             ? moveDashboardWidget(widgets, chosen.id, position, anchor || null)
@@ -134,7 +136,7 @@ export function DashboardRequestPreview({
           widget.kind === "chart" &&
           buildCustomChart(current.workspace, current.filters, widget.spec).pieUnavailable
         )
-          throw new RangeError("Negative values need a Line, Curve or Bar view.");
+          throw new UserFacingError("Negative values need a Line, Curve or Bar view.");
         widgets = [...widgets, widget];
       }
       controller.setDashboard({
@@ -159,7 +161,7 @@ export function DashboardRequestPreview({
             : "Added to your dashboard. Undo layout removes this addition.",
       );
     } catch (cause) {
-      setNotice(cause instanceof Error ? cause.message : "Check your dashboard choice.");
+      setNotice(userFacingError(cause, "Check your dashboard choice."));
     }
   };
   return (

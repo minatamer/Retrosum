@@ -1,3 +1,4 @@
+import { moneyInputMessage } from "./input-guidance.js";
 import {
   sessionSchema,
   retroChangeIntentSchema,
@@ -411,10 +412,10 @@ export function prepareRetroChange(
   } catch (error) {
     return {
       kind: "rejected",
-      reason:
-        error instanceof RangeError
-          ? error.message.slice(0, 300)
-          : "Check the core fields, dates, role, email and exact USD amounts.",
+      reason: moneyInputMessage(
+        error,
+        "Check the core fields, dates, role, email and exact USD amounts.",
+      ),
     };
   }
 }

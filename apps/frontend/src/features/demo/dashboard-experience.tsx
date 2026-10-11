@@ -1,4 +1,6 @@
 "use client";
+import { userFacingError } from "../../components/ui/user-facing-error";
+
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Wordmark } from "../../components/ui/wordmark";
 import { PaperDialog } from "../../components/ui/paper-dialog";
@@ -357,7 +359,7 @@ function Settings({
         });
         if (!response.ok) {
           await response.body?.cancel();
-          throw new RangeError("exchange_rate_unavailable");
+          throw new Error("exchange_rate_unavailable");
         }
         const quote = usdEurRateSchema.parse(await response.json());
         if (!abort.signal.aborted) {
@@ -398,7 +400,7 @@ function Settings({
             );
             onClose();
           } catch (cause) {
-            setError(cause instanceof Error ? cause.message : "Check these settings.");
+            setError(userFacingError(cause, "Check these settings."));
           }
         }}
       >

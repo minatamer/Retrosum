@@ -1,4 +1,6 @@
 "use client";
+import { UserFacingError, userFacingError } from "../../components/ui/user-facing-error";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   chartSpecSchema,
@@ -48,9 +50,11 @@ export function ConfigurableDashboard({ onDocuments }: { onDocuments(): void }) 
     document.addEventListener("pointerdown", dismissOutsideScope);
     return () => document.removeEventListener("pointerdown", dismissOutsideScope);
   }, []);
+  const workspaceInput = session?.workspace,
+    scopeInput = session?.filters;
   const catalogue = useMemo(
-    () => (session ? buildDashboard(session.workspace, session.filters) : null),
-    [session],
+    () => (workspaceInput && scopeInput ? buildDashboard(workspaceInput, scopeInput) : null),
+    [workspaceInput, scopeInput],
   );
   if (!session || !catalogue) return null;
   const { workspace, dashboard, filters } = session;
@@ -349,7 +353,7 @@ function ChartWidget({
   try {
     result = buildCustomChart(session.workspace, session.filters, spec);
   } catch (cause) {
-    return <p>{cause instanceof Error ? cause.message : "This chart is unavailable."}</p>;
+    return <p>{userFacingError(cause, "This chart is unavailable.")}</p>;
   }
   return (
     <>
@@ -372,15 +376,15 @@ function ChartWidget({
               try {
                 const next = chartSpecSchema.parse({ ...spec, style: e.target.value });
                 if (next.style === "pie" && next.comparison)
-                  throw new RangeError(
+                  throw new UserFacingError(
                     "Pie charts show one metric. Add a separate composition chart, or choose Line, Curve or Bar here.",
                   );
                 if (buildCustomChart(session.workspace, session.filters, next).pieUnavailable)
-                  throw new RangeError("Negative values need Line, Curve or Bar.");
+                  throw new UserFacingError("Negative values need Line, Curve or Bar.");
                 onChange(next);
                 setError(null);
               } catch (cause) {
-                setError(cause instanceof Error ? cause.message : "Choose another style.");
+                setError(userFacingError(cause, "Choose another style."));
               }
             }}
           >
@@ -523,12 +527,12 @@ function Customize({
                         }),
                       };
               if (widget.kind === "target" && widget.amountMinor <= 0)
-                throw new RangeError("Enter a positive USD target.");
+                throw new UserFacingError("Enter a positive USD target.");
               onAdd(widget);
               setDialog(null);
               setError(null);
             } catch (cause) {
-              setError(cause instanceof Error ? cause.message : "Check the widget details.");
+              setError(userFacingError(cause, "Check the widget details."));
             }
           }}
         >

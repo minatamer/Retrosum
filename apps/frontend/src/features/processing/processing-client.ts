@@ -1,3 +1,4 @@
+import { UserFacingError } from "../../components/ui/user-facing-error";
 import {
   PROCESSING_DISCLOSURE_VERSION,
   grantResultSchema,
@@ -5,7 +6,7 @@ import {
   type RuntimeCapabilities,
   type ExtractionOperation,
 } from "@retrosum/contracts";
-import { readJson } from "../documents/recognition-client";
+import { readJson } from "../../transport/read-json";
 export type ProcessingIdentity = Omit<
   GrantRequest,
   "challengeToken" | "consent" | "disclosureVersion"
@@ -37,13 +38,13 @@ export async function requestBatchGrant(
   });
   const value = await readJson(response, 4096, deadline);
   if (!response.ok)
-    throw new Error(
+    throw new UserFacingError(
       "Processing approval is unavailable. Your originals remain available; retry deliberately.",
     );
   const result = grantResultSchema.parse(value);
   deadline.throwIfAborted();
   if (result.expiresAt <= Date.now())
-    throw new Error("Processing approval expired. Retry deliberately.");
+    throw new UserFacingError("Processing approval expired. Retry deliberately.");
   return result.grant;
 }
 export async function hashRequest(input: unknown) {

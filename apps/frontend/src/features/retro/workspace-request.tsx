@@ -1,4 +1,6 @@
 "use client";
+import { UserFacingError, userFacingError } from "../../components/ui/user-facing-error";
+
 import { useState } from "react";
 import {
   defaultDashboardWidgets,
@@ -65,27 +67,27 @@ export function WorkspaceRequestPreview({
   const current = (layout = false) => {
     const snapshot = controller.getSnapshot().session;
     if (!snapshot || !isRetroCurrent(response, snapshot.workspace, snapshot.filters))
-      throw new RangeError("Your records or filters changed. Ask again for a current action.");
+      throw new UserFacingError("Your records or filters changed. Ask again for a current action.");
     if (layout && !isRetroUiCurrent(response, snapshot.dashboard))
-      throw new RangeError("Your dashboard changed. Ask again for a current proposal.");
+      throw new UserFacingError("Your dashboard changed. Ask again for a current proposal.");
     return snapshot;
   };
   const perform = (action: () => void) => {
     try {
       action();
     } catch (cause) {
-      setNotice(cause instanceof Error ? cause.message : "This action could not be completed.");
+      setNotice(userFacingError(cause, "This action could not be completed."));
     }
   };
   const changeLayout = (restore: boolean) => {
     const snapshot = current(true);
     if (snapshot.dashboard.appliedProposalIds.includes(proposalId))
-      throw new RangeError("This proposal was already applied.");
+      throw new UserFacingError("This proposal was already applied.");
     if (!restore && snapshot.dashboard.widgets.length >= 16)
-      throw new RangeError("Your dashboard has 16 cards. Remove one before adding another.");
+      throw new UserFacingError("Your dashboard has 16 cards. Remove one before adding another.");
     const minor = restore ? null : parseAmount(amount);
     if (minor !== null && minor <= 0)
-      throw new RangeError("Enter a positive income target in USD.");
+      throw new UserFacingError("Enter a positive income target in USD.");
     controller.setDashboard({
       ...snapshot.dashboard,
       widgets: restore
@@ -171,7 +173,7 @@ export function WorkspaceRequestPreview({
                     else {
                       const page = intent.page ?? 1;
                       if (page > doc.pageCount)
-                        throw new RangeError(
+                        throw new UserFacingError(
                           "That page is outside this document. Ask for an available page.",
                         );
                       setSource({ documentId: doc.id, page });
@@ -288,7 +290,7 @@ export function WorkspaceRequestPreview({
                 perform(() => {
                   const snapshot = current();
                   if (!snapshot.undo)
-                    throw new RangeError("No record change is available to undo.");
+                    throw new UserFacingError("No record change is available to undo.");
                   controller.undo(snapshot.undo.commandId, snapshot.undo.appliedAtRevision);
                 })
               }
@@ -420,7 +422,7 @@ function FilterRequest({
     } catch (cause) {
       return {
         scope: response.scope,
-        error: cause instanceof Error ? cause.message : "Choose your scope.",
+        error: userFacingError(cause, "Choose your scope."),
       };
     }
   });
@@ -433,7 +435,7 @@ function FilterRequest({
         try {
           const snapshot = controller.getSnapshot().session;
           if (!snapshot || !isRetroCurrent(response, snapshot.workspace, snapshot.filters))
-            throw new RangeError("Your scope changed. Ask again for current filters.");
+            throw new UserFacingError("Your scope changed. Ask again for current filters.");
           const data = new FormData(event.currentTarget);
           const scope = retroScopeSchema.parse({
             from: data.get("from"),
@@ -443,11 +445,11 @@ function FilterRequest({
             ...(data.get("party") ? { counterpartyId: data.get("party") } : {}),
           });
           if (scope.from > scope.to)
-            throw new RangeError("End date must be on or after the start date.");
+            throw new UserFacingError("End date must be on or after the start date.");
           controller.setFilters({ ...scope, register: snapshot.filters.register });
           navigateWorkspace("overview");
         } catch (cause) {
-          setError(cause instanceof Error ? cause.message : "Check the filter fields.");
+          setError(userFacingError(cause, "Check the filter fields."));
         }
       }}
     >

@@ -1,9 +1,10 @@
+import { UserFacingError, userFacingError } from "../../components/ui/user-facing-error";
 import { MAX_FILE_BYTES } from "@retrosum/contracts";
 import { PDF_DEADLINE_MS, PDF_RUNTIME_PATH, safePdfOptions } from "./pdf-policy";
 
 export async function inspectOriginal(blob: Blob, signal: AbortSignal) {
   if (blob.type !== "application/pdf" || blob.size < 5 || blob.size > MAX_FILE_BYTES)
-    throw new RangeError("Choose a PDF up to 5 MiB.");
+    throw new UserFacingError("Choose a PDF up to 5 MiB.");
   signal.throwIfAborted();
   const bytes = await blob.arrayBuffer();
   const raw = new TextDecoder("latin1").decode(bytes);
@@ -11,7 +12,9 @@ export async function inspectOriginal(blob: Blob, signal: AbortSignal) {
     !raw.startsWith("%PDF-") ||
     /\/(?:Encrypt|JavaScript|JS|Launch|OpenAction|AA|EmbeddedFile|RichMedia|XFA)\b/u.test(raw)
   )
-    throw new RangeError("This PDF is damaged, encrypted or contains unsupported active content.");
+    throw new UserFacingError(
+      "This PDF is damaged, encrypted or contains unsupported active content.",
+    );
   const library = await import("pdfjs-dist");
   signal.throwIfAborted();
   library.GlobalWorkerOptions.workerSrc = `${PDF_RUNTIME_PATH}/pdf.worker.min.mjs`;
@@ -26,7 +29,7 @@ export async function inspectOriginal(blob: Blob, signal: AbortSignal) {
   try {
     const pdf = await task.promise;
     if (pdf.numPages > 20 || (await pdf.getJSActions()) || (await pdf.getAttachments()))
-      throw new RangeError("This PDF exceeds the page limit or contains active content.");
+      throw new UserFacingError("This PDF exceeds the page limit or contains active content.");
     for (let n = 1; n <= pdf.numPages; n++) {
       signal.throwIfAborted();
       const page = await pdf.getPage(n);
@@ -38,14 +41,14 @@ export async function inspectOriginal(blob: Blob, signal: AbortSignal) {
         box.height > 10000 ||
         (await page.getJSActions())
       )
-        throw new RangeError("This PDF page is unsupported.");
+        throw new UserFacingError("This PDF page is unsupported.");
       const annotations = await page.getAnnotations();
       if (
         annotations.some(
           (item) => item.url || item.unsafeUrl || item.actions || item.file || item.action,
         )
       )
-        throw new RangeError("Active or external PDF content is unsupported.");
+        throw new UserFacingError("Active or external PDF content is unsupported.");
       page.cleanup();
     }
     const hash = await crypto.subtle.digest("SHA-256", bytes);
@@ -56,10 +59,11 @@ export async function inspectOriginal(blob: Blob, signal: AbortSignal) {
     };
   } catch (error) {
     if (signal.aborted) throw error;
-    throw new RangeError(
-      error instanceof RangeError
-        ? error.message
-        : "This PDF could not be inspected. It may be encrypted, damaged or too complex.",
+    throw new UserFacingError(
+      userFacingError(
+        error,
+        "This PDF could not be inspected. It may be encrypted, damaged or too complex.",
+      ),
       { cause: error },
     );
   } finally {

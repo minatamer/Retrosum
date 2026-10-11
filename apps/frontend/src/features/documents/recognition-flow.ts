@@ -1,3 +1,4 @@
+import { UserFacingError, userFacingError } from "../../components/ui/user-facing-error";
 import {
   documentSchema,
   extractionRequestSchema,
@@ -27,7 +28,7 @@ export function updateDocument(
   change: Partial<SourceDocument>,
 ) {
   const session = controller.getSnapshot().session;
-  if (!session) throw new RangeError("This session is unavailable.");
+  if (!session) throw new UserFacingError("This session is unavailable.");
   const graph = {
     ...session.workspace,
     revision: session.workspace.revision + 1,
@@ -44,7 +45,7 @@ export function checkEnvelope(docs: SourceDocument[]) {
     docs.reduce((sum, doc) => sum + doc.pageCount, 0) > 20 ||
     docs.reduce((sum, doc) => sum + doc.byteLength, 0) > MAX_TOTAL_BYTES
   )
-    throw new RangeError(
+    throw new UserFacingError(
       "Keep this workspace within 10 PDFs, 20 pages and 20 MiB. No document processing was started.",
     );
 }
@@ -58,7 +59,7 @@ export async function prepareSamples(
     const blob = new Blob([data], { type: "application/pdf" });
     const inspected = await inspectOriginal(blob, signal);
     if (inspected.sha256 !== asset.sha256 || inspected.pageCount !== asset.pageCount)
-      throw new RangeError("The sample original has changed. Reload before processing.");
+      throw new UserFacingError("The sample original has changed. Reload before processing.");
     items.push({
       doc: documentSchema.parse({
         id: asset.id,
@@ -82,7 +83,7 @@ export async function prepareUploads(
   signal: AbortSignal,
 ): Promise<IntakeItem[]> {
   if (files.length > 10 || files.reduce((sum, file) => sum + file.size, 0) > MAX_TOTAL_BYTES)
-    throw new RangeError("Choose up to 10 PDFs within 20 MiB.");
+    throw new UserFacingError("Choose up to 10 PDFs within 20 MiB.");
   const items: IntakeItem[] = [];
   for (const file of files) {
     const inspected = await inspectOriginal(file, signal);
@@ -109,7 +110,7 @@ const pause = (signal: AbortSignal, milliseconds = 400) =>
     const abort = () => {
       clearTimeout(timer);
       signal.removeEventListener("abort", abort);
-      reject(new RangeError("Cancelled."));
+      reject(new UserFacingError("Cancelled."));
     };
     const timer = setTimeout(() => {
       signal.removeEventListener("abort", abort);
@@ -131,9 +132,9 @@ export async function processDocuments(
   try {
     capabilities = await recognitionCapabilities(signal);
     if (!controller.isCurrent(token))
-      throw new RangeError("The workspace changed. Start a fresh document operation.");
+      throw new UserFacingError("The workspace changed. Start a fresh document operation.");
     if (!capabilities.documents.available)
-      throw new RangeError(
+      throw new UserFacingError(
         "Recognition is unavailable. Your originals and manual records are ready.",
       );
   } catch (error) {
@@ -167,7 +168,7 @@ export async function processDocuments(
   const checkCurrent = () => {
     batchSignal.throwIfAborted();
     if (!controller.isCurrent(token))
-      throw new RangeError(
+      throw new UserFacingError(
         "The workspace changed during processing. Completed sources are preserved.",
       );
   };
@@ -204,7 +205,7 @@ export async function processDocuments(
             )
           : undefined;
       if (capabilities.mode === "live" && !grant)
-        throw new RangeError(
+        throw new UserFacingError(
           "Live processing requires disclosure and admission. No PDF was submitted.",
         );
       checkCurrent();
@@ -229,9 +230,10 @@ export async function processDocuments(
         reviewNotes: [
           batchSignal.aborted
             ? "Processing cancelled. No automatic retry will run."
-            : error instanceof Error
-              ? error.message
-              : "Recognition failed.",
+            : userFacingError(
+                error,
+                "This PDF could not be processed. Its original is preserved; no automatic retry will run.",
+              ),
         ],
       });
       if (batchSignal.aborted) throw error;
@@ -271,7 +273,8 @@ export async function processDocuments(
       }),
     );
     if (capabilities.mode === "live" && items.length) {
-      if (!authorize) throw new RangeError("Live processing requires selected-batch verification.");
+      if (!authorize)
+        throw new UserFacingError("Live processing requires selected-batch verification.");
       identities = await Promise.all(
         requests.map(async (metadata) => ({
           operationId: metadata.operationId,

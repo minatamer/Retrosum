@@ -1,4 +1,6 @@
 "use client";
+import { UserFacingError, userFacingError } from "../../components/ui/user-facing-error";
+
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -79,7 +81,7 @@ function DemoFlow() {
       .catch((cause: unknown) => {
         if (!abort.signal.aborted) {
           setCapabilities(null);
-          setError(cause instanceof Error ? cause.message : "Processing is unavailable.");
+          setError(userFacingError(cause, "Processing is unavailable."));
         }
       });
     return () => abort.abort();
@@ -117,9 +119,10 @@ function DemoFlow() {
         setError(
           abort.signal.aborted
             ? "Processing stopped. Your completed documents are kept."
-            : cause instanceof Error
-              ? cause.message
-              : "This step could not finish.",
+            : userFacingError(
+                cause,
+                "This step could not finish. Your records and originals are preserved.",
+              ),
         );
         if (controller.getSnapshot().ready) change({ stage: "documents" });
       }
@@ -151,7 +154,7 @@ function DemoFlow() {
       const token = controller.token("inspect_uploads");
       const items = await prepareUploads(files, signal);
       if (!controller.isCurrent(token))
-        throw new RangeError("Your workspace changed. Please choose the files again.");
+        throw new UserFacingError("Your workspace changed. Please choose the files again.");
       const current = controller.getSnapshot().session!;
       const known = new Set(current.workspace.documents.map((d) => d.sha256));
       const unique = items.filter((item) => {
@@ -183,21 +186,21 @@ function DemoFlow() {
     });
   const process = () =>
     void run(async (signal) => {
-      if (!selected.size) throw new RangeError("Select at least one document.");
+      if (!selected.size) throw new UserFacingError("Select at least one document.");
       change({ stage: "processing" });
       setProgress("Preparing selected documents");
       let items: IntakeItem[];
       let current = controller.getSnapshot().session!;
       if (experience.entry === "sample") {
         if (current.workspace.documents.some((d) => d.provenance === "visitor_upload"))
-          throw new RangeError("Reset before switching to the sample business.");
+          throw new UserFacingError("Reset before switching to the sample business.");
         const token = controller.token("inspect_selected_samples");
         items = await prepareSamples(
           sampleAssets.filter((a) => selected.has(a.id)),
           signal,
         );
         if (!controller.isCurrent(token))
-          throw new RangeError("Your workspace changed. Start again.");
+          throw new UserFacingError("Your workspace changed. Start again.");
         const unique = items.filter(
           (i) => !current.workspace.documents.some((d) => d.sha256 === i.doc.sha256),
         );
@@ -222,7 +225,8 @@ function DemoFlow() {
         for (const doc of current.workspace.documents.filter((d) => selected.has(d.id))) {
           const blob = await controller.original(doc);
           signal.throwIfAborted();
-          if (!blob) throw new RangeError(`Select ${doc.name} again to restore its original PDF.`);
+          if (!blob)
+            throw new UserFacingError(`Select ${doc.name} again to restore its original PDF.`);
           items.push({ doc, blob });
         }
       }
@@ -241,7 +245,7 @@ function DemoFlow() {
             retry,
             (identity, current, signal) => {
               if (capabilities?.mode !== "live")
-                throw new Error(
+                throw new UserFacingError(
                   "Processing changed. Return to document selection to review it before submitting.",
                 );
               // The visible selection disclosure and explicit Process click approve only this batch.
@@ -399,9 +403,7 @@ function DemoFlow() {
                           business: { ...w.business, name },
                         });
                       } catch (cause) {
-                        setError(
-                          cause instanceof Error ? cause.message : "Check the business name.",
-                        );
+                        setError(userFacingError(cause, "Check the business name."));
                       }
                     }}
                   />

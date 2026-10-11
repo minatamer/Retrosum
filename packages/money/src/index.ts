@@ -1,5 +1,6 @@
 export { parseAmount, formatAmount, sumAmounts } from "./amount.js";
 export { invoiceAmounts } from "./invoices.js";
+export { moneyInputMessage } from "./input-guidance.js";
 export { validateGraph, sourceEligible } from "./graph.js";
 export {
   calculateMetrics,

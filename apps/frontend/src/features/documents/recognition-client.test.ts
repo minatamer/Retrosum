@@ -23,6 +23,18 @@ const input: ExtractionRequest = {
   envelope: { files: 1, pages: 1, bytes: 8 },
 };
 describe("recognition transport dispatch", () => {
+  it.each(["constructor", "toString", "__proto__", "private_internal_detail"])(
+    "uses safe product copy for the unrecognized error code %s",
+    async (code) => {
+      vi.mocked(fetch).mockResolvedValueOnce(Response.json({ error: code }, { status: 503 }));
+      await expect(
+        extractOriginal(input, new Blob(["original"]), new AbortController().signal),
+      ).rejects.toThrow(
+        "This PDF could not be processed safely. Its original is preserved; no automatic retry will run.",
+      );
+      expect(fetch).toHaveBeenCalledTimes(1);
+    },
+  );
   it("preparation or prior cancellation cannot mark an original submitted", async () => {
     const submitting = vi.fn();
     const abort = new AbortController();

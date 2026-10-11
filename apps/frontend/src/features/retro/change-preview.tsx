@@ -1,4 +1,6 @@
 "use client";
+import { UserFacingError, userFacingError } from "../../components/ui/user-facing-error";
+
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   RetroChangePreparation,
@@ -78,7 +80,7 @@ export function ChangePreview({
       );
     } catch (cause) {
       setCurrent(null);
-      setError(cause instanceof Error ? cause.message : "Check the proposed fields.");
+      setError(userFacingError(cause, "Check the proposed fields."));
     }
   };
   const confirm = (action: SessionAction, label: string) => {
@@ -95,7 +97,7 @@ export function ChangePreview({
         proposal.beforeFields,
       );
       if (Date.now() >= proposal.expiresAt)
-        throw new RangeError("This proposal expired. Prepare a fresh one.");
+        throw new UserFacingError("This proposal expired. Prepare a fresh one.");
       applied.current = true;
       const next = controller.execute(actual.command, label);
       onApplied({
@@ -107,7 +109,7 @@ export function ChangePreview({
       });
     } catch (cause) {
       applied.current = false;
-      setError(cause instanceof Error ? cause.message : "This change could not be applied.");
+      setError(userFacingError(cause, "This change could not be applied."));
     }
   };
   return (

@@ -327,7 +327,9 @@ export class SessionController {
     this.publish({ ...this.snapshot, recordsDateRange: dates });
   }
   setMessages(messages: FinalizedMessage[]) {
-    const next = validateSession({ ...this.current(), messages });
+    const current = this.current();
+    const validated = validateSession({ ...current, messages });
+    const next = { ...validated, workspace: current.workspace, filters: current.filters };
     this.publish({ ...this.snapshot, session: next, ...this.persist(next) });
   }
   setExperience(input: DemoExperience) {
@@ -371,17 +373,18 @@ export class SessionController {
       ...input,
       revision: current.dashboard.revision + 1,
     });
-    const next = validateSession({
+    const validated = validateSession({
       ...current,
       dashboard,
       dashboardUndo: undoable ? current.dashboard : current.dashboardUndo,
     });
+    const next = { ...validated, workspace: current.workspace, filters: current.filters };
     this.publish({ ...this.snapshot, session: next, ...this.persist(next) });
   }
   undoDashboard() {
     const current = this.current();
     if (!current.dashboardUndo) return;
-    const next = validateSession({
+    const validated = validateSession({
       ...current,
       dashboard: {
         ...current.dashboard,
@@ -391,6 +394,7 @@ export class SessionController {
       },
       dashboardUndo: null,
     });
+    const next = { ...validated, workspace: current.workspace, filters: current.filters };
     this.publish({ ...this.snapshot, session: next, ...this.persist(next) });
   }
   token(operationId: string): OperationToken {

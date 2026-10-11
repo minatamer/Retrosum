@@ -1,4 +1,6 @@
 "use client";
+import { UserFacingError, userFacingError } from "../../components/ui/user-facing-error";
+
 import { useEffect, useState } from "react";
 import type { SourceReference } from "@retrosum/contracts";
 import { useSession } from "../session/session-provider";
@@ -36,18 +38,17 @@ export function OriginalViewer({
           .getSnapshot()
           .session?.workspace.documents.find((item) => item.id === target.documentId);
         if (!doc || target.page > doc.pageCount)
-          throw new RangeError("This source page is unavailable.");
+          throw new UserFacingError("This source page is unavailable.");
         const blob = await controller.original(doc);
         if (!blob)
-          throw new RangeError(
+          throw new UserFacingError(
             "This original is missing from browser storage. Re-select the same PDF; your records are preserved.",
           );
         if (disposed) return;
         url = URL.createObjectURL(blob);
         setSelection({ asset: { ...doc, title: doc.name, pdfPath: url }, target });
       } catch (error) {
-        if (!disposed)
-          setMessage(error instanceof Error ? error.message : "The original could not be opened.");
+        if (!disposed) setMessage(userFacingError(error, "The original could not be opened."));
       }
     })();
     return () => {

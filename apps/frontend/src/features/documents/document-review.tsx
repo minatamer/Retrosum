@@ -1,4 +1,6 @@
 "use client";
+import { userFacingError } from "../../components/ui/user-facing-error";
+
 import { useState } from "react";
 import { commandIdSchema, type SourceDocument, type SourceReference } from "@retrosum/contracts";
 import { applyCommand, calculateMetrics, formatAmount } from "@retrosum/money";
@@ -71,7 +73,7 @@ export function DocumentReview({
       );
       onClose();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "This review could not be applied.");
+      setError(userFacingError(cause, "This review could not be applied."));
     }
   };
   return (

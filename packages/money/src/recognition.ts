@@ -1,3 +1,4 @@
+import { moneyInputMessage, SourceReviewError } from "./input-guidance.js";
 import {
   interpretationSchema,
   extractionResultSchema,
@@ -201,7 +202,7 @@ export function mergeInterpretation(
           record.taxMinor !== undefined &&
           record.netMinor + record.taxMinor !== record.amountMinor
         )
-          throw new RangeError(
+          throw new SourceReviewError(
             `Source total for ${reference} differs from net plus explicit tax. It was not corrected.`,
           );
         const same = workspace.events.find(
@@ -217,7 +218,7 @@ export function mergeInterpretation(
             same.netMinor !== record.netMinor ||
             same.taxMinor !== record.taxMinor
           )
-            throw new RangeError(
+            throw new SourceReviewError(
               `Another source for ${reference} has conflicting figures. No duplicate relationship was assumed.`,
             );
           if (!same.sources.some((item) => item.documentId === doc.id))
@@ -252,7 +253,7 @@ export function mergeInterpretation(
             calculated.grossMinor !== record.amountMinor ||
             record.taxMinor === undefined
           )
-            throw new RangeError(
+            throw new SourceReviewError(
               `The line arithmetic for ${reference} does not agree with its source figures. It was not corrected.`,
             );
           if (kind === "sale") workspace.invoices.push(invoice);
@@ -309,9 +310,10 @@ export function mergeInterpretation(
       workspace.asOf = before.asOf;
       blocked = true;
       notes.push(
-        error instanceof Error && !(error.name === "ZodError")
-          ? error.message
-          : "A required source field is unsupported. No candidate records were added.",
+        moneyInputMessage(
+          error,
+          "A required source field is unsupported. No candidate records were added.",
+        ),
       );
     }
   if (duplicate)

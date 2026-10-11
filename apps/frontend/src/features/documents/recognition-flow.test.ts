@@ -259,11 +259,17 @@ describe("four-document verified batches", () => {
   it("continues after one failed PDF and preserves the other results without retry", async () => {
     const h = await harness();
     await vi.waitFor(() => expect(h.calls).toHaveLength(4));
-    h.calls[0]!.completion.reject(new Error("Provider refused"));
+    h.calls[0]!.completion.reject(new SyntaxError("Provider secret detail: unexpected JSON token"));
     await vi.waitFor(() => expect(h.calls).toHaveLength(5));
     for (const call of h.calls.slice(1)) call.completion.resolve(result(call.input));
     await h.running;
     expect(h.controller.getSnapshot().session!.workspace.documents[0]!.state).toBe("error");
+    expect(h.controller.getSnapshot().session!.workspace.documents[0]!.reviewNotes).toEqual([
+      "This PDF could not be processed. Its original is preserved; no automatic retry will run.",
+    ]);
+    expect(JSON.stringify(h.controller.getSnapshot().session)).not.toContain(
+      "Provider secret detail",
+    );
     expect(h.controller.getSnapshot().session!.workspace.events).toHaveLength(4);
     expect(h.calls).toHaveLength(5);
     h.controller.dispose();

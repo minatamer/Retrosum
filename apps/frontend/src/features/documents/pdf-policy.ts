@@ -1,3 +1,4 @@
+import { UserFacingError } from "../../components/ui/user-facing-error";
 import { MAX_FILE_BYTES } from "@retrosum/contracts";
 import type { SourceDocument } from "@retrosum/contracts";
 
@@ -35,7 +36,7 @@ export function renderDimensions(
     height > 10000 ||
     available <= 0
   )
-    throw new Error("This PDF page is outside the supported viewing dimensions.");
+    throw new UserFacingError("This PDF page is outside the supported viewing dimensions.");
   const scale = Math.min(
     (Math.min(available, 760) / width) * Math.max(0.75, Math.min(zoom, 2)),
     8192 / height,
@@ -66,7 +67,7 @@ export async function loadSampleBytes(
     !/^\/samples\/harbor-v1\/[A-Za-z0-9_-]+\.pdf$/u.test(asset.pdfPath) &&
     !asset.pdfPath.startsWith("blob:")
   )
-    throw new Error("This document source is unavailable.");
+    throw new UserFacingError("This document source is unavailable.");
   const boundedSignal = AbortSignal.any([signal, AbortSignal.timeout(PDF_DEADLINE_MS)]);
   const response = await fetch(asset.pdfPath, {
     signal: boundedSignal,
@@ -78,7 +79,7 @@ export async function loadSampleBytes(
     !response.body ||
     !response.headers.get("content-type")?.startsWith("application/pdf")
   )
-    throw new Error("The original PDF could not be loaded. Try again or download it.");
+    throw new UserFacingError("The original PDF could not be loaded. Try again or download it.");
   const reader = response.body.getReader();
   const chunks: Uint8Array[] = [];
   let total = 0;
@@ -88,14 +89,15 @@ export async function loadSampleBytes(
       if (result.done) break;
       total += result.value.byteLength;
       if (total > MAX_FILE_BYTES || total > asset.byteLength)
-        throw new Error("This PDF exceeds its declared size.");
+        throw new UserFacingError("This PDF exceeds its declared size.");
       chunks.push(result.value);
     }
   } finally {
     await reader.cancel().catch(() => undefined);
     reader.releaseLock();
   }
-  if (total !== asset.byteLength) throw new Error("This PDF is incomplete. Please try again.");
+  if (total !== asset.byteLength)
+    throw new UserFacingError("This PDF is incomplete. Please try again.");
   const data = new Uint8Array(total);
   let offset = 0;
   for (const chunk of chunks) {
@@ -103,12 +105,12 @@ export async function loadSampleBytes(
     offset += chunk.byteLength;
   }
   if (new TextDecoder().decode(data.subarray(0, 5)) !== "%PDF-")
-    throw new Error("This file is not a supported PDF.");
+    throw new UserFacingError("This file is not a supported PDF.");
   const digest = await crypto.subtle.digest("SHA-256", data);
   const hash = Array.from(new Uint8Array(digest), (byte) =>
     byte.toString(16).padStart(2, "0"),
   ).join("");
   if (hash !== asset.sha256)
-    throw new Error("This PDF has changed. Reload the collection before continuing.");
+    throw new UserFacingError("This PDF has changed. Reload the collection before continuing.");
   return data;
 }

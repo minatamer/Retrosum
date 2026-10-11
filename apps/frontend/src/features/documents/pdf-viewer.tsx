@@ -1,4 +1,6 @@
 "use client";
+import { UserFacingError, userFacingError } from "../../components/ui/user-facing-error";
+
 import { useEffect, useRef, useState } from "react";
 import type { SourceDocument, SourceReference } from "@retrosum/contracts";
 import type {
@@ -51,7 +53,7 @@ function PdfPage({ asset, target }: { asset: ViewerAsset; target: SourceReferenc
         loading = library.getDocument({ ...safePdfOptions, data });
         const document = await loading.promise;
         if (document.numPages !== asset.pageCount || document.numPages > 20)
-          throw new Error("This PDF’s page count has changed. Reload the collection.");
+          throw new UserFacingError("This PDF’s page count has changed. Reload the collection.");
         if (!disposed) {
           setPdf(document);
           setStatus("Preparing the page…");
@@ -60,9 +62,10 @@ function PdfPage({ asset, target }: { asset: ViewerAsset; target: SourceReferenc
         await loading?.destroy().catch(() => undefined);
         if (!disposed)
           setError(
-            cause instanceof Error && cause.message.startsWith("This PDF")
-              ? cause.message
-              : "This PDF could not be opened. It may be damaged or password-protected. Use the original download or try again.",
+            userFacingError(
+              cause,
+              "This PDF could not be opened. It may be damaged or password-protected. Use the original download or try again.",
+            ),
           );
       } finally {
         window.clearTimeout(timeout);

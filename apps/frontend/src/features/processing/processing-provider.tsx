@@ -1,4 +1,6 @@
 "use client";
+import { UserFacingError } from "../../components/ui/user-facing-error";
+
 import {
   createContext,
   use,
@@ -12,7 +14,7 @@ import { createPortal } from "react-dom";
 import Script from "next/script";
 import { PROCESSING_DISCLOSURE_VERSION, grantResultSchema } from "@retrosum/contracts";
 import { PaperDialog } from "../../components/ui/paper-dialog";
-import { readJson } from "../documents/recognition-client";
+import { readJson } from "../../transport/read-json";
 import { useSession } from "../session/session-provider";
 import styles from "./processing.module.css";
 import type { AuthorizePaid, ProcessingIdentity } from "./processing-client";
@@ -94,11 +96,14 @@ export function ProcessingProvider({ children }: { children: ReactNode }) {
         capabilities.processing.disclosureVersion !== PROCESSING_DISCLOSURE_VERSION
       )
         return Promise.reject(
-          new Error("Live processing is awaiting verification. No content was submitted."),
+          new UserFacingError(
+            "Live processing is awaiting verification. No content was submitted.",
+          ),
         );
-      if (owned.current) return Promise.reject(new Error("Finish the current verification first."));
+      if (owned.current)
+        return Promise.reject(new UserFacingError("Finish the current verification first."));
       if (signal.aborted)
-        return Promise.reject(new Error("Processing cancelled before submission."));
+        return Promise.reject(new UserFacingError("Processing cancelled before submission."));
       return new Promise<string>((resolve, reject) => {
         const abort = new AbortController();
         const bounded = AbortSignal.any([signal, abort.signal, AbortSignal.timeout(120000)]);
@@ -120,7 +125,12 @@ export function ProcessingProvider({ children }: { children: ReactNode }) {
             abort.abort();
             setPending(null);
             if (grant) resolve(grant);
-            else reject(new Error(failure ?? "Processing cancelled. No automatic retry will run."));
+            else
+              reject(
+                new UserFacingError(
+                  failure ?? "Processing cancelled. No automatic retry will run.",
+                ),
+              );
           },
         };
         owned.current = value;
@@ -150,7 +160,7 @@ async function admit(
   });
   const value = await readJson(response, 4096, deadline);
   if (!response.ok)
-    throw new Error(
+    throw new UserFacingError(
       "Processing is unavailable or this session’s allowance is used. You can still edit your records and explore the dashboard.",
     );
   return value;

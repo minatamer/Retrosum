@@ -1,4 +1,6 @@
 "use client";
+import { UserFacingError, userFacingError } from "../../components/ui/user-facing-error";
+
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -50,7 +52,7 @@ import {
 } from "../../components/ui/smooth-scroll";
 import { InlineProcessingReview, usePaidProcessing } from "../processing/processing-provider";
 import { hashRequest } from "../processing/processing-client";
-import { readJson } from "../documents/recognition-client";
+import { readJson } from "../../transport/read-json";
 
 type Pending = {
   prompt: string;
@@ -82,9 +84,11 @@ export function Retro() {
   }, []);
   const request = useRef<AbortController | null>(null);
   const messagesBox = useRef<HTMLDivElement | null>(null);
+  const workspaceInput = session?.workspace,
+    scopeInput = session?.filters;
   const catalogue = useMemo(
-    () => (session ? buildDashboard(session.workspace, session.filters) : null),
-    [session],
+    () => (workspaceInput && scopeInput ? buildDashboard(workspaceInput, scopeInput) : null),
+    [workspaceInput, scopeInput],
   );
   const actualScope = session ? scopeFor(session.filters) : null;
   const contextKey = `${generation}/${session?.workspace.id}/${session?.workspace.revision}/${actualScope ? retroScopeKey(actualScope) : ""}`;
@@ -304,7 +308,7 @@ export function Retro() {
           effect.signal,
         );
         if (!controller.isCurrent(token))
-          throw new Error("The workspace changed before submission.");
+          throw new UserFacingError("The workspace changed before submission.");
         deadline = window.setTimeout(() => effect.abort(), 60000);
         const response = await fetch("/api/retrosum/v1/chat", {
           method: "POST",
@@ -314,7 +318,7 @@ export function Retro() {
           body: JSON.stringify(normalized),
         });
         if (!response.ok)
-          throw new Error(
+          throw new UserFacingError(
             response.status === 429
               ? "Your live turn allowance is used. Local guidance is still available."
               : response.status === 400
@@ -367,9 +371,10 @@ export function Retro() {
         stage: effect.signal.aborted ? "cancelled" : "failed",
         text: effect.signal.aborted
           ? "This turn was cancelled or the records changed. Nothing was applied. You can ask again."
-          : cause instanceof Error && cause.name !== "ZodError"
-            ? cause.message
-            : "This turn could not be verified. Nothing was applied. Local guidance remains available.",
+          : userFacingError(
+              cause,
+              "This turn could not be verified. Nothing was applied. Local guidance remains available.",
+            ),
       });
     } finally {
       window.clearTimeout(deadline);
@@ -873,7 +878,7 @@ function pause(milliseconds: number, signal: AbortSignal) {
     const abort = () => {
       window.clearTimeout(timer);
       signal.removeEventListener("abort", abort);
-      reject(new Error("Cancelled"));
+      reject(new UserFacingError("Cancelled"));
     };
     const timer = window.setTimeout(() => {
       signal.removeEventListener("abort", abort);

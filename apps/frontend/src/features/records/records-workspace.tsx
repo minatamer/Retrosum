@@ -1,4 +1,6 @@
 "use client";
+import { userFacingError } from "../../components/ui/user-facing-error";
+
 import { useState } from "react";
 import type { SessionAction, SessionFilter, SourceReference } from "@retrosum/contracts";
 import { buildDashboard, formatAmount, invoiceAmounts } from "@retrosum/money";
@@ -61,7 +63,7 @@ export function RecordsWorkspace() {
     try {
       operation();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "This action could not be completed.");
+      setError(userFacingError(cause, "This action could not be completed."));
     }
   };
   const edit = (value: RecordSelection) => {

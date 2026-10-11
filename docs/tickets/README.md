@@ -12,20 +12,21 @@ RET-001 establishes safe boundaries. RET-002/003 make the brand and visible evid
 
 ## Canonical queue and dependencies
 
-| Ticket                                                        | Complete outcome                                                         | Dependencies     | Status                          |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------- | ------------------------------- |
-| [RET-001](RET-001-initialize-workspace-and-contracts.md)      | Initialize the workspace, contracts and safe runtime                     | None             | Complete                        |
-| [RET-002](RET-002-build-brand-and-landing.md)                 | Build the brand system and calm sourced landing                          | RET-001          | Local accepted                  |
-| [RET-003](RET-003-author-sample-pdfs-and-viewer.md)           | Author the visible PDF corpus and floating paper viewer                  | RET-002          | Local accepted                  |
-| [RET-004](RET-004-build-money-state-crud-and-refresh.md)      | Build the canonical money workspace, CRUD, Undo and refresh recovery     | RET-001, RET-003 | Local accepted                  |
-| [RET-005](RET-005-deliver-live-pdf-recognition-and-review.md) | Deliver live OpenAI PDF recognition, review and exact-number evaluation  | RET-004          | Local paid/manual accepted      |
-| [RET-006](RET-006-build-interactive-money-dashboard.md)       | Build the beautiful interactive dashboard and source drill-down          | RET-004, RET-005 | Local accepted                  |
-| [RET-007](RET-007-build-retro-conversation-and-guidance.md)   | Build Retro conversation, grounded explanations and interactive guidance | RET-006          | Local paid/manual accepted      |
-| [RET-008](RET-008-deliver-retro-animated-crud.md)             | Deliver Retro animated forms, confirmation and inline Undo               | RET-007          | Local paid/manual accepted      |
-| [RET-009](RET-009-complete-exports-and-session-lifecycle.md)  | Whole-session reset, expiry and recovery; export UI removed              | RET-008          | Local accepted                  |
-| [RET-010](RET-010-harden-privacy-admission-and-spend.md)      | Harden privacy, private transport, abuse controls and spend readiness    | RET-005, RET-009 | Local accepted; cloud pending   |
-| [RET-011](RET-011-verify-product-and-audit-release.md)        | Verify responsive product quality and audit the release candidate        | RET-010          | Local accepted; ready to deploy |
-| [RET-012](RET-012-deploy-and-validate-cloud-run.md)           | Deploy manually, validate live behavior and record rollback              | RET-011          | Deployed; follow-up checks      |
+| Ticket                                                        | Complete outcome                                                         | Dependencies     | Status                                 |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------- | -------------------------------------- |
+| [RET-001](RET-001-initialize-workspace-and-contracts.md)      | Initialize the workspace, contracts and safe runtime                     | None             | Complete                               |
+| [RET-002](RET-002-build-brand-and-landing.md)                 | Build the brand system and calm sourced landing                          | RET-001          | Local accepted                         |
+| [RET-003](RET-003-author-sample-pdfs-and-viewer.md)           | Author the visible PDF corpus and floating paper viewer                  | RET-002          | Local accepted                         |
+| [RET-004](RET-004-build-money-state-crud-and-refresh.md)      | Build the canonical money workspace, CRUD, Undo and refresh recovery     | RET-001, RET-003 | Local accepted                         |
+| [RET-005](RET-005-deliver-live-pdf-recognition-and-review.md) | Deliver live OpenAI PDF recognition, review and exact-number evaluation  | RET-004          | Local paid/manual accepted             |
+| [RET-006](RET-006-build-interactive-money-dashboard.md)       | Build the beautiful interactive dashboard and source drill-down          | RET-004, RET-005 | Local accepted                         |
+| [RET-007](RET-007-build-retro-conversation-and-guidance.md)   | Build Retro conversation, grounded explanations and interactive guidance | RET-006          | Local paid/manual accepted             |
+| [RET-008](RET-008-deliver-retro-animated-crud.md)             | Deliver Retro animated forms, confirmation and inline Undo               | RET-007          | Local paid/manual accepted             |
+| [RET-009](RET-009-complete-exports-and-session-lifecycle.md)  | Whole-session reset, expiry and recovery; export UI removed              | RET-008          | Local accepted                         |
+| [RET-010](RET-010-harden-privacy-admission-and-spend.md)      | Harden privacy, private transport, abuse controls and spend readiness    | RET-005, RET-009 | Local accepted; cloud pending          |
+| [RET-011](RET-011-verify-product-and-audit-release.md)        | Verify responsive product quality and audit the release candidate        | RET-010          | Local accepted; ready to deploy        |
+| [RET-012](RET-012-deploy-and-validate-cloud-run.md)           | Deploy manually, validate live behavior and record rollback              | RET-011          | Deployed; follow-up checks             |
+| [RET-013](RET-013-post-deployment-and-pre-sharing.md)         | Audit and improve quality, then document security for owner review       | RET-012          | In progress; security execution locked |
 
 **No local feature packet remains eligible:** all twelve authorized local outcomes are implemented and validated. RET-012's managed-URL rollout and bounded hosted walkthrough are complete; its full external acceptance matrix remains partial. Packaging, CSP and cold-start fixes are committed, and the owner explicitly approved the deployment documentation/evidence commit. See [local and hosted evidence](../validation/RET-012.md) and [manual release/rollback](../operations/MANUAL-DEPLOYMENT.md). The canonical order above is sufficient; do not infer parallel agent authorization from the dependency graph. Start a packet only when the user requests implementation and its required dependency evidence exists.
 

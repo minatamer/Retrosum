@@ -6,6 +6,8 @@ Workspace ZIP and generated-invoice export controls are removed from sidebar, Re
 
 ## Historical RET-009 export implementation
 
+RET-013 removes the unreachable browser ZIP/generated-invoice adapters and their three frontend dependencies. The pure public money export helpers/contracts and their exact-data/masking tests remain, as do inert saved-intent decoding and original PDF downloads. The historical adapter observations below describe the old implementation, not code currently shipped.
+
 The export design, dependency/resource measurements and browser evidence below describe the 8 October scope. They do not advertise a current export feature or a remaining implementation task. The lifecycle paragraphs still describe the retained controller behavior.
 
 The workspace navigation opens a native paper review dialog in a body portal. It captures a detached validated graph, scope, revision and export timestamp. Record counts, file names, basis, as-of date and processing modes are reviewable before preparation. A changed graph hides the old download and offers deliberate capture of the current revision. No file mixes revisions. ZIP/PDF modules load only when their explicit preparation button is used.

@@ -4,7 +4,9 @@ Updated **11 October 2026**. This page summarizes current completion; the [bluep
 
 ## Release handoff
 
-**Owner manual testing is complete, and the local release is accepted and ready for deployment**, confirmed by the owner on **11 October 2026**. The accepted application source is `b1afd8d`, with verification evidence in `55febe5`; all 448 tests/41 files, 132 boundaries and both production builds passed. No further local feature or owner manual-acceptance step is required before beginning deployment preparation. RET-012 now owns the final image refresh, cloud configuration, deployment and hosted verification. This confirmation does not itself authorize staging, committing, pushing or deploying.
+**Owner manual testing is complete, and the local release is accepted and ready for deployment**, confirmed by the owner on **11 October 2026**. The accepted application source is `b1afd8d`, with verification evidence in `55febe5`; all 448 tests/41 files, 132 boundaries and both production builds passed. No further local feature or owner manual-acceptance step is required. RET-012 owns cloud configuration, deployment and hosted verification; its current Linux image refresh is complete.
+
+**Linux image verification complete — 11 October 2026:** The owner-authorized documentation and `AGENTS.md` commit is `cb0b103`. Both matching Linux amd64 images were built from that archive plus a two-file packaging correction, retaining the frozen dependency graph and security checks while allowing missing build-time registry metadata. UID 1000, pinned Node, package inventories, ten originals/eighteen inspected pages, browser processing/source/Retro/placement/Undo/refresh and all four fake/unavailable probes passed. The settled root gates passed again: 448 tests/41 files, 132 boundaries and both builds. Exact local IDs, hashes and limitations are in [RET-012 validation](validation/RET-012.md). The correction and fresh evidence remain unstaged/uncommitted pending specific permission; no push or deployment is authorized or performed.
 
 ## Completed locally
 
@@ -26,13 +28,13 @@ The owner selected **90-day API-key expiry**. Actual Responses generation/input-
 
 ## Owner-confirmed Google Cloud setup
 
-The owner confirms the Retrosum Google Cloud project is already created, with budget controls and alerts at **USD 5 and USD 10**, following the same setup pattern as ClipBuilder and ScreenPilot. Deployment secrets are also already set up. Creation is complete on the owner's confirmation; it is not a request to recreate the project, budgets or secrets.
+The owner confirms the Retrosum Google Cloud project is already created, with budget controls and alerts at **USD 5 and USD 10**, following the same setup pattern as ClipBuilder and ScreenPilot. Deployment secrets are also already set up, and the owner confirms `gcloud` is authenticated. Creation/authentication are owner-confirmed; this local image task did not inspect the account or recreate resources.
 
 Exact project/secret identifiers and versions are not recorded publicly or inspected. Budget period/scope, alert recipients/delivery, enforcement and runtime secret bindings/IAM remain to be verified for deployment. Cloud budget alerts are separate from the **USD 5 OpenAI limit** and the USD 2.50 process-local allowance; no guaranteed hard cloud/app cap is inferred.
 
 ## Deployment to-do
 
-1. Freeze the accepted release after explicit commit approval; refresh and verify both nonroot Linux images for the current ten-PDF/eighteen-page source, including workers/fonts/assets and fake/paid-off probes. Earlier eight-PDF image evidence is historical.
+1. Obtain specific commit approval for the build-discovered packaging correction and fresh evidence, then freeze that verified candidate. Both current Linux images are already built and verified locally; earlier eight-PDF image evidence is historical. Bind the publication candidate to the exact reviewed source and image inventories.
 2. Verify the existing project's private identifiers, registry, region, service names, canonical URL/domain, runtime identities, secret versions/bindings and budget-alert scope/delivery. Project, USD 5/USD 10 alerts and secrets are already created. Check the separately configured OpenAI limit/key permissions/expiry without recreating the setup.
 3. Obtain approval for the exact image pair and cloud/public scope; publish immutable image digests and fill the prepared service templates privately.
 4. Deploy the private backend and initially private frontend with paid features off. Verify frontend-only backend invocation, anonymous denial, exact origins/audience, secret isolation, hosted Turnstile hostnames/CSP, domain/HTTPS and approved seven-day operational log retention/access.

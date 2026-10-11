@@ -11,7 +11,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build:shared \
     && pnpm --filter @retrosum/backend build \
-    && pnpm --filter @retrosum/backend deploy --prod --offline --frozen-lockfile /runtime/backend \
+    && pnpm --filter @retrosum/backend deploy --prod --prefer-offline --frozen-lockfile /runtime/backend \
     && node scripts/verify-release.mjs backend /runtime/backend
 
 FROM ${NODE_IMAGE} AS runtime

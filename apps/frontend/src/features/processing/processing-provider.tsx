@@ -12,7 +12,6 @@ import { createPortal } from "react-dom";
 import Script from "next/script";
 import { PROCESSING_DISCLOSURE_VERSION, grantResultSchema } from "@retrosum/contracts";
 import { PaperDialog } from "../../components/ui/paper-dialog";
-import { Button } from "../../components/ui/button";
 import { readJson } from "../documents/recognition-client";
 import { useSession } from "../session/session-provider";
 import styles from "./processing.module.css";
@@ -25,12 +24,11 @@ const ProcessingContext = createContext<{
 } | null>(null);
 type Pending = {
   identity: Identity;
-  presentation: "dialog" | "document-selection";
   siteKey: string;
   signal: AbortSignal;
   nonce: string;
   admission: Promise<boolean> | null;
-  finish(grant?: string): void;
+  finish(grant?: string, failure?: string): void;
 };
 type Turnstile = {
   render(
@@ -67,11 +65,11 @@ export function usePaidProcessing() {
   if (!processing) throw new Error("Processing provider is required.");
   return processing.authorize;
 }
-export function InlineProcessingReview() {
+export function InlineProcessingReview({ action = "extract" }: { action?: Identity["action"] }) {
   const processing = use(ProcessingContext);
   if (!processing) throw new Error("Processing provider is required.");
   const pending = processing.pending;
-  return pending?.presentation === "document-selection" ? (
+  return pending?.identity.action === action ? (
     <LiveReview key={pending.identity.operationId} pending={pending} />
   ) : null;
 }
@@ -98,8 +96,7 @@ export function ProcessingProvider({ children }: { children: ReactNode }) {
         return Promise.reject(
           new Error("Live processing is awaiting verification. No content was submitted."),
         );
-      if (owned.current)
-        return Promise.reject(new Error("Finish the current processing review first."));
+      if (owned.current) return Promise.reject(new Error("Finish the current verification first."));
       if (signal.aborted)
         return Promise.reject(new Error("Processing cancelled before submission."));
       return new Promise<string>((resolve, reject) => {
@@ -109,14 +106,13 @@ export function ProcessingProvider({ children }: { children: ReactNode }) {
         const cancel = () => value.finish();
         const value: Pending = {
           identity,
-          presentation: presentation ?? "dialog",
           siteKey: capabilities.processing!.siteKey,
           signal: bounded,
           admission: null,
           nonce:
             document.querySelector<HTMLMetaElement>('meta[name="retrosum-csp-nonce"]')?.content ??
             "",
-          finish(grant) {
+          finish(grant, failure) {
             if (owned.current !== value) return;
             owned.current = null;
             bounded.removeEventListener("abort", cancel);
@@ -124,27 +120,18 @@ export function ProcessingProvider({ children }: { children: ReactNode }) {
             abort.abort();
             setPending(null);
             if (grant) resolve(grant);
-            else reject(new Error("Processing review cancelled. No automatic retry will run."));
+            else reject(new Error(failure ?? "Processing cancelled. No automatic retry will run."));
           },
         };
         owned.current = value;
-        if (value.presentation === "document-selection") value.admission = startAdmission(value);
+        value.admission = startAdmission(value);
         bounded.addEventListener("abort", cancel, { once: true });
         setPending(value);
       });
     },
     [controller],
   );
-  return (
-    <ProcessingContext value={{ authorize, pending }}>
-      {children}
-      {pending?.presentation === "dialog" &&
-        createPortal(
-          <LiveReview key={pending.identity.operationId} pending={pending} />,
-          document.body,
-        )}
-    </ProcessingContext>
-  );
+  return <ProcessingContext value={{ authorize, pending }}>{children}</ProcessingContext>;
 }
 async function admit(
   path:
@@ -183,33 +170,28 @@ function startAdmission(pending: Pending) {
   );
 }
 function LiveReview({ pending }: { pending: Pending }) {
-  const inline = pending.presentation === "document-selection";
+  const chat = pending.identity.action === "chat";
   const [accepted, setAccepted] = useState(false),
-    [busy, setBusy] = useState(inline),
+    [busy, setBusy] = useState(true),
     [interactive, setInteractive] = useState(false),
     [error, setError] = useState<string | null>(null);
-  const accepting = useRef(false),
-    submitting = useRef(false);
-  const admissionError = inline
-    ? "Verification could not start. Cancel processing and try again deliberately; your originals remain available."
-    : "Admission could not start. Close this review; your originals and local controls remain available.";
+  const submitting = useRef(false);
+  const admissionError = chat
+    ? "Security verification could not start. Send your request again deliberately; nothing was submitted for AI processing."
+    : "Verification could not start. Cancel processing and try again deliberately; your originals remain available.";
   useEffect(() => {
     if (!pending.admission) return;
     void pending.admission.then((success) => {
       if (pending.signal.aborted) return;
       setBusy(false);
       if (success) setAccepted(true);
+      else if (chat) pending.finish(undefined, admissionError);
       else setError(admissionError);
     });
-  }, [pending, admissionError]);
-  const begin = async () => {
-    if (accepting.current || pending.signal.aborted) return;
-    accepting.current = true;
-    const success = await startAdmission(pending);
-    if (pending.signal.aborted) return;
-    setBusy(false);
-    if (success) setAccepted(true);
-    else setError(admissionError);
+  }, [pending, admissionError, chat]);
+  const fail = (message: string) => {
+    if (chat) pending.finish(undefined, message);
+    else setError(message);
   };
   const verified = async (challengeToken: string) => {
     if (submitting.current || pending.signal.aborted) return;
@@ -235,10 +217,10 @@ function LiveReview({ pending }: { pending: Pending }) {
       pending.finish(result.grant);
     } catch {
       if (!pending.signal.aborted)
-        setError(
-          inline
-            ? "Verification could not finish. Cancel processing and try again deliberately; this PDF was not submitted for AI processing."
-            : "Verification could not finish. Close this review and retry deliberately; nothing was submitted for AI processing.",
+        fail(
+          chat
+            ? "Security verification could not finish. Send your request again deliberately; nothing was submitted for AI processing."
+            : "Verification could not finish. Cancel processing and try again deliberately; this PDF was not submitted for AI processing.",
         );
     } finally {
       if (!pending.signal.aborted) setBusy(false);
@@ -252,61 +234,27 @@ function LiveReview({ pending }: { pending: Pending }) {
           verified={verified}
           interaction={setInteractive}
           failed={() =>
-            setError(
-              inline
-                ? "Verification expired or could not load. Cancel processing and try again deliberately."
-                : "The challenge expired or could not load. Close this review and retry deliberately.",
+            fail(
+              chat
+                ? "Security verification expired or could not load. Send your request again deliberately; nothing was submitted for AI processing."
+                : "Verification expired or could not load. Cancel processing and try again deliberately.",
             )
           }
         />
       )}
-      {!error && !inline && busy && <p role="status">Checking admission…</p>}
-      {!error && inline && interactive && (
-        <p role="status">Complete the security check to continue.</p>
-      )}
+      {!error && interactive && <p role="status">Complete the security check to continue.</p>}
       {error && <p role="alert">{error}</p>}
     </>
   );
-  if (inline)
-    return (
-      <div className={styles.inlineReview} aria-busy={busy} data-attention={interactive || !!error}>
-        {verification}
-      </div>
-    );
   return (
-    <PaperDialog
-      open
-      title="Review this action"
-      caption="Your choice, before processing"
-      onClose={() => pending.finish()}
+    <div
+      className={styles.inlineReview}
+      aria-busy={busy}
+      data-action={pending.identity.action}
+      data-attention={interactive || !!error}
     >
-      <div className={styles.copy}>
-        <HandlingCopy live action={pending.identity.action} />
-        <p>
-          Cloudflare checks this action for abuse after you allow it. It receives a challenge and an
-          opaque request hash. A grant covers this exact action once; it does not authorize record
-          changes.
-        </p>
-        {verification}
-        <div className={styles.actions}>
-          <Button variant="light" onClick={() => pending.finish()}>
-            Cancel
-          </Button>
-          {!accepted && !error && (
-            <Button
-              variant="warm"
-              disabled={busy}
-              onClick={() => {
-                setBusy(true);
-                void begin();
-              }}
-            >
-              Allow this live action
-            </Button>
-          )}
-        </div>
-      </div>
-    </PaperDialog>
+      {verification}
+    </div>
   );
 }
 function Challenge({
@@ -375,26 +323,21 @@ function Challenge({
     </>
   );
 }
-function HandlingCopy({
-  live = false,
-  action = "extract",
-  selection = false,
-}: {
-  live?: boolean;
-  action?: Identity["action"];
-  selection?: boolean;
-}) {
+function HandlingCopy({ live = false }: { live?: boolean }) {
   return (
     <>
       <p>
         {live
-          ? action === "extract"
-            ? selection
-              ? "Your selected PDFs and their core business context will pass through Retrosum’s temporary server processing to OpenAI for interpretation when you choose Process."
-              : "This selected PDF and its core business context will pass through Retrosum’s temporary server processing to OpenAI for interpretation."
-            : "Your question, recent conversation and current financial records will pass through Retrosum’s temporary server processing to OpenAI. Original PDFs are not attached to this Retro turn."
+          ? "Your selected PDFs and their core business context will pass through Retrosum’s temporary server processing to OpenAI for interpretation when you choose Process."
           : "Choose the documents you want to process, then review their details before adding them to your overview. You can inspect the originals and edit your records at any time."}
       </p>
+      {live && (
+        <p>
+          When you send Retro a message, your question, recent conversation and current financial
+          records pass through Retrosum’s temporary server processing to OpenAI. Original PDFs are
+          not attached to Retro turns. Opening chat sends no content.
+        </p>
+      )}
       <p>
         Uploaded PDFs stay in this browser tab. Your records survive refresh for up to two hours.
         Reset stops processing and clears the session; expired data is cleared when you return.
@@ -461,11 +404,13 @@ export function ProcessingDetails({
             caption="Privacy & processing"
           >
             <div className={styles.copy}>
-              <HandlingCopy live={live} selection />
+              <HandlingCopy live={live} />
               {live && (
                 <p>
-                  Choosing Process allows interpretation of the selected documents. Cloudflare
-                  verifies each action before submission; opening these details sends no documents.
+                  Choosing Process approves the selected documents; sending a Retro message approves
+                  that exact turn. Cloudflare verifies each action before submission and receives a
+                  challenge and an opaque request hash. A single-use grant does not authorize record
+                  changes. Opening these details starts no processing.
                 </p>
               )}
             </div>

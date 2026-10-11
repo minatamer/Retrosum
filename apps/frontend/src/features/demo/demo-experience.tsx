@@ -272,7 +272,12 @@ function DemoFlow() {
     });
   };
   if (stage === "dashboard")
-    return <DashboardExperience onAddDocuments={() => change({ stage: "documents" })} />;
+    return (
+      <DashboardExperience
+        live={capabilities?.mode === "live"}
+        onAddDocuments={() => change({ stage: "documents" })}
+      />
+    );
   const completed = workspace.documents.filter(
     (d) => selected.has(d.id) && ["ready", "needs_review", "error"].includes(d.state),
   ).length;

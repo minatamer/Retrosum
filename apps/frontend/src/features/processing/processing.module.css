@@ -12,13 +12,6 @@
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding-block-start: 0.5rem;
-}
 .challenge {
   min-width: 0;
   max-width: 100%;
@@ -47,11 +40,10 @@
   gap: 0.75rem;
   padding: 0.75rem;
 }
+.inlineReview[data-action="chat"] {
+  width: 100%;
+  color: var(--rs-ivory);
+}
 .inlineReview p {
   margin: 0;
-}
-@media (max-width: 380px) {
-  .actions {
-    display: grid;
-  }
 }

@@ -50,7 +50,13 @@ function subscribePhone(callback: () => void) {
   query.addEventListener("change", callback);
   return () => query.removeEventListener("change", callback);
 }
-export function DashboardExperience({ onAddDocuments }: { onAddDocuments(): void }) {
+export function DashboardExperience({
+  onAddDocuments,
+  live,
+}: {
+  onAddDocuments(): void;
+  live: boolean;
+}) {
   const { controller, session, generation, notice } = useSession();
   const [settings, setSettings] = useState(false);
   const [suggestedCurrency, setSuggestedCurrency] = useState<"USD" | "EUR" | null>(null);
@@ -228,7 +234,7 @@ export function DashboardExperience({ onAddDocuments }: { onAddDocuments(): void
             <Icon name="reset" />
             <span>Reset workspace</span>
           </button>
-          <ProcessingDetails compact={dashboard.collapsed && !phone} />
+          <ProcessingDetails compact={dashboard.collapsed && !phone} live={live} />
           <button
             type="button"
             className={styles.collapse}

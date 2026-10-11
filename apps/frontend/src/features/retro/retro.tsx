@@ -46,7 +46,7 @@ import {
   scrollToElement,
   scrollToSection,
 } from "../../components/ui/smooth-scroll";
-import { usePaidProcessing } from "../processing/processing-provider";
+import { InlineProcessingReview, usePaidProcessing } from "../processing/processing-provider";
 import { hashRequest } from "../processing/processing-client";
 import { readJson } from "../documents/recognition-client";
 
@@ -222,7 +222,7 @@ export function Retro() {
     }
     const effect = new AbortController();
     request.current = effect;
-    const deadline = window.setTimeout(() => effect.abort(), 60000);
+    let deadline: number | undefined;
     const untrack = controller.trackEffect(effect);
     const token = controller.token(`retro_${crypto.randomUUID()}`);
     const capturedScope = retroScopeKey(actualScope);
@@ -261,6 +261,7 @@ export function Retro() {
       });
       let result: RetroResponse;
       if (capabilities.mode === "fake") {
+        deadline = window.setTimeout(() => effect.abort(), 60000);
         await pause(/simulate stale/u.test(prompt.toLowerCase()) ? 3500 : 650, effect.signal);
         result = createRetroResponse(
           payload,
@@ -283,6 +284,7 @@ export function Retro() {
         );
         if (!controller.isCurrent(token))
           throw new Error("The workspace changed before submission.");
+        deadline = window.setTimeout(() => effect.abort(), 60000);
         const response = await fetch("/api/retrosum/v1/chat", {
           method: "POST",
           cache: "no-store",
@@ -753,7 +755,10 @@ export function Retro() {
           {pending && (
             <>
               <div className={styles.user}>{pending.prompt}</div>
-              <p className={`${styles.stage} ${busy ? styles.working : ""}`} role="status">
+              <p
+                className={`${styles.stage} ${busy ? styles.working : ""}`}
+                role={pending.stage === "failed" ? "alert" : "status"}
+              >
                 <ReplyText text={pending.text} />
               </p>
             </>
@@ -765,6 +770,7 @@ export function Retro() {
           )}
         </div>
       )}
+      <InlineProcessingReview action="chat" />
       <ComposerShell
         value={input}
         onChange={setInput}

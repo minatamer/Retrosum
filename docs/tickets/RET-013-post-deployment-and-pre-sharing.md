@@ -1,8 +1,10 @@
 # RET-013 — Post deployment and pre sharing ticket
 
-**Status:** Phase A complete and committed (`743a9dc`, `6d8c4eb`). Approved SEC-01–04 repairs pass the settled security review and all six root gates; implementation is committed as `24e3e71`. The six-path security evidence allocation completes Phase B. The subsequent paid portfolio run is authorized separately, with its original captures/results manifest excluded from Git.
+**Status:** Quality and SEC-01–04 repairs are committed and deployed from `35bc824`; both services are Ready at 100 percent traffic with public live mode restored. Settled review/six root gates pass (482 tests), and new free hosted/browser verification passes. The separate local paid portfolio run, 83 original screenshots and professional thumbnail are delivered. [Actual rollout record](../operations/RELEASE-RECORD-RET-013-2026-10-11.md) separates these evidence classes. Deployment documentation and the README cover have specific owner staging/commit approval; no Git remote push.
 
-**Latest owner authority:** Execute and validate the security findings until the settled review has no actionable findings, then prepare a new file-level allocation and stage/commit the security work. After those commits, one further paid test and comprehensive portfolio screenshots are authorized, followed by a professional branded thumbnail. This supersedes the earlier documentation-only gate. No push, public rollout or new edge service is selected.
+**Latest owner authority:** On 11 October, the owner instructed, "commit the stuff in unstaged," explicitly approving the current eleven-path deployment/portfolio allocation in its two file-level plans. Earlier approval authorized deploying the committed work and fixing/redeploying deployment issues, and covered the completed security commits and subsequent local paid portfolio run/thumbnail. No additional paid test, remote push, edge service or custom-domain cutover is inferred. No application repair was needed during this rollout. Earlier statements prohibiting deployment below retain their original audit/execution-stage scope.
+
+**Later portfolio presentation request, 11 October:** the original cover is also copied into the Desktop's ten-image shortlist as `00-Retrosum-thumbnail.png` and displayed below the root README title through `docs/assets/retrosum-overview.png`. Both copies match the delivered original; all ten shortlisted screenshots and all 83 full-set screenshots remain preserved. The subsequent explicit Git approval covers the [portfolio file allocation](../commit-plans/RET-013-portfolio.md) and [deployment evidence allocation](../commit-plans/RET-013-deployment.md).
 
 ### Approved implementation plan (before security application edits)
 
@@ -131,9 +133,10 @@ Create a standalone HTML summary under `docs/audits/` with high → medium → m
 - [x] Approved security changes preserve exact calculations, four provider operations, one batch challenge, cleanup, UI behavior and all existing private logs.
 - [x] Settled read-only security validation has no actionable application findings; all six gates pass (482 tests/48 files, 135 boundary modules, both builds).
 - [x] Both final nonroot/read-only Linux candidates build and pass isolated fake release probes with zero paid requests.
-- [x] New security file-level allocation and reviewed implementation/evidence commits complete; no push or deployment.
-- [ ] Authorized post-commit paid run and complete portfolio screenshot folder delivered.
-- [ ] Professional canonical-brand thumbnail delivered.
+- [x] New security file-level allocation and reviewed implementation/evidence commits complete before the later authorized rollout; no Git remote push.
+- [x] Authorized post-commit local paid run and complete portfolio screenshot folder delivered: ten PDFs, two live Retro operations, 83 screenshots, actual-results manifest/gallery on Desktop.
+- [x] Professional canonical-brand thumbnail delivered in the same portfolio folder.
+- [x] Later owner-authorized security rollout verified: immutable pair, preserved runtime/IAM/secrets, compatible paid-off revision and free hosted/browser checks; no new paid provider operations.
 
 ## Evidence and original audit-stage result
 
@@ -143,4 +146,4 @@ See [RET-013 validation](../validation/RET-013.md) and the [quality ledger](../a
 
 ## Approved execution result
 
-SEC-01–04 are implemented locally under the latest approval. [Security dispositions](../audits/RET-013-security.md), [settled evidence](../validation/RET-013.md) and the new [security commit allocation](../commit-plans/RET-013-security.md) supersede the original audit-stage decision state. Pages/images use proxy-local limits; APIs remain outside the body-buffering proxy and acquire handler-owned limits. Shared capability/FX lookup ownership, complete grant binding and native inspection containment have meaningful rejection/concurrency/cancellation regressions. No money, provider prompt/model, dependencies or existing private operational event is changed. Local improvements are not claimed deployed. External account/bundled-native visibility and a distributed edge service remain explicitly separate from this application review.
+SEC-01–04 are implemented and deployed under the later rollout approval. [Security dispositions](../audits/RET-013-security.md), [settled evidence](../validation/RET-013.md), [security commit allocation](../commit-plans/RET-013-security.md) and [actual release](../operations/RELEASE-RECORD-RET-013-2026-10-11.md) supersede the original audit-stage decision state. Pages/images use proxy-local limits; APIs remain outside the body-buffering proxy and acquire handler-owned limits. Shared capability/FX lookup ownership, complete grant binding and native inspection containment have meaningful rejection/concurrency/cancellation regressions. No money, provider prompt/model, dependencies or existing private operational event is changed. External account/bundled-native visibility and a distributed edge service remain explicitly separate from this application review. New hosted verification is free-only; prior local paid evidence is not relabeled as hosted acceptance.

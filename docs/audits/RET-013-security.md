@@ -1,6 +1,6 @@
 # RET-013 security audit — post deployment and pre sharing
 
-**Review state: owner approved SEC-01–04 execution, repeated validation and security commits on 11 October 2026. Local repairs pass settled read-only review with no actionable application findings, all six root gates (482 tests/48 files, 135 boundary modules, both builds), and connected fake preservation checks.** The [HTML review](RET-013-security-review.html) records the selected remedies. A new bounded local paid test/screenshots is authorized after security commits. No push, public rollout, edge service, account mutation or scanning-service activation is selected.
+**Current state: SEC-01–04 repairs pass settled review with no actionable application findings, all six root gates (482 tests/48 files, 135 boundary modules, both builds), connected fake preservation and the separate local paid portfolio run. After later explicit owner approval, both apps were deployed from `35bc824` and pass free hosted/browser checks with preserved runtime/IAM/secret settings and live availability.** See the [actual security release](../operations/RELEASE-RECORD-RET-013-2026-10-11.md) and [HTML review](RET-013-security-review.html). No fresh hosted paid test, Git remote push, edge service, account mutation or scanning-service activation occurred.
 
 The dated findings below preserve the original audit evidence, including what was unverified at audit time. Current implementation and later measurements are recorded in the following disposition section; no historical cloud observation is represented as a new deployment.
 
@@ -13,7 +13,7 @@ The dated findings below preserve the original audit evidence, including what wa
 
 Raw bounded measurements are ignored under `artifacts/local/ret-013/memory-*.log`; the repeatable no-key harness and bounded fixture generator are allocated with security verification. Existing worker payload diagnostics stay drained, and every pre-existing private operational event stays intact. V-01/V-02 remain external visibility checks, not hidden failures or newly completed account/scanner acceptance. The development-only advisory has no new production reachability or published patch established by these changes.
 
-**Date:** 11 October 2026. **Local snapshot:** `6d8c4eb`, following quality application commit `743a9dc`. All six quality gates passed: 460 tests in 45 files, 133 import-boundary modules and both builds. Phase A retained every existing private backend log and verified representative fake browser functionality. Those changes have **not** been deployed during this ticket.
+**Original audit date:** 11 October 2026. **Original local snapshot:** `6d8c4eb`, following quality application commit `743a9dc`. All six quality gates passed: 460 tests in 45 files, 133 import-boundary modules and both builds. Phase A retained every existing private backend log and verified representative fake browser functionality. Those changes were not yet deployed at the original audit; the later `35bc824` rollout above now includes them and the approved security repairs.
 
 ## Decision summary
 

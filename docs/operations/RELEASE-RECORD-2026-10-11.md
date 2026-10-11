@@ -1,5 +1,7 @@
 # Retrosum managed-URL release — 11 October 2026
 
+**Historical RET-012 release, superseded later on 11 October by the [verified RET-013 security rollout](RELEASE-RECORD-RET-013-2026-10-11.md).** The original observations below retain their original source, paid-test scope and limitations; use the successor for active images/revisions and emergency paid-off targets.
+
 **Deployed; public live mode enabled** at [Retrosum](https://retrosum-frontend-imspgi7bya-ew.a.run.app/demo). Owner local manual acceptance is complete. Later explicit approvals cover Google Cloud fixes/rollout, allocated source/evidence commits, frontend-only public invocation, backend-only secret access, seven-day default log retention and one bounded ten-PDF/up-to-four-Retro test followed by public live availability. No Git remote push occurred.
 
 This content-safe record excludes private account/project numbers, runtime account addresses, resolved exports, secret values, tokens and document/chat payloads. Private artifacts/logs remain ignored under `artifacts/local/ret-012-cloud-ef915a0/`.

@@ -6,14 +6,27 @@ Prepared **8 October 2026**, updated **11 October**, RET-012. Local files and Li
 
 ## Retrosum.com ownership and DNS handoff
 
-The owner already purchased the domain at Cloudflare; Google verification is still absent. The managed URL stays live while this is completed.
+The owner purchased the domain at Cloudflare and completed TXT verification. On 11 October Google CLI confirmed ownership; the operator created `retrosum.com` → `retrosum-frontend` in `europe-west1`. The owner then confirmed entering all eight records below and supplied a Cloudflare screenshot showing DNS only and TTL Auto for every row. Independent A/AAAA lookups through Google `8.8.8.8` and Cloudflare `1.1.1.1` match all eight returned values. Google's `CertificateProvisioned` remains pending; a normal HTTPS HEAD request failed during TLS handshake without bypassing certificate validation. TLS, Turnstile and canonical cutover remain unverified. The managed URL stays live while these are completed. The numbered sequence below remains the full procedure.
+
+Add each returned record at Cloudflare DNS → Records, using name **@**, TTL **Auto**, proxy **DNS only (gray cloud)**. Retain the verification TXT and unrelated records.
+
+| Type | Name | Content                 |
+| ---- | ---- | ----------------------- |
+| A    | `@`  | `216.239.32.21`         |
+| A    | `@`  | `216.239.34.21`         |
+| A    | `@`  | `216.239.36.21`         |
+| A    | `@`  | `216.239.38.21`         |
+| AAAA | `@`  | `2001:4860:4802:32::15` |
+| AAAA | `@`  | `2001:4860:4802:34::15` |
+| AAAA | `@`  | `2001:4860:4802:36::15` |
+| AAAA | `@`  | `2001:4860:4802:38::15` |
 
 1. Open [Google Search Console](https://search.google.com/search-console) with the same Google account used for this release. Add a **Domain** property named `retrosum.com` and choose manual DNS verification. Copy Google's full `google-site-verification=...` value.
 2. In Cloudflare, select `retrosum.com` → **DNS → Records → Add record**. Type **TXT**, name **@**, content the copied Google value, TTL **Auto**. Save. Keep any existing unrelated DNS records.
 3. Return to Google and choose **Verify**. Retain the TXT record and tell the operator when verification succeeds. Domain ownership is required before mapping; buying it alone is not Google verification.
 4. The operator then creates the approved frontend mapping and reads its actual `status.resourceRecords`. Add the exact returned A/AAAA/CNAME records at Cloudflare, initially **DNS only**, without guessing addresses or deleting unrelated mail/TXT records. Verify Google's certificate/TLS and add `retrosum.com` to Turnstile before changing both canonical origins and fixed redirects. Keep the managed URL working until cutover passes.
 
-Google's [domain mapping guidance](https://docs.cloud.google.com/run/docs/mapping-custom-domains) describes ownership/issued records and the limited preview mapping option in this region; [Cloudflare's DNS guide](https://developers.cloudflare.com/dns/manage-dns-records/how-to/create-dns-records/) describes record entry. No mapping, A/AAAA change, custom certificate or canonical cutover has occurred in this release. Production use of the preview mapping versus another supported frontend remains an explicit operator decision; no load balancer or extra infrastructure was created.
+Google's [domain mapping guidance](https://docs.cloud.google.com/run/docs/mapping-custom-domains) describes ownership/issued records and the limited preview mapping option in this region; [Cloudflare's DNS guide](https://developers.cloudflare.com/dns/manage-dns-records/how-to/create-dns-records/) describes record entry. The owner-confirmed mapping/DNS checkpoint above supersedes the earlier managed-URL-only release; custom certificate readiness and canonical cutover remain pending. Production use of the preview mapping versus another supported frontend remains an explicit operator decision; no load balancer or extra infrastructure was created.
 
 ## Prepared artifacts and operating modes
 

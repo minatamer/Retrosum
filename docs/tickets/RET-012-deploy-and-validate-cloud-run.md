@@ -6,7 +6,9 @@ One hosted ten-PDF batch returned ten extraction HTTP 200 responses. Exact incom
 
 Owner local manual acceptance is complete. Existing project/budgets/secrets were verified rather than recreated. Specific source/documentation commits, frontend-only public access, private backend secret bindings, seven-day default retention, one bounded ten-PDF/up-to-four-message test with at most USD 2.50 reserved and public live mode are explicitly approved. Future commits/paid tests require specific permission.
 
-**Remaining verification:** retrosum.com ownership/DNS/TLS/Turnstile/canonical cutover, maximum-file hosted memory/fifth-operation and cancellation/reset/expiry/replay, actual provider units/invoice/cloud billing and account quotas/permissions/expiry/alert delivery. These remain distinct from completed deployment and local acceptance; do not mark the full matrix complete. Earlier dated preparation checkpoints below retain their original scope.
+**Domain checkpoint, 11 October 2026:** the owner completed TXT verification, Google CLI confirms ownership, and `retrosum.com` is mapped to the existing public frontend in `europe-west1`. The owner supplied a screenshot confirming the four A/four AAAA records with DNS only/TTL Auto; public Google and Cloudflare resolvers match all eight exact addresses listed in the [runbook](../operations/MANUAL-DEPLOYMENT.md). Google certificate issuance remains pending and HTTPS handshake has not completed; no canonical-origin cutover or further paid test occurred. This supersedes the earlier ownership/DNS-pending checkpoints.
+
+**Remaining verification:** retrosum.com TLS/Turnstile/canonical cutover, maximum-file hosted memory/fifth-operation and cancellation/reset/expiry/replay, actual provider units/invoice/cloud billing and account quotas/permissions/expiry/alert delivery. These remain distinct from completed deployment and local acceptance; do not mark the full matrix complete. Earlier dated preparation checkpoints below retain their original scope.
 
 Status: **Deployed — follow-up verification pending**<br>
 Last synchronized: **11 October 2026**<br>

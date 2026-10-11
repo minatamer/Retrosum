@@ -32,7 +32,7 @@ Owner-confirmed **USD 5 OpenAI limit** and selected 90-day key expiry are separa
 
 ## Remaining work
 
-1. **retrosum.com:** purchased at Cloudflare; Google ownership verification is still absent. Add Search Console's TXT record and verify, then obtain actual mapping A/AAAA values, configure DNS/TLS, add the apex to Turnstile and verify before canonical-origin/redirect cutover. Managed URL remains usable meanwhile.
+1. **retrosum.com:** Google ownership, the frontend domain mapping and Cloudflare DNS entry are complete on 11 October. The owner's screenshot shows all four A/four AAAA records with DNS only and TTL Auto; Google and Cloudflare public resolvers return all eight exact addresses. See the [runbook](operations/MANUAL-DEPLOYMENT.md). Google TLS is still pending and the HTTPS handshake has not completed; add the apex to Turnstile and verify before canonical-origin/redirect cutover. Managed URL remains usable meanwhile.
 2. Hosted four-maximum-file peak memory/fifth-operation rejection, cancellation/reset/expiry/replay and provider/account quota checks. Four-worker limits and min 0/max 1 settings are implemented; the small sample does not prove maximum capacity.
 3. Actual provider units/invoice/cloud billing, alert delivery, saved account permissions/expiry and broader arbitrary-upload/physical/assistive coverage. These remain distinct from completed owner local acceptance and bounded hosted checks.
 

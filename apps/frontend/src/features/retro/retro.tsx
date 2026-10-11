@@ -27,6 +27,8 @@ import {
   retroScopeKey,
   patchChangeIntent,
   verifyRetroChange,
+  localRetroDecision,
+  retroFollowUp,
 } from "@retrosum/money";
 import { ComposerShell } from "../../components/ui/composer-shell";
 import { PaperDialog } from "../../components/ui/paper-dialog";
@@ -207,6 +209,24 @@ export function Retro() {
       setInput("");
       return;
     }
+    const localPayload = {
+      operationId: `retro_${crypto.randomUUID()}`,
+      workspace,
+      scope: actualScope,
+      prompt: prompt.trim(),
+      recent: [],
+      uiContext: { dashboard: session.dashboard },
+      followUp: retroFollowUp(session),
+    };
+    const direct = localRetroDecision(localPayload, catalogue);
+    if (direct) {
+      guidance.stop();
+      setActiveChange(null);
+      setInput("");
+      setNotice(null);
+      finish(prompt, createRetroResponse(localPayload, direct, "local"));
+      return;
+    }
     guidance.stop();
     setActiveChange(null);
     setInput("");
@@ -238,6 +258,7 @@ export function Retro() {
       scope: actualScope,
       prompt: prompt.trim(),
       uiContext: { dashboard: session.dashboard },
+      followUp: retroFollowUp(session),
       ...(changeContext ? { changeContext } : {}),
       recent: session.messages
         .slice(-8)
@@ -265,7 +286,7 @@ export function Retro() {
         await pause(/simulate stale/u.test(prompt.toLowerCase()) ? 3500 : 650, effect.signal);
         result = createRetroResponse(
           payload,
-          fakeRetroDecision(prompt, catalogue, workspace, payload.changeContext),
+          fakeRetroDecision(prompt, catalogue, workspace, payload.changeContext, payload),
           "fake",
           [{ tool: "get_summary", count: 7 }],
         );
@@ -296,7 +317,9 @@ export function Retro() {
           throw new Error(
             response.status === 429
               ? "Your live turn allowance is used. Local guidance is still available."
-              : "The live turn could not be completed. No automatic retry ran.",
+              : response.status === 400
+                ? "I couldn’t match that request to a verified answer or current item. Try naming the figure or dashboard card, or use the options below. Nothing was applied."
+                : "I couldn’t complete this live turn. You can try again deliberately or use the local guidance below. Nothing was applied.",
           );
         result = retroResponseSchema.parse(await readJson(response, 128 * 1024, effect.signal));
       }
@@ -364,7 +387,8 @@ export function Retro() {
       !staleLast &&
       (!last ||
         last.decision.kind !== "dashboard_request" ||
-        isRetroUiCurrent(last, session.dashboard)),
+        isRetroUiCurrent(last, session.dashboard) ||
+        !!retroFollowUp(session).widgetId),
     dismissed: dismissedSuggestion === lastMessage?.id,
     applied: !!lastMessage && session.dashboard.appliedProposalIds.includes(lastMessage.id),
     busy,
@@ -586,7 +610,7 @@ export function Retro() {
             <div className={styles.welcome}>
               <span className={styles.meta}>A little help, always close.</span>
               <p>
-                <ReplyText text="I’m Retro. Ask about your supplied figures, follow their paper trail, or let me show you around." />
+                <ReplyText text="Hi, I’m Retro! I’m here to help you understand your figures, follow their paper trail and make the dashboard your own. What would you like to explore?" />
               </p>
             </div>
           )}
@@ -644,6 +668,18 @@ export function Retro() {
                         }}
                       />
                     )}
+                    {response?.decision.kind === "conversation" &&
+                      response.decision.topic === "greeting" &&
+                      content && (
+                        <WorkspaceRequestPreview
+                          decision={{ kind: "workspace_request", intent: { action: "help" } }}
+                          response={response}
+                          proposalId={message.id}
+                          onPrompt={(prompt) => {
+                            void send(prompt);
+                          }}
+                        />
+                      )}
                     {message.changeResult && (
                       <div className={styles.sources}>
                         <button type="button" onClick={() => openResult(message.changeResult!)}>

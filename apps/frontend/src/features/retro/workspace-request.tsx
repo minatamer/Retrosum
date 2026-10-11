@@ -45,6 +45,16 @@ export function WorkspaceRequestPreview({
   );
   if (!session) return null;
   const intent = decision.intent;
+  if (
+    (intent.action === "target" || intent.action === "restore_layout") &&
+    !session.dashboard.appliedProposalIds.includes(proposalId) &&
+    !isRetroUiCurrent(response, session.dashboard)
+  )
+    return (
+      <p>
+        <ReplyText text="Your dashboard has changed since this preview. Ask again before making another layout change." />
+      </p>
+    );
   // Legacy messages remain restorable, but no longer expose workspace export controls.
   if (intent.action === "panel" && intent.panel === "export")
     return (
@@ -128,7 +138,7 @@ export function WorkspaceRequestPreview({
             </div>
           </details>
           <p>
-            <ReplyText text="Every change has a review step. Unknown history stays unknown; transfers, bank connections, emails and investment or tax advice are outside this demo." />
+            <ReplyText text="Ask in your own words, or choose an option to get started. I’ll explain the next step and let you review any change before it is applied." />
           </p>
         </>
       )}

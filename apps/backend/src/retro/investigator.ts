@@ -14,6 +14,7 @@ import {
   fakeRetroDecision,
   topicFacts,
   validateRetroInput,
+  localRetroDecision,
 } from "@retrosum/money";
 
 export type ToolCall = { id: string; tool: RetroTool };
@@ -26,6 +27,7 @@ export type InvestigationContext = {
   simulationDecision: RetroDecision;
   changeContext?: RetroRequest["changeContext"];
   uiContext?: RetroRequest["uiContext"];
+  followUp?: RetroRequest["followUp"];
 };
 export type ToolResult = { call: ToolCall; result: unknown };
 export interface RecordInvestigator {
@@ -43,6 +45,9 @@ export async function investigate(
 ): Promise<RetroResponse> {
   const request = validateRetroInput(input);
   const catalogue = buildDashboard(request.workspace, request.scope);
+  signal.throwIfAborted();
+  const local = localRetroDecision(request, catalogue);
+  if (local) return createRetroResponse(request, local, provider.kind === "fake" ? "fake" : "live");
   const topics = retroTopicSchema.options.map((topic) => ({
     topic,
     factIds: topicFacts(topic, catalogue),
@@ -59,9 +64,11 @@ export async function investigate(
       catalogue,
       request.workspace,
       request.changeContext,
+      request,
     ),
     ...(request.changeContext ? { changeContext: request.changeContext } : {}),
     ...(request.uiContext ? { uiContext: request.uiContext } : {}),
+    ...(request.followUp ? { followUp: request.followUp } : {}),
   };
   const history: ToolResult[] = [];
   const bounded = AbortSignal.any([signal, AbortSignal.timeout(RETRO_LIMITS.deadlineMs)]);

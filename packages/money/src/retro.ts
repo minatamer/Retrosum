@@ -18,6 +18,7 @@ import { formatAmount } from "./amount.js";
 import { fakeChangeIntent, prepareRetroChange } from "./retro-change.js";
 import { dashboardIntent } from "./custom-dashboard.js";
 import { fakeWorkspaceIntent, retroDocuments } from "./retro-workspace.js";
+import { localRetroDecision, retroGuard, retroConversationCopy } from "./retro-conversation.js";
 
 export function retroScopeKey(scope: RetroScope) {
   return JSON.stringify([
@@ -93,21 +94,11 @@ export function fakeRetroDecision(
   catalogue: DashboardCatalogue,
   workspace?: Workspace,
   changeContext?: RetroChangeIntent,
+  conversationContext?: Pick<RetroRequest, "uiContext" | "followUp">,
 ): RetroDecision {
   const text = prompt.toLowerCase();
-  if (
-    /ignore.*(instruction|rule)|system prompt|execute.*(code|script)|https?:\/\/|<script/u.test(
-      text,
-    )
-  )
-    return { kind: "limited_result", reason: "injection" };
-  if (/invest|tax advice|should i|recommend|buy stocks/u.test(text))
-    return { kind: "limited_result", reason: "advice" };
-  if (
-    /send.*email|email.*(customer|supplier)|send money|pay.*supplier|connect.*bank/u.test(text) ||
-    (/transfer/u.test(text) && !/record|add|create/u.test(text))
-  )
-    return { kind: "limited_result", reason: "external_action" };
+  const local = localRetroDecision({ prompt, ...conversationContext }, catalogue);
+  if (local) return local;
   if (/simulate (failure|refusal|tool cap)/u.test(text))
     return {
       kind: "limited_result",
@@ -231,7 +222,7 @@ export function createRetroResponse(
   steps: RetroResponse["steps"] = [],
 ): RetroResponse {
   const catalogue = buildDashboard(request.workspace, request.scope);
-  const grounded = groundRetroDecision(decision, catalogue);
+  const grounded = groundRetroDecision(retroGuard(request.prompt) ?? decision, catalogue);
   const sources =
     grounded.kind === "explanation"
       ? grounded.factIds.flatMap((id) => catalogue.facts[id]!.sources)
@@ -268,6 +259,8 @@ export function isRetroCurrent(response: RetroResponse, workspace: Workspace, sc
   );
 }
 const limitedCopy: Record<string, string> = {
+  off_topic:
+    "I’m here to help with Retrosum: your supplied figures, documents, dashboard and session records. I can explain the calculations behind your figures, but general maths, coding and unrelated tasks are outside my role. We can explore one of the options below instead.",
   unsupported:
     "I can help with summaries, dashboard figures, comparisons, sources, tours and record changes. Try a shortcut below.",
   advice:
@@ -297,11 +290,13 @@ export function renderRetroResponse(
   catalogue: DashboardCatalogue,
 ): { intro: string; facts: DashboardFact[]; closing: string } {
   const decision = response.decision;
+  if (decision.kind === "conversation")
+    return { intro: retroConversationCopy[decision.topic], facts: [], closing: "" };
   if (decision.kind === "workspace_request")
     return {
       intro:
         decision.intent.action === "help"
-          ? "Choose a task."
+          ? "I can help you understand your figures, follow their sources and shape your dashboard. You can ask a question in your own words or start with one of these four options. What would be useful?"
           : "Here’s the next step. Review or choose the control below.",
       facts: [],
       closing: "",
@@ -313,7 +308,9 @@ export function renderRetroResponse(
           ? "Let’s build that chart. Which style would you like?"
           : decision.action === "kpi"
             ? "Add this figure to your dashboard?"
-            : "Choose the dashboard card you want to change.",
+            : decision.action === "move"
+              ? `Let’s put ${decision.target ? `“${decision.target}”` : "that card"} where you want it. Review the item and its position below, then confirm. You can undo the layout change afterwards.`
+              : "Let’s adjust that dashboard card. Review the item below, then confirm the change.",
       facts: [],
       closing: "",
     };
@@ -359,14 +356,17 @@ export function renderRetroResponse(
   if (JSON.stringify(response.sources) !== JSON.stringify(allowedSources))
     throw new RangeError("ungrounded_sources");
   const intros: Record<RetroTopic, string> = {
-    summary: "Here’s the picture from your supplied records in this scope.",
-    income: "Invoiced income measures supplied work, on event dates.",
+    summary:
+      "Let’s walk through this period. These figures bring together the accepted records in your current filters, so you can see the work invoiced, the documented costs and what remains open. Held figures stay outside these totals.",
+    income:
+      "Here’s the income recorded for this view. It measures supplied invoiced work on its event date, so it can differ from when a customer actually pays. Open a figure to see which records contribute.",
     costs:
       "Documented costs use explicit net amounts, or stated amounts when no separate tax is present.",
-    profit: "Profit preview subtracts compatible documented costs from invoiced income.",
+    profit:
+      "Let’s unpack profit. The preview subtracts compatible documented costs from invoiced income; it describes the supplied records, rather than money sitting in a bank account. The figures below show both sides of that calculation.",
     margin:
       "Margin divides the profit preview by positive invoiced income. It is unavailable without that denominator.",
-    cash: "Cash uses supplied payment movements. Work and payment dates can differ; this is movement, not an account balance.",
+    cash: "Cash tells a different part of the story: it uses the payment movements actually supplied in this period. An invoice can count as income before it is paid, and a payment can arrive in a later period. These amounts show movement, not a bank balance.",
     open: "These are known gross open amounts as of the selected date. Unknown settlement is excluded, and due items are not automatically overdue.",
     rent: "This is the Rent contribution to compatible documented costs.",
     largest_cost: "This category has the largest supplied cost contribution in this scope.",
@@ -387,7 +387,13 @@ export function renderRetroResponse(
     intro: intros[decision.topic],
     facts: decision.factIds.map((id) => catalogue.facts[id]!),
     closing:
-      "Figures use the supplied USD records and current filters. Open a figure for its formula, exclusions and original evidence.",
+      decision.topic === "summary"
+        ? "You can explore profit or cash next, or open any figure to see its formula and paper trail. Which part would help you understand this period better?"
+        : decision.topic === "profit"
+          ? "Want to see how this differs from cash received, or compare it with the previous supplied period? Each figure opens its formula and original evidence."
+          : decision.topic === "cash"
+            ? "The unpaid amounts can help explain the difference between invoiced work and recorded payments. You can explore those next or inspect a figure’s contributors."
+            : "These figures use your supplied USD records and current filters. Open one to inspect its formula, exclusions and original evidence, or choose a related question below.",
   };
 }
 export function executeRetroTool(

@@ -29,6 +29,8 @@ export const TOPIC_LABELS: Partial<Record<RetroTopic, string>> = {
 export const RETRO_HELP_EXAMPLES = [
   "Summarize this period",
   "Explain this dashboard",
+  "How can I add a widget?",
+  "Show me around",
   "Review held figures",
   "Create invoice",
   "Explain cash",
@@ -47,6 +49,9 @@ const topic = (value: RetroTopic): RetroShortcut => ({
   label: TOPIC_LABELS[value] ?? `Explain ${value}`,
 });
 const help: RetroShortcut = { kind: "help", label: "What can Retro do?" };
+const question = (label: string): RetroShortcut => ({ kind: "prompt", label, prompt: label });
+const widgets = question("How can I add a widget?");
+const sources = question("How do I check the sources?");
 const starters: RetroShortcut[] = [
   topic("summary"),
   topic("profit"),
@@ -85,13 +90,44 @@ export function retroShortcuts({
   if (failed) return [topic("summary"), help];
   if (empty) return starters;
   if (!response) return [];
-  if (applied && response.decision.kind === "dashboard_request") return [];
   if (!current) return [{ ...topic("summary"), label: "Refresh figures" }];
+  if (applied)
+    return [
+      question(
+        response.decision.kind === "dashboard_request" && response.decision.position === "first"
+          ? "Move it to the bottom"
+          : "Move it to the top",
+      ),
+      widgets,
+      topic("summary"),
+      question("Undo layout"),
+    ];
   if (response.change?.kind === "clarification")
     return response.change.choices
       .slice(0, 4)
       .map((choice) => ({ kind: "change_choice", label: choice.label, choice }));
   const decision = response.decision;
+  if (decision.kind === "workspace_request" && decision.intent.action === "help") return [];
+  if (decision.kind === "conversation") {
+    if (decision.topic === "greeting") return [];
+    if (decision.topic === "widgets")
+      return [
+        question("Add profit KPI"),
+        question("Chart quarterly income"),
+        question("Set income target"),
+        { kind: "tour", label: "Show me around" },
+      ];
+    if (decision.topic === "scope")
+      return [question("Change period"), topic("comparison"), topic("summary"), sources];
+    if (decision.topic === "sources")
+      return [
+        question("Open documents"),
+        topic("coverage"),
+        question("Review held figures"),
+        topic("summary"),
+      ];
+    return [topic("summary"), widgets, sources, help];
+  }
   if (decision.kind === "clarification") return decision.choices.map(topic);
   if (decision.kind === "explanation") {
     const next = (related[decision.topic] ?? ["summary", "comparison"])
@@ -99,14 +135,19 @@ export function retroShortcuts({
       .map(topic)
       .slice(0, 2);
     return [
-      ...(decision.target && !dismissed
+      ...(decision.target && decision.topic !== "summary" && !dismissed
         ? [
-            { kind: "highlight" as const, label: "Show me", target: decision.target },
-            { kind: "decline" as const, label: "No, thanks" },
+            {
+              kind: "highlight" as const,
+              label: `Find ${decision.topic.replaceAll("_", " ")} on the dashboard`,
+              target: decision.target,
+            },
           ]
         : []),
       ...next,
-    ];
+      ...(decision.topic === "summary" ? [sources] : []),
+      widgets,
+    ].slice(0, 4);
   }
   if (
     decision.kind === "dashboard_request" &&
@@ -155,8 +196,7 @@ export function resolveRetroReply(
     "pie / donut": "pie",
   };
   return choices.find((choice) => {
-    if (choice.kind === "highlight")
-      return ["yes", "yes please", "show me", "yes, show me"].includes(text);
+    if (choice.kind === "highlight") return choice.label.toLowerCase() === text;
     if (choice.kind === "decline") return ["no", "no thanks", "no, thanks"].includes(text);
     return choice.kind === "style"
       ? choice.style === styles[text]

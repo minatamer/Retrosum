@@ -10,7 +10,13 @@ import {
   type DashboardWidget,
   type RetroResponse,
 } from "@retrosum/contracts";
-import { buildCustomChart, isRetroCurrent, isRetroUiCurrent } from "@retrosum/money";
+import {
+  buildCustomChart,
+  isRetroCurrent,
+  isRetroUiCurrent,
+  dashboardWidgetLabel,
+  moveDashboardWidget,
+} from "@retrosum/money";
 import { useSession } from "../session/session-provider";
 import { StyleFigure } from "../dashboard/widget-chart";
 import styles from "./dashboard-request.module.css";
@@ -28,8 +34,11 @@ export function DashboardRequestPreview({
   const { controller, session } = useSession();
   const [style, setStyle] = useState<ChartStyle>(decision.style ?? "curve");
   const [title, setTitle] = useState(decision.title);
-  const [target, setTarget] = useState("");
-  const [position, setPosition] = useState<"first" | "last">(decision.position ?? "first");
+  const [target, setTarget] = useState(decision.targetId ?? "");
+  const [anchor, setAnchor] = useState(decision.anchorId ?? "");
+  const [position, setPosition] = useState<NonNullable<DashboardRequest["position"]>>(
+    decision.position ?? "first",
+  );
   const [chartMetric, setChartMetric] = useState(
     chartMetricSchema.safeParse(decision.metric).data ?? "income",
   );
@@ -40,6 +49,12 @@ export function DashboardRequestPreview({
   const [notice, setNotice] = useState<string | null>(null);
   if (!session) return null;
   const applied = session.dashboard.appliedProposalIds.includes(proposalId);
+  if (!applied && !isRetroUiCurrent(response, session.dashboard))
+    return (
+      <p>
+        <ReplyText text="Your dashboard has changed since this preview. Ask again to choose a current item and position." />
+      </p>
+    );
   const metric = chartMetricSchema.safeParse(decision.metric);
   const kpi = decision.action === "kpi" || !metric.success;
   const changing =
@@ -47,15 +62,10 @@ export function DashboardRequestPreview({
   const candidates = session.dashboard.widgets.filter(
     (w) =>
       (decision.action !== "restyle" || w.kind === "chart") &&
-      (!decision.target ||
-        (w.kind === "chart"
-          ? w.spec.title
-          : w.kind === "kpi"
-            ? w.metric.replaceAll("_", " ")
-            : "income target"
-        )
-          .toLowerCase()
-          .includes(decision.target.toLowerCase())),
+      (decision.targetId
+        ? w.id === decision.targetId
+        : !decision.target ||
+          dashboardWidgetLabel(w).toLowerCase().includes(decision.target.toLowerCase())),
   );
   const apply = () => {
     try {
@@ -65,6 +75,7 @@ export function DashboardRequestPreview({
       if (!isRetroUiCurrent(response, current.dashboard))
         throw new RangeError("Your dashboard changed. Ask again for a current proposal.");
       let widgets = current.dashboard.widgets;
+      let confirmedDecision = decision;
       if (current.dashboard.appliedProposalIds.includes(proposalId))
         throw new RangeError("This proposal was already applied.");
       if (changing) {
@@ -72,6 +83,13 @@ export function DashboardRequestPreview({
           candidates.find((w) => w.id === target) ??
           (candidates.length === 1 ? candidates[0] : undefined);
         if (!chosen) throw new RangeError("Choose the dashboard item you want to change.");
+        confirmedDecision = {
+          ...decision,
+          targetId: chosen.id,
+          target: dashboardWidgetLabel(chosen),
+          position: decision.action === "move" ? position : decision.position,
+          anchorId: decision.action === "move" ? anchor || null : decision.anchorId,
+        };
         if (
           decision.action === "restyle" &&
           chosen.kind === "chart" &&
@@ -88,9 +106,7 @@ export function DashboardRequestPreview({
           throw new RangeError("This chart compares two metrics. Choose Line, Curve or Bar.");
         widgets =
           decision.action === "move"
-            ? position === "first"
-              ? [chosen, ...widgets.filter((w) => w.id !== chosen.id)]
-              : [...widgets.filter((w) => w.id !== chosen.id), chosen]
+            ? moveDashboardWidget(widgets, chosen.id, position, anchor || null)
             : decision.action === "remove"
               ? widgets.filter((w) => w.id !== chosen.id)
               : widgets.map((w) =>
@@ -126,6 +142,15 @@ export function DashboardRequestPreview({
         widgets,
         appliedProposalIds: [...current.dashboard.appliedProposalIds, proposalId].slice(-40),
       });
+      // Remember the visitor's actual selection, including edits to an ambiguous proposal.
+      const messages = controller.getSnapshot().session!.messages;
+      controller.setMessages(
+        messages.map((message) =>
+          message.id === proposalId
+            ? { ...message, response: { ...response, decision: confirmedDecision } }
+            : message,
+        ),
+      );
       setNotice(
         decision.action === "remove"
           ? "Dashboard item removed. Undo layout restores it."
@@ -196,11 +221,7 @@ export function DashboardRequestPreview({
                 <option value="">Choose an item</option>
                 {candidates.map((w) => (
                   <option value={w.id} key={w.id}>
-                    {w.kind === "chart"
-                      ? w.spec.title
-                      : w.kind === "kpi"
-                        ? w.metric.replaceAll("_", " ")
-                        : "Income target"}
+                    {dashboardWidgetLabel(w)}
                   </option>
                 ))}
               </select>
@@ -234,10 +255,32 @@ export function DashboardRequestPreview({
               Position
               <select
                 value={position}
-                onChange={(e) => setPosition(e.target.value as "first" | "last")}
+                onChange={(e) =>
+                  setPosition(e.target.value as NonNullable<DashboardRequest["position"]>)
+                }
               >
                 <option value="first">First on dashboard</option>
                 <option value="last">Last on dashboard</option>
+                <option value="before">Before another item</option>
+                <option value="after">After another item</option>
+              </select>
+            </label>
+          )}
+          {decision.action === "move" && (position === "before" || position === "after") && (
+            <label>
+              Position reference
+              <select value={anchor} onChange={(e) => setAnchor(e.target.value)}>
+                <option value="">Choose another item</option>
+                {session.dashboard.widgets
+                  .filter(
+                    (widget) =>
+                      widget.id !== (target || (candidates.length === 1 ? candidates[0]!.id : "")),
+                  )
+                  .map((widget) => (
+                    <option value={widget.id} key={widget.id}>
+                      {dashboardWidgetLabel(widget)}
+                    </option>
+                  ))}
               </select>
             </label>
           )}

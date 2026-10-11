@@ -4,7 +4,7 @@ import { revisionSchema, workspaceIdSchema } from "./ids.js";
 import { sessionFilterSchema } from "./filters.js";
 import { sourceReferenceSchema } from "./source.js";
 import { retroChangeIntentSchema, retroChangePreparationSchema } from "./retro-change.js";
-import { dashboardRequestSchema } from "./dashboard.js";
+import { dashboardRequestSchema, widgetIdentitySchema } from "./dashboard.js";
 import { retroWorkspaceRequestSchema, retroUiContextSchema } from "./retro-workspace.js";
 
 export const RETRO_LIMITS = Object.freeze({
@@ -53,6 +53,10 @@ export const retroTopicSchema = z.enum([
 export const retroDecisionSchema = z.discriminatedUnion("kind", [
   dashboardRequestSchema,
   retroWorkspaceRequestSchema,
+  z.strictObject({
+    kind: z.literal("conversation"),
+    topic: z.enum(["greeting", "thanks", "widgets", "sources", "scope", "privacy"]),
+  }),
   z.strictObject({ kind: z.literal("change_request"), intent: retroChangeIntentSchema }),
   z.strictObject({
     kind: z.literal("explanation"),
@@ -70,6 +74,7 @@ export const retroDecisionSchema = z.discriminatedUnion("kind", [
     kind: z.literal("limited_result"),
     reason: z.enum([
       "unsupported",
+      "off_topic",
       "advice",
       "external_action",
       "injection",
@@ -105,6 +110,12 @@ export const retroRequestSchema = z
     prompt: z.string().trim().min(1).max(1000),
     changeContext: retroChangeIntentSchema.optional(),
     uiContext: retroUiContextSchema.optional(),
+    followUp: z
+      .strictObject({
+        widgetId: widgetIdentitySchema.nullable(),
+        topic: retroTopicSchema.nullable(),
+      })
+      .optional(),
     recent: z
       .array(z.strictObject({ role: z.enum(["user", "retro"]), text: z.string().max(2000) }))
       .max(8),

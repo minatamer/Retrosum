@@ -45,6 +45,8 @@ describe("bounded contextual Retro shortcuts", () => {
     const expected = [
       "explanation",
       "explanation",
+      "conversation",
+      "tour",
       "workspace_request",
       "change_request",
       "explanation",
@@ -69,10 +71,10 @@ describe("bounded contextual Retro shortcuts", () => {
   it("replaces starters with the exact current highlight and related questions in every mode", () => {
     const selected = choices();
     expect(selected.map((choice) => choice.label)).toEqual([
-      "Show me",
-      "No, thanks",
+      "Find profit on the dashboard",
       "Explain cash",
       "Compare periods",
+      "How can I add a widget?",
     ]);
     expect(selected[0].target).toBe("profit");
     for (const mode of ["fake", "live", "local"])
@@ -80,12 +82,14 @@ describe("bounded contextual Retro shortcuts", () => {
     expect(choices(explanation, { dismissed: true }).map((choice) => choice.kind)).toEqual([
       "topic",
       "topic",
+      "prompt",
     ]);
   });
-  it("resolves yes/no only when that response actually offers them", () => {
+  it("requires a named highlight and offers useful next questions instead of yes/no", () => {
     for (const text of ["yes", "yes please", "show me"])
-      expect(resolveRetroReply(text, choices()).kind).toBe("highlight");
-    expect(resolveRetroReply("no, thanks", choices()).kind).toBe("decline");
+      expect(resolveRetroReply(text, choices())).toBeUndefined();
+    expect(resolveRetroReply("Find profit on the dashboard", choices()).target).toBe("profit");
+    expect(resolveRetroReply("no, thanks", choices())).toBeUndefined();
     expect(resolveRetroReply("yes", choices(explanation, { dismissed: true }))).toBeUndefined();
     expect(resolveRetroReply("yes", choices(explanation, { current: false }))).toBeUndefined();
   });
@@ -127,8 +131,12 @@ describe("bounded contextual Retro shortcuts", () => {
     ]);
     expect(resolveRetroReply("bar chart", choices(response)).style).toBe("bar");
     expect(resolveRetroReply("donut", choices(response)).style).toBe("pie");
-    expect(choices(response, { applied: true })).toEqual([]);
-    expect(choices(response, { applied: true, current: false })).toEqual([]);
+    expect(choices(response, { applied: true }).every((choice) => choice.kind !== "style")).toBe(
+      true,
+    );
+    expect(
+      choices(response, { applied: true, current: false }).map((choice) => choice.kind),
+    ).toEqual(["topic"]);
     expect(choices(response, { current: false }).some((choice) => choice.kind === "style")).toBe(
       false,
     );

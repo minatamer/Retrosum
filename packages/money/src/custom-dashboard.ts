@@ -5,11 +5,38 @@ import {
   type ChartSpec,
   type DashboardPreferences,
   type DashboardRequest,
+  type DashboardWidget,
   type SessionFilter,
   type Workspace,
 } from "@retrosum/contracts";
 import { buildDashboard, type DashboardFact } from "./dashboard.js";
 import { sumAmounts } from "./amount.js";
+
+export function dashboardWidgetLabel(widget: DashboardWidget): string {
+  return widget.kind === "chart"
+    ? widget.spec.title
+    : widget.kind === "target"
+      ? "Income target"
+      : widget.metric.replaceAll("_", " ");
+}
+
+/** Grid ordering only: callers still own confirmation, revisions and Undo. */
+export function moveDashboardWidget(
+  widgets: DashboardWidget[],
+  targetId: string,
+  position: NonNullable<DashboardRequest["position"]>,
+  anchorId: string | null = null,
+): DashboardWidget[] {
+  const chosen = widgets.find((widget) => widget.id === targetId);
+  if (!chosen) throw new RangeError("Choose a current dashboard item.");
+  const remaining = widgets.filter((widget) => widget.id !== targetId);
+  if (position === "first") return [chosen, ...remaining];
+  if (position === "last") return [...remaining, chosen];
+  const index = remaining.findIndex((widget) => widget.id === anchorId);
+  if (index < 0) throw new RangeError("Choose a different current item as the position reference.");
+  const at = index + (position === "after" ? 1 : 0);
+  return [...remaining.slice(0, at), chosen, ...remaining.slice(at)];
+}
 
 export function parseDisplayRate(text: string): number {
   if (!/^(?:0|[1-9]\d{0,3})(?:\.\d{1,6})?$/u.test(text.trim()))

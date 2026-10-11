@@ -46,7 +46,8 @@ export const chartSpecSchema = z.strictObject({
   range: z.enum(["scope", "history"]),
   comparison: chartMetricSchema.nullable().default(null),
 });
-const widgetIdentity = z.string().regex(/^widget_[A-Za-z0-9_-]{1,96}$/u);
+export const widgetIdentitySchema = z.string().regex(/^widget_[A-Za-z0-9_-]{1,96}$/u);
+const widgetIdentity = widgetIdentitySchema;
 export const dashboardWidgetSchema = z.discriminatedUnion("kind", [
   z.strictObject({ id: widgetIdentity, kind: z.literal("kpi"), metric: dashboardMetricSchema }),
   z.strictObject({ id: widgetIdentity, kind: z.literal("chart"), spec: chartSpecSchema }),
@@ -121,7 +122,9 @@ export const demoExperienceSchema = z.strictObject({
 export const dashboardRequestSchema = z.strictObject({
   kind: z.literal("dashboard_request"),
   action: z.enum(["chart", "kpi", "remove", "restyle", "move"]),
-  position: z.enum(["first", "last"]).nullable().default(null),
+  position: z.enum(["first", "last", "before", "after"]).nullable().default(null),
+  targetId: widgetIdentitySchema.nullable().default(null),
+  anchorId: widgetIdentitySchema.nullable().default(null),
   metric: dashboardMetricSchema,
   title: z.string().trim().min(1).max(80),
   groupBy: chartGroupingSchema,

@@ -150,7 +150,7 @@ describe("Retro workspace capabilities in both provider paths", () => {
   ])("%s reaches the same bounded dashboard controls", async (prompt, expected) => {
     const input = snapshot(prompt),
       catalogue = buildDashboard(input.workspace, input.scope);
-    const decision = fakeRetroDecision(prompt, catalogue, input.workspace);
+    const decision = fakeRetroDecision(prompt, catalogue, input.workspace, undefined, input);
     expect(decision).toMatchObject({ kind: "dashboard_request", ...expected });
     const fetcher = vi.fn(async () => completed(decision));
     const live = await investigate(

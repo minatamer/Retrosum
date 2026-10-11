@@ -17,3 +17,4 @@ export * from "./retro-change.js";
 export * from "./export.js";
 export * from "./custom-dashboard.js";
 export * from "./retro-workspace.js";
+export * from "./retro-conversation.js";
